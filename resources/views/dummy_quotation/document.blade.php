@@ -1,96 +1,93 @@
 @extends('layouts.masterLayout')
 
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Log Document Dummy Proposal.</small>
-                    <div class=""><span class="span1"> Log Document Dummy Proposal (ประวัติการจัดทำเอกสารต้นแบบ)</span></div>
+                    <div class="span3">Log Document Dummy Proposal</div>
+                </div>
+                <div class="col-auto">
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
-
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="tab-content">
-                                    <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-proposal-Log" onchange="getPageLogDoc(1, this.value, 'proposal-Log')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-proposal-Log" id="proposal-Log" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="proposal-LogTable" class="example ui striped table nowrap unstackable hover">
-                                            <thead>
-                                                <tr>
-                                                    <th  class="text-center">No</th>
-                                                    <th >Category</th>
-                                                    <th  class="text-center">Type</th>
-                                                    <th  class="text-center">Created_by</th>
-                                                    <th  class="text-center">Created Date</th>
-                                                    <th  class="text-center">Content</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if(!empty($logproposal))
-                                                    @foreach($logproposal as $key => $item)
-                                                    <tr>
-                                                        <td style="text-align: center;">{{$key +1 }}</td>
-                                                        <td style="text-align: left;">{{$item->Category}}</td>
-                                                        <td style="text-align: center;">{{$item->type}}</td>
-                                                        <td style="text-align: center;">{{@$item->userOperated->name}}</td>
-                                                        <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
-                                                        @php
-                                                            // แยกข้อมูล content ออกเป็น array
-                                                            $contentArray = explode('+', $item->content);
-                                                        @endphp
-                                                        <td style="text-align: left;">
-
-                                                            <b style="color:#0000FF ">{{$item->Category}}</b>
-                                                            @foreach($contentArray as $contentItem)
-                                                                <div>{{ $contentItem }}</div>
-                                                            @endforeach
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                @endif
-                                            </tbody>
-                                        </table>
-                                        <input type="hidden" id="profile-proposal-Log" name="profile-proposal" value="{{$QuotationID}}">
-                                        <input type="hidden" id="get-total-proposal-Log" value="{{ $logproposal->total() }}">
-                                        <input type="hidden" id="currentPage-proposal-Log" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="proposal-Log-showingEntries">{{ showingEntriesTableLogDoc($logproposal, 'proposal-Log') }}</p>
-                                                    <div id="proposal-Log-paginate">
-                                                        {!! paginateTableLogDoc($logproposal, 'proposal-Log') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
+                    <div class="card p-4 mb-4">
+                        <div class="tab-content">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <caption class="caption-top">
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-proposal-Log" onchange="getPageLogDoc(1, this.value, 'proposal-Log')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>100</option>
+                                        </select>
+                                        <input class="search-button search-data-proposal-Log" id="proposal-Log" style="text-align:left;" placeholder="Search" />
                                     </div>
+                                </caption>
+                                <table id="proposal-LogTable" class="example ui striped table nowrap unstackable hover">
+                                    <thead>
+                                        <tr>
+                                            <th  class="text-center">No</th>
+                                            <th >Category</th>
+                                            <th  class="text-center">Type</th>
+                                            <th  class="text-center">Created_by</th>
+                                            <th  class="text-center">Created Date</th>
+                                            <th  class="text-center">Content</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($logproposal))
+                                            @foreach($logproposal as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">{{$key +1 }}</td>
+                                                <td style="text-align: left;">{{$item->Category}}</td>
+                                                <td style="text-align: center;">{{$item->type}}</td>
+                                                <td style="text-align: center;">{{@$item->userOperated->name}}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
+                                                @php
+                                                    // แยกข้อมูล content ออกเป็น array
+                                                    $contentArray = explode('+', $item->content);
+                                                @endphp
+                                                <td style="text-align: left;">
 
+                                                    <b style="color:#0000FF ">{{$item->Category}}</b>
+                                                    @foreach($contentArray as $contentItem)
+                                                        <div>{{ $contentItem }}</div>
+                                                    @endforeach
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="profile-proposal-Log" name="profile-proposal" value="{{$QuotationID}}">
+                                <input type="hidden" id="get-total-proposal-Log" value="{{ $logproposal->total() }}">
+                                <input type="hidden" id="currentPage-proposal-Log" value="1">
+                                <caption class="caption-bottom">
+                                    <div class="md-flex-bt-i-c">
+                                        <p class="py2" id="proposal-Log-showingEntries">{{ showingEntriesTableLogDoc($logproposal, 'proposal-Log') }}</p>
+                                            <div id="proposal-Log-paginate">
+                                                {!! paginateTableLogDoc($logproposal, 'proposal-Log') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            </div>
+                                    </div>
+                                </caption>
                             </div>
-                            <div class="col-12 row mt-5">
-                                <div class="col-4"></div>
-                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('DummyQuotation.index') }}'">
-                                        Back
-                                    </button>
-                                </div>
-                                <div class="col-4"></div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 row mt-5">
+                            <div class="col-lg-4 col-md-12 col-sm-12"></div>
+                            <div class="col-lg-4 col-md-12 col-sm-12"  style="display:flex; justify-content:center; align-items:center;">
+                                <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('DummyQuotation.index') }}'">
+                                    Back
+                                </button>
                             </div>
+                            <div class="col-4"></div>
                         </div>
                     </div>
                 </div>

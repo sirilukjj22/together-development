@@ -1601,7 +1601,7 @@
                                     var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                     var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-                                    var rowNumbemain = $('#display-selected-items tr').length;
+
                                     let discountInput;
                                     let quantity;
                                     var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
@@ -1657,20 +1657,46 @@
                                             'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
                                             '<span class="input-group-text">' + val.quantity_name + '</span>' +
                                             '</div>';
+                                    $('#main').DataTable().destroy();
+                                    var rowNumbemain = $('#display-selected-items tr').length + 1;
                                     $('#display-selected-items').append(
                                         '<tr id="tr-select-addmain' + val.id + '">' +
                                         '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
                                         '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td style="text-align:center;width:10%;">'+ quantity +'</td>' +
-                                        '<td>' + unit + '</td>' +
+                                        '<td style="text-align:center;width:12%;">'+ quantity +'</td>' +
+                                        '<td style="text-align:center;width:12%;">' + unit + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td>' + discountInput + '</td>' +
+                                        '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
                                         '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                         '</tr>'
                                     );
+                                    $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
+                                    $('#display-selected-items tr.odd').remove();
+                                    $('#main').DataTable({
+                                        searching: false,
+                                        paging: false,
+                                        info: false,
+                                        ordering:false,
+                                        language: {
+                                            emptyTable: "",
+                                            zeroRecords: ""
+                                        },
+                                        columnDefs: [{
+                                            className: 'dtr-control',
+                                            orderable: false,
+                                            target: null,
+                                        }],
+                                        order:  false,
+                                        responsive: {
+                                            details: {
+                                                type: 'column',
+                                                target: 'tr'
+                                            }
+                                        }
+                                    });
                                     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                                     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                                         return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -1701,55 +1727,6 @@
                 });
             });
         }
-        //----------------------------------------รายการ---------------------------
-        // $(document).ready(function() {
-        //     $(document).on('keyup', '.quantitymain', function() {
-        //         for (let i = 0; i < 50; i++) {
-        //             var number_ID = $(this).attr('rel');
-        //             var quantitymain =  Number($(this).val());
-        //             var discountmain =  $('#discountmain'+number_ID).val();
-        //             var paxmain = parseFloat($('#pax' + number_ID).val());
-        //             if (isNaN(paxmain)) {
-        //                 paxmain = 0;
-        //             }
-        //             var pax = paxmain*quantitymain;
-        //             $('#paxtotal'+number_ID).text(pax);
-        //             var number = Number($('#number-product').val());
-        //             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-        //             var pricediscount =  (price*discountmain /100);
-        //             var allcount0 = price - pricediscount;
-        //             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-        //             var pricenew = price*quantitymain
-        //             var pricediscount = pricenew - (pricenew*discountmain /100);
-        //             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-
-        //             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-        //             totalAmost();
-        //         }
-        //     });
-        //     $(document).on('keyup', '.discountmain', function() {
-        //         for (let i = 0; i < 50; i++) {
-        //             var number_ID = $(this).attr('rel');
-        //             var discountmain =  Number($(this).val());
-        //             console.log(discountmain);
-        //             var quantitymain =  $('#quantitymain'+number_ID).val();
-        //             console.log(quantitymain);
-        //             var number = Number($('#number-product').val());
-        //             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-        //             var pricediscount =  (price*discountmain /100);
-        //             var allcount0 = price - pricediscount;
-        //             console.log(allcount0);
-        //             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-        //             var pricenew = price*quantitymain
-        //             var pricediscount = pricenew - (pricenew*discountmain /100);
-        //             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-        //             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-        //             totalAmost();
-
-        //         }
-
-        //     });
-        // });
         //----------------------------------------รายการ---------------------------
         $(document).ready(function() {
             $(document).on('keyup', '.quantitymain', function() {
