@@ -2,9 +2,6 @@
 @section('content')
 
 <style>
-    /* Adjust container layout for responsiveness */
-
-
     /* Form container styling */
     .form-container {
         background-color: #ffffff;
@@ -128,16 +125,19 @@
                             </div>
                             <div id="box-start-date" class="col-md-6">
                                 <label for="startDate" class="form-label label-startDate">Start Date</label>
-                                <input type="month" class="form-control" id="startDate" name="startDate" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
+                                <input type="text" class="form-control" id="startDate" name="startDate" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
                             </div>
                             <div id="box-end-date" class="col-md-6">
                                 <label for="endDate" class="form-label label-endDate">End Date</label>
-                                <input type="month" class="form-control" id="endDate" name="endDate" value="{{ isset($endDate) ? $endDate : date('Y-m') }}" required>
+                                <input type="text" class="form-control" id="endDate" name="endDate" value="{{ isset($endDate) ? $endDate : date('Y-m') }}" required>
                             </div>
-                            <div id="box-start-year" class="col-md-6">
-                                <label for="startDate" class="form-label label-startDate">Year</label>
-                                <input type="month" class="form-control" id="startDate" name="startDate" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
-                                s
+                            <div id="box-start-year" class="col-md-6" hidden>
+                                <label for="startYear" class="form-label label-startYear">Year</label>
+                                <select class="form-select" name="startDate" id="startYear">
+                                    @for ($i = 2024; $i <= date('Y', strtotime('+1 year')); $i++)
+                                        <option value="{{ $i }}" {{ isset($filter_by) && $filter_by == 'year' && $i == $startDate ? 'selected' : '' }}>{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
             
                             <!-- Radio buttons for status filter -->
@@ -164,7 +164,27 @@
                         </form>
                     </div>
                 </div>
-            </div> <!-- .row end -->                    
+            </div> <!-- .row end -->        
+            {{-- <div class="col-12 d-flex flex-row gap-1"> <!-- เพิ่ม gap -->
+                <div class="col-md-4 card border-0 mb-3 chart-color2">
+                    <div class="card-body p-5 text-light text-center">
+                        <h2>0</h2>
+                        <span>TOTAL</span>
+                    </div>
+                </div>
+                <div class="col-md-4 card border-0 mb-3 bg-success">
+                    <div class="card-body p-5 text-light text-center">
+                        <h2>0</h2>
+                        <span>Verified</span>
+                    </div>
+                </div>
+                <div class="col-md-4 card border-0 mb-3 bg-danger">
+                    <div class="card-body p-5 text-light text-center">
+                        <h2>0</h2>
+                        <span>Unverified</span>
+                    </div>
+                </div>
+            </div> --}}
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
@@ -173,10 +193,10 @@
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                     <select class="entriespage-button" id="search-per-page-verified" onchange="getPage(1, this.value, 'verified')"> <!-- เลขที่หน้า, perpage, ชื่อนำหน้าตาราง -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "verified" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "verified" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "verified" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "verified" ? 'selected' : '' }}>100</option>
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                     </select>
                                     <input class="search-button search-data" id="verified" style="text-align:left;" placeholder="Search" />
                                 </div>
@@ -222,6 +242,9 @@
         </div>
     </div>
 
+    <input type="hidden" id="get-total-verified" value="{{ $data_query->total() }}">
+    <input type="hidden" id="currentPage-verified" value="1">
+
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
@@ -231,7 +254,7 @@
     @endif
 
     <!-- table design css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css') }}">
 
@@ -270,6 +293,7 @@
         var filterBy = $('#filter-by').val();
         var startDate = document.getElementById("startDate");
         var endDate = document.getElementById("endDate");
+        startYear.disabled = true;
 
         if (filterBy == "date") {
             startDate.type = "date";
@@ -283,10 +307,12 @@
         } 
 
         if (filterBy == "year") {
-            startDate.type = "number";
-            startDate.min = 1900;
-            startDate.max = new Date().getFullYear();
+            startYear.disabled = false;
+            startDate.disabled = true;
+            endDate.disabled = true;
+            $('#box-start-date').prop('hidden', true);
             $('#box-end-date').prop('hidden', true);
+            $('#box-start-year').prop('hidden', false);
         } 
 
         if (filterBy == "custom") {
@@ -296,16 +322,138 @@
         } 
     });
 
+    // Search
+    $(document).on('keyup', '.search-data', function () {
+        var id = $(this).attr('id');
+        var search_value = $(this).val();
+        var total = parseInt($('#get-total-'+id).val());
+        var table_name = id+'Table';
+
+        var filter_by = $('#filter-by').val();
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+        var type_status = $('input[name="status"]:checked').val();
+        var getUrl = id;
+
+        if (filter_by == "year") {
+            startDate = $('#startYear').val();
+        }
+
+        $('#'+table_name).DataTable().destroy();
+        var table = $('#'+table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                ajax: {
+                    url: '/report-audit-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        startDate: startDate,
+                        endDate: endDate,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings, json) {
+
+                    if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    } else {
+                        var count = 0;
+                        $('.dataTables_empty').addClass('dt-center');
+                    }
+
+                    if (search_value == '') {
+                        count_total = total;
+                    } else {
+                        count_total = count;
+                    }
+                
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+
+                },
+                columnDefs: [
+                            { targets: [0, 1], className: 'dt-center td-content-center' },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'number' },
+                    { data: 'date' },
+                    { data: 'status' },
+                ],
+
+            });
+
+        document.getElementById(id).focus();
+    });
+
+    // ตรวจสอบเมื่อมีการเปลี่ยนแปลงฟิลด์ startDate
+    $('#startDate').on('change', function() {
+        var startDateValue = $('#startDate').val();
+        var endDateValue = $('#endDate').val();
+
+        // ตรวจสอบว่ามีการกรอกข้อมูลในทั้ง startDate และ endDate
+        if (startDateValue && endDateValue) {
+
+            // ตรวจสอบว่า startDate น้อยกว่าหรือเท่ากับ endDate หรือไม่
+            if (startDateValue <= endDateValue) {
+                alert("Start Date ต้องมากกว่า End Date");
+                $('#startDate').val(''); // ล้างค่า startDate หากไม่ผ่านเงื่อนไข
+            }
+        }
+    });
+
+    // ตรวจสอบเมื่อฟิลด์ endDate มีการเปลี่ยนแปลง
+    $('#endDate').on('change', function() {
+        var startDateValue = $('#startDate').val();
+        var endDateValue = $('#endDate').val();        
+
+        // ตรวจสอบว่ามีการกรอกข้อมูลในทั้ง startDate และ endDate
+        if (startDateValue && endDateValue) {
+
+            // ตรวจสอบว่า endDate น้อยกว่า startDate หรือไม่
+            if (endDateValue <= startDateValue) {
+                alert("End Date ต้องไม่น้อยกว่า Start Date");
+                $('#endDate').val(''); // ล้างค่า endDate หากไม่ผ่านเงื่อนไข
+            }
+        }
+    });
+
+
     document.addEventListener("DOMContentLoaded", function() {
         const filterButtons = document.querySelectorAll(".btn-group button");
         const startDate = document.getElementById("startDate");
         const endDate = document.getElementById("endDate");
+        const startYear = document.getElementById("startYear");
+
+        const date = new Date();
+        const year = date.getFullYear(); 
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // เพิ่ม 0 ถ้าเป็นเลขหลักเดียว
+        const day = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        const formattedMonth = `${year}-${month}`;
+        const formattedYear = 2025;
 
         function resetFilters() {
             startDate.type = "date";
             endDate.type = "date";
             startDate.disabled = false;
             endDate.disabled = false;
+            startYear.disabled = true;
         }
 
         filterButtons.forEach(button => {
@@ -315,33 +463,41 @@
                 // Add 'selected' class to the clicked button
                 this.classList.add("selected");
 
+                $('#box-start-year').prop('hidden', true);
+                $('#box-start-date').prop('hidden', false);
+                $('#box-end-date').prop('hidden', false);
+
                 // Adjust the input types based on selected filter
                 if (this.id === "filter-date") {
                     resetFilters();
                     startDate.type = "date";
-                    // endDate.type = "date";
+                    startDate.value = formattedDate;
+                    endDate.disabled = true;
                     $('#box-end-date').prop('hidden', true);
                     $('#filter-by').val("date");
                 } else if (this.id === "filter-month") {
                     resetFilters();
                     startDate.type = "month";
                     endDate.type = "month";
+                    startDate.value = formattedMonth;
+                    endDate.value = formattedMonth;
                     $('#box-end-date').prop('hidden', false);
                     $('#filter-by').val("month");
                 } else if (this.id === "filter-year") {
                     resetFilters();
-                    startDate.type = "number";
-                    endDate.type = "number";
-                    startDate.min = 1900;
-                    startDate.max = new Date().getFullYear();
-                    endDate.min = 1900;
-                    endDate.max = new Date().getFullYear();
+                    startYear.disabled = false;
+                    startDate.disabled = true;
+                    endDate.disabled = true;
+                    $('#box-start-date').prop('hidden', true);
                     $('#box-end-date').prop('hidden', true);
+                    $('#box-start-year').prop('hidden', false);
                     $('#filter-by').val("year");
                 } else if (this.id === "filter-custom") {
                     resetFilters();
                     startDate.type = "date";
                     endDate.type = "date";
+                    startDate.value = formattedDate;
+                    endDate.value = formattedDate;
                     $('#box-end-date').prop('hidden', false);
                     $('#filter-by').val("custom");
                 }

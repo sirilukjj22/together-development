@@ -130,6 +130,7 @@ function getPage(page, perPage, table_n) {
             columns: [
                 { data: 'number' },
                 { data: 'date' },
+                { data: 'stan' },
                 { data: 'revenue_name' },
                 { data: 'ev_charge' },
                 { data: 'ev_fee' },

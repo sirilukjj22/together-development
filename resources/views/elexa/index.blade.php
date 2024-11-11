@@ -77,9 +77,9 @@
                                 <div class="col-12">
                                     <div class="card-body">
                                         <div class="text-muted text-uppercase"><i
-                                                class="fa fa-circle me-2 text-info"></i>Elexa Revenue</div>
+                                                class="fa fa-circle me-2 text-success"></i>Elexa Paid</div>
                                         <div class="mt-1">
-                                            <span class="fw-bold h4 mb-0" id="">{{ number_format($total, 2) }}</span>
+                                            <span class="fw-bold h4 mb-0" id="">{{ number_format($elexa_debit_outstanding, 2) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -107,9 +107,9 @@
                                 <div class="col-md-4 col-12">
                                     <div class="card-body">
                                         <div class="text-muted text-uppercase"><i
-                                                class="fa fa-circle me-2 text-success"></i>Elexa Paid</div>
+                                                class="fa fa-circle me-2 text-info"></i>Elexa Revenue</div>
                                         <div class="mt-1">
-                                            <span class="fw-bold h4 mb-0" id="">{{ number_format($elexa_debit_outstanding, 2) }}</span>
+                                            <span class="fw-bold h4 mb-0" id="">{{ number_format($total, 2) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +118,7 @@
                                         <div class="text-muted text-uppercase"><i
                                                 class="fa fa-circle me-2 text-warning"></i>Balance</div>
                                         <div class="mt-1">
-                                            <span class="fw-bold h4 mb-0" id="">{{ number_format($total_outstanding_all - $elexa_debit_outstanding, 2) }}</span>
+                                            <span class="fw-bold h4 mb-0" id="">{{ number_format($total_outstanding_all - $total, 2) }}</span>
                                         </div>
                                     </div>
                                 </div>

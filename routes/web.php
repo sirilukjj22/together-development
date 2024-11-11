@@ -202,6 +202,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ReportAuditRevenueDateController::class)->middleware('role:report')->group(function () {
         Route::get('report-audit-revenue-date', 'index')->name('report-audit-revenue-date');
         Route::post('report-audit-revenue-date-search', 'search')->name('report-audit-revenue-date-search');
+        Route::post('report-audit-paginate-table', 'paginate_table')->name('report-audit-paginate-table');
+        Route::post('report-audit-search-table', 'search_table')->name('report-audit-search-table');
     });
 
     ####################################################

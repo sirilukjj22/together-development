@@ -2020,7 +2020,10 @@
             $('#split_number').val(number);
 
             if (date_split && amount) {
-                if (parseFloat(total_amount) + parseFloat(amount) <= balance) {
+                var sum_split_revenue = parseFloat(total_amount) + parseFloat(amount);
+                var total_split_revenue = Math.round(sum_split_revenue * 100) / 100;
+
+                if (total_split_revenue <= balance) {
                     var date = "";
                     var date_fm = new Date(date_split);
                     var year = date_fm.getFullYear();
@@ -2039,7 +2042,7 @@
                         '</tr>'
                     );
 
-                    $('#split_total_number').val(parseFloat(total_amount) + parseFloat(amount));
+                    $('#split_total_number').val(total_split_revenue);
                     $('#date-split').val('');
                     $('#split-amount').val('');
                     $('.split-todo-error').hide();

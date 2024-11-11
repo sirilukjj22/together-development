@@ -391,6 +391,19 @@ class RevenuesController extends Controller
         $date_from = date('Y-m-d');
         $date_to = date('Y-m-d');
 
+        // Hotel Fee
+        $total_hotel_fee = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+            ->whereIn('revenue_credit.status', [1, 2, 6])
+            ->whereDate('date', date('Y-m-d'))
+            ->groupBy('revenue.date')
+            ->select(
+                'revenue.date', 
+                'revenue.total_credit', 
+                'revenue_credit.batch', 
+                'revenue_credit.revenue_type', 
+                'revenue_credit.status',
+                DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))
+            ->get()->sum('amount');
 
         $credit_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_credit')->first();
         $credit_revenue_today = $credit_revenue;
@@ -460,6 +473,7 @@ class RevenuesController extends Controller
             'total_unverified',
             'total_agoda_outstanding',
             'total_ev_outstanding',
+            'total_hotel_fee',
             'total_transfer', 
 
             'total_transfer2',
@@ -1449,7 +1463,22 @@ class RevenuesController extends Controller
         $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount
          + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
 
+        ## Hotel Fee ##
+        $total_hotel_fee = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+            ->whereIn('revenue_credit.status', [1, 2, 6])
+            ->whereBetween('date', [$month_from, $month_to])
+            ->groupBy('revenue.date')
+            ->select(
+                'revenue.date', 
+                'revenue.total_credit', 
+                'revenue_credit.batch', 
+                'revenue_credit.revenue_type', 
+                'revenue_credit.status',
+                DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))
+            ->get()->sum('amount');
+
         ## ข้อมูลในตาราง
+
         ### Credit Card Hotel ###
         // Today
         $credit_revenue_today = Revenues::where('date', $date_now)->select(DB::raw("SUM(total_credit) as total_credit"))->first();
@@ -1835,6 +1864,7 @@ class RevenuesController extends Controller
                         'total_unverified', 
                         'total_agoda_outstanding',
                         'total_ev_outstanding',
+                        'total_hotel_fee',
                         'total_transfer', 
             
                         'total_transfer2',
@@ -1912,6 +1942,7 @@ class RevenuesController extends Controller
                     'total_unverified', 
                     'total_agoda_outstanding',
                     'total_ev_outstanding',
+                    'total_hotel_fee',
                     'total_transfer', 
         
                     'total_transfer2',
@@ -2345,7 +2376,7 @@ class RevenuesController extends Controller
             $revenue_name = "cash";
 
         } if ($request->revenue_type == "cash_water_park") {
-            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->select('date', 'wp_cash as amount')->paginate(10);
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('wp_cash', '>', 0)->select('date', 'wp_cash as amount')->paginate(10);
             $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->sum('wp_cash');
             $title = "Water Park Revenue (Cash)";
             $status = 'cash_water_park';
@@ -2476,7 +2507,7 @@ class RevenuesController extends Controller
         } if($request->revenue_type == "mc_elexa_charge") {
             $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->orderBy('revenue.date', 'asc')->paginate(10);
+                ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->orderBy('revenue.date', 'asc')->paginate(10);
             $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.ev_charge');
             $title = "Elexa EGAT Charge";
@@ -2486,16 +2517,32 @@ class RevenuesController extends Controller
 
         ## Fee
         if($request->revenue_type == "credit_hotel_fee") {
-            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 6])
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                ->whereIn('revenue_credit.status', [1, 2, 6])
                 ->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status',
-                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))->groupBy('revenue.date')
+                ->groupBy('revenue.date')
+                ->select(
+                    'revenue.date', 
+                    'revenue.total_credit', 
+                    'revenue_credit.batch', 
+                    'revenue_credit.revenue_type', 
+                    'revenue_credit.status',
+                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount, SUM(revenue.total_credit)'))
                 ->paginate(10);
 
-            $total_query = Revenues::leftJoin('revenue_credit', 'revenue.id', '=', 'revenue_credit.revenue_id')
-                ->whereIn('revenue_credit.status', [1, 2, 6])->whereBetween('revenue.date', [$month_from, $month_to])
-                ->groupBy('revenue.date')->select(DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as total_difference'))
-                ->get()->sum('total_difference');
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                ->whereIn('revenue_credit.status', [1, 2, 6])
+                ->whereBetween('revenue.date', [$month_from, $month_to])
+                ->groupBy('revenue.date')
+                ->select(
+                    'revenue.date', 
+                    'revenue.total_credit', 
+                    'revenue_credit.batch', 
+                    'revenue_credit.revenue_type', 
+                    'revenue_credit.status',
+                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))
+                ->get()->sum('amount');
+
             $title = "Credit Card Hotel Fee";
             $status = "credit_hotel_fee";
             $revenue_name = "fee";
@@ -2787,7 +2834,7 @@ class RevenuesController extends Controller
             } elseif ($request->status == "mc_elexa_charge") {
                 $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                     ->whereBetween('revenue.date', [$adate, $adate2])->where('revenue_credit.status', 8)
-                    ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')
+                    ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')
                     ->orderBy('revenue.date', 'asc');
 
                     if ($perPage == 10) {
@@ -2810,7 +2857,7 @@ class RevenuesController extends Controller
             } elseif ($request->status == "elexa_outstanding") {
                 $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                     ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$adate, $adate2])
-                    ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue');
+                    ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue');
 
                     if ($perPage == 10) {
                         $data_query = $query_revenue->limit($request->page.'0')->get();
@@ -3065,6 +3112,7 @@ class RevenuesController extends Controller
         
                         $data[] = [
                             'number' => $key + 1,
+                            'stan' => $value->batch,
                             'date' => Carbon::parse($value->date)->format('d/m/Y'),
                             'revenue_name' => $revenue_name,
                             'ev_charge' => number_format($value->ev_charge, 2),
@@ -3149,10 +3197,7 @@ class RevenuesController extends Controller
                         $revenue_name = '';
                         // ประเภทรายได้
                         if ($value->status == 0) { $revenue_name = '-'; } 
-                        if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
-                        if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
-                        if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
-                        if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                        $revenue_name = 'Credit Card Hotel Fee';
 
                         $data[] = [
                             'number' => $key + 1,
@@ -3629,6 +3674,7 @@ class RevenuesController extends Controller
     
                     $data[] = [
                         'number' => $key + 1,
+                        'stan' => $value->batch,
                         'date' => Carbon::parse($value->date)->format('d/m/Y'),
                         'revenue_name' => $revenue_name,
                         'ev_charge' => number_format($value->ev_charge, 2),
@@ -3702,10 +3748,7 @@ class RevenuesController extends Controller
                         $revenue_name = '';
                         // ประเภทรายได้
                         if ($value->status == 0) { $revenue_name = '-'; } 
-                        if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
-                        if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
-                        if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
-                        if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                        $revenue_name = 'Credit Card Hotel Fee';
 
                         $data[] = [
                             'number' => $key + 1,

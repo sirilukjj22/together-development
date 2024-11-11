@@ -440,7 +440,7 @@
                                     <div>Credit Card Hotel Fee</div>
                                 </div>
                                 <div class="t-end">
-                                    {{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}
+                                    {{ number_format($total_hotel_fee, 2) }}
                                 </div>
                             </div>
                             <div class="box-card2 bg-box" onclick="revenue_detail('water_park_fee')">
@@ -468,27 +468,31 @@
                     </div>
                     <!-- box7 -->
                     <div class="box-content">
+                        @php
+                            $sum_agoda_revenue_outstanding = isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $agoda_charge[0]['total'] - $total_agoda_year : $agoda_charge[0]['total'];
+                            $sum_elexa_revenue_outstanding = isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $ev_charge[0]['total'] - $total_ev_year : $ev_charge[0]['total'];
+                        @endphp
                         <div class="header">
                             <div>Total Revenue Outstanding</div>
-                            <div>{{ number_format($agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</div>
+                            <div>{{ number_format($sum_agoda_revenue_outstanding + $sum_elexa_revenue_outstanding, 2) }}</div>
                         </div>
                         <div class="sub d-grid-r2">
-                            <div class="box-card bg-box" onclick="revenue_detail('agoda_outstanding')">
+                            <div class="box-card bg-box"> <!-- Link ไป Dashboard ใน Debtor -->
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/agoda.jpg" alt="" class="img" />
                                 <div>Credit Card Agoda Revenue Outstanding</div>
                                 <!-- </div> -->
                                 <div class="t-end">
-                                    {{ number_format(isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $agoda_charge[0]['total'] - $total_agoda_year : $agoda_charge[0]['total'], 2) }}
+                                    {{ number_format($sum_agoda_revenue_outstanding, 2) }}
                                 </div>
                             </div>
-                            <div class="box-card bg-box" onclick="revenue_detail('elexa_outstanding')">
+                            <div class="box-card bg-box">
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/elexa.png" alt="" class="img" />
                                 <div>Elexa EGAT Revenue Outstanding</div>
                                 <!-- </div> -->
                                 <div class="t-end">
-                                    {{ number_format(isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $ev_charge[0]['total'] - $total_ev_year : $ev_charge[0]['total'], 2) }}
+                                    {{ number_format($sum_elexa_revenue_outstanding, 2) }}
                                 </div>
                             </div>
                         </div>

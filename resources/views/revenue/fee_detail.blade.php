@@ -8,7 +8,7 @@
                     <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">
-                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -48,19 +48,7 @@
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                             {{-- <td class="td-content-center">{{ $item->batch }}</td> --}}
-                                            <td class="td-content-center">
-                                                @if ($item->status == 0)
-                                                    -
-                                                @elseif ($item->status == 1)
-                                                    Guest Deposit Revenue
-                                                @elseif($item->status == 2)
-                                                    All Outlet Revenue
-                                                @elseif($item->status == 4)
-                                                    Credit Card Revenue
-                                                @elseif($item->status == 6)
-                                                    Front Desk Revenue
-                                                @endif
-                                            </td>
+                                            <td class="td-content-center">Credit Card Hotel Fee</td>
                                             <td style="text-align: left;">{{ number_format($item->amount, 2) }}</td>
                                         </tr>
                                     @endforeach

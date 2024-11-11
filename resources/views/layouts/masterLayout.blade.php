@@ -262,6 +262,7 @@
                                         @if (Auth::user()->roleMenu->revenue == 1)
                                             <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
                                         @endif
+                                        <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue</a></li>
                                     </ul>
                                 </li>
                             @endif
@@ -274,7 +275,8 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Report">
                                         {{-- @if (Auth::user()->roleMenu->sms_alert == 1) --}}
-                                            <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue by date</a></li>
+                                            <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Hotel & Water Park Revenue</a></li>
+                                            <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Hotel Manual Charge</a></li>
                                         {{-- @endif --}}
                                     </ul>
                                 </li>
@@ -419,7 +421,7 @@
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
 
     <!-- Jquery Page Js -->
-    <script src="{{ asset('assets/js/template.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/template.js') }}"></script> --}}
 
     <script>
         $(document).ready(function() {

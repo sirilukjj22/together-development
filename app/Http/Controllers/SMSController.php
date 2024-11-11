@@ -2420,12 +2420,12 @@ class SMSController extends Controller
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
         } elseif ($request->filter_by == "year") {
-            $year = $request->date;
+            $year = date('Y', strtotime($request->date));
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
             $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime($year . '-12-31'));
+            $to = date($year . '-12-31 20:59:59');
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
@@ -2442,8 +2442,8 @@ class SMSController extends Controller
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
 
         if ($request->revenue_type == "front") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6)->sum('amount');
             $title = "Front Desk Bank Transfer Revenue";
             $status = 6;
 
