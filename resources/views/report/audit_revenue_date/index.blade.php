@@ -83,10 +83,46 @@
     @media (max-width: 767px) {
         .btn-group {
             display: flex;
-            flex-direction: column; /* Stack buttons vertically on small screens */
         }
         .btn-group .btn {
             width: 100%; /* Full width for each button */
+        }
+    }
+
+    .wrap-btn-group {
+        display: flex;
+        gap:1em;
+        width: 100%;
+        margin:0 1em;
+    }
+
+    .wrap-btn-group label {
+        min-width: max-content;
+    }
+
+     .btn-group {
+        width: 50%;
+    }
+
+     @media (max-width: 767px) {
+        .wrap-btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        gap:0;
+    }
+
+    .wrap-btn-group  .btn-group {
+        padding-left: 0;
+        width: 100%;
+    }
+
+     }
+
+     @media (max-width: 400px) {
+        .wrap-btn-group  .btn-group > button {
+            padding: 8px 8px;
         }
     }
 </style>
@@ -98,7 +134,6 @@
                     <div class="span3">Audit Hotel & Water Park Revenue by date</div>
                 </div>
                 <div class="col-auto">
-                        <a href="#" type="button" class="btn btn-color-green text-white lift btn_modal">Print Report</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -114,9 +149,9 @@
                             <div class="col-md-12">
                                 <h3>Search</h3>
                             </div>
-                            <div class="col-12 d-flex flex-row gap-3">
-                                <label class="form-label">Filter by</label>
-                                <div class="btn-group col-lg-6 col-md-6 col-sm-6 w-100">
+                            <div class="wrap-btn-group" >
+                                <label >Filter by</label>
+                                <div class="btn-group">
                                     <button id="filter-date" type="button" class="btn {{ isset($filter_by) && $filter_by == 'date' ? 'selected' : '' }} w-100">Date</button>
                                     <button id="filter-month" type="button" class="btn {{ isset($filter_by) && $filter_by == 'month' ? 'selected' : '' }} w-100">Month</button>
                                     <button id="filter-year" type="button" class="btn {{ isset($filter_by) && $filter_by == 'year' ? 'selected' : '' }} w-100">Year</button>
@@ -165,26 +200,6 @@
                     </div>
                 </div>
             </div> <!-- .row end -->        
-            {{-- <div class="col-12 d-flex flex-row gap-1"> <!-- เพิ่ม gap -->
-                <div class="col-md-4 card border-0 mb-3 chart-color2">
-                    <div class="card-body p-5 text-light text-center">
-                        <h2>0</h2>
-                        <span>TOTAL</span>
-                    </div>
-                </div>
-                <div class="col-md-4 card border-0 mb-3 bg-success">
-                    <div class="card-body p-5 text-light text-center">
-                        <h2>0</h2>
-                        <span>Verified</span>
-                    </div>
-                </div>
-                <div class="col-md-4 card border-0 mb-3 bg-danger">
-                    <div class="card-body p-5 text-light text-center">
-                        <h2>0</h2>
-                        <span>Unverified</span>
-                    </div>
-                </div>
-            </div> --}}
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
@@ -230,7 +245,7 @@
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
                                 <p class="py2" id="verified-showingEntries">{{ showingEntriesTable($data_query, 'verified') }}</p>
-                                <div class="font-bold "></div>
+                                <div class="font-bold ">Total : {{ number_format($total_all) }} &nbsp; Verified : {{ number_format($verified) }} &nbsp; Unverified : {{ number_format($unverified) }}</div>
                                     <div id="verified-paginate">
                                         {!! paginateTable($data_query, 'verified') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                     </div>
@@ -404,15 +419,16 @@
     $('#startDate').on('change', function() {
         var startDateValue = $('#startDate').val();
         var endDateValue = $('#endDate').val();
+        $('#endDate').val('');
 
         // ตรวจสอบว่ามีการกรอกข้อมูลในทั้ง startDate และ endDate
         if (startDateValue && endDateValue) {
 
             // ตรวจสอบว่า startDate น้อยกว่าหรือเท่ากับ endDate หรือไม่
-            if (startDateValue <= endDateValue) {
-                alert("Start Date ต้องมากกว่า End Date");
-                $('#startDate').val(''); // ล้างค่า startDate หากไม่ผ่านเงื่อนไข
-            }
+            // if (startDateValue < endDateValue) {
+            //     alert("Start Date ต้องมากกว่า End Date");
+            //     $('#startDate').val(''); // ล้างค่า startDate หากไม่ผ่านเงื่อนไข
+            // }
         }
     });
 
@@ -425,7 +441,7 @@
         if (startDateValue && endDateValue) {
 
             // ตรวจสอบว่า endDate น้อยกว่า startDate หรือไม่
-            if (endDateValue <= startDateValue) {
+            if (endDateValue < startDateValue) {
                 alert("End Date ต้องไม่น้อยกว่า Start Date");
                 $('#endDate').val(''); // ล้างค่า endDate หากไม่ผ่านเงื่อนไข
             }

@@ -66,7 +66,7 @@
                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                                 ?>
-                                                <div class="flex-jc p-left-4 center">
+                                                <div class="flex-jc p-left-4">
                                                     @if (file_exists($filename))
                                                         <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
                                                     @elseif (file_exists($filename2))
@@ -300,6 +300,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>จำนวนเงิน <span class="text-danger fw-bold" id="text-split-amount"></span></label>
+                            &nbsp;<label>คงเหลือ <span class="text-danger fw-bold" id="text-split-balance"></span></label>
                             <input type="hidden" name="balance_amount" id="balance_amount">
                             <input type="text" class="form-control" name="split-amount" id="split-amount" placeholder="0.00">
                             <span class="text-danger fw-bold" id="text-split-alert"></span>
@@ -546,7 +547,8 @@
 
                     },
                     columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 2, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                                { targets: [3], className: 'text-start' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -725,6 +727,8 @@
             } else {
                 $('.split-todo-error').show();
             }
+
+            $('#text-split-balance').text("("+currencyFormat(balance - Number($('#split_total_number').val()))+")");
         });
 
         $('.split-todo-list .close').on('click', function() {
@@ -741,6 +745,8 @@
             } else {
                 $('.btn-save-split').prop('disabled', true);
             }
+
+            $('#text-split-balance').text("("+currencyFormat(Number($('#balance_amount').val()) - Number($('#split_total_number').val()))+")");
         }
 
         function toggleHide() {

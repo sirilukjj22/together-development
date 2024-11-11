@@ -13,8 +13,21 @@ class ReportAuditRevenueDateController extends Controller
     {
         $filter_by = "month";
         $data_query = Revenues::whereBetween('date', [date('Y-m-01'), date('Y-m-31')])->select('id', 'date', 'status')->paginate(10);
+        $data_all = Revenues::whereBetween('date', [date('Y-m-01'), date('Y-m-31')])->select('id', 'date', 'status')->get();
 
-        return view('report.audit_revenue_date.index', compact('data_query', 'filter_by'));
+        $total_all = count($data_all);
+        $verified = 0;
+        $unverified = 0;
+
+        foreach ($data_all as $key => $value) {
+            if ($value->status == 1) {
+                $verified += 1;
+            } else {
+                $unverified += 1;
+            }
+        }
+
+        return view('report.audit_revenue_date.index', compact('data_query', 'total_all', 'verified', 'unverified', 'filter_by'));
     }
 
     public function search(Request $request)
@@ -25,31 +38,50 @@ class ReportAuditRevenueDateController extends Controller
         $status = $request->status;
 
         $query = Revenues::query();
+        $query_all = Revenues::query();
 
         if ($filter_by == "date") {
             $query->where('date', $startDate);
+            $query_all->where('date', $startDate);
         }
 
         if ($filter_by == "month") {
             $query->whereBetween('date', [date($startDate.'-01'), date($endDate.'-31')]);
+            $query_all->whereBetween('date', [date($startDate.'-01'), date($endDate.'-31')]);
         }
 
         if ($filter_by == "year") {
             $query->whereYear('date', $startDate);
+            $query_all->whereYear('date', $startDate);
         }
 
         if ($filter_by == "custom") {
             $query->whereBetween('date', [$startDate, $endDate]);
+            $query_all->whereBetween('date', [$startDate, $endDate]);
         }
 
         if ($status != "all") {
             $query->where('status', $status);
+            $query_all->where('status', $status);
         }
         
-        $query->select('id', 'date', 'status');
-        $data_query = $query->paginate(10);
+        $data_query = $query->select('id', 'date', 'status')->paginate(10);
 
-        return view('report.audit_revenue_date.index', compact('data_query', 'filter_by', 'startDate', 'endDate', 'status'));
+        $data_all = $query_all->select('id', 'date', 'status')->get();
+
+        $total_all = count($data_all);
+        $verified = 0;
+        $unverified = 0;
+
+        foreach ($data_all as $key => $value) {
+            if ($value->status == 1) {
+                $verified += 1;
+            } else {
+                $unverified += 1;
+            }
+        }
+
+        return view('report.audit_revenue_date.index', compact('data_query', 'total_all', 'verified', 'unverified', 'filter_by', 'startDate', 'endDate', 'status'));
     }
 
     public function search_table(Request $request)

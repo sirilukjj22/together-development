@@ -48,9 +48,9 @@
                                 <span id="txt-daily">
                                     @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
                                         Today
-                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
+                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'date' && date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
                                         Yesterday
-                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
+                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || isset($filter_by) && $filter_by == 'date' && date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
                                         Tomorrow
                                     @elseif (isset($filter_by) && $filter_by == 'week')
                                         This Week
@@ -1222,6 +1222,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>จำนวนเงิน <span class="text-danger fw-bold" id="text-split-amount"></span></label>
+                            &nbsp;<label>คงเหลือ <span class="text-danger fw-bold" id="text-split-balance"></span></label>
                             <input type="hidden" name="balance_amount" id="balance_amount">
                             <input type="text" class="form-control" name="split-amount" id="split-amount" placeholder="0.00">
                             <span class="text-danger fw-bold" id="text-split-alert"></span>
@@ -1937,6 +1938,7 @@
         function split_data($id, $amount) {
             $('#splitID').val($id);
             $('#text-split-amount').text("(" + currencyFormat($amount) + ")");
+            $('#text-split-balance').text("(" + currencyFormat($amount) + ")");
             $('#balance_amount').val($amount);
             $('#SplitModalCenter').modal('show');
         }
@@ -2047,6 +2049,7 @@
                     $('#split-amount').val('');
                     $('.split-todo-error').hide();
                     $('.split-error').text("");
+                
 
                     if ($('#split_total_number').val() == balance) {
                         $('.btn-save-split').prop('disabled', false);
@@ -2060,6 +2063,8 @@
             } else {
                 $('.split-todo-error').show();
             }
+
+            $('#text-split-balance').text("("+currencyFormat(balance - Number($('#split_total_number').val()))+")");
         });
 
         $('.split-todo-list .close').on('click', function() {
@@ -2076,6 +2081,8 @@
             } else {
                 $('.btn-save-split').prop('disabled', true);
             }
+
+            $('#text-split-balance').text("("+currencyFormat(Number($('#balance_amount').val()) - Number($('#split_total_number').val()))+")");
         }
 
         function toggleHide() {
