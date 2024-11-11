@@ -477,7 +477,7 @@
                             <div>{{ number_format($sum_agoda_revenue_outstanding + $sum_elexa_revenue_outstanding, 2) }}</div>
                         </div>
                         <div class="sub d-grid-r2">
-                            <div class="box-card bg-box"> <!-- Link ไป Dashboard ใน Debtor -->
+                            <div class="box-card bg-box" onclick="revenue_detail('agoda_outstanding')"> <!-- Link ไป Dashboard ใน Debtor -->
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/agoda.jpg" alt="" class="img" />
                                 <div>Credit Card Agoda Revenue Outstanding</div>
@@ -486,7 +486,7 @@
                                     {{ number_format($sum_agoda_revenue_outstanding, 2) }}
                                 </div>
                             </div>
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('elexa_outstanding')">
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/elexa.png" alt="" class="img" />
                                 <div>Elexa EGAT Revenue Outstanding</div>
@@ -636,7 +636,7 @@
             @if (session('success'))
                 <div class="container p-0 rounded">
                     <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading">บันทึกสำเร็จ</h4>
+                        <h4 class="alert-heading">Successfully</h4>
                         <i class="fa-regular fa-circle-check">&nbsp;</i>{{ session('success') }}
                     </div>
                 </div>
@@ -644,7 +644,9 @@
 
             <div class="table-2" style="overflow-x:auto;">
                 <div class="d-flex gap-3 mb-2">
-                    <img src="image/Logo1-01.png" alt="logo of Together Resort" width="80" class="mb-1" />
+                    <div class="center" >
+                        <img src="image/Logo-tg2.png" alt="logo of Together Resort" width="80" class="mb-1" />
+                    </div>
       
                     <div class="text-capitalize d-grid gap-0">
                       <span class="f-semi">Together Resort Kaengkrachan</span>

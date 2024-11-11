@@ -8,7 +8,7 @@
                     <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">
-                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -23,10 +23,10 @@
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                     <select class="entriespage-button" id="search-per-page-agodaOutstanding" onchange="getPage(1, this.value, 'agodaOutstanding')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>100</option>
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                     </select>
                                     <input class="search-button search-data" id="agodaOutstanding" style="text-align:left;" placeholder="Search" />
                                 </div>
