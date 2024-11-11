@@ -119,7 +119,8 @@ function getPage(page, perPage, table_n) {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 2, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
+                { targets: [3], className: 'text-start' },
             ],
             order: [0, 'asc'],
             responsive: {

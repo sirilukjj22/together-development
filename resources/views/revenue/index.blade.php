@@ -519,7 +519,7 @@
                             </div>
                             <div class="box-card3 bg-box" onclick="revenue_detail('split_hotel_transaction')">
                                 <div class="t-start">Split Credit Card Hotel Transaction</div>
-                                <div class="font-semibold">{{ number_format($total_split) }}</div>
+                                <div class="font-semibold">{{ number_format($total_split_transaction) }}</div>
                             </div>
                             <div class="box-card3 bg-box" onclick="revenue_detail('no_income_revenue')">
                                 <div>No Income Revenue</div>
