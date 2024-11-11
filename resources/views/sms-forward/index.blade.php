@@ -1386,7 +1386,7 @@
                                 <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-month">Filter by Month</button>
                                 <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-year">Filter by Year</button>
                             </div>
-                            <div class="center" style="gap:0.3rem;">
+                            <div class="center w-100" style="gap:0.3rem;">
                                 <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
                                     <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
                                     <option value="708-226791-3" {{ isset($into_account) && $into_account == '708-226791-3' ? 'selected' : '' }}>SCB 708-226791-3</option>
@@ -1664,6 +1664,10 @@
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
             } if (filter_by == "year") { 
+                var dateString = $('#date').val();
+                var dateSplit = dateString.split('-');
+                var year = dateSplit[0];
+                
                 chartFilterByYear(year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
