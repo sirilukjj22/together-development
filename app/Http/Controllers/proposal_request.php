@@ -75,9 +75,12 @@ class proposal_request extends Controller
     {
         if ($Type == 'DummyProposal') {
             $Data = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->get();
+            $Datacount = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->count();
         } else if ($Type == 'Proposal') {
             $Data = Quotation::where('Company_ID', $id)->where('status_document', 2)->get();
+            $Datacount = Quotation::where('Company_ID', $id)->where('status_document', 2)->count();
         }
+
         $myData = [];
             foreach ($Data as $item) {
                 $Company_ID = $item->Company_ID;
@@ -212,7 +215,7 @@ class proposal_request extends Controller
             $product = master_product_item::where('status',1)->get();
             $unit = master_unit::where('status',1)->get();
             $quantity = master_quantity::where('status',1)->get();
-        return view('proposal_req.view', compact('datarequest','Data','product','unit','quantity'));
+        return view('proposal_req.view', compact('datarequest','Data','product','unit','quantity','Datacount'));
     }
     public function Approve(Request $request){
         try {

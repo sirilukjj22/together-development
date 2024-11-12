@@ -23,7 +23,7 @@ class Master_TemplateController extends Controller
     public function TemplateA1()
     {
         $date = Carbon::now();
-        $sheet = master_document_sheet::select('topic','name_th','id')->get();
+        $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
         $Reservation_show = $sheet->where('topic', 'Reservation')->first();
         $Paymentterms = $sheet->where('topic', 'Paymentterms')->first();
         $note = $sheet->where('topic', 'note')->first();
@@ -34,7 +34,7 @@ class Master_TemplateController extends Controller
     }
     public function save(Request $request) {
         $data =$request->all();
-        dd($data);
+
         $Template = $request->Template;
         $name = "template".$Template;
         $save = new master_template();

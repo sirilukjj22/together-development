@@ -199,10 +199,10 @@
         <div style="display:block;" id="SHOW">
             <div class="container-xl">
                 <div class="row clearfix">
-                    <div class="col-md-12 col-12">
+                    <div class="col-md-12 col-lg-12 col-md-12 col-sm-12 ">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <div class=" col-12">
+                                <div class=" col-lg-12 col-md-12 col-sm-12 ">
                                     <div class="row">
                                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                                             <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
@@ -216,7 +216,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-5" >
+                                <div class="col-lg-12 col-md-12 col-sm-12  mt-5" >
                                     <div class="row">
                                         <div class="col-6 col-md-6 col-sm-12">
                                             <table class="table table-borderless" >
@@ -242,79 +242,65 @@
                                     </div>
                                     <div class="styled-hr"></div>
                                     <div class="row">
-                                        <div class="col-6 col-md-6 col-sm-12">
-                                            <table class="table table-borderless" >
-                                                <tbody>
-                                                    <tr>
-                                                        <td  scope="row"style="text-align:left;width: 40% " class="ml-2"><samp class="ml-2 com" style="font-weight: bold;font-size: 18px;">Company Information</samp></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row"style="text-align:left;"><samp class="ml-4 " style="font-weight: bold;">Company Name :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            <p id="Company_name" name="Company_name" style="display: inline-block;">บริษัท โจฮ์นัน เอฟ เทค (ประเทศไทย) จำกัด</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Address :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            69 หมู่ 4 เขตประกอบการอุตสาหกรรมเหมราช สระบุรี ตำบลบัวลอย อำเภอหนองแค จังหวัดสระบุรี 18140
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Email :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            cardmmory@gmail.com
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Number :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            086-219-8292
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Fax :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            -
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="col-6 col-md-6 col-sm-12">
-                                            <table class="table table-borderless" >
-                                                <tbody>
-                                                    <tr><td style="text-align:left;width: 35% "><br></td></tr>
-                                                    <tr><td><br></td></tr>
-                                                    <tr>
-                                                        <td  scope="row"><samp class="com" style="font-weight: bold;font-size: 18px;">Contact Information</samp></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row"style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Name  :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            คุณกุ้ง
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Email  :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            cardmmory@gmail.com
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Number : </samp></td>
-                                                        <td style="text-align:left;">
-                                                            086-219-8292
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="proposal-cutomer-detail mt-3 my-2">
+                                            <ul>
+                                            <b class="font-upper com">Company Information</b>
+                                            <li class="mt-3">
+                                                <b>Company  Name</b>
+                                                <span id="guest_name">บริษัท โจฮ์นัน เอฟ เทค (ประเทศไทย) จำกัด</span>
+                                            </li>
+
+
+                                            <li>
+                                                <b>Company  Address</b>
+                                                <span id="guestAddress">69 หมู่ 4 เขตประกอบการอุตสาหกรรมเหมราช สระบุรี ตำบลบัวลอย อำเภอหนองแค จังหวัดสระบุรี 18140</span>
+                                                <b></b>
+                                            </li>
+
+                                            <li>
+                                                <b>Company  Email</b>
+                                                <span id="guest_Email">cardmmory@gmail.com</span>
+                                            </li>
+                                            <li>
+                                                <b>Company Number</b>
+                                                <span id="guestTaxpayer" >086-219-8292</span>
+                                            </li>
+                                            <li>
+                                                <b>Company Fax</b>
+                                                <span id="guestTaxpayer" >-</span>
+                                            </li>
+                                            <li></li>
+                                            </ul>
+
+                                            <ul>
+                                                <li> </li>
+                                                <li></li>
+                                                <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                            <li></li>
+                                            <b class="font-upper com">Contact Information</b>
+                                            <li>
+                                                <b>Contact Name</b>
+                                                <span id="checkinpoguest">คุณกุ้ง</span>
+                                            </li>
+                                            <li>
+                                                <b>Contact Email</b>
+                                                <span id="checkoutpoguest">cardmmory@gmail.com</span>
+                                            </li>
+                                            <li>
+                                                <b>Contact Number</b>
+                                                <p id="daypoguest" class="m-0"> 086-219-8292 </p>
+                                            </li>
+
+                                            </ul>
+
                                         </div>
                                     </div>
                                 </div>
-                                <span> โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</span><br>
-                                <span>ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้</span>
-                                <div class="col-8 ">
+                                <span> ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</span><br>
+                                <span>ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางรีสอร์ทขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้</span>
+                                <div class="col-lg-9">
                                     <table class="table table-borderless" >
                                         <tbody>
                                             <tr><td style="text-align:left;width: 20% ">รายละเอียดการจัดงาน</td></tr>
@@ -327,7 +313,7 @@
                                             <tr>
                                                 <td  scope="row" style="text-align:left;"><samp>สถานที่</samp></td>
                                                 <td style="text-align:left;">
-                                                    <p id="Contact_Email" name="Contact_Email" style="display: inline-block;">โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</p>
+                                                    <p id="Contact_Email" name="Contact_Email" style="display: inline-block;">ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -351,7 +337,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-lg-12 col-md-12 col-sm-12 ">
                                     <samp>การจองห้องพัก</samp>
                                     <div class="row">
                                         <div class="col-8 ml-5">
@@ -359,7 +345,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-lg-12 col-md-12 col-sm-12 ">
                                     <samp>เงื่อนไขการจ่ายเงิน</samp>
                                     <div class="row">
                                         <div class="col-8 ml-5">
@@ -367,7 +353,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-lg-12 col-md-12 col-sm-12 ">
                                     <samp>หมายเหตุ</samp>
                                     <div class="row">
                                         <div class="col-8 ml-5">
@@ -380,11 +366,11 @@
                     </div>
                 </div>
                 <div class="row clearfix">
-                    <div class="col-md-12 col-12">
+                    <div class="col-md-12 col-lg-12 col-md-12 col-sm-12 ">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div style="display:block;" id="SHOW">
-                                    <div class=" col-12">
+                                    <div class=" col-lg-12 col-md-12 col-sm-12 ">
                                         <div class="row">
                                             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                                                 <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
@@ -398,7 +384,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 mt-5" >
+                                    <div class="col-lg-12 col-md-12 col-sm-12  mt-5" >
                                         <div class="row">
                                             <div class="col-6 col-md-6 col-sm-12">
                                                 <table class="table table-borderless" >
@@ -423,7 +409,7 @@
                                             </div>
                                         </div>
                                         <div class="styled-hr"></div>
-                                        <div class="col-12 mt-3">
+                                        <div class="col-lg-12 col-md-12 col-sm-12  mt-3">
                                             <samp>การยกเลิกและการเปลี่ยนแปลงการจอง</samp>
                                             <div class="row">
                                                 <div class="col-8 ml-5">
@@ -431,7 +417,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 ">
                                             <samp>อภินันทนาการทางรีสอร์ท</samp>
                                             <div class="row">
                                                 <div class="col-8 ml-5">
@@ -439,7 +425,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 ">
                                             <samp>ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี</samp>
                                             <div class="row">
                                                 <div class="col-8 ml-5">
@@ -461,10 +447,10 @@
             @csrf
             <div class="container-xl">
                 <div class="row clearfix">
-                    <div class="col-md-12 col-12">
+                    <div class="col-md-12 col-lg-12 col-md-12 col-sm-12 ">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <div class=" col-12">
+                                <div class=" col-lg-12 col-md-12 col-sm-12 ">
                                     <div class="row">
                                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                                             <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
@@ -478,7 +464,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-5" >
+                                <div class="col-lg-12 col-md-12 col-sm-12  mt-5" >
                                     <div class="row">
                                         <div class="col-6 col-md-6 col-sm-12">
                                             <table class="table table-borderless" >
@@ -490,12 +476,12 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="">
+                                        <input type="hidden" id="Template" name="Template" value="{{$Reservation_show->CodeTemplate}}">
                                         <div class="col-6 col-md-6 col-sm-12">
                                             <table class="table table-borderless" >
                                                 <tbody>
                                                     <tr><th style="width: 50%"></th>
-                                                        <td  scope="row"style="text-align:left;width: 15%" ><samp style="font-weight: bold;">Date :</samp></td>
+                                                        <td  scope="row"style="text-align:left;width: 15% " ><samp style="font-weight: bold;">Date :</samp></td>
                                                         <td style="text-align:left;">{{ $date->format('d/m/Y H:i:s') }}</td>
                                                     </tr>
                                                 </tbody>
@@ -504,79 +490,65 @@
                                     </div>
                                     <div class="styled-hr"></div>
                                     <div class="row">
-                                        <div class="col-6 col-md-6 col-sm-12">
-                                            <table class="table table-borderless" >
-                                                <tbody>
-                                                    <tr>
-                                                        <td  scope="row"style="text-align:left;width: 40% " class="ml-2"><samp class="ml-2 com" style="font-weight: bold;font-size: 18px;">Company Information</samp></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row"style="text-align:left;"><samp class="ml-4 " style="font-weight: bold;">Company Name :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            <p id="Company_name" name="Company_name" style="display: inline-block;">บริษัท โจฮ์นัน เอฟ เทค (ประเทศไทย) จำกัด</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Address :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            69 หมู่ 4 เขตประกอบการอุตสาหกรรมเหมราช สระบุรี ตำบลบัวลอย อำเภอหนองแค จังหวัดสระบุรี 18140
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Email :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            cardmmory@gmail.com
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Number :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            086-219-8292
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row" style="text-align:left;"class="ml-4"><samp class="ml-4" style="font-weight: bold;">Company Fax :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            -
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="col-6 col-md-6 col-sm-12">
-                                            <table class="table table-borderless" >
-                                                <tbody>
-                                                    <tr><td style="text-align:left;width: 35% "><br></td></tr>
-                                                    <tr><td><br></td></tr>
-                                                    <tr>
-                                                        <td  scope="row"><samp class="com" style="font-weight: bold;font-size: 18px;">Contact Information</samp></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row"style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Name  :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            คุณกุ้ง
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Email  :</samp></td>
-                                                        <td style="text-align:left;">
-                                                            cardmmory@gmail.com
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td  scope="row" style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Number : </samp></td>
-                                                        <td style="text-align:left;">
-                                                            086-219-8292
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="proposal-cutomer-detail mt-3 my-2">
+                                            <ul>
+                                            <b class="font-upper com">Company Information</b>
+                                            <li class="mt-3">
+                                                <b>Company  Name</b>
+                                                <span id="guest_name">บริษัท โจฮ์นัน เอฟ เทค (ประเทศไทย) จำกัด</span>
+                                            </li>
+
+
+                                            <li>
+                                                <b>Company  Address</b>
+                                                <span id="guestAddress">69 หมู่ 4 เขตประกอบการอุตสาหกรรมเหมราช สระบุรี ตำบลบัวลอย อำเภอหนองแค จังหวัดสระบุรี 18140</span>
+                                                <b></b>
+                                            </li>
+
+                                            <li>
+                                                <b>Company  Email</b>
+                                                <span id="guest_Email">cardmmory@gmail.com</span>
+                                            </li>
+                                            <li>
+                                                <b>Company Number</b>
+                                                <span id="guestTaxpayer" >086-219-8292</span>
+                                            </li>
+                                            <li>
+                                                <b>Company Fax</b>
+                                                <span id="guestTaxpayer" >-</span>
+                                            </li>
+                                            <li></li>
+                                            </ul>
+
+                                            <ul>
+                                                <li> </li>
+                                                <li></li>
+                                                <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                            <li></li>
+                                            <b class="font-upper com">Contact Information</b>
+                                            <li>
+                                                <b>Contact Name</b>
+                                                <span id="checkinpoguest">คุณกุ้ง</span>
+                                            </li>
+                                            <li>
+                                                <b>Contact Email</b>
+                                                <span id="checkoutpoguest">cardmmory@gmail.com</span>
+                                            </li>
+                                            <li>
+                                                <b>Contact Number</b>
+                                                <p id="daypoguest" class="m-0"> 086-219-8292 </p>
+                                            </li>
+
+                                            </ul>
+
                                         </div>
                                     </div>
                                 </div>
-                                <span> โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</span><br>
-                                <span>ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้</span>
-                                <div class="col-8 ">
+                                <span> ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</span><br>
+                                <span>ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางรีสอร์ทขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้</span>
+                                <div class="col-lg-9">
                                     <table class="table table-borderless" >
                                         <tbody>
                                             <tr><td style="text-align:left;width: 20% ">รายละเอียดการจัดงาน</td></tr>
@@ -589,7 +561,7 @@
                                             <tr>
                                                 <td  scope="row" style="text-align:left;"><samp>สถานที่</samp></td>
                                                 <td style="text-align:left;">
-                                                    <p id="Contact_Email" name="Contact_Email" style="display: inline-block;">โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</p>
+                                                    <p id="Contact_Email" name="Contact_Email" style="display: inline-block;">ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -613,30 +585,30 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="col-12 mt-2">
+                                <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
                                     <samp>การจองห้องพัก</samp>
                                     <div class="row mt-2">
-                                        <div class="col-10 ml-5">
+                                        <div class="col-lg-10 col-md-12 col-sm-12  ml-5">
                                             <textarea id="Reservation" name="Reservation">
                                                 {!! $Reservation_show->name_th !!}
                                             </textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-2">
+                                <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
                                     <samp>เงื่อนไขการจ่ายเงิน</samp>
                                     <div class="row mt-2">
-                                        <div class="col-10 ml-5">
+                                        <div class="col-lg-10 col-md-12 col-sm-12  ml-5">
                                             <textarea id="Paymentterms" name="Paymentterms">
                                                 {!! $Paymentterms->name_th !!}
                                             </textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-2">
+                                <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
                                     <samp>หมายเหตุ</samp>
                                     <div class="row mt-2">
-                                        <div class="col-10 ml-5">
+                                        <div class="col-lg-10 col-md-12 col-sm-12  ml-5">
                                             <textarea id="note" name="note">
                                                 {!! $note->name_th !!}
                                             </textarea>
@@ -648,11 +620,11 @@
                     </div>
                 </div>
                 <div class="row clearfix">
-                    <div class="col-md-12 col-12">
+                    <div class="col-md-12 col-lg-12 col-md-12 col-sm-12 ">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div style="display:block;" id="SHOW">
-                                    <div class=" col-12">
+                                    <div class=" col-lg-12 col-md-12 col-sm-12 ">
                                         <div class="row">
                                             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                                                 <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
@@ -666,7 +638,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 mt-5" >
+                                    <div class="col-lg-12 col-md-12 col-sm-12  mt-5" >
                                         <div class="row">
                                             <div class="col-6 col-md-6 col-sm-12">
                                                 <table class="table table-borderless" >
@@ -690,20 +662,30 @@
                                             </div>
                                         </div>
                                         <div class="styled-hr"></div>
-                                        <div class="col-12 mt-2">
+                                        <div class="col-lg-12 col-md-12 col-sm-12  mt-3">
+                                            <samp>การยกเลิกและการเปลี่ยนแปลงการจอง</samp>
+                                            <div class="row">
+                                                <div class="col-lg-10 col-md-12 col-sm-12  ml-5">
+                                                    <textarea id="Cancellations" name="Cancellations">
+                                                        {!! $Cancellations->name_th !!}
+                                                    </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
                                             <samp>อภินันทนาการทางรีสอร์ท</samp>
                                             <div class="row mt-2">
-                                                <div class="col-10 ml-5">
+                                                <div class="col-lg-10 col-md-12 col-sm-12  ml-5">
                                                     <textarea id="Complimentary" name="Complimentary">
                                                         {!! $Complimentary->name_th !!}
                                                     </textarea>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12 mt-2">
+                                        <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
                                             <samp>ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี้</samp>
                                             <div class="row mt-2">
-                                                <div class="col-10 ml-5">
+                                                <div class="col-lg-10 col-md-12 col-sm-12  ml-5">
                                                     <textarea name="All_rights_reserved" id="All_rights_reserved"style="width: 100%">
                                                         {!! $All_rights_reserved->name_th !!}
                                                     </textarea>
@@ -711,7 +693,7 @@
                                             </div>
                                         </div>
                                         <div class="styled-hr mt-3"></div>
-                                        <div class="col-12 row mt-5">
+                                        <div class="col-lg-12 col-md-12 col-sm-12  row mt-5">
                                             <div class="col-4"></div>
                                             <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                                                 <button type="submit" class="btn btn-primary mt-3 lift btn_modal" >บันทึกข้อมูล</button>
