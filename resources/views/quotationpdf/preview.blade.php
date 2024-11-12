@@ -210,7 +210,7 @@
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Number :</b></td>
-                        <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}</td>
+                        <td>{{ $phone->Phone_number}}</td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Fax :</b></td>
@@ -221,12 +221,12 @@
                     <b class="com" style=" font-size:18px">Contact Information</b><br>
                     <b style="margin-left: 10px;">Contact Name : </b><span >คุณ {{$Contact_Name}}</span><br>
                     <b style="margin-left: 10px;">Contact Email : </b><span >{{$Contact_Email}}</span><br>
-                    <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
+                    <b style="margin-left: 10px;">Contact Number : </b><span>{{ $Contact_phone->Phone_number}}</span><br>
 
                 </span>
                 <div style="line-height:17px;margin-top: 10px;">
-                    โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
-                ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
+                    ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
+                ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางรีสอร์ทขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
                 </div>
                 รายละเอียดการจัดงาน
                 <table style="line-height:12px;">
@@ -240,7 +240,7 @@
                     </tr>
                     <tr>
                         <td><span style="margin-left: 30px;">สถานที่</span></td>
-                        <td>โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</td>
+                        <td>ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</td>
                     </tr>
                     <tr>
                         <td><span style="margin-left: 30px;">รูปแบบการจัดงาน</span></td>
@@ -395,7 +395,7 @@
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">
-
+                                    <img src="{{$settingCompany->image}}" style="width: 50%;">
                                 </td>
                                 <td>
                                     <br>
@@ -405,7 +405,6 @@
                                 <td>
                                     <div class="">
                                     </div>
-
                                 </td>
                             </tr>
                         </table>
@@ -422,9 +421,6 @@
                                 <tr>
                                     <td><b style="margin-left: 10px;">Company Address :</b></td>
                                     <td>{{$Address}}
-                                        {{-- @if ($TambonID)
-                                            {{'ตำบล' . $TambonID->name_th}}
-                                        @endif --}}
                                     </td>
                                 </tr>
                                 <tr>
@@ -825,8 +821,8 @@
                     </tr>
                 </table>
                 <div style="line-height:17px;margin-top: 10px;">
-                    โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
-                ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
+                    ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
+                ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางรีสอร์ทขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
                 </div>
                 รายละเอียดการจัดงาน
                 <table style="line-height:12px;">
@@ -840,7 +836,7 @@
                     </tr>
                     <tr>
                         <td><span style="margin-left: 30px;">สถานที่</span></td>
-                        <td>โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</td>
+                        <td>ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</td>
                     </tr>
                     <tr>
                         <td><span style="margin-left: 30px;">รูปแบบการจัดงาน</span></td>
@@ -995,7 +991,7 @@
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">
-
+                                    <img src="{{$settingCompany->image}}" style="width: 50%;">
                                 </td>
                                 <td>
                                     <br>

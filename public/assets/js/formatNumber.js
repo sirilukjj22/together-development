@@ -4,14 +4,26 @@ document.addEventListener("DOMContentLoaded", function () {
     value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
     let formattedValue = "";
 
-    if (value.length > 0) {
-      formattedValue += value.substring(0, 3); // 086
-    }
-    if (value.length > 3) {
-      formattedValue += "-" + value.substring(3, 6); // 086-290
-    }
-    if (value.length > 6) {
-      formattedValue += "-" + value.substring(6, 10); // 086-290-1111
+    // เช็คว่าหมายเลขขึ้นต้นด้วย "02" และยาวอย่างน้อย 9 ตัว
+    if (value.startsWith("02") && value.length >= 9) {
+      formattedValue += value.substring(0, 2); // 02
+      if (value.length > 2) {
+        formattedValue += "-" + value.substring(2, 5); // 02-000
+      }
+      if (value.length > 5) {
+        formattedValue += "-" + value.substring(5, 9); // 02-000-0000
+      }
+    } else {
+      // กรณีที่ไม่ใช่เบอร์ขึ้นต้นด้วย "02" ฟอร์แมทเป็น 086-290-1111
+      if (value.length > 0) {
+        formattedValue += value.substring(0, 3); // 086
+      }
+      if (value.length > 3) {
+        formattedValue += "-" + value.substring(3, 6); // 086-290
+      }
+      if (value.length > 6) {
+        formattedValue += "-" + value.substring(6, 10); // 086-290-1111
+      }
     }
 
     return formattedValue;

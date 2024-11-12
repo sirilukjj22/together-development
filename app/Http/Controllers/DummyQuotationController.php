@@ -373,6 +373,8 @@ class DummyQuotationController extends Controller
             ->where('status', 1)
             ->orderby('id', 'desc')
             ->first();
+        $prefix=$Contact_names->prefix;
+        $prename = master_document::where('id',$prefix)->select('name_th','id')->first();
         $phone=$Contact_names->Profile_ID;
         $Contact_phones = representative_phone::where('Profile_ID',$phone)->where('Sequence','main')->first();
         return response()->json([
@@ -385,6 +387,7 @@ class DummyQuotationController extends Controller
             'province'=>$provinceNames,
             'amphures'=>$amphuresID,
             'Tambon'=>$TambonID,
+            'prename'=>$prename,
         ]);
     }
     public function Guestcreate($Guest){

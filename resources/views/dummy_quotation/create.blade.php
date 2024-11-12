@@ -508,16 +508,14 @@
                                     </li>
                                     <li> </li>
                                     <b class="font-upper com">Personal Information</b>
-                                    <span class="wrap-full">
-                                        <li >
-                                            <b>Contact Name</b>
-                                            <span id="Company_contact"></span>
-                                        </li>
-                                        <li >
-                                            <b>Contact Number</b>
-                                            <span id="Contact_Phone"></span>
-                                        </li>
-                                    </span>
+                                    <li >
+                                        <b>Contact Name</b>
+                                        <span id="Company_contact"></span>
+                                    </li>
+                                    <li >
+                                        <b>Contact Number</b>
+                                        <span id="Contact_Phone"></span>
+                                    </li>
                                     <li>
                                         <b>Contact Email</b>
                                         <span id="Contact_Email" ></span>
@@ -1141,8 +1139,10 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    var fullName = response.data.First_name + ' ' + response.data.Last_name;
+                    var prename = response.prename.name_th;
+                    var fullName = prename+response.data.First_name + ' ' + response.data.Last_name;
                     var fullid = response.data.id ;
+                    console.log(response.data);
                     if (response.Company_type.name_th === 'บริษัทจำกัด') {
                         var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด';
                     }

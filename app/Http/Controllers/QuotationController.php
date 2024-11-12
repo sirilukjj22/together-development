@@ -1717,6 +1717,8 @@ class QuotationController extends Controller
             ->where('status', 1)
             ->orderby('id', 'desc')
             ->first();
+        $prefix=$Contact_names->prefix;
+        $prename = master_document::where('id',$prefix)->select('name_th','id')->first();
         $phone=$Contact_names->Profile_ID;
         $Contact_phones = representative_phone::where('Profile_ID',$phone)->where('Sequence','main')->first();
         return response()->json([
@@ -1729,6 +1731,7 @@ class QuotationController extends Controller
             'province'=>$provinceNames,
             'amphures'=>$amphuresID,
             'Tambon'=>$TambonID,
+            'prename'=>$prename,
         ]);
     }
     public function Guestcreate($Guest){
@@ -3769,7 +3772,6 @@ class QuotationController extends Controller
                 $save->Operated_by = $userid;
                 $save->Refler_ID=$Quotation_ID;
                 $save->comment = $request->comment;
-                $save->Date_type = $request->Date_type;
                 if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
                     $save->SpecialDiscount = $SpecialDiscount;
                     $save->SpecialDiscountBath = $SpecialDiscountBath;

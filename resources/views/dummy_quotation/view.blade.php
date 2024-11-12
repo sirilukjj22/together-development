@@ -481,16 +481,14 @@
                                     </li>
                                     <li> </li>
                                     <b class="font-upper com">Personal Information</b>
-                                    <span class="wrap-full">
-                                        <li >
-                                            <b>Contact Name</b>
-                                            <span id="Company_contact"></span>
-                                        </li>
-                                        <li >
-                                            <b>Contact Number</b>
-                                            <span id="Contact_Phone"></span>
-                                        </li>
-                                    </span>
+                                    <li class="mt-3">
+                                        <b>Contact Name</b>
+                                        <span id="Company_contact"></span>
+                                    </li>
+                                    <li >
+                                        <b>Contact Number</b>
+                                        <span id="Contact_Phone"></span>
+                                    </li>
                                     <li>
                                         <b>Contact Email</b>
                                         <span id="Contact_Email" ></span>
@@ -1042,7 +1040,8 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    var fullName = response.data.First_name + ' ' + response.data.Last_name;
+                    var prename = response.prename.name_th;
+                    var fullName = prename+response.data.First_name + ' ' + response.data.Last_name;
                     var fullid = response.data.id ;
                     if (response.Company_type.name_th === 'บริษัทจำกัด') {
                         var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด';
@@ -1100,11 +1099,7 @@
                 success: function(response) {
                     var prename = response.Company_type.name_th;
                     var fullName = prename +' '+response.data.First_name + ' ' + response.data.Last_name;
-                    if (response.Tambon) {
-                        var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
-                    }else{
-                        var Address = response.data.Address ;
-                    }
+                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
 
                     var Email = response.data.Email;
                     var Identification = response.data.Identification_Number;

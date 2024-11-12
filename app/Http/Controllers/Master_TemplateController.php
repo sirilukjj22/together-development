@@ -34,7 +34,7 @@ class Master_TemplateController extends Controller
     }
     public function save(Request $request) {
         $data =$request->all();
-
+        dd($data);
         $Template = $request->Template;
         $name = "template".$Template;
         $save = new master_template();

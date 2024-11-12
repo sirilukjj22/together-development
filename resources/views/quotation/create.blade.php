@@ -196,12 +196,13 @@
     }
 </style>
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Create Proposal.</small>
-                    <div class=""><span class="span1">Create Proposal (เพิ่มเอกสารใบข้อเสนอ)</span></div>
+                    <div class="span3">Create Proposal</div>
+                </div>
+                <div class="col-auto">
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -212,10 +213,10 @@
             <div class="container-xl">
                 <div class="row clearfix">
                     <div class="col-md-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
+                        <div class="card p-4 mb-4">
+                            <div>
                                 <div class="row">
-                                    <div class="col-lg-8 col-md-12 col-sm-12 image-container">
+                                    <div class="col-lg-7 col-md-12 col-sm-12 image-container">
                                         <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                         <div class="info">
                                             <p class="titleh1">{{$settingCompany->name}}</p>
@@ -229,12 +230,12 @@
                                             <p></p>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
+                                    <div class="col-lg-5 col-md-12 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-4"></div>
                                             <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
                                                 <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Proposal</b>
+                                                    <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Proposal</b>
                                                     <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_ID}}</b>
                                                 </div>
                                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
@@ -311,7 +312,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <hr class="mt-3 my-3" style="border: 1px solid #000">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="row">
@@ -406,14 +406,14 @@
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span  for="">Company Commission</span>
                                         <div class="input-group">
                                             <input type="text" class="form-control"  name="Company_Commission_Rate_Code" disabled>
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-6 col-md-12 col-sm-12">
                                                 <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
@@ -478,109 +478,140 @@
             <div class="container-xl">
                 <div class="row clearfix">
                     <div class="col-md-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
+                        <div class="card p-4 mb-4">
+                            <div>
                                 <div class="row mt-2">
-                                    <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
-                                        <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
-                                        <table id="companyTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
-                                                <td>
-                                                    <span id="Company_name" name="Company_name" ></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
-                                                <td><span id="Address" ></span></td>
+                                    <div class="proposal-cutomer-detail" id="companyTable">
+                                        <ul>
+                                        <b class="font-upper com">Company Information</b>
+                                        <li class="mt-3">
+                                            <b>Company Name</b>
+                                            <span id="Company_name"></span>
+                                        </li>
+                                        <li>
+                                            <b>Company Address</b>
+                                            <span id="Address"></span>
+                                            <b></b>
+                                        </li>
+                                        <span class="wrap-full">
+                                            <li >
+                                                <b>Company Number</b>
+                                                <span id="Company_Number"></span>
+                                            </li>
+                                            <li >
+                                                <b>Company Fax</b>
+                                                <span id="Company_Fax"></span>
+                                            </li>
+                                        </span>
+                                        <li>
+                                            <b>Company Email</b>
+                                            <span id="Company_Email"></span>
+                                        </li>
+                                        <li>
+                                            <b>Taxpayer Identification</b>
+                                            <span id="Taxpayer" ></span>
+                                        </li>
+                                        <li> </li>
+                                        <b class="font-upper com">Personal Information</b>
+                                        <li class="mt-3">
+                                            <b>Contact Name</b>
+                                            <span id="Company_contact"></span>
+                                        </li>
+                                        <li >
+                                            <b>Contact Number</b>
+                                            <span id="Contact_Phone"></span>
+                                        </li>
+                                        <li>
+                                            <b>Contact Email</b>
+                                            <span id="Contact_Email" ></span>
+                                        </li>
+                                        <li></li>
+                                        </ul>
+                                        <ul>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpo"></span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpo"></span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypo" class="m-0"> </p><p id="nightpo" class="m-0"> </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpo" class="m-0"> </p><p id="Childrenpo" class="m-0"> </p></span>
+                                        </li>
 
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="Address2" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
-                                                <td>
-                                                    <span id="Company_Number"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
-                                                <td><span id="Company_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
-                                                <td><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTlecontractTable" class="com mt-2 my-2"style="font-size:18px">Personal Information</b>
-                                        <table id="contractTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name :</b></td>
-                                                <td>
-                                                    <span id="Company_contact"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
-                                                <td><span id="Contact_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
-                                                <td style="color: #fff"><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTleguestTable" class="com mt-2 my-2"style="font-size:18px;display: none">Guest Information</b>
-                                        <table id="guestTable" style="display: none">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
-                                                <td>
-                                                    <span id="guest_name" name="guest_name" ></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Address :</b></td>
-                                                <td><span id="guestAddress" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="guestAddress2" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Number :</b></td>
-                                                <td>
-                                                    <span id="guest_Number"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Email :</b></td>
-                                                <td><span id="guest_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Identification Number : </b></td>
-                                                <td><span id="guestTaxpayer"></span></td>
-                                            </tr>
-                                        </table>
+                                        </ul>
+
                                     </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <div><br><br><br><br></div>
-                                        <div class="col-12 row" >
-                                            <div class="col-lg-6">
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Check In :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Check Out :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Length of Stay :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Number of Guests :</p>
-                                            </div>
-                                            <div class="col-lg-6 mt-2">
-                                                <p style="display: inline-block;"><span id="checkinpo" style="font-size:16px"></span></p><br>
-                                                <p style="display: inline-block;"><span id="checkoutpo"style="font-size:16px"></span></p><br>
-                                                <p style="display: inline-block;"><span id="daypo"style="font-size:16px"></span> <span id="nightpo"style="font-size:16px"></span></p><br>
-                                                <p style="display: inline-block;"><span id="Adultpo"style="font-size:16px"></span><span id="Childrenpo"style="font-size:16px"></span></p>
-                                            </div>
-                                        </div>
+                                    <div class="proposal-cutomer-detail" id="guestTable" style="display: none">
+                                        <ul>
+                                        <b class="font-upper com">Guest Information</b>
+                                        <li class="mt-3">
+                                            <b>Guest  Name</b>
+                                            <span id="guest_name"></span>
+                                        </li>
+
+
+                                        <li>
+                                            <b>Guest  Address</b>
+                                            <span id="guestAddress"></span>
+                                            <b></b>
+                                        </li>
+
+                                        <li >
+                                            <b>Guest  Number</b>
+                                            <span id="guest_Number"></span>
+                                        </li>
+
+                                        <li>
+                                            <b>Guest  Email</b>
+                                            <span id="guest_Email"></span>
+                                        </li>
+                                        <li>
+                                            <b>Identification Number</b>
+                                            <span id="guestTaxpayer" ></span>
+                                        </li>
+                                        <li> </li>
+                                        <li></li>
+                                        </ul>
+
+                                        <ul>
+                                            <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpoguest"></span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpoguest"></span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypoguest" class="m-0"> </p><p id="nightpoguest" class="m-0"> </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpoguest" class="m-0"> </p><p id="Childrenpoguest" class="m-0"> </p></span>
+                                        </li>
+
+                                        </ul>
+
                                     </div>
                                     <div class="styled-hr"></div>
                                 </div>
@@ -692,121 +723,71 @@
                                     <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
                                 @endif
                                 <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
-                                <div class="col-12 row ">
-                                    <div class="col-lg-9 col-md-9 col-sm-12 mt-2" >
+                                <div class="wrap-b">
+                                    <div class="kw" >
                                         <span >Notes or Special Comment</span>
                                         <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 " style="" >
-                                        <table class="table table-custom-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
-                                            <tbody>
-                                                <tr >
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-amount">0</span></td>
-                                                </tr>
-                                                <tr id="Special"  style="display: none;">
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Special Discount</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;">
-                                                        <span id="sp">0</span>
-                                                    </td>
-                                                </tr>
-                                                <tr id="Subtotal"  style="display: none;">
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="lessDiscount">0</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Price Before Tax</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="Net-price">0</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row" style="text-align:right;width: 70%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-Vat">0</span></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="lek" >
+                                        <div class="proposal-number-cutomer-detail" id="PRICE_INCLUDE_VAT">
+                                            <ul>
+                                                <li class="mt-3">
+                                                    <b>Subtotal</b>
+                                                    <span id="total-amount"></span>
+                                                </li>
+                                                <li class="mt-3">
+                                                    <b>Price Before Tax</b>
+                                                    <span id="Net-price"></span>
+                                                </li>
+                                                <li class="mt-3">
+                                                    <b>Value Added Tax</b>
+                                                    <span id="total-Vat"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="proposal-number-cutomer-detail" id="PRICE_EXCLUDE_VAT" style="display: none;">
+                                            <ul>
+                                                <li class="mt-3">
+                                                    <b>Subtotal</b>
+                                                    <span id="total-amountEXCLUDE"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="proposal-number-cutomer-detail" id="PRICE_PLUS_VAT" style="display: none;">
+                                            <ul>
+                                                <li class="mt-3">
+                                                    <b>Subtotal</b>
+                                                    <span id="total-amountpus"></span>
+                                                </li>
+                                                <li class="mt-3">
+                                                    <b>Value Added Tax</b>
+                                                    <span id="total-Vatpus"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-end" >
+                                    <b class="text-center text-white p-2" style="font-size: 14px; background-color: #2D7F7B; border-radius: 5px; " ><p class="mr-2" style="width:260px;" >Net Total <span id="Net-Total">0</span></p></b>
+                                </div>
+                                <div class="wrap-b">
+                                    <div class="kw">
+                                    </div>
 
-
-                                        <table class="table table-custom-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
-                                            <tbody>
-                                                <tr >
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
-                                                </tr>
-                                                <tr id="Special" style="visibility: hidden;">
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Special Discount</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;">
-                                                        <span id="spEXCLUDE">0</span>
-                                                    </td>
-                                                </tr>
-                                                <tr id="Subtotal" style="visibility: hidden;">
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <table class="table table-custom-borderless "id="PRICE_PLUS_VAT" style="display: none;">
-                                            <tbody>
-                                                <tr >
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-amountpus">0</span></td>
-                                                </tr>
-                                                <tr id="Special" style="display: none;">
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Special Discount</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;">
-                                                        <span id="sppus">0</span>
-                                                    </td>
-                                                </tr>
-                                                <tr id="Subtotal" style="display: none;">
-                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="lessDiscountpus">0</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row" style="text-align:right;width: 70%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-Vatpus">0</span></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-12 row">
-                                    <div class="col-9"></div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12">
-                                        <table class="table table-custom-borderless" >
-                                            <tbody>
-                                                <tr>
-                                                    <td colspan="2" style="text-align:center;">
-                                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
-                                                            <b style="font-size: 14px;">Net Total</b>
-                                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-12 row">
-                                    <div class="col-9"></div>
-                                    <div class="col-3 styled-hr"></div>
-                                </div>
-                                <div class="col-12 row">
-                                    <div class="col-9">
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12" id="Pax" style="display: block">
-                                        <table class="table table-custom-borderless" >
-                                            <tbody>
-                                                <tr>
-                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> Adults
-                                                        <input type="hidden" name="PaxToTalall" id="PaxToTalall">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person :</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> THB</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="lek mt-3" style="border-top:2px solid #2D7F7B;">
+                                        <div class="proposal-number-cutomer-detail" id="Pax">
+                                            <ul>
+                                                <li class="mt-3" >
+                                                    <b>Number of Guests</b>
+                                                    <span><span id="PaxToTal"></span><span> Adults</span> </span>
+                                                    <input type="hidden" name="PaxToTalall" id="PaxToTalall">
+                                                </li>
+                                                <li class="mt-3">
+                                                    <b>Average per person</b>
+                                                    <span><span id="Average"></span> THB</span>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-12 mt-3">
@@ -1013,8 +994,12 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text(nights + ' คืน');
+                $('#daypoguest').text(totalDays + ' วัน');
+                $('#nightpoguest').text(nights + ' คืน');
             } else if (checkoutDate.getTime() === checkinDate.getTime()) {
                 const totalDays = 1;
                 $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
@@ -1022,8 +1007,13 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
+                $('#daypoguest').text(totalDays + ' วัน');
+                $('#nightpoguest').text('0 คืน');
             } else {
                 if (CheckoutNew) {
                     alert('วัน Check-out ต้องมากกว่าวัน Check-in');
@@ -1102,43 +1092,28 @@
             //------------------------บริษัท------------------
             var Companyshow = document.getElementById("Companyshow");
             var Company = document.getElementById("Company");
-            var Company_Contact = document.getElementById("Company_Contact");
-            var Company_Contactname = document.getElementById("Company_Contactname");
             // -----------------------ลูกค้า--------------------
 
             var Guest = document.getElementById("Guest");
             var Guestshow = document.getElementById("Guestshow");
             //-------------------ตาราง---------------------------
             var companyTable = document.getElementById("companyTable");
-            var contractTable = document.getElementById("contractTable");
-            var TiTlecompanyTable = document.getElementById("TiTlecompanyTable");
-            var TiTlecontractTable = document.getElementById("TiTlecontractTable");
+
             var guestTable = document.getElementById("guestTable");
-            var TiTleguestTable = document.getElementById("TiTleguestTable");
-
-
             if (select.value === "Company") {
-                Companyshow.style.display = "block";
+                Companyshow.style.display = "Block";
                 Guestshow.style.display = "none";
                 guestTable.style.display = "none";
-                TiTleguestTable.style.display = "none";
                 Company.disabled = false;
                 Company_Contact.disabled = false;
                 Company_Contactname.disabled = false;
                 Guest.disabled = true;
-                companyTable.style.display = "block";
-                contractTable.style.display = "block";
-                TiTlecompanyTable.style.display = "block";
-                TiTlecontractTable.style.display = "block";
+                companyTable.style.display = "flex";
             } else {
-                guestTable.style.display = "block";
-                TiTleguestTable.style.display = "block";
-                Guestshow.style.display = "block";
+                guestTable.style.display = "flex";
+                Guestshow.style.display = "Block";
                 Companyshow.style.display = "none";
                 companyTable.style.display = "none";
-                contractTable.style.display = "none";
-                TiTlecompanyTable.style.display = "none";
-                TiTlecontractTable.style.display = "none";
                 Company.disabled = true;
                 Company_Contact.disabled = true;
                 Company_Contactname.disabled = true;
@@ -1155,7 +1130,10 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    var fullName = response.data.First_name + ' ' + response.data.Last_name;
+                    var prename = response.prename.name_th;
+                    var fullName = prename+response.data.First_name + ' ' + response.data.Last_name;
+
+
                     var fullid = response.data.id ;
                     if (response.Company_type.name_th === 'บริษัทจำกัด') {
                         var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด';
@@ -1168,8 +1146,7 @@
                     }else{
                         var fullNameCompany = response.Company_type.name_th + response.company.Company_Name ;
                     }
-                    var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
-                    var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                    var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th + ' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
                     var companyfax = response.company_fax.Fax_number;
                     var CompanyEmail = response.company.Company_Email;
                     var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
@@ -1178,10 +1155,6 @@
 
                     var Contactphones =response.Contact_phones.Phone_number;
                     var Contactemail =response.data.Email;
-
-                    console.log(response.data.First_name);
-
-
                     var formattedPhoneNumber = companyphone;
 
 
@@ -1191,7 +1164,6 @@
                     $('#Company_Contactname').val(fullid);
                     $('#Company_name').text(fullNameCompany);
                     $('#Address').text(Address);
-                    $('#Address2').text(Address2);
                     $('#Company_Number').text(formattedPhoneNumber);
                     $('#Company_Fax').text(companyfax);
                     $('#Company_Email').text(CompanyEmail);
@@ -1216,8 +1188,7 @@
                 success: function(response) {
                     var prename = response.Company_type.name_th;
                     var fullName = prename +' '+response.data.First_name + ' ' + response.data.Last_name;
-                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
-                    var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
                     var Email = response.data.Email;
                     var Identification = response.data.Identification_Number;
                     var phone = response.phone.Phone_number;
@@ -1227,7 +1198,6 @@
 
                     $('#guest_name').text(fullName);
                     $('#guestAddress').text(Address);
-                    $('#guestAddress2').text(Address2);
                     $('#guest_Number').text(formattedPhoneNumber);
                     $('#guest_Email').text(Email);
                     $('#guestTaxpayer').text(Identification);
@@ -1250,10 +1220,13 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
+
                 dateInput.classList.add('disabled-input');
                 dateout.classList.add('disabled-input');
                 $('#checkinpo').text('No Check in date');
                 $('#checkoutpo').text('-');
+                $('#checkinpoguest').text('No Check in date');
+                $('#checkoutpoguest').text('-');
                 $('#daypo').text('-');
                 $('#nightpo').text(' ');
                 $('#Checkin').val('');
@@ -1267,6 +1240,7 @@
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
+
                 dateInput.classList.remove('disabled-input');
                 dateout.classList.remove('disabled-input');
                 $('#Checkin').val('');
@@ -1278,11 +1252,13 @@
         $(document).on('keyup', '#Children', function() {
             var Children =  Number($(this).val());
             $('#Childrenpo').text(' , '+ Children +' Children');
+            $('#Childrenpoguest').text(' , '+ Children +' Children');
             totalAmost();
         });
         $(document).on('keyup', '#Adult', function() {
             var adult =  Number($(this).val());
             $('#Adultpo').text(adult +' Adult');
+            $('#Adultpoguest').text(adult +' Adult');
             totalAmost();
         });
         function masterevent() {
