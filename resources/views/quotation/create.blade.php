@@ -364,7 +364,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" required>
                                             <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"required>
+                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="0">
                                             <span class="input-group-text">เด็ก</span>
                                         </div>
                                     </div>
