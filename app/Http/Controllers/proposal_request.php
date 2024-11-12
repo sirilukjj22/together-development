@@ -99,6 +99,7 @@ class proposal_request extends Controller
                     $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
                     $phone = $company_phone->Phone_number;
                     $company = companys::where('Profile_ID', $Company_ID)->first();
+                    $Company_type = $company->Company_type;
                     $CityID=$company->City;
                     $provinceNames =null;
                     $amphuresNames =null;
@@ -116,7 +117,18 @@ class proposal_request extends Controller
                         $TambonNames = ' ตำบล : '.$TambonID->name_th;
                         $Zip_Code = $TambonID->Zip_Code;
                     }
-                    $fullName = $company->Company_Name;
+                    $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                    if ($comtype) {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $fullName = "บริษัท " . $company->Company_Name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $fullName = "บริษัท " . $company->Company_Name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $fullName = "ห้างหุ้นส่วนจำกัด " . $company->Company_Name;
+                        }else{
+                            $fullName = $comtype->name_th. $company->Company_Name ;
+                        }
+                    }
                     $Adress = $company->Address;
                     $email = $company->Company_Email;
                     $Identification = $company->Taxpayer_Identification;
@@ -126,7 +138,11 @@ class proposal_request extends Controller
                     $emailcontact = $contact->Email;
                 }else {
                     $guest = Guest::where('Profile_ID', $Company_ID)->first();
-                    $fullName = $guest->First_name.' '.$guest->Last_name;
+                    $Preface = $guest->preface;
+                    $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                    if ($Mprefix) {
+                        $fullName = $Mprefix->name_th . $guest->First_name . ' ' . $guest->First_name;
+                    }
                     $CityID=$guest->City;
                     $provinceNames =null;
                     $amphuresNames =null;

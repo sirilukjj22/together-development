@@ -210,7 +210,7 @@
                         <form id="myForm" action="{{url('/Document/invoice/update/revised/'.$invoice->id)}}" method="POST">
                             @csrf
                             <div class="row">
-                                <div class="col-lg-8 col-md-12 col-sm-12 image-container">
+                                <div class="col-lg-7 col-md-12 col-sm-12 image-container">
                                     <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                     <div class="info">
                                         <p class="titleh1">{{$settingCompany->name}}</p>
@@ -224,12 +224,12 @@
                                         <p></p>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-12 col-sm-12">
+                                <div class="col-lg-5 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col-lg-4"></div>
                                         <div class="PROPOSAL col-lg-7" >
                                             <div class="row">
-                                                <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Profoma Invoice</b>
+                                                <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Profoma Invoice</b>
                                                 <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$InvoiceID}}</b>
                                             </div>
                                             <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$InvoiceID}}">
@@ -263,165 +263,198 @@
                                 </div>
                             </div>
                             <div class="row mt-3">
-                                <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
-                                    @if ($Quotation->type_Proposal == 'Company')
-                                        <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
-                                        <table id="companyTable" >
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
-                                                <td>
-                                                    <span id="Company_name" name="Company_name" >{{$comtypefullname}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
-                                                <td><span id="Address" >
-                                                    @if ($TambonID)
-                                                        {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
+                                @if ($Quotation->type_Proposal == 'Company')
+                                    <div class="proposal-cutomer-detail" id="companyTable">
+                                        <ul>
+                                        <b class="font-upper com">Company Information</b>
+                                        <li class="mt-3">
+                                            <b>Company Name</b>
+                                            <span id="Company_name">{{$comtypefullname}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Company Address</b>
+                                            <span id="Address">{{$Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
+                                            <b></b>
+                                        </li>
+                                        <span class="wrap-full">
+                                            <li >
+                                                <b>Company Number</b>
+                                                <span id="Company_Number">{{ $company_phone->Phone_number }}</span>
+                                            </li>
+                                            <li >
+                                                <b>Company Fax</b>
+                                                <span id="Company_Fax">
+                                                    @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
+                                                        <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
+                                                    @else
+                                                        <span id="Company_Fax">-</span>
                                                     @endif
-                                                </span></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="Address2" >
-                                                    @if ($TambonID)
-                                                        {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
-                                                    @endif
-                                                </span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
-                                                <td>
-                                                    <span id="Company_Number">{{ $company_phone->Phone_number }}</span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">
-                                                        @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
-                                                            <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
-                                                        @else
-                                                            <span id="Company_Fax">-</span>
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
-                                                <td><span id="Company_Email">{{$Company->Company_Email}}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
-                                                <td><span id="Taxpayer">{{$Company->Taxpayer_Identification}}</span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTlecontractTable" class="com mt-2 my-2"style="font-size:18px">Personal Information</b>
-                                        <table id="contractTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name :</b></td>
-                                                <td>
-                                                    <span id="Company_contact">{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span>
-                                                    <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone">{{ $Contact_phone->Phone_number}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
-                                                <td><span id="Contact_Email">{{$Contact_name->Email}}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
-                                                <td style="color: #fff"><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                    @else
+                                                </span>
+                                            </li>
+                                        </span>
+                                        <li>
+                                            <b>Company Email</b>
+                                            <span id="Company_Email">{{$Company->Company_Email}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Taxpayer Identification</b>
+                                            <span id="Taxpayer" >{{$Company->Taxpayer_Identification}}</span>
+                                        </li>
+                                        <li> </li>
+                                        <b class="font-upper com">Personal Information</b>
+                                        <span class="wrap-full">
+                                            <li >
+                                                <b>Contact Name</b>
+                                                <span id="Company_contact">{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span>
+                                            </li>
+                                            <li >
+                                                <b>Contact Number</b>
+                                                <span id="Contact_Phone">{{ $Contact_phone->Phone_number}}</span>
+                                            </li>
+                                        </span>
+                                        <li>
+                                            <b>Contact Email</b>
+                                            <span id="Contact_Email" >{{$Contact_name->Email}}</span>
+                                        </li>
+                                        <li></li>
+                                        </ul>
+                                        <ul>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpo">{{$checkin}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpo">{{$checkout}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypo" class="m-0">{{$Quotation->day}} วัน</p> <p id="nightpo" class="m-0"> {{$Quotation->night}} คืน </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpo" class="m-0">{{$Quotation->adult}} Adult </p><p id="Childrenpo" class="m-0">, {{$Quotation->children}}  Children</p></span>
+                                        </li>
+                                        <li>
+                                            <b>Valid</b>
+                                            <span id="checkoutpoguest">
+                                                <input type="text" name="valid" id="valid" class="form-control " value="{{$valid}}" required>
+                                            </span>
+                                        </li>
+                                        </ul>
 
-                                        <b id="TiTleguestTable" class="com mt-2 my-2"style="font-size:18px;">Guest Information</b>
-                                        <table id="guestTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
-                                                <td>
-                                                    <span id="guest_name" name="guest_name" >{{$Company->First_name}} {{$Company->Last_name}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Address :</b></td>
-                                                <td>
-                                                    <span id="Address">{{$Company->Address}}
-                                                        @if ($TambonID)
-                                                            {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td>
-                                                    <span id="Address2" >
-                                                        @if ($TambonID)
-                                                            {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Number :</b></td>
-                                                <td>
-                                                    <span id="guest_Number">{{ $company_phone->Phone_number}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Email :</b></td>
-                                                <td><span id="guest_Email">{{$Company->Email}}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Identification Number : </b></td>
-                                                <td><span id="guestTaxpayer">{{$Company->Identification_Number}}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
-                                                <td style="color: #fff"><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                    @endif
-                                </div>
-                                <div class="col-lg-4 col-md-12 col-sm-12">
-                                    <div><br><br><br><br></div>
-                                    <div class="col-12 row" >
-                                        <table style="margin-left: 20px;" >
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Check In :</b></td>
-                                                <td>
-                                                    <span id="Contact_name" name="Contact_name" >{{$checkin}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Check Out : </b></td>
-                                                <td>
-                                                    <span id="Company_Number">{{$checkout}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Length of Stay :</b></td>
-                                                <td>
-                                                    <span id="Company_Number">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Number of Guests :</b></td>
-                                                <td>
-                                                    <span id="Company_Number">{{$Quotation->adult}} Adult , {{$Quotation->children}} Children</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
-                                                <td>
-                                                    <input type="text" name="valid" id="valid" class="form-control " value="{{$valid}}" required>
-                                                </td>
-                                            </tr>
-                                        </table>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="proposal-cutomer-detail" id="guestTable" style="display: none">
+                                        <ul>
+                                        <b class="font-upper com">Guest Information</b>
+                                        <li class="mt-3">
+                                            <b>Guest  Name</b>
+                                            <span id="guest_name">{{$comtypefullname}}</span>
+                                        </li>
+
+
+                                        <li>
+                                            <b>Guest  Address</b>
+                                            <span id="guestAddress">{{$Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
+                                            <b></b>
+                                        </li>
+
+                                        <li >
+                                            <b>Guest  Number</b>
+                                            <span id="guest_Number">{{ $company_phone->Phone_number}}</span>
+                                        </li>
+
+                                        <li>
+                                            <b>Guest  Email</b>
+                                            <span id="guest_Email">{{$Company->Email}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Identification Number</b>
+                                            <span id="guestTaxpayer" >{{$Company->Identification_Number}}</span>
+                                        </li>
+                                        <li> </li>
+                                        <li></li>
+                                        </ul>
+
+                                        <ul>
+                                            <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpoguest">{{$checkin}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpoguest">{{$checkout}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypoguest" class="m-0">{{$Quotation->day}} วัน </p><p id="nightpoguest" class="m-0"> {{$Quotation->night}} คืน  </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpoguest" class="m-0"> {{$Quotation->adult}} Adult </p><p id="Childrenpoguest" class="m-0">, {{$Quotation->children}}  Children </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Valid</b>
+                                            <span id="checkoutpoguest">
+                                                <input type="text" name="valid" id="valid" class="form-control " value="{{$valid}}" required>
+                                            </span>
+                                        </li>
+                                        </ul>
+
+                                    </div>
+                                @endif
                             </div>
                             <div class="styled-hr"></div>
                             <input type="hidden" name="eventformat" id="eventformat" value="{{$Quotation->eventformat}}">
                             <div class="row mt-2">
                                 <div class="col-lg-6">
+                                    @php
+                                        $paymentPercentNew = 0;
+                                        $balancePercent= 0;
+                                        $invoices = DB::table('document_invoice')
+                                        ->where('Quotation_ID', $Quotation->Quotation_ID)
+                                        ->where('document_status',2)
+                                        ->get();
+
+                                        foreach ($invoices as $value) {
+                                            $paymentPercentNew += $value->paymentPercent;
+                                            $balancePercent = 100 - $value->paymentPercent;
+                                        }
+                                        // ส่งค่า $Nettotal ไปที่ JavaScript ผ่านการฝังค่า
+                                    @endphp
+                                    <input type="hidden" id="paymentPercentNew" name="paymentPercentNew" value="{{ $paymentPercentNew }}">
+                                    <input type="hidden" id="netTotal" value="{{ $Quotation->Nettotal }}">
+                                    <input type="hidden" id="balancePercent" name="balancePercent" value="{{ $balancePercent }}">
+                                    <script>
+                                        function validateInput(input) {
+                                            var paymentPercentNew = document.getElementById('paymentPercentNew').value;
+                                            var balancePercent = document.getElementById('balancePercent').value;
+                                            var balancePercentnetTotal = document.getElementById('netTotal').value;
+
+                                            console.log(input.value); // ตรวจสอบค่า paymentPercentNew ใน console
+                                            if (parseFloat(input.value) >= 100) {
+                                                if (parseFloat(input.value) > paymentPercentNew) {
+                                                    input.value = balancePercent;
+                                                }else{
+                                                    input.value = 100;
+                                                }
+                                            }
+                                            $('#Amount').text(input.value + '%');
+                                        }
+                                    </script>
                                     <label for="Payment">Payment by (%) Remaining 100%</label>
                                     <div class="input-group">
                                         <div class="input-group-text">
@@ -430,6 +463,7 @@
                                         <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)"value="{{$invoice->paymentPercent}}">
                                         <span class="input-group-text">%</span>
                                     </div>
+
                                 </div>
                                 <div class="col-lg-6">
                                     <label for="Payment by (THB)">Payment by (THB)</label>
@@ -455,27 +489,27 @@
                                             <td style="text-align:center">1</td>
                                             <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
                                                 <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
-                                            <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$invoice->Nettotal}}"></td>
+                                            <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$invoice->Nettotal}}"></td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Subtotal :</td>
-                                            <td style="text-align:right"><span id="SubtotalAll"></span>฿</td>
+                                            <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Price Before Tax :</td>
-                                            <td style="text-align:right"><span id="Before"></span>฿</td>
+                                            <td style="text-align:right"><span id="Before"></span> THB</td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Value Added Tax :</td>
-                                            <td style="text-align:right"><span id="Added"></span>฿</td>
+                                            <td style="text-align:right"><span id="Added"></span> THB</td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Net Total :</td>
-                                            <td style="text-align:right"><span id="Total"></span>฿</td>
+                                            <td style="text-align:right"><span id="Total"></span> THB</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -607,12 +641,12 @@
             });
 
         });
-        function validateInput(input) {
-            if (input.value > 100) {
-                input.value = 100;
-            }
-            $('#Amount').text(input.value + '%');
-        }
+        // function validateInput(input) {
+        //     if (input.value > 100) {
+        //         input.value = 100;
+        //     }
+        //     $('#Amount').text(input.value + '%');
+        // }
         function validateInput1(input) {
             var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
             var inputValue = input.value.replace(/,/g, ''); // ลบจุลภาคออกจากค่าที่กรอก

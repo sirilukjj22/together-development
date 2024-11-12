@@ -48,14 +48,14 @@ class Document_invoice extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
-        ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
             'document_invoice.Quotation_ID as QID',
             'document_invoice.document_status',  // Separate this field for clarity
             DB::raw('1 as status'),
-            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
+            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment')
         )
         ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
         ->paginate($perPage);
@@ -1042,14 +1042,15 @@ class Document_invoice extends Controller
         $invoice = null;
 
         // Try to find the proposal with the provided ID
-        $proposal = document_invoices::query()->where('id', $id)->first();
+        $proposal = Quotation::query()->where('id', $id)->first();
 
         if ($proposal) {
             // If the proposal is found, get the related Quotation_ID
             $Quotation_ID = $proposal->Quotation_ID;
 
             // Fetch all invoices with the same Quotation_ID and paginate them
-            $invoice = document_invoices::query()->where('Quotation_ID', $Quotation_ID)->paginate($perPage);
+            $invoice = document_invoices::where('Quotation_ID', $Quotation_ID)->paginate($perPage);
+
         } else {
             // Optionally, handle the case when the proposal is not found
             // Redirect or return an error message
@@ -1099,6 +1100,7 @@ class Document_invoice extends Controller
             }else {
                 $comtypefullname = $Company->Company_Name;
             }
+            $Address = $Company->Address;
             $CityID=$Company->City;
             $amphuresID = $Company->Amphures;
             $TambonID = $Company->Tambon;
@@ -1108,6 +1110,7 @@ class Document_invoice extends Controller
             $company_fax = company_fax::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
             $company_phone = company_phone::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
             $Contact_name = representative::where('Company_ID',$CompanyID)->where('status',1)->first();
+
             $profilecontact = $Contact_name->Profile_ID;
             $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
         }else{
@@ -1172,7 +1175,7 @@ class Document_invoice extends Controller
             $balance = 0;
             $Refler_ID = $QuotationID;
         }
-        return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
+        return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company','Address'
         ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal'));
     }
     public function save(Request $request){
@@ -1768,6 +1771,7 @@ class Document_invoice extends Controller
             }else{
                 $comtypefullname = $comtype->name_th . $Company->Company_Name;
             }
+            $Address = $Company->Address;
             $CityID=$Company->City;
             $amphuresID = $Company->Amphures;
             $TambonID = $Company->Tambon;
@@ -1855,7 +1859,7 @@ class Document_invoice extends Controller
 
         return view('document_invoice.view',compact('Quotation_ID','InvoiceID','comtypefullname','Company','TambonID','amphuresID','provinceNames','company_phone','company_fax','Contact_name'
         ,'Contact_phone','checkin','checkout','Quotation','QuotationID','Deposit','CompanyID','IssueDate','Expiration','day','night','adult','children','valid','Nettotal','payment'
-        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany'));
+        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','Address'));
     }
 
     public function edit($id){
@@ -1888,6 +1892,7 @@ class Document_invoice extends Controller
             }else{
                 $comtypefullname = $comtype->name_th . $Company->Company_Name;
             }
+            $Address = $Company->Address;
             $CityID=$Company->City;
             $amphuresID = $Company->Amphures;
             $TambonID = $Company->Tambon;
@@ -1943,7 +1948,7 @@ class Document_invoice extends Controller
         $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
         return view('document_invoice.edit',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
             ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','valid','payment','paymentPercent'
-            ,'invoice','id','settingCompany','IssueDate','Expiration'));
+            ,'invoice','id','settingCompany','IssueDate','Expiration','Address'));
     }
 
     public function update(Request $request ,$id){
@@ -3281,6 +3286,7 @@ class Document_invoice extends Controller
             }else{
                 $comtypefullname = $comtype->name_th . $Company->Company_Name;
             }
+            $Address = $Company->Address;
             $CityID=$Company->City;
             $amphuresID = $Company->Amphures;
             $TambonID = $Company->Tambon;
@@ -3368,7 +3374,7 @@ class Document_invoice extends Controller
         $id = $idss;
         return view('document_invoice.viewinvoice',compact('Quotation_ID','InvoiceID','comtypefullname','Company','TambonID','amphuresID','provinceNames','company_phone','company_fax','Contact_name'
         ,'Contact_phone','checkin','checkout','Quotation','QuotationID','Deposit','CompanyID','IssueDate','Expiration','day','night','adult','children','valid','Nettotal','payment'
-        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','id'));
+        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','id','Address'));
     }
      public function email($id){
         $quotation = document_invoices::where('id',$id)->first();

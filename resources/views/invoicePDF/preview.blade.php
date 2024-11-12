@@ -325,31 +325,31 @@
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
                             <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{$payment}} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
-                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span>฿<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Subtotal :</td>
-                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Price Before Tax :</td>
-                            <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Value Added Tax :</td>
-                            <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Net Total :</td>
-                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span> THB</td>
                         </tr>
                     </tbody>
                 </table>
@@ -534,31 +534,31 @@
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
                             <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ $payment }} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
-                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span>฿<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Subtotal :</td>
-                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Price Before Tax :</td>
-                            <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Value Added Tax :</td>
-                            <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Net Total :</td>
-                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span>฿</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span> THB</td>
                         </tr>
                     </tbody>
                 </table>

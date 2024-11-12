@@ -150,47 +150,49 @@
                                                 @php
                                                     $price50 = $sp50 = $priceless50 = $Add50 = $Net50 = 0;
                                                     $price51 = $sp51 = $price52 = $sp52 = $Add52 = $pricebefore52 = 0;
-                                                    $allpax = $pax = $average = $allaverage =0;
+                                                    $pax = $average = $allaverage = $averagetotal =0;
                                                 @endphp
                                                 @foreach(@$itemdata->document as $key => $itemproduct)
-                                                @php
-                                                    $productMatch = $product->firstWhere('Product_ID', $itemproduct->Product_ID);
-                                                    $unitMatch = $unit->firstWhere('id', $productMatch->unit);
-                                                    $quantityMatch = $quantity->firstWhere('id', $productMatch->quantity);
-                                                @endphp
-                                                @if($productMatch && $unitMatch && $quantityMatch)
-                                                    <tr>
-                                                        <td style="text-align: center;">{{ $key + 1 }}</td>
-                                                        <td>{{ $productMatch->name_th }}</td>
-                                                        <td style="text-align: center;">
-                                                            {{ @$itemproduct->Quantity }} {{ $unitMatch->name_th }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ @$itemproduct->Unit }} {{ $quantityMatch->name_th }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($productMatch->normal_price) }}
-                                                        </td>
-                                                        @if (@$itemproduct->discount == 0)
-                                                            <td style="text-align: center;"></td>
-                                                        @else
+                                                    @php
+                                                        $productMatch = $product->firstWhere('Product_ID', $itemproduct->Product_ID);
+                                                        $unitMatch = $unit->firstWhere('id', $productMatch->unit);
+                                                        $quantityMatch = $quantity->firstWhere('id', $productMatch->quantity);
+                                                    @endphp
+                                                    @if($productMatch && $unitMatch && $quantityMatch)
+                                                        <tr>
+                                                            <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                            <td>{{ $productMatch->name_th }}</td>
                                                             <td style="text-align: center;">
-                                                                {{ @$itemproduct->discount }}%
+                                                                {{ @$itemproduct->Quantity }} {{ $unitMatch->name_th }}
                                                             </td>
-                                                        @endif
-                                                        <td style="text-align: center;">
-                                                            {{ number_format(@$itemproduct->netpriceproduct) }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format(@$itemproduct->totaldiscount) }}
-                                                        </td>
-                                                    </tr>
+                                                            <td style="text-align: center;">
+                                                                {{ @$itemproduct->Unit }} {{ $quantityMatch->name_th }}
+                                                            </td>
+                                                            <td style="text-align: center;">
+                                                                {{ number_format($productMatch->normal_price) }}
+                                                            </td>
+                                                            @if (@$itemproduct->discount == 0)
+                                                                <td style="text-align: center;"></td>
+                                                            @else
+                                                                <td style="text-align: center;">
+                                                                    {{ @$itemproduct->discount }}%
+                                                                </td>
+                                                            @endif
+                                                            <td style="text-align: center;">
+                                                                {{ number_format(@$itemproduct->netpriceproduct) }}
+                                                            </td>
+                                                            <td style="text-align: center;">
+                                                                {{ number_format(@$itemproduct->totaldiscount) }}
+                                                            </td>
+                                                        </tr>
+
+                                                    @endif
                                                     @php
                                                         // Ensure the variables are numeric (float or int) to avoid type errors
                                                         $price50 += (float) @$itemproduct->totaldiscount;
                                                         $sp = (float) $itemdata->SpecialDiscountBath;
 
-                                                        $sp50 = $price50 - $sp;
+                                                        $sp50 = $price50 ;
                                                         $priceless50 = $sp50 / 1.07;
                                                         $Add50 = $sp50 - $priceless50;
                                                         $Net50 = $priceless50 + $Add50;
@@ -205,14 +207,15 @@
                                                         $pricebefore52 = $price52 + $Add52;
 
                                                         // Ensure pax and Unit are numeric
-                                                        $pax += (float) @$itemproduct->pax * (float) @$itemproduct->Unit;
+                                                        $pax += (float) @$itemproduct->pax * (float) @$itemproduct->Quantity;
 
                                                         // Accumulate all pax and calculate average
-                                                        $allpax += $pax;
-                                                        $average += (float) @$itemproduct->totaldiscount;
-                                                        $allaverage = ($allpax > 0) ? $average / $allpax : 0; // Avoid division by zero
+
+
+                                                        $average += (float) @$itemproduct->totaldiscount ;
+                                                        $averagetotal = $average- $sp;
+                                                        $allaverage = ($pax > 0) ? $averagetotal / $pax : 0; // Avoid division by zero
                                                     @endphp
-                                                @endif
                                             @endforeach
 
                                             </tbody>
@@ -256,8 +259,8 @@
                                                             {{ number_format($priceless50, 2, '.', ',') }}<br>
                                                             {{ number_format($Add50, 2, '.', ',') }}<br>
                                                             {{ number_format($Net50, 2, '.', ',') }}<br>
-                                                            {{ number_format($allpax) }}<br>
-                                                            {{ number_format($allaverage) }}<br>
+                                                            {{ number_format($pax) }}<br>
+                                                            {{ number_format($allaverage,2, '.', ',') }}<br>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -272,6 +275,8 @@
                                                             <span id="less">Subtotal less Discount : </span><br>
                                                             @endif
                                                             <span id="Net">Net Total : </span><br>
+                                                            <span id="Net">Number of Guests : </span><br>
+                                                            <span id="Net">Average per person : </span><br>
                                                         </div>
                                                         <div class="col-4 col-md-8 col-sm-8">
                                                             {{ number_format($price51, 2, '.', ',') }} <br>
@@ -280,6 +285,8 @@
                                                             {{ number_format($sp51, 2, '.', ',') }}<br>
                                                             @endif
                                                             {{ number_format($sp51, 2, '.', ',') }} <br>
+                                                            {{ number_format($pax) }}<br>
+                                                            {{ number_format($allaverage,2, '.', ',') }}<br>
                                                         </div>
                                                     </div>
 
@@ -296,6 +303,8 @@
                                                             @endif
                                                             <span id="Added">Value Added Tax : </span><br>
                                                             <span id="Net">Net Total : </span><br>
+                                                            <span id="Net">Number of Guests : </span><br>
+                                                            <span id="Net">Average per person : </span><br>
                                                         </div>
                                                         <div class="col-4">
                                                             {{ number_format($price52, 2, '.', ',') }} <br>
@@ -305,6 +314,8 @@
                                                             @endif
                                                             {{ number_format($Add52, 2, '.', ',') }} <br>
                                                             {{ number_format($pricebefore52, 2, '.', ',') }} <br>
+                                                            {{ number_format($pax) }}<br>
+                                                            {{ number_format($allaverage,2, '.', ',') }}<br>
                                                         </div>
                                                     </div>
                                                 </div>
