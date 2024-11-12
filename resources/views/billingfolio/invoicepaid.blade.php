@@ -176,9 +176,47 @@
                                                 <option value="{{$name_ID}}">{{$name}}</option>
                                                 @foreach($datasub as $item)
                                                     @if ($type == 'Company')
-                                                        <option value="{{ $item->ComTax_ID }}">{{ 'บริษัท '.$item->Companny_name.' จำกัด' ?? 'คุณ '.$item->first_name.' '.$item->last_name }}</option>
+                                                        <option value="{{ $item->ComTax_ID }}">
+                                                            @php
+                                                                $comtype = DB::table('master_documents')
+                                                                    ->where('id', $item->Company_type)
+                                                                    ->first();
+
+                                                                if ($comtype) {
+                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
+                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด";
+                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
+                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
+                                                                    } else {
+                                                                        $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name));
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            {{ $name }}
+                                                        </option>
                                                     @else
-                                                        <option value="{{ $item->GuestTax_ID }}">{{ $item->Company_name ?? $item->first_name.' '.$item->last_name }}</option>
+                                                        <option value="{{ $item->GuestTax_ID }}">
+                                                            @php
+                                                                $comtype = DB::table('master_documents')
+                                                                    ->where('id', $item->Company_type)
+                                                                    ->first();
+
+                                                                if ($comtype) {
+                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
+                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด";
+                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
+                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
+                                                                    } else {
+                                                                        $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name));
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            {{ $name }}
+                                                        </option>
                                                     @endif
                                                 @endforeach
                                             </select>

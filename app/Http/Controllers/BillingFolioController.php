@@ -534,8 +534,18 @@ class BillingFolioController extends Controller
         $Percent = $invoices->paymentPercent;
         if ($type == 'Company') {
             $data = companys::where('Profile_ID',$guest)->first();
+            $Company_typeID=$data->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $name = "ห้างหุ้นส่วนจำกัด ". $data->Company_Name ;
+            }else{
+                $name = $comtype->name_th . $data->Company_Name;
+            }
             $Identification = $data->Taxpayer_Identification;
-            $name =  'บริษัท '.$data->Company_Name.' จำกัด';
             $name_ID = $data->Profile_ID;
             $datasub = company_tax::where('Company_ID',$name_ID)->get();
             $Address=$data->Address;
@@ -602,6 +612,7 @@ class BillingFolioController extends Controller
     public function EditPaidInvoice($id){
         $re = receive_payment::where('id',$id)->first();
         $InvoiceID = $re->Invoice_ID;
+        $company = $re->company;
         $REID = $re->Receipt_ID;
         $invoices = document_invoices::where('Invoice_ID', $InvoiceID)->first();
         $proposalid = $invoices->Quotation_ID;
@@ -615,7 +626,17 @@ class BillingFolioController extends Controller
         if ($type == 'Company') {
             $data = companys::where('Profile_ID',$guest)->first();
             $Identification = $data->Taxpayer_Identification;
-            $name =  'บริษัท '.$data->Company_Name.' จำกัด';
+            $Company_typeID=$data->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $name = "ห้างหุ้นส่วนจำกัด ". $data->Company_Name ;
+            }else{
+                $name = $comtype->name_th . $data->Company_Name;
+            }
             $name_ID = $data->Profile_ID;
             $datasub = company_tax::where('Company_ID',$name_ID)->get();
             $Address=$data->Address;
@@ -667,7 +688,7 @@ class BillingFolioController extends Controller
             $databankname = "";
             $databanknamere = null;
         }
-        return view('billingfolio.editinvoicepaid',compact('invoices','address','re','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque','databanknamere'));
+        return view('billingfolio.editinvoicepaid',compact('company','invoices','address','re','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque','databanknamere'));
     }
     public function PaidInvoiceData($id)
     {

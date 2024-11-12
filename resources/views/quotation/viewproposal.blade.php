@@ -1837,5 +1837,21 @@
                 }
             });
         }
+        function view(id){
+            event.preventDefault();
+            Swal.fire({
+                title: "คุณต้องการส่งอีเมล์ใช่หรือไม่?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "ตกลง",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#28a745",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) { // ตรวจสอบว่าเลือก "ตกลง" ก่อนที่จะเปลี่ยนเส้นทาง
+                    window.location.href = "/Proposal/send/email/" + id;
+                }
+            });
+        }
     </script>
 @endsection

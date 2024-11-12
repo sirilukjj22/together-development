@@ -114,6 +114,7 @@
                                                             <span class="badge rounded-pill bg-success">Confirm</span>
                                                         </td>
                                                         @php
+                                                            $CreateBy = Auth::user()->id;
                                                             $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                             $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
                                                             $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
