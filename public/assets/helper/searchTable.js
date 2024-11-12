@@ -95,7 +95,6 @@ function getPage(page, perPage, table_n) {
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
-    if (table_n != "revenue") {
         var table = $('#' + table_name).dataTable({
             searching: false,
             paging: false,
@@ -117,7 +116,8 @@ function getPage(page, perPage, table_n) {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 2, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                { targets: [3], className: 'text-start' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -140,45 +140,6 @@ function getPage(page, perPage, table_n) {
             ],
     
         });
-    } else {
-        var table = $('#' + table_name).dataTable({
-            searching: false,
-            paging: false,
-            info: false,
-            ajax: {
-                url: '/sms-paginate-table',
-                type: 'POST',
-                dataType: "json",
-                cache: false,
-                data: {
-                    page: page,
-                    perPage: perPage,
-                    table_name: table_name,
-                    filter_by: filter_by,
-                    date: dateString,
-                    status: type,
-                    into_account: account
-                },
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            },
-            columnDefs: [
-                { targets: [0, 1, 2], className: 'dt-center td-content-center' },
-            ],
-            order: [0, 'asc'],
-            responsive: {
-                details: {
-                    type: 'column',
-                    target: 'tr'
-                }
-            },
-            columns: [
-                { data: 'number' },
-                { data: 'date' },
-                { data: 'agoda_outstanding' },
-            ],
-    
-        });
-    }    
 
     $('#' + table_n + '-paginate').children().remove().end();
     $('#' + table_n + '-showingEntries').text(showingEntriesSearch(page, total, table_n));

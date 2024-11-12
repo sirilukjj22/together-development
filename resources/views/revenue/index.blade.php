@@ -440,7 +440,7 @@
                                     <div>Credit Card Hotel Fee</div>
                                 </div>
                                 <div class="t-end">
-                                    {{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}
+                                    {{ number_format($total_hotel_fee, 2) }}
                                 </div>
                             </div>
                             <div class="box-card2 bg-box" onclick="revenue_detail('water_park_fee')">
@@ -468,18 +468,22 @@
                     </div>
                     <!-- box7 -->
                     <div class="box-content">
+                        @php
+                            $sum_agoda_revenue_outstanding = isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $agoda_charge[0]['total'] - $total_agoda_year : $agoda_charge[0]['total'];
+                            $sum_elexa_revenue_outstanding = isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $ev_charge[0]['total'] - $total_ev_year : $ev_charge[0]['total'];
+                        @endphp
                         <div class="header">
                             <div>Total Revenue Outstanding</div>
-                            <div>{{ number_format($agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</div>
+                            <div>{{ number_format($sum_agoda_revenue_outstanding + $sum_elexa_revenue_outstanding, 2) }}</div>
                         </div>
                         <div class="sub d-grid-r2">
-                            <div class="box-card bg-box" onclick="revenue_detail('agoda_outstanding')">
+                            <div class="box-card bg-box" onclick="revenue_detail('agoda_outstanding')"> <!-- Link ไป Dashboard ใน Debtor -->
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/agoda.jpg" alt="" class="img" />
                                 <div>Credit Card Agoda Revenue Outstanding</div>
                                 <!-- </div> -->
                                 <div class="t-end">
-                                    {{ number_format(isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $agoda_charge[0]['total'] - $total_agoda_year : $agoda_charge[0]['total'], 2) }}
+                                    {{ number_format($sum_agoda_revenue_outstanding, 2) }}
                                 </div>
                             </div>
                             <div class="box-card bg-box" onclick="revenue_detail('elexa_outstanding')">
@@ -488,7 +492,7 @@
                                 <div>Elexa EGAT Revenue Outstanding</div>
                                 <!-- </div> -->
                                 <div class="t-end">
-                                    {{ number_format(isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $ev_charge[0]['total'] - $total_ev_year : $ev_charge[0]['total'], 2) }}
+                                    {{ number_format($sum_elexa_revenue_outstanding, 2) }}
                                 </div>
                             </div>
                         </div>
@@ -515,7 +519,7 @@
                             </div>
                             <div class="box-card3 bg-box" onclick="revenue_detail('split_hotel_transaction')">
                                 <div class="t-start">Split Credit Card Hotel Transaction</div>
-                                <div class="font-semibold">{{ number_format($total_split) }}</div>
+                                <div class="font-semibold">{{ number_format($total_split_transaction) }}</div>
                             </div>
                             <div class="box-card3 bg-box" onclick="revenue_detail('no_income_revenue')">
                                 <div>No Income Revenue</div>
@@ -632,7 +636,7 @@
             @if (session('success'))
                 <div class="container p-0 rounded">
                     <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading">บันทึกสำเร็จ</h4>
+                        <h4 class="alert-heading">Successfully</h4>
                         <i class="fa-regular fa-circle-check">&nbsp;</i>{{ session('success') }}
                     </div>
                 </div>
@@ -640,7 +644,9 @@
 
             <div class="table-2" style="overflow-x:auto;">
                 <div class="d-flex gap-3 mb-2">
-                    <img src="image/Logo1-01.png" alt="logo of Together Resort" width="80" class="mb-1" />
+                    <div class="center" >
+                        <img src="image/Logo-tg2.png" alt="logo of Together Resort" width="80" class="mb-1" />
+                    </div>
       
                     <div class="text-capitalize d-grid gap-0">
                       <span class="f-semi">Together Resort Kaengkrachan</span>

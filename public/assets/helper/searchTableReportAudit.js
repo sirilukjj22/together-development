@@ -87,11 +87,15 @@ function paginateSearch($total, $table, $link) {
 function getPage(page, perPage, table_n) {
     var table_name = table_n + 'Table';
     var filter_by = $('#filter-by').val();
-    var dateString = $('#date').val();
-    var type = $('#status').val();
-    var account = $('#into_account').val();
+    var startDate = $('#startDate').val();
+    var endDate = $('#endDate').val();
+    var type = $('input[name="status"]:checked').val();
     var total = parseInt($('#get-total-' + table_n).val());
     var getUrl = table_n;
+
+    if (filter_by == "year") {
+        startDate = $('#startYear').val();
+    }
 
     $('#currentPage-' + table_n).val(page);
 
@@ -110,9 +114,9 @@ function getPage(page, perPage, table_n) {
                 perPage: perPage,
                 table_name: table_name,
                 filter_by: filter_by,
-                date: dateString,
+                startDate: startDate,
+                endDate: endDate,
                 status: type,
-                into_account: account
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         },

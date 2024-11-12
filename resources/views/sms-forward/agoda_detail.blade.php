@@ -20,142 +20,398 @@
 
         <div class="container-xl">
             <div class="row clearfix">
-                <div class="col-md-12">
-                    <div class="card p-4 mb-4">
-                        <h4 class="" style="color:rgba(44,127,122,.95);">Revenue</h4>
-                        <table id="revenueTable" class="example ui striped table nowrap unstackable hover">
-                            <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-revenue" onchange="getPage(1, this.value, 'revenue')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data" id="revenue" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                            </caption>
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center;" data-priority="1">#</th>
-                                    <th style="text-align: center;" data-priority="1">Date</th>
-                                    <th style="text-align: center;" data-priority="1">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $total = 0; ?>
-                                @foreach ($sum_revenue as $key => $item)
-                                    <tr style="text-align: center;">
-                                        <td class="td-content-center">{{ $key + 1 }}</td>
-                                        <td class="td-content-center">{{ $item->date == '' ? '' : Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                        <td style="text-align: right;">{{ number_format($item->agoda_outstanding, 2) }}</td>
-                                    </tr>
-                                    <?php $total += $item->agoda_outstanding; ?>
-                                @endforeach
-                            </tbody>
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="revenue-showingEntries">{{ showingEntriesTable($sum_revenue, 'revenue') }}</p>
-                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
-                                        <div id="revenue-paginate">
-                                            {!! paginateTable($sum_revenue, 'revenue') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
+                <div class="card p-4 mb-4">
+                    <table id="smsAgodaTable" class="example ui striped table nowrap unstackable hover">
+                        <caption class="caption-top mt-2">
+                            <div>
+                                <div class="flex-end-g2">
+                                    <label class="entriespage-label">entries per page :</label>
+                                    <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                    </select>
+                                    <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
                                 </div>
-                            </caption>
-                        </table>
-                    </div> <!-- .card end -->
-                </div>
-                <div class="col-md-12">
-                    <div class="card p-4 mb-4">
-                        <h4 class="" style="color:rgba(44,127,122,.95);">SMS</h4>
-                        <table id="smsAgodaTable" class="example2 ui striped table nowrap unstackable hover">
-                            <caption class="caption-top mt-2">
-                                <div>
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                            </caption>
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center;" data-priority="1">#</th>
-                                    <th style="text-align: center;" data-priority="1">Date</th>
-                                    <th style="text-align: center;">Time</th>
-                                    <th style="text-align: center;">Bank</th>
-                                    <th style="text-align: center;">Bank Account</th>
-                                    <th style="text-align: center;" data-priority="1">Amount</th>
-                                    <th style="text-align: center;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $total_sms = 0; ?>
-        
-                                @foreach ($data_sms as $key => $item)
-                                <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->status == 4 || $item->date_into != "" ? $item->date_into : $item->date)->format('d/m/Y') }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->status == 4 || $item->date_into != "" ? $item->date_into : $item->date)->format('H:i:s') }}</td>
-                                    <td>
-                                        <?php 
-        
-                                            $filename = base_path()."/public/image/bank/".@$item->transfer_bank->name_en.".jpg";
-        
-                                            $filename2 = base_path()."/public/image/bank/".@$item->transfer_bank->name_en.".png";
-        
-                                        ?>
-                                        @if (file_exists($filename)) 
-                                            <img class="rounded-circle avatar" src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="avatar" title="">
-                                        @elseif (file_exists($filename2)) 
-                                            <img class="rounded-circle avatar" src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="avatar" title="">
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;" data-priority="1">#</th>
+                                <th style="text-align: center;" data-priority="1">Date</th>
+                                <th style="text-align: center;">Time</th>
+                                <th style="text-align: center;">Bank</th>
+                                <th style="text-align: center;">Bank Account</th>
+                                <th style="text-align: center;" data-priority="1">Amount</th>
+                                <th style="text-align: center;">Creatd By</th>
+                                <th style="text-align: center;">Income Type</th>
+                                <th style="text-align: center;">Transfer Date</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $total_sms = 0; ?>
+    
+                            @foreach ($data_sms as $key => $item)
+                            <tr>
+                                <td class="td-content-center">{{ $key + 1 }}</td>
+                                <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                <td class="td-content-center">
+                                    <?php
+                                    $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                    $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                    ?>
+                                    <div class="flex-jc p-left-4">
+                                        @if (file_exists($filename))
+                                            <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
+                                        @elseif (file_exists($filename2))
+                                            <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
                                         @endif
                                         {{ @$item->transfer_bank->name_en }}
-                                    </td>
-                                    <td>
-                                        <img class="rounded-circle avatar" src="../../../image/bank/SCB.jpg" alt="avatar" title="">
-                                        <span style="color: black;">{{ "SCB ".$item->into_account }}</span>
-                                    </td>
-                                    <td>{{ number_format($item->amount, 2) }}</td>
-                                    <td class="text-center">
-                                        @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
-                                            <a href="{{ route('sms-agoda-receive-payment', $item->id) }}" class="btn btn-primary rounded-pill" type="button">รับชำระ</a>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <?php $total_sms += $item->amount; ?>
-                                @endforeach
-                            </tbody>
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_sms, 'smsAgoda') }}</p>
-                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
-                                        <div id="smsAgoda-paginate">
-                                            {!! paginateTable($data_sms, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
+                                </td>
+                                <td class="td-content-center">
+                                    <div class="flex-jc p-left-4 center">
+                                        <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
+                                    </div>
+                                </td>
+                                <td class="td-content-center">
+                                    {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                </td>
+                                <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                <td class="td-content-center">Agoda Bank Transfer Revenue</td>
+                                <td class="td-content-center">
+                                    {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                </td>
+                                <td class="td-content-center" style="text-align: center;">
+                                    @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
+                                        <div class="dropdown">
+                                            <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                                Select <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                @if (@$role_revenue->front_desk == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                        Front Desk Bank <br>Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->guest_deposit == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                        Guest Deposit Bank <br> Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->all_outlet == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                        All Outlet Bank <br> Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->agoda == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                        Agoda Bank <br>Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->credit_card_hotel == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                        Credit Card Hotel <br> Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->elexa == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                        Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->no_category == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                        No Category
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->water_park == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                        Water Park Bank <br> Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->credit_water_park == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                        Credit Card Water <br>Park Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@@$role_revenue->other_revenue == 1)
+                                                    <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
+                                                        Other Revenue <br> Bank Transfer
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->transfer == 1)
+                                                    <li class="button-li" onclick="transfer_data({{ $item->id }})">
+                                                        Transfer
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->time == 1)
+                                                    <li class="button-li" onclick="update_time_data({{ $item->id }})">
+                                                        Update Time
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->split == 1)
+                                                    <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                        Split Revenue
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->edit == 1)
+                                                    <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                    <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                @endif
+                                            </ul>
                                         </div>
-                                </div>
-                            </caption>
-                        </table>
-                    </div> <!-- .card end -->
-                </div>
+                                    @endif
+                                </td>
+                            </tr>
+                            <?php $total_sms += $item->amount; ?>
+                            @endforeach
+                        </tbody>
+                        <caption class="caption-bottom">
+                            <div class="md-flex-bt-i-c">
+                                <p class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_sms, 'smsAgoda') }}</p>
+                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
+                                    <div id="smsAgoda-paginate">
+                                        {!! paginateTable($data_sms, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
+                            </div>
+                        </caption>
+                    </table>
+                </div> <!-- .card end -->
             </div> <!-- .row end -->
         </div>
     </div>
+
+    <!-- Modal -->
+    <!-- Modal: Other Revenue -->
+    <div class="modal fade" id="modalOtherRevenue" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="modalOtherRevenueLabel">Other Revenue Bank Transfer</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" enctype="multipart/form-data" class="basic-form" id="form-other">
+                    @csrf
+                    <div class="modal-body">
+                        <label>หมายเหตุ</label>
+                        <textarea class="form-control" name="other_revenue_remark" id="other_revenue_remark" rows="7" cols="50" placeholder="กรุณาระบุหมายเหตุ..." required></textarea>
+                        <input type="hidden" name="dataID" id="otherDataID">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-color-green lift" id="btn-save-other-revenue">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Transfer -->
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="exampleModalCenter2Label">โอนย้าย</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="#" method="POST" enctype="multipart/form-data" id="form-transfer" class="basic-form">
+                    @csrf
+                    <div class="modal-body row">
+                        <div class="col-md-12 col-12">
+                            <label>วันที่โอนย้ายไป</label>
+                            <input type="date" class="form-control" name="date_transfer" id="date_transfer">
+                        </div>
+                        <div class="col-md-12 col-12 mt-3">
+                            <label>หมายเหตุ</label>
+                            <textarea class="form-control" name="transfer_remark" id="transfer_remark" rows="5" cols="10" required>ปิดยอดช้ากว่ากำหนด</textarea>
+                        </div>
+                        <input type="hidden" name="dataID" id="dataID">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-color-green lift" id="btn-save-transfer">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Time -->
+    <div class="modal fade" id="exampleModalCenter1" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="exampleModalCenter1Label">แก้ไขเวลาการโอน</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-12 col-12">
+                        <label>เวลา</label>
+                        <input type="time" class="form-control" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>" step="any">
+                    </div>
+                    <input type="hidden" name="timeID" id="timeID">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-color-green lift" onclick="change_time()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Split -->
+    <div class="modal fade" id="SplitModalCenter" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="SplitModalCenterLabel">Split Revenue</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="#" method="POST" enctype="multipart/form-data" class="form-split">
+                    @csrf
+                    <div class="modal-body row">
+                        <div class="col-md-6">
+                            <label>วันที่</label>
+                            <input type="date" class="form-control" name="date-split" id="date-split">
+                            <span class="text-danger fw-bold" id="text-split-alert"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label>จำนวนเงิน <span class="text-danger fw-bold" id="text-split-amount"></span></label>
+                            &nbsp;<label>คงเหลือ <span class="text-danger fw-bold" id="text-split-balance"></span></label>
+                            <input type="hidden" name="balance_amount" id="balance_amount">
+                            <input type="text" class="form-control" name="split-amount" id="split-amount" placeholder="0.00">
+                            <span class="text-danger fw-bold" id="text-split-alert"></span>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <button type="button" class="btn btn-color-green lift btn-split-add">Add</button>
+                            <button type="button" class="btn btn-secondary lift btn-split-add" onclick="toggleHide()">Delete All</button>
+
+                            <span class="split-todo-error text-danger" style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                            <span class="split-error text-danger"></span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <div class="print_invoice">
+                                <table class="items">
+                                    <thead>
+                                        <tr>
+                                            <th>วันที่</th>
+                                            <th>จำนวนเงิน</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="split-todo-list">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <input type="hidden" id="split_total_number" value="0">
+                        <input type="hidden" id="split_number" value="0">
+                        <input type="hidden" id="split_list_num" name="split_list_num" value="0">
+                        <input type="hidden" name="splitID" id="splitID">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-color-green lift btn-save-split" onclick="change_split()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal เพิ่มข้อมูล modal fade -->
+    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter5Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content rounded-lg">
+                <div class="modal-header md-header">
+                    <h5 class="modal-title text-white" id="exampleModalCenter5Label">เพิ่มข้อมูล
+                    </h5>
+                    <button type="button" class="close text-white text-2xl" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
+                    @csrf
+                    <div class="modal-body">
+                        <label for="">ประเภทรายได้</label>
+                        <br>
+                        <select class="form-control form-select" id="status_type" name="status" onchange="select_type()">
+                            <option value="0">เลือกข้อมูล</option>
+                            <option value="1">Room Revenue</option>
+                            <option value="2">All Outlet Revenue</option>
+                            <option value="3">Water Park Revenue</option>
+                            <option value="4">Credit Revenue</option>
+                            <option value="5">Agoda Revenue</option>
+                            <option value="6">Front Desk Revenue</option>
+                            <option value="8">Elexa EGAT Revenue</option>
+                            <option value="9">Other Revenue Bank Transfer</option>
+                        </select>
+                        <div class="dg-gc2-g2">
+                            <div class="wf-py2 ">
+                                <label for="">วันที่โอน <sup class="t-red600">*</sup></label>
+                                <br>
+                                <input class="form-control" type="date" name="date" id="sms-date" required>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">เวลาที่โอน <sup class="text-danger">*</sup></label>
+                                <br>
+                                <input class="form-control" type="time" name="time" id="sms-time">
+                            </div>
+                            <div class="wf-py2 Amount agoda" hidden>
+                                <label for="">Booking ID <sup class="text-danger">*</sup></label>
+                                <br>
+                                <input type="text" class="form-control" name="booking_id" id="booking_id" required>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">โอนจากบัญชี <sup class="text-danger">*</sup></label>
+                                <br>
+                                <select class="form-control select2" id="transfer_from" name="transfer_from" data-placeholder="Select">
+                                    <option value="0">เลือกข้อมูล</option>
+                                    @foreach ($data_bank as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_th }}
+                                            ({{ $item->name_en }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
+                                <br>
+                                <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
+                                    <option value="0">เลือกข้อมูล</option>
+                                    <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
+                                    <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
+                                    <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
+                                    <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
+                                </select>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">จำนวนเงิน (บาท) <sup class="text-danger">*</sup></label>
+                                <br>
+                                <input class="form-control" type="text" id="amount" name="amount" placeholder="0.00" required>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" id="id">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 15px;">Close</button>
+                        <button type="button" class="btn btn-color-green sa-button-submit">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL -->
 
     <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
     <input type="hidden" id="date" name="date" value="{{ $search_date }}">
     <input type="hidden" id="status" value="5">
     <input type="hidden" id="into_account" value="{{ $into_account }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
-    <input type="hidden" id="get-total-revenue" value="{{ $sum_revenue->total() }}">
     <input type="hidden" id="get-total-smsAgoda" value="{{ $data_sms->total() }}">
     <input type="hidden" id="currentPage-smsAgoda" value="1">
-    <input type="hidden" id="currentPage-revenue" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -172,7 +428,6 @@
 
     <script>
         $(document).ready(function() {
-
             new DataTable('.example', {
                 responsive: true,
                 searching: false,
@@ -205,39 +460,6 @@
                     }
                 }
             });
-
-            new DataTable('.example2', {
-                responsive: true,
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    },
-                    {
-                        width: '7%',
-                        targets: 0
-                    },
-                    {
-                        width: '10%',
-                        targets: 3
-                    },
-                    {
-                        width: '15%',
-                        targets: 4
-                    }
-
-                ],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                }
-            });
         });
 
         // Search 
@@ -253,8 +475,7 @@
             var account = $('#account').val();
             var getUrl = window.location.pathname;         
                 
-            $('#'+table_name).DataTable().destroy();
-            if (id != "revenue") {
+                $('#'+table_name).DataTable().destroy();
                 var table = $('#smsAgodaTable').dataTable({
                     searching: false,
                     paging: false,
@@ -294,7 +515,8 @@
                         $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                     },
                     columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 6], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 2, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                                { targets: [3], className: 'text-start' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -310,69 +532,14 @@
                         { data: 'transfer_bank' },
                         { data: 'into_account' },
                         { data: 'amount' },
+                        { data: 'remark' },
+                        { data: 'revenue_name' },
+                        { data: 'date_into' },
                         { data: 'btn_action' },
                     ],
                         
-                });   
-            } else {
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                    ajax: {
-                        url: '/sms-search-table',
-                        type: 'POST',
-                        dataType: "json",
-                        cache: false,
-                        data: {
-                            search_value: search_value,
-                            table_name: table_name,
-                            filter_by: filter_by,
-                            date: dateString,
-                            status: type_status,
-                            into_account: account
-                        },
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    },
-                    "initComplete": function (settings, json) {
-
-                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        } else {
-                            var count = 0;
-                            $('.dataTables_empty').addClass('dt-center');
-                        }
-                        
-                        if (search_value == '') {
-                            count_total = total;
-                        } else {
-                            count_total = count;
-                        }
-                    
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 1, 2], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'date' },
-                        { data: 'agoda_outstanding' },
-                    ],
-                        
                 }); 
-            }
-
+                
             document.getElementById(id).focus();
         });
 
@@ -496,6 +663,9 @@
             } else {
                 $('.split-todo-error').show();
             }
+
+            $('#text-split-balance').text("("+currencyFormat(balance - Number($('#split_total_number').val()))+")");
+
         });
 
         $('.split-todo-list .close').on('click', function() {
@@ -512,6 +682,8 @@
             } else {
                 $('.btn-save-split').prop('disabled', true);
             }
+
+            $('#text-split-balance').text("("+currencyFormat(Number($('#balance_amount').val()) - Number($('#split_total_number').val()))+")");
         }
 
         function toggleHide() {

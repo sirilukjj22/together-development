@@ -37,6 +37,7 @@
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
                                         <th style="text-align: center;" data-priority="1">Date</th>
+                                        <th style="text-align: center;" data-priority="1">Stan</th>
                                         <th style="text-align: center;" data-priority="1">Income type</th>
                                         <th style="text-align: center;">EV Charging Charge</th>
                                         <th style="text-align: center;">Transaction Fee</th>
@@ -49,6 +50,7 @@
                                         <tr style="text-align: center;">
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                            <td>{{ $item->batch }}</td>
                                             <td class="td-content-center">Elexa EGAT Revenue</td>
                                             <td class="td-content-center">{{ number_format($item->ev_charge, 2) }}</td>
                                             <td class="td-content-center">{{ number_format($item->ev_fee, 2) }}</td>
@@ -206,6 +208,7 @@
                 columns: [
                     { data: 'number' },
                     { data: 'date' },
+                    { data: 'stan' },
                     { data: 'revenue_name' },
                     { data: 'ev_charge' },
                     { data: 'ev_fee' },

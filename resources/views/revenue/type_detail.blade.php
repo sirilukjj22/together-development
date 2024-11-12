@@ -23,10 +23,10 @@
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                     <select class="entriespage-button" id="search-per-page-type" onchange="getPage(1, this.value, 'type')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "type" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "type" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "type" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "type" ? 'selected' : '' }}>100</option>
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                     </select>
                                     <input class="search-button search-data" id="type" style="text-align:left;" placeholder="Search" />
                                 </div>
@@ -57,7 +57,7 @@
                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                                 ?>
-                                                <div class="flex-jc p-left-4 center">
+                                                <div class="flex-jc p-left-4">
                                                     @if (file_exists($filename))
                                                         <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
                                                     @elseif (file_exists($filename2))
@@ -67,7 +67,7 @@
                                                 </div>
                                             </td>
                                             <td class="td-content-center">
-                                                <div class="flex-jc p-left-4 center">
+                                                <div class="flex-jc p-left-4">
                                                     <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
                                                 </div>
                                             </td>
@@ -179,7 +179,7 @@
                     }
 
                 ],
-                order: [0, 'asc'],
+                // order: [0, 'asc'],
                 responsive: {
                     details: {
                         type: 'column',
@@ -241,7 +241,8 @@
 
                     },
                     columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 2, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
+                                { targets: [3], className: 'dt-left' },
                     ],
                     // order: [0, 'asc'],
                     responsive: {
