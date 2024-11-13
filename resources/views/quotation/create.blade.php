@@ -364,7 +364,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" required>
                                             <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="0">
+                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" required>
                                             <span class="input-group-text">เด็ก</span>
                                         </div>
                                     </div>
@@ -1367,6 +1367,7 @@
             }
         });
         function fetchProducts(status) {
+
             if (status == 'all' ) {
                 $('#ProductName').text('All Product');
             }else if (status == 'Room_Type') {
@@ -1545,7 +1546,7 @@
                     $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
                 $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first-child').text(index); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                    $(this).find('td:first-child').text(index + 1 ); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
             }
             $(document).on('click', '.remove-button', function() {
@@ -1566,7 +1567,12 @@
                     },
                     success: function(response) {
                         $.each(response.products, function (key, val) {
+
                             $('#tr-select-add' + val.id).prop('hidden',true);
+                            // var rowExist = $('#display-selected-items tr').filter(function() {
+                            //     return $(this).find('input[type="hidden"][name="ProductIDmain[]"]').val() === val.Product_ID;
+                            // }).length > 0;
+                            $('#main').DataTable().destroy();
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                                     number += 1;
@@ -1633,24 +1639,34 @@
                                             'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
                                             '<span class="input-group-text">' + val.quantity_name + '</span>' +
                                             '</div>';
-                                    $('#main').DataTable().destroy();
-                                    var rowNumbemain = $('#display-selected-items tr').length + 1;
-                                    $('#display-selected-items').append(
-                                        '<tr id="tr-select-addmain' + val.id + '">' +
-                                        '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-                                        '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
-                                        '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td style="text-align:center;width:12%;">'+ quantity +'</td>' +
-                                        '<td style="text-align:center;width:12%;">' + unit + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                        '</tr>'
-                                    );
-                                    $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
-                                    $('#display-selected-items tr.odd').remove();
+
+
+
+
+                                     // If the product doesn't exist
+
+
+                                        var rowNumbemain = $('#display-selected-items tr').length + 1;
+                                        $('#display-selected-items').append(
+                                            '<tr id="tr-select-addmain' + val.id + '">' +
+                                            '<td style="text-align:center;">' + rowNumbemain + '</td>' +
+                                            '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +
+                                            '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span></td>' +
+             '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
+                                            '<td style="text-align:center;width:12%;">' + quantity + '</td>' +
+                                            '<td style="text-align:center;width:12%;">' + unit + '</td>' +
+                                            '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                                            '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
+                                            '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
+                                            '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value="' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
+                                            '<td style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                            '</tr>'
+                                        );
+
+                                        // Optionally remove rows based on other conditions
+                                        $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
+                                        $('#display-selected-items tr.odd').remove();
+
                                     $('#main').DataTable({
                                         searching: false,
                                         paging: false,
@@ -1689,9 +1705,11 @@
                 $('#exampleModalproduct').modal('hide');
             });
             $(document).ready(function() {
-                totalAmost();
+
                 $(document).on('click', '.remove-buttonmain', function() {
                     var product = $(this).val();
+                    console.log(product);
+
                     $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
 
                     $('#display-selected-items tbody tr').each(function(index) {
@@ -1701,6 +1719,7 @@
                     renumberRows();
                     totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
                 });
+                totalAmost();
             });
         }
         //----------------------------------------รายการ---------------------------
@@ -1716,6 +1735,8 @@
                         paxmain = 0;
                     }
                     var pax = paxmain*quantitymain;
+                    console.log(pax);
+
                     $('#paxtotal'+number_ID).text(pax);
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));

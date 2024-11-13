@@ -388,7 +388,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่"value="{{$Quotation->adult}}">
                                             <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"value="{{$Quotation->children}}">
+                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"value="{{$Quotation->children ?? '0'}}">
                                             <span class="input-group-text">เด็ก</span>
                                         </div>
                                     </div>
@@ -1019,7 +1019,7 @@
 
             console.log(day, night);
             var adult ={{$Quotation->adult}};
-            var children ={{$Quotation->children}};
+            var children ={{$Quotation->children ? $Quotation->children : 0 }};
             $('#Adultpo').text(adult +' Adult');
             $('#Adultpoguest').text(adult +' Adult');
 
@@ -1856,6 +1856,7 @@
                     console.error('Error:', error);
                 }
             });
+
             $(document).ready(function() {
                 if (!$.fn.DataTable.isDataTable('.product-list-select')) {
                     var table = $('.product-list-select').DataTable();

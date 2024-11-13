@@ -955,7 +955,7 @@
 
             console.log(day, night);
             var adult ={{$Quotation->adult}};
-            var children ={{$Quotation->children}};
+            var children ={{$Quotation->children ? $Quotation->children : 0 }};
             $('#Adultpo').text(adult +' Adult');
             $('#Adultpoguest').text(adult +' Adult');
 
@@ -1648,6 +1648,235 @@
                 $('#'+table_name2[index] + ' thead th').removeClass('sorting sorting_asc sorting_desc');
             }
         });
+
+        //----------------------------------------รายการ---------------------------
+        $(document).ready(function() {
+            $(document).on('keyup', '.quantitymain', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var quantitymain =  Number($(this).val());
+                    var discountmain =  $('#discountmain'+number_ID).val();
+                    var unitmain =  $('#unitmain'+number_ID).val();
+                    var paxmain = parseFloat($('#pax' + number_ID).val());
+                    if (isNaN(paxmain)) {
+                        paxmain = 0;
+                    }
+                    var pax = paxmain*quantitymain;
+                    $('#paxtotal'+number_ID).text(pax);
+                    var number = Number($('#number-product').val());
+                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+                    // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    totalAmost();
+                }
+            });
+            $(document).on('keyup', '.discountmain', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var discountmain =  Number($(this).val());
+
+                    var quantitymain =  $('#quantitymain'+number_ID).val();
+                    var unitmain =  $('#unitmain'+number_ID).val();
+
+                    var number = Number($('#number-product').val());
+                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+
+
+                   var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+                    totalAmost();
+
+                }
+
+            });
+            $(document).on('keyup', '.unitmain', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var unitmain =  Number($(this).val());
+                    var quantitymain =  $('#quantitymain'+number_ID).val();
+                    var discountmain =  $('#discountmain'+number_ID).val();
+                    var number = Number($('#number-product').val());
+                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+                    console.log(number_ID);
+
+                    var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+
+
+                    totalAmost();
+                }
+            });
+            $(document).on('keyup', '.quantity-input', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var quantitymain =  Number($(this).val());
+                    var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
+                    var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+                    if (discountmain === " " || discountmain == 0) {
+                        var allcount0 = price;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = pricenew;
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+                    var paxmain = parseFloat($('#pax' + number_ID).val());
+                    if (isNaN(paxmain)) {
+                        paxmain = 0;
+                    }
+                    var pax = paxmain*quantitymain;
+                    $('#paxtotal'+number_ID).text(pax);
+                    totalAmost();
+                }
+            });
+            $(document).on('keyup', '.discount-input', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var discountmain =  Number($(this).val().trim());
+
+                    // ถ้าค่าเป็นค่าว่างหรือไม่ใช่ตัวเลข จะตั้งค่าเป็น 0
+                    if (isNaN(discountmain) || $(this).val().trim() === "") {
+                        discountmain = 0; // ตั้งค่าเป็น 0 ถ้าค่าว่าง
+                    }
+
+                    var maxdiscount = parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
+                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                    var SpecialDiscount = User_discount + Add_discount;
+                    var quantitymain = parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var unitmain = parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain * unitmain * price;
+
+                    // ถ้าไม่มีการกรอกค่า (หรือค่าเป็น 0) ให้แสดงราคาเต็ม
+                    if (discountmain === 0) {
+                        var allcount0 = price;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = pricenew;
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    } else {
+                        // ตรวจสอบว่าค่าส่วนลดเกิน maxdiscount หรือ SpecialDiscount หรือไม่
+                        if (discountmain > SpecialDiscount) {
+                            if (SpecialDiscount > maxdiscount) {
+                                discountmain = maxdiscount;
+                                $(this).val(discountmain); // บังคับค่าเป็น maxdiscount
+                            }else{
+                                discountmain = SpecialDiscount;
+                                $(this).val(discountmain); // บังคับค่าเป็น maxdiscount
+                            }
+                        }else{
+                            if (discountmain > maxdiscount) {
+                                discountmain = maxdiscount;
+                                $(this).val(discountmain); // บังคับค่าเป็น maxdiscount
+                            }
+                        }
+                        console.log(discountmain);
+
+                        var pricediscount = pricenew - (pricenew * discountmain / 100);
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = (price * discountmain / 100);
+                        var allcount0 = price - pricediscount;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+
+                    var paxmain = parseFloat($('#pax' + number_ID).val());
+                    if (isNaN(paxmain)) {
+                        paxmain = 0;
+                    }
+                    var pax = paxmain * quantitymain;
+                    $('#paxtotal'+number_ID).text(pax);
+                    totalAmost();
+                }
+            });
+
+
+            $(document).on('keyup', '.unit-input', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var unitmain =  Number($(this).val());
+                    var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
+                    var quantitymain  =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain*unitmain*price;
+
+                    console.log(discountmain);
+
+                    if (discountmain === " " || discountmain == 0 ||  discountmain == null) {
+                        console.log(1);
+                        var allcount0 = price;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = pricenew;
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+                    totalAmost();
+                }
+            });
+            $(document).on('keyup', '.DiscountAmount', function() {
+                var DiscountAmount =  Number($(this).val());
+                if (DiscountAmount) {
+                    $('#Special').css('display', 'table-row');
+                    $('#Subtotal').css('display', 'table-row');
+                }else{
+                    $('#Special').css('display', 'none');
+                    $('#Subtotal').css('display', 'none');
+                }
+
+            });
+            totalAmost();
+        });
         function totalAmost() {
             $(document).ready(function() {
                 var typevat  = $('#Mvat').val();
@@ -1788,7 +2017,7 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",
@@ -1800,35 +2029,6 @@
                     console.log(1);
                     // If user confirms, submit the form
                     window.location.href = "{{ route('Proposal.index') }}";
-                }
-            });
-        }
-        function confirmSubmit(event) {
-            event.preventDefault(); // Prevent the form from submitting
-            var Quotationold = $('#Quotationold').val();
-            var Quotation_ID = $('#Quotation_ID').val();
-            var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
-            var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
-            Swal.fire({
-                title: title,
-                text: message,
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "preview";
-                    input.value = 0;
-
-                    // เพิ่ม input ลงในฟอร์ม
-                    document.getElementById("myForm").appendChild(input);
-                    document.getElementById("myForm").removeAttribute('target');
-                    document.getElementById("myForm").submit();
                 }
             });
         }

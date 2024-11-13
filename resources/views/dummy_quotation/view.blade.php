@@ -944,10 +944,18 @@
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
-            var day ={{$Quotation->day}};
-            var night ={{$Quotation->night}};
-            var adult ={{$Quotation->adult}};
-            var children ={{$Quotation->children}};
+            var dayview = @json($Quotation->day);
+            var nightview = @json($Quotation->night);
+
+            var day = dayview ? dayview : '-';
+            var night = nightview ? nightview : '-';
+
+            console.log(day, night);
+
+
+
+            var adult ={{$Quotation->adult ? $Quotation->adult : 0 }};
+            var children ={{$Quotation->children ? $Quotation->children : 0}};
             $('#Adultpo').text(adult +' Adult');
             $('#Adultpoguest').text(adult +' Adult');
 

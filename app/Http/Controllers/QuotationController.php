@@ -58,10 +58,12 @@ class QuotationController extends Controller
         $Rejectcount = Quotation::query()->where('status_document',4)->count();
         $Cancel = Quotation::query()->where('status_document',0)->paginate($perPage);
         $Cancelcount = Quotation::query()->where('status_document',0)->count();
+        $Completecount = Quotation::query()->where('status_document',9)->count();
+        $Complete = Quotation::query()->where('status_document',9)->paginate($perPage);
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2,3])->get();
         $oldestYear = Quotation::query()->orderBy('created_at', 'asc')->value('created_at')->year ?? now()->year;
         $newestYear = Quotation::query()->orderBy('created_at', 'desc')->value('created_at')->year ?? now()->year;
-        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear'));
+        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount'));
     }
     public function SearchAll(Request $request){
 

@@ -988,8 +988,8 @@
 
 
 
-            var adult ={{$Quotation->adult}};
-            var children ={{$Quotation->children}};
+            var adult ={{$Quotation->adult ? $Quotation->adult : 0 }};
+            var children ={{$Quotation->children ? $Quotation->children : 0}};
             $('#Adultpo').text(adult +' Adult');
             $('#Adultpoguest').text(adult +' Adult');
 

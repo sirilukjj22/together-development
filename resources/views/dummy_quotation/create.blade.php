@@ -366,7 +366,7 @@
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" @required(true)>
                                         <span class="input-group-text">ผู้ใหญ่</span>
-                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="0"@required(true)>
+                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" @required(true)>
                                         <span class="input-group-text">เด็ก</span>
                                     </div>
                                 </div>
@@ -1557,7 +1557,7 @@
                     $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
                 $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first-child').text(index); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                    $(this).find('td:first-child').text(index + 1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
             }
             $(document).on('click', '.remove-button', function() {
@@ -1579,7 +1579,7 @@
                     },
                     success: function(response) {
                         $.each(response.products, function (key, val) {
-
+                            $('#main').DataTable().destroy();
                             $('#tr-select-add' + val.id).prop('hidden',true);
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
@@ -1646,7 +1646,7 @@
                                             '<span class="input-group-text">' + val.quantity_name + '</span>' +
                                             '</div>';
 
-                                    $('#main').DataTable().destroy();
+
                                     var rowNumbemain = $('#display-selected-items tr').length + 1;
                                     $('#display-selected-items').append(
                                         '<tr id="tr-select-addmain' + val.id + '">' +
