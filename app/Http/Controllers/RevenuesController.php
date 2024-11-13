@@ -910,7 +910,6 @@ class RevenuesController extends Controller
             return $this->detail($request);
 
         } else {
-
         if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = date('Y-m-d 21:00:00', strtotime($req_date));
@@ -2221,12 +2220,14 @@ class RevenuesController extends Controller
 
     public function detail(Request $request)
     {
-
         if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
-            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
-            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime($adate));
+            $fdate = date('Y-m-d 21:00:00', strtotime($req_date));
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($fdate))));
+            $to = date('Y-m-d 20:59:59', strtotime($fdate));
+
+            $adate = Carbon::parse($request->date)->format('Y-m-d');
+            $adate2 = Carbon::parse($request->date)->format('Y-m-d');
 
             // Revenue
             $month_from = $req_date;
@@ -2235,9 +2236,12 @@ class RevenuesController extends Controller
 
         } elseif ($request->filter_by == "yesterday") {
             $req_date = Carbon::now()->format('Y-m-d');
-            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
-            $from = date('Y-m-d 21:00:00', strtotime('-2 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime('-1 day', strtotime(date($adate))));
+            $fdate = date('Y-m-d 21:00:00', strtotime($req_date));
+            $from = date('Y-m-d 21:00:00', strtotime('-2 day', strtotime(date($fdate))));
+            $to = date('Y-m-d 20:59:59', strtotime('-1 day', strtotime(date($fdate))));
+
+            $adate = date('Y-m-d', strtotime('-2 day', strtotime(date($fdate))));
+            $adate2 = date('Y-m-d', strtotime('-1 day', strtotime(date($fdate))));
 
             // Revenue
             $month_from = $req_date;
@@ -2306,6 +2310,7 @@ class RevenuesController extends Controller
         } elseif ($request->filter_by == "thisMonth") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
             $adate = date('Y-m-d', strtotime(date('Y-m-01')));
+            $adate2 = date('Y-m-d', strtotime('last day of this month'));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime(date('Y-m-d')));
@@ -2355,29 +2360,29 @@ class RevenuesController extends Controller
 
         ## Cash
         if ($request->revenue_type == "cash_front") {
-            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('front_cash', '>', 0)->select('date', 'front_cash as amount')->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('front_cash', '>', 0)->sum('front_cash');
+            $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('front_cash', '>', 0)->select('date', 'front_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$adate, $adate2])->where('front_cash', '>', 0)->sum('front_cash');
             $title = "Front Desk Revenue (Cash)";
             $status = 'cash_front';
             $revenue_name = "cash";
 
         } if ($request->revenue_type == "cash_all_outlet") {
-            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('fb_cash', '>', 0)->select('date', 'fb_cash as amount')->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('fb_cash', '>', 0)->sum('fb_cash');
+            $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('fb_cash', '>', 0)->select('date', 'fb_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$adate, $adate2])->where('fb_cash', '>', 0)->sum('fb_cash');
             $title = "All Outlet Revenue (Cash)";
             $status = 'cash_all_outlet';
             $revenue_name = "cash";
 
         } if ($request->revenue_type == "cash_guest") {
-            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('room_cash', '>', 0)->select('date', 'room_cash as amount')->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('room_cash', '>', 0)->sum('room_cash');
+            $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('room_cash', '>', 0)->select('date', 'room_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$adate, $adate2])->where('room_cash', '>', 0)->sum('room_cash');
             $title = "Guest Deposit Revenue (Cash)";
             $status = 'cash_guest';
             $revenue_name = "cash";
 
         } if ($request->revenue_type == "cash_water_park") {
-            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('wp_cash', '>', 0)->select('date', 'wp_cash as amount')->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('wp_cash', '>', 0)->sum('wp_cash');
+            $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('wp_cash', '>', 0)->select('date', 'wp_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$adate, $adate2])->where('wp_cash', '>', 0)->sum('wp_cash');
             $title = "Water Park Revenue (Cash)";
             $status = 'cash_water_park';
             $revenue_name = "cash";
@@ -3560,7 +3565,7 @@ class RevenuesController extends Controller
                                 ->select('date', 'room_cash as amount')->paginate($perPage);
 
                     } elseif ($request->status == "cash_water_park") {
-                        $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('fb_cash', '>', 0)
+                        $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('wp_cash', '>', 0)
                                 ->where(function($query) use ($search) {
                                     $query->where('wp_cash', 'like', '%' . $search . '%');
                                 })
