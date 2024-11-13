@@ -728,7 +728,7 @@ white-space: nowrap
                         $('#date').text(date);
                         $('#dateM').text(Time);
                         $('#Invoicedate').text(valid);
-                        $('#displayPaymentDateEditBill').text(date);
+                        $('#displayPaymentDateEditBill').text(valid);
                         $('#displayReferenceEditBill').text(reservationNo);
                         $('#displayNoteEditBill').text(note);
                         $('#displayDescriptionEditBill').text(datanamebank);

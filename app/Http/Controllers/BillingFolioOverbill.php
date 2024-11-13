@@ -4724,15 +4724,22 @@ class BillingFolioOverbill extends Controller
                     // สร้างสถานะการใช้งาน
                     $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                     $CreateBy = Auth::user()->id;
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                    if ($isOperatedByCreator) {
+                    if ($rolePermission == 1 || $rolePermission == 2) {
+                        if ($isOperatedByCreator) {
+                            $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
+                                            Select
+                                            </button>';
+                        }else{
+                            $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" disabled>
+                                            Select
+                                            </button>';
+                        }
+                    }elseif ($rolePermission == 3) {
                         $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
-                                        Select
-                                        </button>';
-                    }else{
-                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" disabled>
-                                        Select
-                                        </button>';
+                                            Select
+                                            </button>';
                     }
                     $data[] = [
                         'number' => ($key + 1) ,
@@ -4810,16 +4817,24 @@ class BillingFolioOverbill extends Controller
                 // สร้างสถานะการใช้งาน
                 $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                 $CreateBy = Auth::user()->id;
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                if ($isOperatedByCreator) {
+                if ($rolePermission == 1 || $rolePermission == 2) {
+                    if ($isOperatedByCreator) {
+                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
+                                        Select
+                                        </button>';
+                    }else{
+                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" disabled>
+                                        Select
+                                        </button>';
+                    }
+                }elseif ($rolePermission == 3) {
                     $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
-                                    Select
-                                    </button>';
-                }else{
-                    $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" disabled>
-                                    Select
-                                    </button>';
+                                        Select
+                                        </button>';
                 }
+
                 $data[] = [
                     'number' => ($key + 1) ,
                     'Proposal_ID' => $value->Quotation_ID,

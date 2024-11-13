@@ -106,14 +106,22 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+
                                                 @endphp
                                                 <td style="text-align: center;">
-                                                    @if ($item->Operated_by == $CreateBy)
+                                                    @if ($rolePermission == 1 ||$rolePermission == 2)
+                                                        @if ($item->Operated_by == $CreateBy)
+                                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/Over/'.$item->id) }}'">
+                                                                Select
+                                                            </button>
+                                                        @else
+                                                            <button type="button" class="btn btn-color-green lift btn_modal" disabled>
+                                                                Select
+                                                            </button>
+                                                        @endif
+                                                    @elseif ($rolePermission == 3)
                                                         <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/Over/'.$item->id) }}'">
-                                                            Select
-                                                        </button>
-                                                    @else
-                                                        <button type="button" class="btn btn-color-green lift btn_modal" disabled>
                                                             Select
                                                         </button>
                                                     @endif

@@ -63,7 +63,7 @@ class proposal_request extends Controller
         ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
         ->union($quotation1);
         $proposalcount = DB::table(DB::raw("({$proposal1->toSql()}) as sub"))->mergeBindings($proposal1->getQuery())->count();
-        $requestcount =confirmation_request::query()->count();
+        $requestcount =confirmation_request::query()->where('status',1)->count();
         $currentDateTime = Carbon::now();
         confirmation_request::where('expiration_time', '<', $currentDateTime)->delete();
         $request =confirmation_request::query()->where('status',1)->paginate($perPage);
