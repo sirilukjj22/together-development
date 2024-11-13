@@ -385,13 +385,17 @@
                                 <td style="text-align: center;width:10%">
                                 <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                                 <td style="text-align: center;" >
-                                    <img src="test.png" style="width: 40%;"/>
-                                    <span style="display: block; text-align: center;">{{$user->name}}</span>
+                                    @if ($user->signature)
+                                        <img src="upload/signature/{{$user->signature}}" style="width: 40%;"/>
+                                    @endif
+                                    @if ($user->firstname)
+                                        <span style="display: block; text-align: center;">{{$user->firstname}} {{$user->lastname}}</span>
+                                    @endif
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td style="text-align: center;">
                                     <img src="test.png" style="width: 40%;"/>
-                                    <span style="display: block; text-align: center;">{{$user->name}}</span>
+                                    <span style="display: block; text-align: center;">ชื่อ</span>
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">
@@ -985,13 +989,18 @@
                                 <td style="text-align: center;width:10%">
                                 <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                                 <td style="text-align: center;" >
-                                    <img src="test.png" style="width: 40%;"/>
-                                    <span style="display: block; text-align: center;">{{$user->name}}</span>
+                                    @if ($user->signature)
+                                        <img src="upload/signature/{{$user->signature}}" style="width: 40%;"/>
+                                    @endif
+
+                                    @if ($user->firstname)
+                                        <span style="display: block; text-align: center;">{{$user->firstname}} {{$user->lastname}}</span>
+                                    @endif
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td style="text-align: center;">
                                     <img src="test.png" style="width: 40%;"/>
-                                    <span style="display: block; text-align: center;">{{$user->name}}</span>
+                                    <span style="display: block; text-align: center;">ชื่อ</span>
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">

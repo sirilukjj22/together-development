@@ -2118,7 +2118,7 @@ class QuotationController extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -2687,7 +2687,7 @@ class QuotationController extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -3279,7 +3279,7 @@ class QuotationController extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -4257,7 +4257,7 @@ class QuotationController extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -4527,6 +4527,10 @@ class QuotationController extends Controller
         $Quotation_ID= $quotation->Quotation_ID;
         $type_Proposal = $quotation->type_Proposal;
         $comtypefullname = null;
+        $userid = Auth::user()->id;
+        $username = User::where('id',$userid)->first();
+        $nameuser = $username->firstname.' '.$username->lastname;
+        $teluser = $username->tel;
         if ($type_Proposal == 'Guest') {
             $companys = Guest::where('Profile_ID',$comid)->first();
             $emailCom = $companys->Email;
@@ -4579,7 +4583,7 @@ class QuotationController extends Controller
         }
 
         return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day','promotions',
-                        'quotation','type_Proposal'));
+                        'quotation','type_Proposal','nameuser','teluser'));
     }
 
     public function sendemail(Request $request,$id){
@@ -4593,6 +4597,7 @@ class QuotationController extends Controller
             $correct = $quotation->correct;
             $type_Proposal = $quotation->type_Proposal;
             $path = 'Log_PDF/proposal/';
+            $pathother = 'Log_PDF/other/';
             if ($correct > 0) {
                 $pdf = $path.$QuotationID.'-'.$correct;
                 $pdfPath = $path.$QuotationID.'-'.$correct.'.pdf';
@@ -4629,14 +4634,14 @@ class QuotationController extends Controller
                 }
             }
             $fileUploads = $request->file('files'); // ใช้ 'files' ถ้าฟิลด์ในฟอร์มเป็น 'files[]'
-
+            $formattedDate = Carbon::now()->format('Y-m-d');
             // ตรวจสอบว่ามีไฟล์ถูกอัปโหลดหรือไม่
             if ($fileUploads) {
                 $filePaths = [];
                 foreach ($fileUploads as $file) {
-                    $filename = $file->getClientOriginalName();
-                    $file->move(public_path($path), $filename);
-                    $filePaths[] = public_path($path . $filename);
+                    $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . "_" . $formattedDate . "_" . uniqid() . "." . $file->getClientOriginalExtension();
+                    $file->move(public_path($pathother), $filename);
+                    $filePaths[] = public_path($pathother . $filename);
                 }
             } else {
                 // หากไม่มีไฟล์ที่อัปโหลด ให้กำหนด $filePaths เป็นอาร์เรย์ว่าง
@@ -5268,7 +5273,7 @@ class QuotationController extends Controller
         $Day = $datarequest['Day'];
         $Night = $datarequest['Night'];
         $comment = $datarequest['comment'];
-        $user = User::where('id',$userid)->select('id','name')->first();
+        $user = User::where('id',$userid)->first();
         $fullName = null;
         $Contact_Name = null;
         $Contact_phone =null;

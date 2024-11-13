@@ -42,7 +42,7 @@
                                         <input type="text" class="form-control" name="email" value="{{ $user->email }}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="signature">Signature <a href="/upload/signature/{{ $user->signature }}" target="_blank" class="text-primary"><u>แสดงรูปภาพ</u></a></label>                                        
+                                        <label for="signature">Signature <a href="/upload/signature/{{ $user->signature }}" target="_blank" class="text-primary"><u>แสดงรูปภาพ</u></a></label>
                                         <input type="file" class="form-control" name="signature" accept=".jpg, .jpeg, .png">
                                     </div>
                                     <div class="form-group">
@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="telephone" class="star-red">Telephone</label>
-                                        <input type="text" class="form-control" name="telephone" value="{{ $user->tel }}" required>
+                                        <input type="text" class="form-control phone" name="telephone" value="{{ $user->tel }}" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="access-rights" class="star-red">สิทธิ์ในการเข้าถึง / Access Rights</label>
@@ -269,9 +269,13 @@
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     @else
         <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     @endif
 
     <style>
@@ -324,7 +328,7 @@
             $('#close-revenue-section').on('click', function () {
                 $('#revenue-section').slideUp(); // ใช้ slideUp เพื่อเลื่อนขึ้นและปิด
             });
-       
+
             // ฟังก์ชันสำหรับการเลือก checkbox ทั้งหมดใน menu-section
             $('#menu-permissions').on('change', function () {
                 var isChecked = $(this).is(':checked');
@@ -431,7 +435,7 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    // Department 
+                    // Department
                     if (response.data.close_day == 1) {
                         $('#close-day').prop('checked', true);
                     }
@@ -466,7 +470,7 @@
                         }
                     });
 
-                    // Revenue 
+                    // Revenue
                     if (response.data_revenue.front_desk == 1) {
                         $('#revenue_front_desk').prop('checked', true);
                     }

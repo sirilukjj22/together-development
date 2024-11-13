@@ -617,7 +617,7 @@ class DummyQuotationController extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -1491,7 +1491,7 @@ class DummyQuotationController extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -2671,7 +2671,7 @@ class DummyQuotationController extends Controller
             $Day = $datarequest['Day'];
             $Night = $datarequest['Night'];
             $comment = $datarequest['comment'];
-            $user = User::where('id',$userid)->select('id','name')->first();
+            $user = User::where('id',$userid)->first();
             $fullName = null;
             $Contact_Name = null;
             $Contact_phone =null;
@@ -5225,7 +5225,7 @@ class DummyQuotationController extends Controller
         $Day = $datarequest['Day'];
         $Night = $datarequest['Night'];
         $comment = $datarequest['comment'];
-        $user = User::where('id',$userid)->select('id','name')->first();
+        $user = User::where('id',$userid)->first();
         $fullName = null;
         $Contact_Name = null;
         $Contact_phone =null;
