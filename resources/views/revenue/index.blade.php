@@ -1247,7 +1247,7 @@
                             <td class="text-end f-semi">Outstanding Balance From Last Year</td>
                             <td class="to-day">0.00</td>
                             <td class="m-t-d">0.00</td>
-                            <td>{{ number_format($agoda_outstanding_last_year + $elexa_outstanding_last_year, 2) }}</td>
+                            <td class="y-t-d">{{ number_format($agoda_outstanding_last_year + $elexa_outstanding_last_year, 2) }}</td>
                         </tr>
                         <tr>
                             <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
@@ -2167,7 +2167,7 @@
     <!-- Calendar -->
     <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
     <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
-    {{-- <script src="{{ asset('assets/js/calendar-draft2.js')}}"></script> --}}
+    {{-- <script src="{{ asset('assets/js/calendar-draftT.js')}}"></script> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -2212,6 +2212,11 @@
         } 
 
         // Hidden <td>
+        if (filter_by == "customRang") {
+            $('.m-t-d').prop('hidden', true);
+            $('.y-t-d').prop('hidden', true);
+        }
+
         if (filter_by == "month" || filter_by == "thisMonth") {
             $('.to-day').prop('hidden', true);
         }
