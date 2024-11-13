@@ -856,10 +856,19 @@
                                                         {!! QrCode::size(90)->generate('No found'); !!}
                                                     </div>
                                                 </div>
+                                                @php
+                                                    $id = Auth::user()->id;
+                                                    $user =  DB::table('users')->where('id',$id)
+                                                    ->first();
+                                                @endphp
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                                    <br><br>
-                                                    <span>{{@Auth::user()->name}}</span>
+                                                    @if ($user->signature)
+                                                        <img src="/upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                                                    @endif
+                                                    @if ($user->firstname)
+                                                        <span>{{$user->firstname}} {{$user->lastname}}</span>
+                                                    @endif
                                                     <span id="issue_date_document"></span>
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
@@ -870,6 +879,7 @@
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ตราประทับ (ผู้ขาย)</span>
+                                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" style="width: 50%;">
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ผู้รับเอกสาร (ลูกค้า)</span>

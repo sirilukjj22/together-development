@@ -239,7 +239,7 @@
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-8 col-md-12 col-sm-12 image-container">
+                                    <div class="col-lg-7 col-md-12 col-sm-12 image-container">
                                         <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                         <div class="info">
                                             <p class="titleh1">{{$settingCompany->name}}</p>
@@ -253,12 +253,12 @@
                                             <p></p>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
+                                    <div class="col-lg-5 col-md-12 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-4"></div>
                                             <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
                                                 <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
+                                                    <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
                                                     <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
                                                 </div>
                                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
@@ -430,14 +430,14 @@
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span  for="">Company Commission</span>
                                         <div class="input-group">
                                             <input type="text" class="form-control"  name="Company_Commission_Rate_Code" value="{{$Quotation->commissionratecode}}"disabled>
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-6 col-md-12 col-sm-12">
                                                 <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
@@ -505,115 +505,137 @@
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="row mt-2">
-                                    <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
-                                        <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
-                                        <table id="companyTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
-                                                <td>
-                                                    <span id="Company_name" name="Company_name" ></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
-                                                <td><span id="Address" ></span></td>
+                                    <div class="proposal-cutomer-detail" id="companyTable">
+                                        <ul>
+                                        <b class="font-upper com">Company Information</b>
+                                        <li class="mt-3">
+                                            <b>Company Name</b>
+                                            <span id="Company_name"></span>
+                                        </li>
+                                        <li>
+                                            <b>Company Address</b>
+                                            <span id="Address"></span>
+                                            <b></b>
+                                        </li>
+                                        <span class="wrap-full">
+                                            <li >
+                                                <b>Company Number</b>
+                                                <span id="Company_Number"></span>
+                                            </li>
+                                            <li >
+                                                <b>Company Fax</b>
+                                                <span id="Company_Fax"></span>
+                                            </li>
+                                        </span>
+                                        <li>
+                                            <b>Company Email</b>
+                                            <span id="Company_Email"></span>
+                                        </li>
+                                        <li>
+                                            <b>Taxpayer Identification</b>
+                                            <span id="Taxpayer" ></span>
+                                        </li>
+                                        <li> </li>
+                                        <b class="font-upper com">Personal Information</b>
+                                        <li class="mt-3">
+                                            <b>Contact Name</b>
+                                            <span id="Company_contact"></span>
+                                        </li>
+                                        <li >
+                                            <b>Contact Number</b>
+                                            <span id="Contact_Phone"></span>
+                                        </li>
+                                        <li>
+                                            <b>Contact Email</b>
+                                            <span id="Contact_Email" ></span>
+                                        </li>
+                                        <li></li>
+                                        </ul>
+                                        <ul>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpo"></span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpo"></span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypo" class="m-0"> </p><p id="nightpo" class="m-0"> </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpo" class="m-0"> </p><p id="Childrenpo" class="m-0"> </p></span>
+                                        </li>
 
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="Address2" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
-                                                <td>
-                                                    <span id="Company_Number"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
-                                                <td><span id="Company_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
-                                                <td><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTlecontractTable" class="com mt-2 my-2"style="font-size:18px">Personal Information</b>
-                                        <table id="contractTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name :</b></td>
-                                                <td>
-                                                    <span id="Company_contact"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
-                                                <td><span id="Contact_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
-                                                <td style="color: #fff"><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTleguestTable" class="com mt-2 my-2"style="font-size:18px;display: none">Guest Information</b>
-                                        <table id="guestTable" style="display: none">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
-                                                <td>
-                                                    <span id="guest_name" name="guest_name" ></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Address :</b></td>
-                                                <td><span id="guestAddress" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="guestAddress2" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Number :</b></td>
-                                                <td>
-                                                    <span id="guest_Number"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Email :</b></td>
-                                                <td><span id="guest_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Identification Number : </b></td>
-                                                <td><span id="guestTaxpayer"></span></td>
-                                            </tr>
-                                        </table>
+                                        </ul>
+
                                     </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <div><br><br><br><br></div>
-                                        <div class="col-12 row" >
-                                            <div class="col-lg-6">
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Check In :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Check Out :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Length of Stay :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Number of Guests :</p>
-                                            </div>
-                                            <div class="col-lg-6 mt-2">
-                                                @if ($Quotation->checkin == null)
-                                                    <p style="display: inline-block;"><span id="checkinpo">-</span></p><br>
-                                                    <p style="display: inline-block;"><span id="checkoutpo">-</span></p><br>
-                                                @else
-                                                    <p style="display: inline-block;"><span >{{$Quotation->checkin}}</span></p><br>
-                                                    <p style="display: inline-block;"><span >{{$Quotation->checkout}}</span></p><br>
-                                                @endif
-                                                @if ($Quotation->day == null)
-                                                    <p style="display: inline-block;"><span id="daypo">-</span><span id="nightpo"></span></P><br>
-                                                @else
-                                                    <p style="display: inline-block;"><span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน</p><br>
-                                                @endif
-                                                <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
-                                            </div>
-                                        </div>
+                                    <div class="proposal-cutomer-detail" id="guestTable" style="display: none">
+                                        <ul>
+                                        <b class="font-upper com">Guest Information</b>
+                                        <li class="mt-3">
+                                            <b>Guest  Name</b>
+                                            <span id="guest_name"></span>
+                                        </li>
+
+
+                                        <li>
+                                            <b>Guest  Address</b>
+                                            <span id="guestAddress"></span>
+                                            <b></b>
+                                        </li>
+
+                                        <li >
+                                            <b>Guest  Number</b>
+                                            <span id="guest_Number"></span>
+                                        </li>
+
+                                        <li>
+                                            <b>Guest  Email</b>
+                                            <span id="guest_Email"></span>
+                                        </li>
+                                        <li>
+                                            <b>Identification Number</b>
+                                            <span id="guestTaxpayer" ></span>
+                                        </li>
+                                        <li> </li>
+                                        <li></li>
+                                        </ul>
+
+                                        <ul>
+                                            <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpoguest"></span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpoguest"></span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypoguest" class="m-0"> </p><p id="nightpoguest" class="m-0"> </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpoguest" class="m-0"> </p><p id="Childrenpoguest" class="m-0"> </p></span>
+                                        </li>
+
+                                        </ul>
+
                                     </div>
                                     <div class="styled-hr"></div>
                                 </div>
@@ -657,7 +679,7 @@
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%">#</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">คำสั่ง</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width: 10%">คำสั่ง</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="product-list-select">
@@ -672,7 +694,7 @@
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%"data-priority="1">#</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">รายการ</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%"data-priority="1">คำสั่ง</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width: 10%"data-priority="1">คำสั่ง</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="product-list">
@@ -703,7 +725,7 @@
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Code</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:20%"></th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="display-selected-items">
@@ -717,69 +739,52 @@
                                     @endif
                                     <input type="hidden" id="paxold" name="paxold" value="{{$Quotation->TotalPax}}">
                                     <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
-                                    <div class="col-12 row ">
-                                        <div class="col-lg-9 col-md-8 col-sm-12 mt-2" >
+                                    <div class="wrap-b">
+                                        <div class="kw" >
                                             <span >Notes or Special Comment</span>
-                                            <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea">{{$Quotation->comment}}</textarea>
+                                            <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                                         </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-12 " >
-                                            <table class="table table-custom-borderless" >
-                                                <tbody>
-                                                    <tr >
-                                                        <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal</b></td>
-                                                        <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-amount">0</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Price Before Tax</b></td>
-                                                        <td style="text-align:left;width: 30%;font-size: 14px;"><span id="Net-price">0</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row" style="text-align:right;width: 70%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                        <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-Vat">0</span></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-9"></div>
-                                        <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <table class="table table-custom-borderless" >
-                                                <tbody>
-                                                    <tr>
-                                                        <td colspan="2" style="text-align:center;">
-                                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
-                                                                <b style="font-size: 14px;">Net Total</b>
-                                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="lek" >
+                                            <div class="proposal-number-cutomer-detail" >
+                                                <ul>
+                                                    <li class="mt-3">
+                                                        <b>Subtotal</b>
+                                                        <span id="total-amount"></span>
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Price Before Tax</b>
+                                                        <span id="Net-price"></span>
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Value Added Tax</b>
+                                                        <span id="total-Vat"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
                                         </div>
                                     </div>
-                                    <div class="col-12 row">
-                                        <div class="col-9"></div>
-                                        <div class="col-3 styled-hr"></div>
+                                    <div class="flex-end" >
+                                        <b class="text-center text-white p-2" style="font-size: 14px; background-color: #2D7F7B; border-radius: 5px; " ><p class="mr-2" style="width:260px;" >Net Total <span id="Net-Total">0</span></p></b>
                                     </div>
-                                    <div class="col-12 row">
-                                        <div class="col-9">
+                                    <div class="wrap-b">
+                                        <div class="kw">
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-12" id="Pax" style="display: block">
-                                            <table class="table table-custom-borderless" >
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> Adults
-                                                            <input type="hidden" name="PaxToTalall" id="PaxToTalall">
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person :</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> THB</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+
+                                        <div class="lek mt-3" style="border-top:2px solid #2D7F7B;">
+                                            <div class="proposal-number-cutomer-detail" id="Pax">
+                                                <ul>
+                                                    <li class="mt-3" >
+                                                        <b>Number of Guests</b>
+                                                        <span><span id="PaxToTal"></span><span> Adults</span> </span>
+                                                        <input type="hidden" name="PaxToTalall" id="PaxToTalall">
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Average per person</b>
+                                                        <span><span id="Average"></span> THB</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-12 mt-3">
@@ -820,6 +825,11 @@
                                         </div>
                                         <div class="col-12 my-2">
                                             <div class="row">
+                                                @php
+                                                    $id = Auth::user()->id;
+                                                    $user =  DB::table('users')->where('id',$id)
+                                                    ->first();
+                                                @endphp
                                                 <div class="col-lg-2 centered-content">
                                                     <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
                                                     @php
@@ -831,8 +841,12 @@
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                                    <br><br>
-                                                    <span>{{@Auth::user()->name}}</span>
+                                                    @if ($user->signature)
+                                                        <img src="/upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                                                    @endif
+                                                    @if ($user->firstname)
+                                                        <span>{{$user->firstname}} {{$user->lastname}}</span>
+                                                    @endif
                                                     <span id="issue_date_document"></span>
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
@@ -843,6 +857,7 @@
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ตราประทับ (ผู้ขาย)</span>
+                                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" style="width: 50%;">
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ผู้รับเอกสาร (ลูกค้า)</span>
@@ -892,99 +907,143 @@
         $(document).ready(function() {
             const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
             const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
-            var flexCheckChecked = document.getElementById("flexCheckChecked");
+            var flexCheckChecked = document.getElementById('flexCheckChecked');
             var dayName = checkinDate.format('dddd'); // Format to get the day name
             var enddayName = checkoutDate.format('dddd'); // Format to get the day name
-            flexCheckChecked.disabled = true;
+
 
             if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
                 if (dayName === 'Thursday' && enddayName === 'Saturday') {
                     $('#calendartext').text("Weekday-Weekend");
-
                     $('#inputcalendartext').val("Weekday-Weekend");
+                    flexCheckChecked.disabled = true;
                 }else{
                     $('#calendartext').text("Weekday");
                     $('#inputcalendartext').val("Weekday");
+                    flexCheckChecked.disabled = true;
                 }
             } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
                 if (dayName === 'Saturday' && enddayName === 'Monday') {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#inputcalendartext').val("Weekday-Weekend");
+                    flexCheckChecked.disabled = true;
                 }else{
                     $('#calendartext').text("Weekend");
                     $('#inputcalendartext').val("Weekend");
+                    flexCheckChecked.disabled = true;
                 }
             }
+            CheckDateAdditional();
         });
 
         $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
+            var dayview = @json($Quotation->day);
+            var nightview = @json($Quotation->night);
+
+            var day = dayview ? dayview : '-';
+            var night = nightview ? nightview : '-';
+
+            console.log(day, night);
+            var adult ={{$Quotation->adult}};
+            var children ={{$Quotation->children ? $Quotation->children : 0 }};
+            $('#Adultpo').text(adult +' Adult');
+            $('#Adultpoguest').text(adult +' Adult');
+
+            $('#Childrenpo').text(' , '+ children +' Children');
+            $('#Childrenpoguest').text(' , '+ children +' Children');
+
+            $('#daypo').text(day + ' วัน');
+            $('#nightpo').text(night + ' คืน');
+
+            $('#daypoguest').text(day + ' วัน');
+            $('#nightpoguest').text(night + ' คืน');
             //----------------ส่วนบน---------------
             var countrySelect = $('#select');
             var select = countrySelect.val();
+
+            var select = document.getElementById("select");
+            //------------------------บริษัท------------------
             var Companyshow = document.getElementById("Companyshow");
             var Company = document.getElementById("Company");
-            var Company_Contact = document.getElementById("Company_Contact");
-            var Company_Contactname = document.getElementById("Company_Contactname");
+            // -----------------------ลูกค้า--------------------
+
             var Guest = document.getElementById("Guest");
             var Guestshow = document.getElementById("Guestshow");
-            var TiTlecompanyTable = document.getElementById("TiTlecompanyTable");
-            var TiTlecontractTable = document.getElementById("TiTlecontractTable");
+            //-------------------ตาราง---------------------------
+            var companyTable = document.getElementById("companyTable");
+
             var guestTable = document.getElementById("guestTable");
-            var TiTleguestTable = document.getElementById("TiTleguestTable");
-            if (select == "Company") {
-                Companyshow.style.display = "block";
+            if (select.value === "Company") {
+                Companyshow.style.display = "Block";
                 Guestshow.style.display = "none";
                 guestTable.style.display = "none";
-                TiTleguestTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = true;
-                Company_Contactname.disabled = true;
+                Company.disabled = false;
+                Company_Contact.disabled = false;
+                Company_Contactname.disabled = false;
                 Guest.disabled = true;
-                companyTable.style.display = "block";
-                contractTable.style.display = "block";
-                TiTlecompanyTable.style.display = "block";
-                TiTlecontractTable.style.display = "block";
+                companyTable.style.display = "flex";
                 companyContact();
-            }else{
-                guestTable.style.display = "block";
-                TiTleguestTable.style.display = "block";
-                Guestshow.style.display = "block";
+            } else {
+                guestTable.style.display = "flex";
+                Guestshow.style.display = "Block";
                 Companyshow.style.display = "none";
                 companyTable.style.display = "none";
-                contractTable.style.display = "none";
-                TiTlecompanyTable.style.display = "none";
-                TiTlecontractTable.style.display = "none";
                 Company.disabled = true;
                 Company_Contact.disabled = true;
                 Company_Contactname.disabled = true;
-                Guest.disabled = true;
+                Guest.disabled = false;
                 GuestContact();
             }
-
-            var countrySelect = $('#DiscountAmount');
-            var select = countrySelect.val();
-            if (select) {
-                $('#Special').css('display', 'table-row');
-                $('#Subtotal').css('display', 'table-row');
-            }else{
-                $('#Special').css('display', 'none');
-                $('#Subtotal').css('display', 'none');
-            }
         });
-        function companyContact() {
-            console.log(1);
-            var companyID = $('#Company').val();
+        function showselectInput() {
+            var select = document.getElementById("select");
+           //------------------------บริษัท------------------
+            var Companyshow = document.getElementById("Companyshow");
+            var Company = document.getElementById("Company");
+            // -----------------------ลูกค้า--------------------
 
+            var Guest = document.getElementById("Guest");
+            var Guestshow = document.getElementById("Guestshow");
+            //-------------------ตาราง---------------------------
+            var companyTable = document.getElementById("companyTable");
+
+            var guestTable = document.getElementById("guestTable");
+            if (select.value === "Company") {
+                Companyshow.style.display = "Block";
+                Guestshow.style.display = "none";
+                guestTable.style.display = "none";
+                Company.disabled = false;
+                Company_Contact.disabled = false;
+                Company_Contactname.disabled = false;
+                Guest.disabled = true;
+                companyTable.style.display = "flex";
+            } else {
+                guestTable.style.display = "flex";
+                Guestshow.style.display = "Block";
+                Companyshow.style.display = "none";
+                companyTable.style.display = "none";
+                Company.disabled = true;
+                Company_Contact.disabled = true;
+                Company_Contactname.disabled = true;
+                Guest.disabled = false;
+            }
+        }
+        function companyContact() {
+            var companyID = $('#Company').val();
+            console.log(companyID);
             jQuery.ajax({
                 type: "GET",
                 url: "{!! url('/Proposal/create/company/" + companyID + "') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    var fullName = response.data.First_name + ' ' + response.data.Last_name;
+                    var prename = response.prename.name_th;
+                    var fullName = prename+response.data.First_name + ' ' + response.data.Last_name;
+
+
                     var fullid = response.data.id ;
                     if (response.Company_type.name_th === 'บริษัทจำกัด') {
                         var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด';
@@ -994,9 +1053,10 @@
                     }
                     else if (response.Company_type.name_th === 'ห้างหุ้นส่วนจำกัด') {
                         var fullNameCompany = 'ห้างหุ้นส่วนจำกัด' + ' ' + response.company.Company_Name ;
+                    }else{
+                        var fullNameCompany = response.Company_type.name_th + response.company.Company_Name ;
                     }
-                    var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
-                    var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                    var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th + ' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
                     var companyfax = response.company_fax.Fax_number;
                     var CompanyEmail = response.company.Company_Email;
                     var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
@@ -1005,15 +1065,15 @@
 
                     var Contactphones =response.Contact_phones.Phone_number;
                     var Contactemail =response.data.Email;
-
                     var formattedPhoneNumber = companyphone;
+
+
                     var formattedContactphones = Contactphones;
                     $('#Company_Contact').val(fullName).prop('disabled', true);
                     $('#Company_Discount').val(Discount_Contract_Rate);
                     $('#Company_Contactname').val(fullid);
                     $('#Company_name').text(fullNameCompany);
                     $('#Address').text(Address);
-                    $('#Address2').text(Address2);
                     $('#Company_Number').text(formattedPhoneNumber);
                     $('#Company_Fax').text(companyfax);
                     $('#Company_Email').text(CompanyEmail);
@@ -1027,7 +1087,7 @@
                 }
             });
         }
-        function GuestContact() {
+        function GuestContact(){
             var Guest = $('#Guest').val();
             console.log(Guest);
             jQuery.ajax({
@@ -1038,17 +1098,16 @@
                 success: function(response) {
                     var prename = response.Company_type.name_th;
                     var fullName = prename +' '+response.data.First_name + ' ' + response.data.Last_name;
-                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
-                    var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
                     var Email = response.data.Email;
                     var Identification = response.data.Identification_Number;
                     var phone = response.phone.Phone_number;
+
 
                     var formattedPhoneNumber = phone;
 
                     $('#guest_name').text(fullName);
                     $('#guestAddress').text(Address);
-                    $('#guestAddress2').text(Address2);
                     $('#guest_Number').text(formattedPhoneNumber);
                     $('#guest_Email').text(Email);
                     $('#guestTaxpayer').text(Identification);
@@ -1075,12 +1134,19 @@
                     Day.disabled = true;
                     Night.disabled = true;
                     flexCheckChecked.checked = true;
+                    flexCheckChecked.disabled = true;
                     dateInput.classList.add('disabled-input');
                     dateout.classList.add('disabled-input');
+
+                    $('#calendartext').text('No Check in date');
                     $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
                     $('#checkoutpo').text('-');
+                    $('#checkinpoguest').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
+                    $('#checkoutpoguest').text('-');
                     $('#daypo').text('-');
                     $('#nightpo').text(' ');
+                    $('#daypoguest').text('-');
+                    $('#nightpoguest').text(' ');
                 } else {
                     dateInput.classList.remove('disabled-input');
                     dateout.classList.remove('disabled-input');
@@ -1097,29 +1163,38 @@
             updateFields();
 
             // ตั้งค่าการเปลี่ยนแปลงสำหรับ flexCheckChecked
-            flexCheckChecked.addEventListener('change', function(event) {
+            document.getElementById('flexCheckChecked').addEventListener('change', function(event) {
                 var isChecked = event.target.checked;
-
-                if (isChecked) {
+                var dateInput = document.getElementById('Checkin');
+                var dateout = document.getElementById('Checkout');
+                var Day = document.getElementById('Day');
+                var Night = document.getElementById('Night');
+                if (isChecked == true) {
                     dateInput.disabled = true;
                     dateout.disabled = true;
                     Day.disabled = true;
                     Night.disabled = true;
+
                     dateInput.classList.add('disabled-input');
                     dateout.classList.add('disabled-input');
                     $('#checkinpo').text('No Check in date');
                     $('#checkoutpo').text('-');
+                    $('#checkinpoguest').text('No Check in date');
+                    $('#checkoutpoguest').text('-');
                     $('#daypo').text('-');
                     $('#nightpo').text(' ');
                     $('#Checkin').val('');
                     $('#Checkout').val('');
                     $('#Day').val('');
                     $('#Night').val('');
+                    $('#calendartext').text('-');
+                    month();
                 } else {
                     dateInput.disabled = false;
                     dateout.disabled = false;
                     Day.disabled = false;
                     Night.disabled = false;
+
                     dateInput.classList.remove('disabled-input');
                     dateout.classList.remove('disabled-input');
                     $('#Checkin').val('');
@@ -1129,6 +1204,57 @@
                 }
             });
         });
+        $(document).on('keyup', '#Children', function() {
+            var Children =  Number($(this).val());
+            $('#Childrenpo').text(' , '+ Children +' Children');
+            $('#Childrenpoguest').text(' , '+ Children +' Children');
+            totalAmost();
+        });
+        $(document).on('keyup', '#Adult', function() {
+            var adult =  Number($(this).val());
+            $('#Adultpo').text(adult +' Adult');
+            $('#Adultpoguest').text(adult +' Adult');
+            totalAmost();
+        });
+        $(document).on('keyup', '#DiscountAmount', function() {
+            var DiscountAmount =  Number($(this).val());
+            totalAmost();
+        });
+        function masterevent() {
+            var Mevent =$('#Mevent').val();
+            if (Mevent == '43') {
+                $('#Payment50').css('display', 'block');
+                $('#Payment100').css('display', 'none');
+            } else if (Mevent == '53') {
+                $('#Payment50').css('display', 'none');
+                $('#Payment100').css('display', 'block');
+            }else if (Mevent == '54') {
+                $('#Payment50').css('display', 'none');
+                $('#Payment100').css('display', 'block');
+            }
+        }
+        function mastervat() {
+            var Mvat =$('#Mvat').val();
+            if (Mvat == '50') {
+                $('#PRICE_INCLUDE_VAT').css('display', 'block');
+                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+                $('#PRICE_PLUS_VAT').css('display', 'none');
+            }else if (Mvat == '51') {
+                $('#PRICE_INCLUDE_VAT').css('display', 'none');
+                $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+                $('#PRICE_PLUS_VAT').css('display', 'none');
+            }
+            else if (Mvat == '52') {
+                $('#PRICE_INCLUDE_VAT').css('display', 'none');
+                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+                $('#PRICE_PLUS_VAT').css('display', 'block');
+            }else{
+                $('#PRICE_INCLUDE_VAT').css('display', 'none');
+                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+                $('#PRICE_PLUS_VAT').css('display', 'none');
+            }
+            totalAmost()
+        }
         $(document).ready(function() {
             var Mvat ={{$Quotation->vat_type}};
             if (Mvat == '50') {
@@ -1166,6 +1292,250 @@
                 $('#Payment100').css('display', 'none');
             }
         });
+    </script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        $(function() {
+            var checkinDate = document.getElementById('inputcalendartext').value;
+            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
+
+            var enddayName = checkoutDate.format('dddd');
+            var DiscountAmount = document.getElementById('DiscountAmount').value;
+            var Add_discount = document.getElementById('Add_discount').value;
+            $('#Checkin').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น DD/MM/YYYY
+                },
+                isInvalidDate: function(date) {
+                    if (checkinDate == 'Weekday') {
+                        if (checkinDate === 'Weekday' && ['Friday','Saturday','Sunday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวันในช่วงนี้
+                        }
+                    }else if (checkinDate == 'Weekend') {
+                        if (checkinDate === 'Weekend' && ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวันในช่วงนี้
+                        }
+                    }else if (checkinDate == 'Weekday-Weekend' && enddayName == 'Saturday'|| enddayName == 'Monday') {
+                        if (checkinDate === 'Weekday-Weekend' && ['Monday','Sunday', 'Tuesday', 'Wednesday', 'Friday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวัน
+                        }
+                    }
+                }
+            });
+            $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
+                var datefirst = picker.startDate.format('DD/MM/YYYY');
+                $(this).val(datefirst);
+                $('#CheckinNew').val(datefirst);
+                var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
+                $('#inputmonth').val(currentMonthIndex + 1);
+                CheckDateAdditional();
+            });
+        });
+        $(function() {
+            var checkinValue = document.getElementById('Checkin').value;
+            var DiscountAmount = document.getElementById('DiscountAmount').value;
+            var Add_discount = document.getElementById('Add_discount').value;
+            $('#Checkout').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                },
+                isInvalidDate: function(date) {
+                    var CheckinNew = document.getElementById('CheckinNew').value;
+                    var checkDate = document.getElementById('inputcalendartext').value;
+                    var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+                    var indayName = momentCheckinNew.format('dddd'); // รับค่าเป็นชื่อวัน
+                    if (checkDate === 'Weekday') {
+                        if (indayName === 'Thursday') {
+                            if ([ 'Saturday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }else{
+                            return false;
+                        }
+                    } else if (checkDate === 'Weekend') {
+                        if (indayName === 'Friday') {
+                            return false;
+                        }else{
+                            if ([ 'Monday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }
+                    } else if (checkDate === 'Weekday-Weekend'){
+                        if (indayName === 'Thursday') {
+                            if (['Monday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        } else {
+                            if (['Saturday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }
+                    }else{
+                        if (['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                            return true;
+                        }
+                    }
+                }
+            });
+            $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
+                var dateend = picker.startDate.format('DD/MM/YYYY');
+                $(this).val(dateend);
+                $('#CheckoutNew').val(dateend);
+
+                var checkDate = document.getElementById('inputcalendartext').value;
+                var CheckinNew = document.getElementById('CheckinNew').value;
+
+                // แปลงวันที่ CheckinNew และ dateend เป็น moment object
+                var datefirst = moment(CheckinNew, 'DD/MM/YYYY');
+                var dateendMoment = moment(dateend, 'DD/MM/YYYY');
+
+                // ตรวจสอบว่า checkinDate คือ 'Weekday-Weekend'
+                if (checkDate === 'Weekday-Weekend') {
+                    // ตรวจสอบว่า datefirst และ dateend ถูกต้อง
+                    if (datefirst.isValid() && dateendMoment.isValid()) {
+                        // คำนวณความแตกต่างระหว่าง datefirst และ dateend เป็นจำนวนวัน
+                        var diffDays = dateendMoment.diff(datefirst, 'days');
+
+                        // เช็คว่าห่างกันไม่เกิน 3 วันหรือไม่
+                        if (diffDays <= 3) {
+                            console.log('วันห่างกันไม่เกิน 3 วัน');
+                            // คุณสามารถทำสิ่งที่ต้องการได้ที่นี่ เช่น อนุญาตให้เลือกวันที่
+                        } else {
+                            alert('วันสิ้นสุดไม่สามารถห่างจากวันเริ่มต้นเกิน 3 วันได้');
+                            // เพิ่มโค้ดสำหรับการแสดงข้อผิดพลาด หรือการแจ้งเตือน
+                        }
+                    } else {
+                        console.error('วันที่ไม่ถูกต้อง');
+                    }
+                }
+                var daymonthName = datefirst.format('MMMM'); // ชื่อเดือนเต็ม เช่น January, February
+                var endmonthName = dateendMoment.format('MMMM');   // ชื่อเดือนเต็ม เช่น January, February
+                var monthDiff = dateendMoment.diff(datefirst, 'months');
+                var month;
+
+                if (daymonthName === endmonthName) {
+                    month = monthDiff; // เดือนเดียวกัน
+                } else {
+                    month = monthDiff + 1; // ข้ามเดือน
+                }
+
+                $('#checkmonth').val(month);
+                CheckDateAdditional();
+            });
+        });
+        function CheckDateAdditional() {
+            var CheckinNew = document.getElementById('CheckinNew').value;
+            var CheckoutNew = document.getElementById('CheckoutNew').value;
+            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
+            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
+            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
+            const checkinDate = new Date(checkinDateValue);
+            const checkoutDate = new Date(checkoutDateValue);
+            if (checkoutDate > checkinDate) {
+                const timeDiff = checkoutDate - checkinDate;
+                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
+                const nights = diffDays;
+
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val(isNaN(nights) ? '0' : nights);
+
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(totalDays + ' วัน');
+                $('#nightpo').text(nights + ' คืน');
+                $('#daypoguest').text(totalDays + ' วัน');
+                $('#nightpoguest').text(nights + ' คืน');
+            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
+                const totalDays = 1;
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val('0');
+
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(totalDays + ' วัน');
+                $('#nightpo').text('0 คืน');
+                $('#daypoguest').text(totalDays + ' วัน');
+                $('#nightpoguest').text('0 คืน');
+            } else {
+                if (CheckoutNew) {
+                    alert('วัน Check-out ต้องมากกว่าวัน Check-in');
+                    $('#Day').val('0');
+                    $('#Night').val('0');
+                    $('#Checkin').val('');
+                    $('#Checkout').val('');
+                }
+            }
+
+            month();
+        }
+
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('Checkin').setAttribute('min', today);
+            document.getElementById('Checkout').setAttribute('min', today);
+        }
+
+        // เรียกใช้เมื่อโหลดหน้า
+        setMinDate();
+        document.addEventListener('DOMContentLoaded', setMinDate);
+        function month() {
+            var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
+            var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
+            var start = moment(); // เริ่มที่วันที่ปัจจุบัน
+            var end; // ประกาศตัวแปร end
+            var currentMonthIndex = start.month();
+            var monthDiff = inputmonth - currentMonthIndex;
+              // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
+            if (monthDiff < 0) {
+                monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
+            }
+
+            if (monthDiff <= 1) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
+            } else if (monthDiff >= 2 && monthDiff < 3 ) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
+            } else {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
+            }
+
+            function cb(start, end) {
+                $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
+                $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
+            }
+
+            // ตั้งค่า daterangepicker
+            $('#reportrange1').daterangepicker({
+                start: start,
+                end: end,
+                ranges: {
+                    '3 Days': [moment(), moment().add(3, 'days')],
+                    '7 Days': [moment(), moment().add(7, 'days')],
+                    '15 Days': [moment(), moment().add(15, 'days')],
+                    '30 Days': [moment(), moment().add(30, 'days')],
+                },
+                autoApply: true, // ใช้เพื่อไม่ต้องกด Apply
+            }, cb);
+
+            cb(start, end); // เรียก callback ทันทีหลังจากตั้งค่าเริ่มต้น
+        }
     </script>
     <script>
         window.addEventListener('pageshow', function(event) {
@@ -1309,7 +1679,7 @@
             document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
 
             $.ajax({
-                url: '{{ route("BillingFolioOver.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                url: '{{ route("BillingFolioOver.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
                 method: 'GET',
                 data: {
                     value: status
@@ -1340,10 +1710,14 @@
                                 if ($('#' + existingRowId).val() == undefined) {
                                     if (!productIDsArray.includes(productCode)) {
                                         table.row.add([
-                                            num++,
-                                            data.code,
-                                            data.description,
-                                            `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                            `<td style="text-align: center">${num++}</td>`,
+                                            `<td style="text-align: center">${data.code}</td>`,
+                                            `<td style="text-align: center">${data.description}</td>`,
+                                            `<td style="display: flex; justify-content: center; align-items: center">
+                                                <button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </td>`
                                         ]).node().id = `row-${productId}`;
                                     }
                                 }
@@ -1430,7 +1804,7 @@
                         return;
                     }
                     $.ajax({
-                        url: '{{ route("BillingFolioOver.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                        url: '{{ route("BillingFolioOver.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', product),
                         method: 'GET',
                         data: {
                             value:product
@@ -1566,14 +1940,16 @@
                 let totalperson=0;
                 let priceArray = [];
                 let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
-                var Adult  = $('#Adult').val();
-                var Children  = $('#Children').val();
+                var Adult  = parseFloat($('#Adult').val());
+                var Children  = parseFloat($('#Children').val());
                 let PaxToTalall=0;
                 var discountElement  = $('#DiscountAmount').val();
                 $('#display-selected-items tr').each(function() {
                     let priceCell = $(this).find('.Amount').val();
                     let pricetotal = parseFloat(priceCell) || 0;
                     paxtotal =  Adult+Children;
+                    console.log(Adult);
+                    console.log(Children);
                     allprice += pricetotal;
                     totalperson = allprice/paxtotal;
                     beforetax = allprice/1.07;
@@ -1584,7 +1960,7 @@
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
-                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
+                    $('#PaxToTalall').val(isNaN(paxtotal) ? '0' : paxtotal);
                     if (paxtotal == 0) {
                         $('#Pax').css('display', 'none');
                     }else{

@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('BillingFolioOver.select') }}'">
-                        <i class="fa fa-plus"></i> Issue Bill
+                        <i class="fa fa-plus"></i> Create Additional
                     </button>
                     {{-- <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
                         <i class="fa fa-reorder"></i> Filter</button>

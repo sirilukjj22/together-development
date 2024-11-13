@@ -251,17 +251,17 @@
                                         </li>
                                         <li class="pr-3">
                                             <span>Additional</span>
-                                            <span class="text-danger f-w-bold">0</span>
+                                            <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
                                     <span id="toggleContent" style="display: none;">
                                         <li class="pr-3 ">
                                             <span>Cash</span>
-                                            <span class="text-danger f-w-bold">15,000.00</span>
+                                            <span class="text-danger f-w-bold">{{ number_format($Nettotal, 2, '.', ',') }}</span>
                                         </li>
                                         <li class="pr-3">
                                             <span>Complimentary</span>
-                                            <span class="text-danger f-w-bold">15,000.00</span>
+                                            <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
                                 </ul>
@@ -308,6 +308,43 @@
                                 </table>
                             </div>
                         @endif
+                        <div class="card-body">
+                            <b>Receipt</b>
+                            <table id="ReceiptTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
+                                <thead >
+                                    <tr>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Proforma Invoice ID</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Category</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">List</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Receipt))
+                                        @foreach ($Receipt as $key => $item3)
+                                            <tr>
+                                                <th style="text-align:left;">{{$item3->Receipt_ID}}</th>
+                                                <th style="text-align:left;">{{$item3->Invoice_ID}}</th>
+                                                <th style="text-align:center;">{{ $item3->category}}</th>
+                                                <th style="text-align:center;">{{$item3->paymentDate}}</th>
+                                                <th style="text-align:center;">
+                                                    <span class="badge rounded-pill bg-success">Approved</span>
+                                                </th>
+                                                <th style="text-align:center;">{{ number_format($item3->Amount, 2, '.', ',') }}</th>
+                                                <th style="text-align:left;">
+                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item3->id) }}">
+                                                        View
+                                                    </a>
+                                                </th>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="card-body">
                             <b>Receipt</b>
                             <table id="ReceiptTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">

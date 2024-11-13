@@ -884,10 +884,19 @@
                                                     {!! QrCode::size(90)->generate('No found'); !!}
                                                 </div>
                                             </div>
+                                            @php
+                                                $id = Auth::user()->id;
+                                                $user =  DB::table('users')->where('id',$id)
+                                                ->first();
+                                            @endphp
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                                <br><br>
-                                                <span>{{@Auth::user()->name}}</span>
+                                                @if ($user->signature)
+                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                                                @endif
+                                                @if ($user->firstname)
+                                                    <span>{{$user->firstname}} {{$user->lastname}}</span>
+                                                @endif
                                                 <span id="issue_date_document"></span>
                                             </div>
                                             <div class="col-lg-2 centered-content">
@@ -898,6 +907,7 @@
                                             </div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>ตราประทับ (ผู้ขาย)</span>
+                                                <img src="{{ asset('assets/images/' . $settingCompany->image) }}" style="width: 50%;">
                                             </div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้รับเอกสาร (ลูกค้า)</span>
@@ -1945,6 +1955,7 @@
                     success: function(response) {
 
                         $.each(response.products, function (key, val) {
+                            $('#main').DataTable().destroy();
                             $('#tr-select-add' + val.id).prop('hidden',true);
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
@@ -1994,16 +2005,16 @@
                                             '<span class="input-group-text">' + val.quantity_name + '</span>' +
                                             '</div>';
 
-                                    $('#main').DataTable().destroy();
+
                                     $('#display-selected-items').append(
                                         '<tr id="tr-select-addmain' + val.id + '">' +
                                         '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
                                         '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td >'+ quantity +'</td>' +
-                                        '<td >' + unit + '</td>' +
+                                        '<td style="text-align:center;width:12px;">'+ quantity +'</td>' +
+                                        '<td style="text-align:center;width:12px;">' + unit + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td >' + discountInput + '</td>' +
+                                        '<td style="text-align:center;width:12px;">' + discountInput + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
                                         '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +

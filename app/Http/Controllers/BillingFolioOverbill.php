@@ -213,7 +213,7 @@ class BillingFolioOverbill extends Controller
             $Day = $datarequest['Day'];
             $Night = $datarequest['Night'];
             $comment = $datarequest['comment'];
-            $user = User::where('id',$userid)->select('id','name')->first();
+             $user = User::where('id',$userid)->first();
             $fullName = null;
             $Contact_Name = null;
             $Contact_phone =null;
@@ -672,7 +672,7 @@ class BillingFolioOverbill extends Controller
                     $Day = $datarequest['Day'];
                     $Night = $datarequest['Night'];
                     $comment = $datarequest['comment'];
-                    $user = User::where('id',$userid)->select('id','name')->first();
+                     $user = User::where('id',$userid)->first();
                     $fullName = null;
                     $Contact_Name = null;
                     $Contact_phone =null;
@@ -812,7 +812,7 @@ class BillingFolioOverbill extends Controller
                         'Contact_Email'=>$Contact_Email,
                     ];
                     $view= $template->name;
-                    $pdf = FacadePdf::loadView('billingfolio.overbill_pdf'.$view,$data);
+                    $pdf = FacadePdf::loadView('billingfolio.overbill_pdf.'.$view,$data);
                     $path = 'Log_PDF/proposaloverbill/';
                     $pdf->save($path . $Additional_ID . '.pdf');
                 } catch (\Throwable $e) {
@@ -1075,7 +1075,7 @@ class BillingFolioOverbill extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                 $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -1577,7 +1577,7 @@ class BillingFolioOverbill extends Controller
                 $Day = $datarequest['Day'];
                 $Night = $datarequest['Night'];
                 $comment = $datarequest['comment'];
-                $user = User::where('id',$userid)->select('id','name')->first();
+                 $user = User::where('id',$userid)->first();
                 $fullName = null;
                 $Contact_Name = null;
                 $Contact_phone =null;
@@ -1969,7 +1969,7 @@ class BillingFolioOverbill extends Controller
         $Day = $datarequest['Day'];
         $Night = $datarequest['Night'];
         $comment = $datarequest['comment'];
-        $user = User::where('id',$userid)->select('id','name')->first();
+        $user = User::where('id',$userid)->first();
         $fullName = null;
         $Contact_Name = null;
         $Contact_phone =null;
@@ -2605,6 +2605,7 @@ class BillingFolioOverbill extends Controller
     public function EditPaid($id){
         $re = receive_payment::where('id',$id)->first();
         $Additional_ID= $re->Quotation_ID;
+        $company = $re->company;
         $Additional = proposal_overbill::where('Additional_ID', $Additional_ID)->first();
         $Additional_ID = $Additional->Additional_ID;
         $guest = $Additional->Company_ID;
@@ -2659,7 +2660,7 @@ class BillingFolioOverbill extends Controller
         $REID = $ID.$year.$month.$newRunNumber;
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $sumpayment = $total;
-        return view('billingfolio.overbill.editpaid',compact('re','address','Identification','sumpayment','Additional','name','settingCompany','type','total','name_ID','REID','datasub'));
+        return view('billingfolio.overbill.editpaid',compact('company','re','address','Identification','sumpayment','Additional','name','settingCompany','type','total','name_ID','REID','datasub'));
     }
     public function Cancel(Request $request ,$id){
         $Quotation = proposal_overbill::find($id);
@@ -2711,8 +2712,8 @@ class BillingFolioOverbill extends Controller
             ->paginate($perPage);
         return view('billingfolio.overbill.log',compact('log','path','correct','logproposal','QuotationID'));
     }
-    public function addProduct($Quotation_ID, Request $request){
-        $value = $request->input('value');
+    public function addProduct($Quotation_ID){
+        $value = $Quotation_ID;
         if ($value == 'Room_Type') {
             $products = Master_additional::where('type','RM')->get();
         }
@@ -2736,15 +2737,15 @@ class BillingFolioOverbill extends Controller
 
         ]);
     }
-    public function addProductselect($Quotation_ID, Request $request) {
-        $id = $request->input('value');
+    public function addProductselect($Quotation_ID) {
+        $id = $Quotation_ID;
         $products = Master_additional::where('id',$id)->get();
         return response()->json([
             'products' => $products,
         ]);
     }
-    public function addProducttablecreatemain($Quotation_ID, Request $request) {
-        $id = $request->input('value');
+    public function addProducttablecreatemain($Quotation_ID) {
+        $id = $Quotation_ID;
         $products = Master_additional::query()->get();
         return response()->json([
             'products' => $products,

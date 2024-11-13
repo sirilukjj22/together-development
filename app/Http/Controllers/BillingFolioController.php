@@ -27,6 +27,7 @@ use App\Models\company_tax;
 use App\Models\guest_tax;
 use Illuminate\Support\Arr;
 use App\Models\master_document_sheet;
+use App\Models\proposal_overbill;
 use Auth;
 use App\Models\User;
 use Carbon\Carbon;
@@ -517,9 +518,23 @@ class BillingFolioController extends Controller
         foreach ($entertainment as $item) {
             $totalentertainment +=  $item->netpriceproduct;
         }
+        $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->first();
+        $Additional_ID = $Additional->Additional_ID;
+
+        $Receiptover = receive_payment::where('Quotation_ID', $Additional_ID)->get();
+        $AdditionaltotalReceipt = 0;
+        foreach ($Receiptover as $item) {
+            $AdditionaltotalReceipt +=  $item->Amount;
+        }
+        if ($Receiptover->contains('Paid', 0)) {
+            // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
+            $status = 0;
+        } else {
+            $status = 1;
+        }
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
                     'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
-                    ,'firstPart','Identification','address','totalReceipt','vat'));
+                    ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt'));
     }
 
     public function PaidInvoice($id){

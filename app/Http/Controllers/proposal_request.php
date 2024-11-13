@@ -1107,6 +1107,7 @@ class proposal_request extends Controller
         $Additional_ID = $Quotation->Additional_ID;
         $Quotation_ID = $Quotation->Quotation_ID;
         $Quotation_IDoverbill = $Quotation->Additional_ID;
+        $Operated_by= $Quotation->Operated_by;
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
@@ -1115,8 +1116,9 @@ class proposal_request extends Controller
         $selectproduct = document_proposal_overbill::where('Additional_ID', $Additional_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
+        $user = User::where('id',$Operated_by)->first();
         $path = 'Log_PDF/proposaloverbill/';
-        return view('proposal_req.additional',compact('path','settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill','Additional_ID'));
+        return view('proposal_req.additional',compact('user','path','settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill','Additional_ID'));
     }
     public function Additional_Approve(Request $request){
         try {
