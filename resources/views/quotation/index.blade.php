@@ -391,7 +391,7 @@
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
-                                                    @if($item->status_guest == 1 && $item->status_document !== 0)
+                                                    @if($item->status_guest == 1 && $item->status_document !== 0 && $item->status_document !== 9)
                                                         <span class="badge rounded-pill bg-success">Approved</span>
                                                     @else
                                                         @if($item->status_document == 0)
@@ -406,6 +406,8 @@
                                                             <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
                                                         @elseif ($item->status_document == 6)
                                                             <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
+                                                        @elseif ($item->status_document == 9)
+                                                            <span class="badge rounded-pill "style="background-color: #2C7F7A">Complete</span>
                                                         @endif
                                                     @endif
                                                 </td>
@@ -1245,7 +1247,117 @@
                                 </caption>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="nav-Complete" role="tabpanel" rel="0">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <caption class="caption-top">
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-complete" onchange="getPageSelect(1, this.value, 'complete')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "complete" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "complete" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "complete" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "complete" ? 'selected' : '' }}>100</option>
+                                        </select>
+                                        <input class="search-button search-data-complete" id="complete" style="text-align:left;" placeholder="Search" />
+                                    </div>
+                                </caption>
+                                <table id="completeTable" class="example1 ui striped table nowrap unstackable hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center"data-priority="1">No</th>
+                                            <th class="text-center">Dummy</th>
+                                            <th class="text-center" data-priority="1">Proposal ID</th>
+                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center">Issue Date</th>
+                                            <th class="text-center">Day Type</th>
+                                            <th class="text-center">Check In</th>
+                                            <th class="text-center">Check Out</th>
+                                            <th class="text-center">Period</th>
+                                            <th class="text-center">Add.Dis</th>
+                                            <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Create By</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Complete))
+                                            @foreach ($Complete as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    {{$key +1}}
+                                                    <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                    <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
+                                                </td>
+                                                <td  style="text-align: center;">
+                                                    @if ($item->DummyNo == $item->Quotation_ID )
+                                                        -
+                                                    @else
+                                                        {{ $item->DummyNo }}
+                                                    @endif
+                                                </td>
+                                                <td>{{ $item->Quotation_ID }}</td>
+                                                @if ($item->type_Proposal == 'Company')
+                                                    <td>{{ @$item->company->Company_Name}}</td>
+                                                @else
+                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                @endif
 
+                                                <td>{{ $item->issue_date }}</td>
+                                                <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ $item->checkin}}</td>
+                                                <td style="text-align: center;">{{ $item->checkout }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
+                                                <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->additional_discount == 0)
+                                                        -
+                                                    @else
+                                                        <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->SpecialDiscountBath	== 0)
+                                                        -
+                                                    @else
+                                                        <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td >{{ @$item->userOperated->name }}</td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill "style="background-color: #2C7F7A">Complete</span>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="get-total-complete" value="{{ $Complete->total() }}">
+                                <input type="hidden" id="currentPage-complete" value="1">
+                                <caption class="caption-bottom">
+                                    <div class="md-flex-bt-i-c">
+                                        <p class="py2" id="complete-showingEntries">{{ showingEntriesTableSelect($Complete, 'complete') }}</p>
+                                        <div id="complete-paginate">
+                                            {!! paginateTableSelect($Complete, 'complete') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                        </div>
+                                    </div>
+                                </caption>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1263,13 +1375,13 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableproposal.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposal.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
     <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script>
-        const table_name = ['proposalTable','proposalPendingTable','proposalAwaitingTable','proposalApprovedTable','proposalRejectTable','proposalCancelTable'];
+        const table_name = ['proposalTable','proposalPendingTable','proposalAwaitingTable','proposalApprovedTable','proposalRejectTable','proposalCancelTable','completeTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 console.log();
@@ -1360,7 +1472,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1436,7 +1548,7 @@
                     $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1512,7 +1624,7 @@
                     $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1588,7 +1700,7 @@
                     $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1663,7 +1775,7 @@
                     $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1738,7 +1850,7 @@
                     $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1769,7 +1881,82 @@
 
             document.getElementById(id).focus();
         });
+        $(document).on('keyup', '.search-data-complete', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
 
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Proposal-Complete-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
+
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchSelect(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchSelect(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'DummyNo' },
+                        { data: 'Proposal_ID' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'Type' },
+                        { data: 'CheckIn' },
+                        { data: 'CheckOut' },
+                        { data: 'Period' },
+                        { data: 'DiscountP' },
+                        { data: 'DiscountB' },
+                        { data: 'Operated' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
+
+                });
+
+
+            document.getElementById(id).focus();
+        });
     </script>
     <script>
         function Cancel(id){

@@ -63,7 +63,7 @@ class QuotationController extends Controller
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2,3])->get();
         $oldestYear = Quotation::query()->orderBy('created_at', 'asc')->value('created_at')->year ?? now()->year;
         $newestYear = Quotation::query()->orderBy('created_at', 'desc')->value('created_at')->year ?? now()->year;
-        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount'));
+        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount','Complete'));
     }
     public function SearchAll(Request $request){
 
@@ -296,6 +296,8 @@ class QuotationController extends Controller
                             $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
                         } elseif ($value->status_document == 6) {
                             $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        }elseif ($value->status_document == 9) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #2C7F7A">Complete</span>';
                         }
                     }
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
@@ -455,10 +457,10 @@ class QuotationController extends Controller
                 }else {
                     $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                 }
-                if ($value->status_guest == 1) {
+                if ($value->status_guest == 1 &&$value->status_document !== 0 &&$value->status_document !== 9) {
                     $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                 } else {
-                    if ($value->status_guest == 1 &&$value->status_document !== 0) {
+                    if ($value->status_document == 0) {
                         $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
                     } elseif ($value->status_document == 1) {
                         $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
@@ -470,6 +472,8 @@ class QuotationController extends Controller
                         $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
                     } elseif ($value->status_document == 6) {
                         $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }elseif ($value->status_document == 9) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #2C7F7A">Complete</span>';
                     }
                 }
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
@@ -1645,6 +1649,151 @@ class QuotationController extends Controller
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
+                    'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'Type'=>$value->Date_type,
+                    'CheckIn' => $value->checkin ? $value->checkin : '-',
+                    'CheckOut' => $value->checkout ? $value->checkout : '-',
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_complete_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',9)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',9)->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #2C7F7A">Complete</span>';
+
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
+                        'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type,
+                        'CheckIn' => $value->checkin ? $value->checkin : '-',
+                        'CheckOut' => $value->checkout ? $value->checkout : '-',
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_complete(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($search_value) {
+            $data_query = Quotation::where('status_document',9)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',9)->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                $btn_status = '<span class="badge rounded-pill " style="background-color: #2C7F7A">Complete</span>';
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [

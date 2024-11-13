@@ -606,6 +606,9 @@ Route::middleware(['auth'])->group(function () {
         //--------------------------LogDoc-----------
         Route::post('Proposal-LogDoc-search-table', 'search_table_paginate_log_doc');
         Route::post('Proposal-LogDoc-paginate-table', 'paginate_log_doc_table_proposal');
+
+        Route::post('Proposal-Complete-search-table', 'search_table_paginate_complete');
+        Route::post('Proposal-Complete-paginate-table', 'paginate_complete_table_proposal');
     });
 
     #DummyQuotaion
