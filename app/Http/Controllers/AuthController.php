@@ -105,8 +105,22 @@ class AuthController extends Controller
     public function create(array $data)
     {
       try {
+        $image_name = '';
+        if (!empty($data['signature']) && $data['signature'] instanceof \Illuminate\Http\UploadedFile) {
+            $path = 'upload/signature/';
+            
+            $file_name = 'signature-' . time() . '-' . $data['signature']->getClientOriginalName();
+            $data['signature']->move($path, $file_name); // Move file to destination folder
+            
+            $image_name = $file_name; 
+        }
+
         $user_id = User::create([
             'name' => $data['name'],
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'tel' => $data['telephone'],
+            'signature' => $image_name,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'discount' => $data['discount'] ?? 0,

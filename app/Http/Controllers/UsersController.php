@@ -84,17 +84,12 @@ class UsersController extends Controller
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
 
-                $permission_name = '';
                 $status_name = '';
                 $btn_action = '';
 
                 // ประเภทรายได้
                 if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
                 if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
-
-                if($value->permission == 0) { $permission_name = 'General'; } 
-                if($value->permission == 1) { $permission_name = 'Admin'; } 
-                if($value->permission == 2) { $permission_name = 'Developer'; } 
 
                 if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
                     $btn_action .='<div class="dropdown">';
@@ -113,7 +108,7 @@ class UsersController extends Controller
                 $data[] = [
                     'id' => $key + 1,
                     'username' => $value->name,
-                    'permission_name' => $permission_name,
+                    'permission_name' => @$value->permissionName->department,
                     'status_name' => $status_name,
                     'btn_action' => $btn_action,
                 ];
@@ -154,17 +149,12 @@ class UsersController extends Controller
             foreach ($data_query as $key => $value) {
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
-                    $permission_name = '';
                     $status_name = '';
                     $btn_action = '';
 
                     // ประเภทรายได้
                     if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
                     if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
-
-                    if($value->permission == 0) { $permission_name = 'General'; } 
-                    if($value->permission == 1) { $permission_name = 'Admin'; } 
-                    if($value->permission == 2) { $permission_name = 'Developer'; } 
 
                     if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
                         $btn_action .='<div class="dropdown">';
@@ -183,7 +173,7 @@ class UsersController extends Controller
                     $data[] = [
                         'number' => $key + 1,
                         'username' => $value->name,
-                        'permission_name' => $permission_name,
+                        'permission_name' => @$value->permissionName->department,
                         'status_name' => $status_name,
                         'btn_action' => $btn_action,
                     ];
@@ -231,8 +221,30 @@ class UsersController extends Controller
     public function update(Request $request)
     {
         try {
+
+            if ($request->hasFile('signature')) {
+                $path = 'upload/signature/';
+                $user = User::find($request->id); // ดึงข้อมูลผู้ใช้จาก id ที่ได้รับ
+            
+                // ลบรูปภาพเก่าหากมีอยู่
+                if (!empty($user->signature) && file_exists($path . $user->signature)) {
+                    unlink($path . $user->signature); // ลบไฟล์เก่า
+                }
+            
+                // ตั้งชื่อไฟล์ใหม่และย้ายไฟล์ไปยังโฟลเดอร์ปลายทาง
+                $file_name = 'signature-' . time() . '-' . $request->signature->getClientOriginalName();
+                $request->signature->move($path, $file_name);
+            
+                // อัปเดตชื่อไฟล์ในฐานข้อมูล
+                $user->update(['signature' => $file_name]);
+            }
+            
+
             User::where('id', $request->id)->update([
                 'name' => $request->name,
+                'firstname' =>$request->firstname,
+                'lastname' => $request->lastname,
+                'tel' => $request->telephone,
                 'email' => $request->email,
                 'discount' => $request->discount ?? 0,
                 'additional_discount' => $request->additional_discount ?? 0,

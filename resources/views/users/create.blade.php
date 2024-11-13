@@ -30,6 +30,10 @@
                             <div class="wrap-permissoion-create-user">
                                 <section>
                                     <div class="form-group">
+                                        <label for="firstname" class="star-red">Firstname</label>
+                                        <input type="text" class="form-control" name="firstname" placeholder="Enter firstname" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="username" class="star-red">Username</label>
                                         <input type="text" class="form-control" name="name" placeholder="Enter username" maxlength="70" required>
                                     </div>
@@ -38,11 +42,32 @@
                                         <input type="text" class="form-control" name="email" placeholder="email@website.com" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="password" class="star-red">Password</label>
-                                        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+                                        <label for="signature">Signature</label>
+                                        <input type="file" class="form-control" name="signature" >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="access-rights" class="star-red">สิทธิ์ในการใช้ข้อมูล /Data Usage Rights</label>
+                                        <select class="form-control" name="permission_edit" id="access-use-rights" style="padding: 0;">
+                                            <option value="0">ดูได้อย่างเดียว</option>
+                                            <option value="1" selected>สามารถแก้ไขข้อมูลตัวเอง</option>
+                                            <option value="2">สามารถแก้ไขข้อมูลตัวเอง และดูข้อมูลคนอื่นได้</option>
+                                            <option value="3">สามารถแก้ไขข้อมูลตัวเอง และแก้ไขข้อมูลคนอื่นได้</option>
+                                        </select>
                                     </div>
                                 </section>
                                 <section>
+                                    <div class="form-group">
+                                        <label for="lastname" class="star-red">Lastname</label>
+                                        <input type="text" class="form-control" name="lastname" placeholder="Enter lastname" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="star-red">Password</label>
+                                        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="telephone" class="star-red">Telephone</label>
+                                        <input type="text" class="form-control" name="telephone" placeholder="Enter telephone" required>
+                                    </div>
                                     <div class="form-group">
                                         <label for="access-rights" class="star-red">สิทธิ์ในการเข้าถึง / Access Rights</label>
                                         <select name="permission" id="access-rights" onchange="select_department()">
@@ -54,15 +79,6 @@
                                                     <option value="{{ $item->id }}">{{ $item->department }}</option>
                                                 @endif
                                             @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="access-rights" class="star-red">สิทธิ์ในการใช้ข้อมูล /Data Usage Rights</label>
-                                        <select class="form-control" name="permission_edit" id="access-use-rights" style="padding: 0;">
-                                            <option value="0">ดูได้อย่างเดียว</option>
-                                            <option value="1" selected>สามารถแก้ไขข้อมูลตัวเอง</option>
-                                            <option value="2">สามารถแก้ไขข้อมูลตัวเอง และดูข้อมูลคนอื่นได้</option>
-                                            <option value="3">สามารถแก้ไขข้อมูลตัวเอง และแก้ไขข้อมูลคนอื่นได้</option>
                                         </select>
                                     </div>
                                     <div  class="d-grid-2column" >

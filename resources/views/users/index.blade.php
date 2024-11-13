@@ -54,10 +54,10 @@
                             <div class="top-table-3c_2">
                                 <label class="entriespage-label">entries per page :</label>
                                 <select class="entriespage-button bd-button" id="search-per-page-user" style="text-align: left;" onchange="getPage(1, this.value, 'user')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == 'user' ? 'selected' : '' }}>10</option>
-                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == 'user' ? 'selected' : '' }}>25</option>
-                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == 'user' ? 'selected' : '' }}>50</option>
-                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == 'user' ? 'selected' : '' }}>100</option>
+                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                 </select>
                             </div>
       
@@ -70,13 +70,13 @@
                         </caption>
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                                <strong>บันทึกข้อมูลเรียบร้อย!</strong> {{ session('success') }}
+                                <strong>Successfully!</strong> {{ session('success') }}
                                 <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
                         @if (session('error'))
                             <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                                <strong>เกิดข้อผิดพลาด!</strong> {{ session('error') }}
+                                <strong>Error!</strong> {{ session('error') }}
                                 <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif

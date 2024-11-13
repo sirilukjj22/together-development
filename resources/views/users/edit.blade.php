@@ -30,6 +30,10 @@
                             <div class="wrap-permissoion-create-user">
                                 <section>
                                     <div class="form-group">
+                                        <label for="firstname" class="star-red">Firstname</label>
+                                        <input type="text" class="form-control" name="firstname" value="{{ $user->firstname }}" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="username" class="star-red">Username</label>
                                         <input type="text" class="form-control" name="name" value="{{ $user->name }}" maxlength="70" required>
                                     </div>
@@ -38,11 +42,32 @@
                                         <input type="text" class="form-control" name="email" value="{{ $user->email }}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="password" class="star-red">Password</label>
-                                        <input type="password" class="form-control" name="password" placeholder="Enter password">
+                                        <label for="signature">Signature <a href="/upload/signature/{{ $user->signature }}" target="_blank" class="text-primary"><u>แสดงรูปภาพ</u></a></label>                                        
+                                        <input type="file" class="form-control" name="signature" accept=".jpg, .jpeg, .png">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="access-rights" class="star-red">สิทธิ์ในการใช้ข้อมูล /Data Usage Rights</label>
+                                        <select class="form-control" name="permission_edit" id="access-use-rights" style="padding: 0;">
+                                            <option value="0" {{ $user->permission_edit == 0 ? 'selected' : '' }}>ดูได้อย่างเดียว</option>
+                                            <option value="1" {{ $user->permission_edit == 1 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง</option>
+                                            <option value="2" {{ $user->permission_edit == 2 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง และดูข้อมูลคนอื่นได้</option>
+                                            <option value="3" {{ $user->permission_edit == 3 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง และแก้ไขข้อมูลคนอื่นได้</option>
+                                        </select>
                                     </div>
                                 </section>
                                 <section>
+                                    <div class="form-group">
+                                        <label for="lastname" class="star-red">Lastname</label>
+                                        <input type="text" class="form-control" name="lastname" value="{{ $user->lastname }}" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" class="form-control" name="password" placeholder="Enter password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="telephone" class="star-red">Telephone</label>
+                                        <input type="text" class="form-control" name="telephone" value="{{ $user->tel }}" required>
+                                    </div>
                                     <div class="form-group">
                                         <label for="access-rights" class="star-red">สิทธิ์ในการเข้าถึง / Access Rights</label>
                                         <select name="permission" id="access-rights" onchange="select_department()">
@@ -53,15 +78,6 @@
                                                     <option value="{{ $item->id }}" {{ $user->permission == $item->id ? 'selected' : '' }}>{{ $item->department }}</option>
                                                 @endif
                                             @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="access-rights" class="star-red">สิทธิ์ในการใช้ข้อมูล /Data Usage Rights</label>
-                                        <select class="form-control" name="permission_edit" id="access-use-rights" style="padding: 0;">
-                                            <option value="0" {{ $user->permission_edit == 0 ? 'selected' : '' }}>ดูได้อย่างเดียว</option>
-                                            <option value="1" {{ $user->permission_edit == 1 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง</option>
-                                            <option value="2" {{ $user->permission_edit == 2 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง และดูข้อมูลคนอื่นได้</option>
-                                            <option value="3" {{ $user->permission_edit == 3 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง และแก้ไขข้อมูลคนอื่นได้</option>
                                         </select>
                                     </div>
                                     <div  class="d-grid-2column" >
