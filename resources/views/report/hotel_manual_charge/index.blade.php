@@ -368,6 +368,7 @@
 
         $(document).on('click', '.btn-search', function () {
             document.getElementById("form-search").removeAttribute('target');
+            $('#method-name').val("search");
             $('#form-search').submit();
         });
     </script>

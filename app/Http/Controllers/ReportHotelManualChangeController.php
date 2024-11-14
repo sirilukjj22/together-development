@@ -91,7 +91,8 @@ class ReportHotelManualChangeController extends Controller
             return $pdf->stream();
 
         } elseif ($request->method_name == "excel") {
-            return Excel::download(new HotelManualChargeExport($filter_by, $startDate, $endDate), 'hotel_manual_charge.xlsx');
+            // return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx');
+            return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
         }
     }
 }
