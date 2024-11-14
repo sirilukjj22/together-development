@@ -275,8 +275,8 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Report">
                                         {{-- @if (Auth::user()->roleMenu->sms_alert == 1) --}}
-                                            <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Hotel & Water Park Revenue</a></li>
-                                            <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Hotel Manual Charge</a></li>
+                                            <li><a class="ms-link" href="#">Hotel & Water Park Revenue</a></li>
+                                            <li><a class="ms-link" href="{{ route('report-hotel-manual-charge') }}">Hotel Manual Charge</a></li>
                                         {{-- @endif --}}
                                     </ul>
                                 </li>
