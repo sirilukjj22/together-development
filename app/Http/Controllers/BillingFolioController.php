@@ -28,6 +28,8 @@ use App\Models\guest_tax;
 use Illuminate\Support\Arr;
 use App\Models\master_document_sheet;
 use App\Models\proposal_overbill;
+use App\Models\document_proposal_overbill;
+use App\Models\Master_additional;
 use Auth;
 use App\Models\User;
 use Carbon\Carbon;
@@ -519,22 +521,92 @@ class BillingFolioController extends Controller
             $totalentertainment +=  $item->netpriceproduct;
         }
         $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->first();
-        $Additional_ID = $Additional->Additional_ID;
-
-        $Receiptover = receive_payment::where('Quotation_ID', $Additional_ID)->get();
+        $Rm = []; // กำหนดตัวแปร $Rm เป็น array ว่าง
+        $FB = [];
+        $BQ = [];
+        $AT = [];
+        $EM = [];
+        $RmCount = 0;
+        $FBCount = 0;
+        $BQCount = 0;
+        $EMCount = 0;
+        $ATCount = 0;
         $AdditionaltotalReceipt = 0;
-        foreach ($Receiptover as $item) {
-            $AdditionaltotalReceipt +=  $item->Amount;
+        $statusover = 1;
+        $Receiptover = null;
+        $Additional_ID = null;
+        if ($Additional) {
+            $Additional_ID = $Additional->Additional_ID;
+            $document = document_proposal_overbill::where('Additional_ID',$Additional_ID)->get();
+
+            $master = Master_additional::query()->get();
+            $combinedData = $document->map(function($doc) use ($master) {
+                $matchedMaster = $master->firstWhere('code', $doc->Code);
+
+                if ($matchedMaster) { // ตรวจสอบว่าเจอข้อมูลที่ Code ตรงกันหรือไม่
+                    return [
+                        'Additional_ID' => $doc->Additional_ID,
+                        'Code' => $doc->Code,
+                        'Detail' => $doc->Detail,
+                        'Amount' => $doc->Amount,
+                        'type' => $matchedMaster->type,
+                    ];
+                }
+                return null; // ถ้าไม่ตรงให้ส่งค่า null
+            })->filter(); // ใช้ filter เพื่อกรอง null ออก
+
+            foreach ($combinedData as $item) {
+                if ($item['type'] == 'RM') {
+                    $Rm[] = $item;
+                } elseif ($item['type'] == 'FB') {
+                    $FB[] = $item;
+                } elseif ($item['type'] == 'BQ') {
+                    $BQ[] = $item;
+                } elseif ($item['type'] == 'AT') {
+                    $AT[] = $item;
+                } elseif ($item['type'] == 'EM') {
+                    $EM[] = $item;
+                }
+            }
+
+            foreach ($Rm as $item) {
+                $RmCount +=  $item['Amount'];
+            }
+
+            foreach ($FB as $item) {
+                $FBCount +=  $item['Amount'];
+            }
+
+            foreach ($BQ as $item) {
+                $BQCount +=  $item['Amount'];
+            }
+
+            foreach ($EM as $item) {
+                $EMCount +=  $item['Amount'];
+            }
+
+            foreach ($AT as $item) {
+                $ATCount +=  $item['Amount'];
+            }
+            // ตรวจสอบผลลัพธ์
+
+            $Receiptover = receive_payment::where('Quotation_ID', $Additional_ID)->get();
+
+            foreach ($Receiptover as $item) {
+                $AdditionaltotalReceipt +=  $item->Amount;
+            }
+            if ($Receiptover->contains('Paid', 0)) {
+                // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
+                $statusover = 0;
+            } else {
+                $statusover = 1;
+            }
         }
-        if ($Receiptover->contains('Paid', 0)) {
-            // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
-            $status = 0;
-        } else {
-            $status = 1;
-        }
+
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
                     'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
-                    ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt'));
+                    ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt','Receiptover','statusover','Additional_ID',
+                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount'));
     }
 
     public function PaidInvoice($id){

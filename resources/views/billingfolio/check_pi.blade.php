@@ -37,15 +37,17 @@
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
-                        <i class="fa fa-plus"></i>Create Invoice
+                        <i class="fa fa-plus"></i> Create Invoice
                     </button>
                     @php
                         $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                     @endphp
-                    @if ($Nettotal-$totalReceipt == 0)
-                        @if ($canEditProposal)
-                            <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
-                            <i class="fa fa-plus"></i> Over Bill</button>
+                    @if ($statusover == '1')
+                        @if ($Nettotal-$totalReceipt == 0)
+                            @if ($canEditProposal)
+                                <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
+                                <i class="fa fa-plus"></i> Additional</button>
+                            @endif
                         @endif
                     @endif
                     <div class="modal fade" id="OverCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -240,19 +242,29 @@
                             <div class="card-content3 bg-card-content-white">
                                 <div class="card-title center" style="position: relative;"><span>Folio </span><span id="switchButton" style='font-size:20px;position: absolute;right: 1em;'>&#8644;</span> </div>
                                 <ul class="card-list-between">
+                                    <span>
                                     <li class="pr-3">
                                         <span>Proposal ({{$Proposal_ID}})</span>
                                         <span class="hover-effect i  f-w-bold" style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalProposalSummary"> {{ number_format($Nettotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
                                     </li>
+                                    <li class="pr-3">
+                                        <span >Additional ({{$Additional_ID}})</span>
+                                        <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($AdditionaltotalReceipt, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
+                                    </li>
+                                    <li class="pr-3">
+                                        <span >Total</span>
+                                        <span class="text-danger f-w-bold">{{ number_format($Nettotal+$AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                    </li>
+                                </span>
+
+
                                     <span id="defaultContent">
+
                                         <li class="pr-3">
                                             <span>Receipt</span>
                                             <span class="text-danger f-w-bold">{{ number_format($totalReceipt, 2, '.', ',') }}</span>
                                         </li>
-                                        <li class="pr-3">
-                                            <span>Additional</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
-                                        </li>
+
                                     </span>
                                     <span id="toggleContent" style="display: none;">
                                         <li class="pr-3 ">
@@ -345,13 +357,14 @@
                                 </tbody>
                             </table>
                         </div>
+                        @if ($statusover == '0')
                         <div class="card-body">
-                            <b>Receipt</b>
+                            <b>Additional</b>
                             <table id="ReceiptTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
                                 <thead >
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Proforma Invoice ID</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Additional ID</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Category</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
@@ -360,19 +373,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(!empty($Receipt))
-                                        @foreach ($Receipt as $key => $item3)
+                                    @if(!empty($Receiptover))
+                                        @foreach ($Receiptover as $key => $item4)
                                             <tr>
-                                                <th style="text-align:left;">{{$item3->Receipt_ID}}</th>
-                                                <th style="text-align:left;">{{$item3->Invoice_ID}}</th>
-                                                <th style="text-align:center;">{{ $item3->category}}</th>
-                                                <th style="text-align:center;">{{$item3->paymentDate}}</th>
+                                                <th style="text-align:left;">{{$item4->Receipt_ID}}</th>
+                                                <th style="text-align:left;">{{$item4->Quotation_ID}}</th>
+                                                <th style="text-align:center;">{{ $item4->category}}</th>
+                                                <th style="text-align:center;">{{$item4->paymentDate}}</th>
                                                 <th style="text-align:center;">
                                                     <span class="badge rounded-pill bg-success">Approved</span>
                                                 </th>
-                                                <th style="text-align:center;">{{ number_format($item3->Amount, 2, '.', ',') }}</th>
+                                                <th style="text-align:center;">{{ number_format($item4->Amount, 2, '.', ',') }}</th>
                                                 <th style="text-align:left;">
-                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item3->id) }}">
+                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolioOverbill/Proposal/invoice/export/'.$item4->id) }}">
                                                         View
                                                     </a>
                                                 </th>
@@ -382,6 +395,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -657,6 +671,229 @@
                                                             @endif
                                                         @endforeach
                                                     @endforeach
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bt-tg-normal btn-secondary sm" style="background-color: grey; margin-right: 5px" data-bs-dismiss="modal"> Close </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade pi" id="ModalAdditionalSummary" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-custom-90p">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #2c7f7a">
+                            <h3 class="modal-title fs-3" id="exampleModalLabel" style="color: white"> Proposal Summary </h3>
+                            <button type="button" class="btn-close light" data-bs-dismiss="modal" aria-label="Close" style="color: white !important"></button>
+                        </div>
+                        <div class="modal-body">
+                        <div class="">
+                            <div class="d-flex-wrap-at-300">
+                            <section class="card-content2">
+                                <h5 class="card-title">Proposal</h5>
+                                <div class="card-list-between">
+                                    <li>
+                                        <span>Subtotal</span>
+                                        <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Price Before Tax</span>
+                                        <span>{{ number_format($AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Value Added Tax</span>
+                                        <span>{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                    </li>
+                                    </div>
+                                    <div class="card-list-between">
+                                    <li>
+                                        <span>Total Balance</span>
+                                        <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                    </li>
+                                </div>
+                            </section>
+                            <section class="card-content2">
+                                <h5 class="card-title">Revenue Summary</h5>
+                                <div class="card-list-between">
+                                <li>
+                                    <span>Room Revenue</span>
+                                    <span>{{ number_format($RmCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>F&B Revenue</span>
+                                    <span>{{ number_format($FBCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>Banquet Revenue</span>
+                                    <span>{{ number_format($BQCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>Entertainment Revenue</span>
+                                    <span>{{ number_format($EMCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>Other items</span>
+                                    <span>{{ number_format($ATCount, 2, '.', ',') }}</span>
+                                </li>
+                                </div>
+                                <div class="card-list-between">
+                                <li>
+                                    <span>Total Balance</span>
+                                    <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                </li>
+                                </div>
+                            </section>
+                            </div>
+                            <div class="container-sub-table-proposal">
+                            <section>
+                                <h4>Room Revenue </h4>
+                                <details onclick="nav($id='nav1')">
+                                    <div class="wrap-table-together">
+                                        <table id="roomTable" class="table-together ui striped table nowrap unstackable hover" >
+                                            <thead>
+                                                <tr>
+                                                <th >No</th>
+                                                <th data-priority="1">Code</th>
+                                                <th data-priority="1">Description</th>
+                                                <th data-priority="1">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($Rm))
+                                                    @foreach ($Rm as $key => $item)
+                                                        <tr >
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>{{ $item['Code'] }}</td>
+                                                            <td>{{ $item['Detail'] }}</td>
+                                                            <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </details>
+                            </section>
+                            <!-- Table2 F&B Revenue -->
+                            <section>
+                                <h4>F&B Revenue</h4>
+                                <details onclick="nav($id='nav2')">
+                                <div class="wrap-table-together">
+                                    <table id="fbTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($FB))
+                                                @foreach ($FB as $key => $item)
+                                                    <tr >
+                                                        <<td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            <!-- Table3 Banquet Revenue-->
+                            <section>
+                                <h4>Banquet Revenue</h4>
+                                <details onclick="nav($id='nav3')">
+                                <div class="wrap-table-together">
+                                    <table id="banquetTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($BQ))
+                                                @foreach ($BQ as $key => $item)
+                                                    <tr >
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            <!-- Table4 Entertainment Revenue -->
+                            <section>
+                                <h4>Entertainment Revenue</h4>
+                                <details onclick="nav($id='nav4')">
+                                <div class="wrap-table-together">
+                                    <table id="entertainmentTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($EM))
+                                                @foreach ($EM as $key => $item)
+                                                    <tr >
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            <section>
+                                <h4>Other items</h4>
+                                <details onclick="nav($id='nav5')">
+                                <div class="wrap-table-together">
+                                    <table id="entertainmentTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($AT))
+                                                @foreach ($AT as $key => $item)
+                                                    <tr >
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
                                                 @endforeach
                                             @endif
                                         </tbody>

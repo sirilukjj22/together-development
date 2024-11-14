@@ -49,7 +49,7 @@
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Receipt" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$ApprovedCount}}</span> Receipt</a></li>{{--ประวัติการแก้ไข--}}
                         <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav2')" role="tab"><span class="badge bg-success">{{$ComplateCount}}</span> Complete</a></li>
-                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><span class="badge  bg-danger"  >{{0}}</span> Close the balance</a></li>
+                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><span class="badge  bg-danger"  >{{0}}</span> No Show</a></li>
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
