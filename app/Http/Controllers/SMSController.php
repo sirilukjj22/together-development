@@ -357,7 +357,7 @@ class SMSController extends Controller
 
             $date_current = $adate;
 
-        } elseif ($request->filter_by == "year") {
+        } elseif ($request->filter_by == "year" || $request->filter_by == "thisYear") {
             $year = date('Y', strtotime($request->date));
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
             $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
@@ -530,13 +530,6 @@ class SMSController extends Controller
                     ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 5)
                     ->paginate($perPage);
             }
-
-        } elseif ($request->table_name == "revenueTable") {
-            $data_query_revenue = Revenues::rightjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-                ->where('revenue_credit.status', 5)->where('revenue.date', 'LIKE', '%'.$request->search_value.'%')
-                ->orWhere('revenue_credit.agoda_outstanding', 'LIKE', '%'.$request->search_value.'%')->where('revenue_credit.status', 5)
-                ->select('revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue.date')
-                ->paginate($perPage);
         }
 
         if (isset($data_query) && count($data_query) > 0) {
@@ -556,6 +549,7 @@ class SMSController extends Controller
                 $img_bank = '';
                 $transfer_bank = '';
                 $revenue_name = '';
+                $split_from = '';
                 $btn_action = '';
 
                 // โอนจากธนาคาร
@@ -584,6 +578,12 @@ class SMSController extends Controller
                 if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
                 if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
                 if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+
+                if ($value->split_status == 1)
+                {
+                    $split_from = '<br>
+                    <span class="text-danger">(Split Credit Card From '.number_format($value->fullAmount->amount_before_split, 2).')</span>';
+                }
 
                 if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
                     $btn_action .='<div class="dropdown">';
@@ -672,17 +672,9 @@ class SMSController extends Controller
                     'into_account' => $into_account,
                     'amount' => number_format($value->amount, 2),
                     'remark' => $value->remark ?? 'Auto',
-                    'revenue_name' => $revenue_name,
+                    'revenue_name' => $revenue_name.$split_from,
                     'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
                     'btn_action' => $btn_action,
-                ];
-            }
-        } elseif(isset($data_query_revenue) && count($data_query_revenue) > 0) {
-            foreach ($data_query_revenue as $key => $value) {
-                $data[] = [
-                    'number' => $key + 1,
-                    'date' => Carbon::parse($value->date)->format('d/m/Y'),
-                    'agoda_outstanding' => $value->agoda_outstanding,
                 ];
             }
         }
@@ -752,7 +744,7 @@ class SMSController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
-        } elseif ($request->filter_by == "year") {
+        } elseif ($request->filter_by == "year" || $request->filter_by == "thisYear") {
             $year = date('Y', strtotime($request->date));
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
             $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
@@ -901,6 +893,7 @@ class SMSController extends Controller
                     $img_bank = '';
                     $transfer_bank = '';
                     $revenue_name = '';
+                    $split_from = '';
                     $btn_action = '';
     
                     // โอนจากธนาคาร
@@ -929,6 +922,12 @@ class SMSController extends Controller
                     if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
                     if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
                     if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+
+                    if ($value->split_status == 1)
+                    {
+                        $split_from = '<br>
+                        <span class="text-danger">(Split Credit Card From '.number_format($value->fullAmount->amount_before_split, 2).')</span>';
+                    }
     
                     if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
                         $btn_action .='<div class="dropdown">';
@@ -1017,7 +1016,7 @@ class SMSController extends Controller
                         'into_account' => $into_account,
                         'amount' => number_format($value->amount, 2),
                         'remark' => $value->remark ?? 'Auto',
-                        'revenue_name' => $revenue_name,
+                        'revenue_name' => $revenue_name.$split_from,
                         'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
                         'btn_action' => $btn_action,
                     ];
@@ -1851,8 +1850,8 @@ class SMSController extends Controller
 
             $date_current = $adate;
 
-        } elseif ($request->filter_by == "year") {
-            $year = $request->date;
+        } elseif ($request->filter_by == "year" || $request->filter_by == "thisYear") {
+            $year = date('Y', strtotime($request->date));
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
             $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
 
@@ -2414,7 +2413,7 @@ class SMSController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
-        } elseif ($request->filter_by == "year") {
+        } elseif ($request->filter_by == "year" || $request->filter_by == "thisYear") {
             $year = date('Y', strtotime($request->date));
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
             $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
@@ -2601,7 +2600,7 @@ class SMSController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
-        } elseif ($request->filter_by == "year") {
+        } elseif ($request->filter_by == "year" || $request->filter_by == "thisYear") {
             $year = date('Y', strtotime($request->date));
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
             $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));

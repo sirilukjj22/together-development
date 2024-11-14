@@ -106,6 +106,11 @@
                                                 @elseif($item->status == 9)
                                                     Other Revenue Bank Transfer
                                                 @endif
+
+                                                @if ($item->split_status == 1)
+                                                    <br>
+                                                    <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
+                                                @endif
                                             </td>
 
                                             <td class="td-content-center">
