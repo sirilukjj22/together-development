@@ -17,6 +17,8 @@
                     $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime($search_date))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
                 } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
                     $pickup_time = "01 " . date('M') . " ~ " . date('t M');
+                } elseif (isset($filter_by) && $filter_by == 'thisYear') {
+                    $pickup_time = date('Y');
                 }
 
                 ## Check Close Day
@@ -56,6 +58,8 @@
                                         This Week
                                     @elseif (isset($filter_by) && $filter_by == 'thisMonth')
                                         This Month
+                                    @elseif (isset($filter_by) && $filter_by == 'thisYear')
+                                        This Year
                                     @else
                                         Custom
                                     @endif
@@ -67,6 +71,7 @@
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('thisYear')">This Year</a>
 
                                 <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }}">
                                 <input type="hidden" name="" id="week-to" value="{{ date('d M', strtotime("+6 day", strtotime($this_week))) }}">
@@ -880,10 +885,10 @@
                                         <div class="flex-end-g2">
                                             <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-split" onchange="getPage(1, this.value, 'split')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "split" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "split" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "split" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "split" ? 'selected' : '' }}>100</option>
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                             </select>
                                             <input class="search-button search-data" id="split" style="text-align:left;" placeholder="Search" />
                                         </div>
@@ -1855,6 +1860,14 @@
                 var month = date.getMonth() + 1;
                 var year = date.getFullYear();
                 $('#txt-daily').text("This Month");
+            }
+
+            if ($search == 'thisYear') {
+                var date = new Date();
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                $('#txt-daily').text("This Year");
             }
 
             $('#filter-by').val($search);

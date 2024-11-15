@@ -41,28 +41,27 @@ class ReportAuditRevenueDateController extends Controller
         $query_all = Revenues::query();
 
         if ($filter_by == "date") {
-            $query->where('date', $startDate);
-            $query_all->where('date', $startDate);
+            $exp = explode('-', $request->startDate);
+            $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
+            $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
+
+            $query->whereBetween('date', [$startDate, $endDate]);
+            $query_all->whereBetween('date', [$startDate, $endDate]);
+            $search_date = date('d/m/Y', strtotime($startDate))." - ".date('d/m/Y', strtotime($endDate));
         }
 
         if ($filter_by == "month") {
-            $query->whereBetween('date', [date($startDate.'-01'), date($endDate.'-31')]);
-            $query_all->whereBetween('date', [date($startDate.'-01'), date($endDate.'-31')]);
+            $startDate = $request->month ?? 0;
+            $query->whereBetween('date', [date($startDate.'-01'), date($startDate.'-31')]);
+            $query_all->whereBetween('date', [date($startDate.'-01'), date($startDate.'-31')]);
+            $search_date = date('F Y', strtotime(date($startDate.'-01')));
         }
 
         if ($filter_by == "year") {
+            $startDate = $request->startDate ?? 0;
             $query->whereYear('date', $startDate);
             $query_all->whereYear('date', $startDate);
-        }
-
-        if ($filter_by == "custom") {
-            $query->whereBetween('date', [$startDate, $endDate]);
-            $query_all->whereBetween('date', [$startDate, $endDate]);
-        }
-
-        if ($status != "all") {
-            $query->where('status', $status);
-            $query_all->where('status', $status);
+            $search_date = $startDate;
         }
         
         $data_query = $query->select('id', 'date', 'status')->paginate(10);
@@ -81,7 +80,7 @@ class ReportAuditRevenueDateController extends Controller
             }
         }
 
-        return view('report.audit_revenue_date.index', compact('data_query', 'total_all', 'verified', 'unverified', 'filter_by', 'startDate', 'endDate', 'status'));
+        return view('report.audit_revenue_date.index', compact('data_query', 'total_all', 'verified', 'unverified', 'filter_by', 'search_date', 'startDate', 'status'));
     }
 
     public function search_table(Request $request)

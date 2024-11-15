@@ -155,22 +155,21 @@
                                     <button id="filter-date" type="button" class="btn {{ isset($filter_by) && $filter_by == 'date' ? 'selected' : '' }} w-100">Date</button>
                                     <button id="filter-month" type="button" class="btn {{ isset($filter_by) && $filter_by == 'month' ? 'selected' : '' }} w-100">Month</button>
                                     <button id="filter-year" type="button" class="btn {{ isset($filter_by) && $filter_by == 'year' ? 'selected' : '' }} w-100">Year</button>
-                                    <button id="filter-custom" type="button" class="btn {{ isset($filter_by) && $filter_by == 'custom' ? 'selected' : '' }} w-100">Custom Range</button>
                                 </div>
                             </div>
-                            <div id="box-start-date" class="col-md-6">
+                            <div id="box-start-date" class="col-md-6" hidden>
                                 <label for="startDate" class="form-label label-startDate">Start Date</label>
-                                <input type="text" class="form-control" id="startDate" name="startDate" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
+                                <input type="text" class="form-control" id="startDate" name="startDate" value="{{ isset($search_date) ? $search_date : date('Y-m-d Y-m-d') }}" required>
                             </div>
-                            <div id="box-end-date" class="col-md-6">
-                                <label for="endDate" class="form-label label-endDate">End Date</label>
-                                <input type="text" class="form-control" id="endDate" name="endDate" value="{{ isset($endDate) ? $endDate : date('Y-m') }}" required>
+                            <div id="box-month" class="col-md-6">
+                                <label for="month" class="form-label label-month">Month</label>
+                                <input type="month" class="form-control" id="month" name="month" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
                             </div>
                             <div id="box-start-year" class="col-md-6" hidden>
                                 <label for="startYear" class="form-label label-startYear">Year</label>
                                 <select class="form-select" name="startDate" id="startYear">
                                     @for ($i = 2024; $i <= date('Y', strtotime('+1 year')); $i++)
-                                        <option value="{{ $i }}" {{ isset($filter_by) && $filter_by == 'year' && $i == $startDate ? 'selected' : '' }}>{{ $i }}</option>
+                                        <option value="{{ $i }}" {{ isset($filter_by) && $filter_by == 'year' && $i == $search_date ? 'selected' : '' }}>{{ $i }}</option>
                                     @endfor
                                 </select>
                             </div>
@@ -280,6 +279,11 @@
     <script src="{{ asset('assets/js/dataTables.responsive.js') }}"></script>
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
+    <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
+    <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableReportAudit.js')}}"></script>
 
@@ -307,34 +311,42 @@
 
         var filterBy = $('#filter-by').val();
         var startDate = document.getElementById("startDate");
-        var endDate = document.getElementById("endDate");
+        var MonthStart = document.getElementById("month");
         startYear.disabled = true;
 
         if (filterBy == "date") {
-            startDate.type = "date";
-            $('#box-end-date').prop('hidden', true);
+            startDate.type = "text";
+            startDate.disabled = false;
+            MonthStart.disabled = true;
+            $('#box-month').prop('hidden', true);
+            $('#box-start-date').prop('hidden', false);
+            $('#filter-by').val("date");
         } 
 
         if (filterBy == "month") {
-            startDate.type = "month";
-            endDate.type = "month";
-            $('#box-end-date').prop('hidden', false);
+            MonthStart.type = "month";
+            MonthStart.disabled = false;
+            startDate.disabled = true;
+            $('#box-start-date').prop('hidden', true);
+            $('#box-month').prop('hidden', false);
+            $('#filter-by').val("month");
         } 
 
         if (filterBy == "year") {
             startYear.disabled = false;
             startDate.disabled = true;
-            endDate.disabled = true;
+            MonthStart.disabled = true;
             $('#box-start-date').prop('hidden', true);
-            $('#box-end-date').prop('hidden', true);
+            $('#box-month').prop('hidden', true);
             $('#box-start-year').prop('hidden', false);
+            $('#filter-by').val("year");
         } 
 
-        if (filterBy == "custom") {
-            startDate.type = "date";
-            endDate.type = "date";
-            $('#box-end-date').prop('hidden', false);
-        } 
+        $('input[name="startDate"]').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'  // กำหนดรูปแบบวันที่เป็น 'ปี-เดือน-วัน'
+            }
+        });
     });
 
     // Search
@@ -415,44 +427,11 @@
         document.getElementById(id).focus();
     });
 
-    // ตรวจสอบเมื่อมีการเปลี่ยนแปลงฟิลด์ startDate
-    $('#startDate').on('change', function() {
-        var startDateValue = $('#startDate').val();
-        var endDateValue = $('#endDate').val();
-        $('#endDate').val('');
-
-        // ตรวจสอบว่ามีการกรอกข้อมูลในทั้ง startDate และ endDate
-        if (startDateValue && endDateValue) {
-
-            // ตรวจสอบว่า startDate น้อยกว่าหรือเท่ากับ endDate หรือไม่
-            // if (startDateValue < endDateValue) {
-            //     alert("Start Date ต้องมากกว่า End Date");
-            //     $('#startDate').val(''); // ล้างค่า startDate หากไม่ผ่านเงื่อนไข
-            // }
-        }
-    });
-
-    // ตรวจสอบเมื่อฟิลด์ endDate มีการเปลี่ยนแปลง
-    $('#endDate').on('change', function() {
-        var startDateValue = $('#startDate').val();
-        var endDateValue = $('#endDate').val();        
-
-        // ตรวจสอบว่ามีการกรอกข้อมูลในทั้ง startDate และ endDate
-        if (startDateValue && endDateValue) {
-
-            // ตรวจสอบว่า endDate น้อยกว่า startDate หรือไม่
-            if (endDateValue < startDateValue) {
-                alert("End Date ต้องไม่น้อยกว่า Start Date");
-                $('#endDate').val(''); // ล้างค่า endDate หากไม่ผ่านเงื่อนไข
-            }
-        }
-    });
-
 
     document.addEventListener("DOMContentLoaded", function() {
         const filterButtons = document.querySelectorAll(".btn-group button");
         const startDate = document.getElementById("startDate");
-        const endDate = document.getElementById("endDate");
+        const MonthStart = document.getElementById("month");
         const startYear = document.getElementById("startYear");
 
         const date = new Date();
@@ -464,14 +443,6 @@
         const formattedMonth = `${year}-${month}`;
         const formattedYear = 2025;
 
-        function resetFilters() {
-            startDate.type = "date";
-            endDate.type = "date";
-            startDate.disabled = false;
-            endDate.disabled = false;
-            startYear.disabled = true;
-        }
-
         filterButtons.forEach(button => {
             button.addEventListener("click", function() {
                 // Remove 'selected' class from all buttons
@@ -481,44 +452,56 @@
 
                 $('#box-start-year').prop('hidden', true);
                 $('#box-start-date').prop('hidden', false);
-                $('#box-end-date').prop('hidden', false);
+                $('#box-month').prop('hidden', false);
+
+                startDate.disabled = true;
+                MonthStart.disabled = true;
+                startYear.disabled = true;
 
                 // Adjust the input types based on selected filter
                 if (this.id === "filter-date") {
-                    resetFilters();
-                    startDate.type = "date";
-                    startDate.value = formattedDate;
-                    endDate.disabled = true;
-                    $('#box-end-date').prop('hidden', true);
+                    startDate.type = "text";
+                    startDate.disabled = false;
+                    MonthStart.disabled = true;
+                    $('#box-month').prop('hidden', true);
                     $('#filter-by').val("date");
                 } else if (this.id === "filter-month") {
-                    resetFilters();
-                    startDate.type = "month";
-                    endDate.type = "month";
-                    startDate.value = formattedMonth;
-                    endDate.value = formattedMonth;
-                    $('#box-end-date').prop('hidden', false);
+                    MonthStart.type = "month";
+                    MonthStart.disabled = false;
+                    startDate.disabled = true;
+                    $('#box-start-date').prop('hidden', true);
+                    $('#box-month').prop('hidden', false);
                     $('#filter-by').val("month");
                 } else if (this.id === "filter-year") {
-                    resetFilters();
                     startYear.disabled = false;
                     startDate.disabled = true;
-                    endDate.disabled = true;
+                    MonthStart.disabled = true;
                     $('#box-start-date').prop('hidden', true);
-                    $('#box-end-date').prop('hidden', true);
+                    $('#box-month').prop('hidden', true);
                     $('#box-start-year').prop('hidden', false);
                     $('#filter-by').val("year");
-                } else if (this.id === "filter-custom") {
-                    resetFilters();
-                    startDate.type = "date";
-                    endDate.type = "date";
-                    startDate.value = formattedDate;
-                    endDate.value = formattedDate;
-                    $('#box-end-date').prop('hidden', false);
-                    $('#filter-by').val("custom");
                 }
             });
         });
+    });
+
+    // Export
+    $(document).on('click', '.export-pdf', function () {
+        $('#method-name').val("pdf");
+        document.getElementById("form-search").setAttribute("target", "_blank");
+        $('#form-search').submit();
+    });
+
+    $(document).on('click', '.export-excel', function () {
+        $('#method-name').val("excel");
+        document.getElementById("form-search").setAttribute("target", "_blank");
+        $('#form-search').submit();
+    });
+
+    $(document).on('click', '.btn-search', function () {
+        document.getElementById("form-search").removeAttribute('target');
+        $('#method-name').val("search");
+        $('#form-search').submit();
     });
 </script>
 
