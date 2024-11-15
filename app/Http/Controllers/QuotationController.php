@@ -4510,6 +4510,7 @@ class QuotationController extends Controller
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $Quotation = Quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation->Quotation_ID;
+        $ids = $Quotation->id;
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
@@ -4518,7 +4519,7 @@ class QuotationController extends Controller
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-        return view('quotation.viewproposal',compact('settingCompany','id','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
+        return view('quotation.viewproposal',compact('settingCompany','ids','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
     }
     //----------------------------ส่งอีเมล์---------------------
     public function email($id){

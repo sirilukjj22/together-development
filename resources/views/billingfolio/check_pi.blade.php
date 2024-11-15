@@ -36,9 +36,11 @@
                     <div class=""><span class="span1">Billing Folio (ใบเรียกเก็บเงิน)</span></div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
-                        <i class="fa fa-plus"></i> Create Invoice
-                    </button>
+                    @if ($Nettotal-$totalReceipt !== 0)
+                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
+                            <i class="fa fa-plus"></i> Create Invoice
+                        </button>
+                    @endif
                     @php
                         $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                     @endphp

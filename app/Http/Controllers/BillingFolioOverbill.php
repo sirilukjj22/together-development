@@ -113,6 +113,7 @@ class BillingFolioOverbill extends Controller
         $Quotation = Quotation::where('id', $id)->first();
         $preview = $request->preview;
         $Quotation_ID=$request->Quotation_ID;
+        $Quotationid = $Quotation->id;
         $userid = Auth::user()->id;
         $data = $request->all();
         $Additional_ID=$request->Additional_ID;
@@ -932,6 +933,13 @@ class BillingFolioOverbill extends Controller
                     }
                     log::where('Quotation_ID',$Additional_ID)->delete();
                     proposal_overbill::where('Additional_ID',$Additional_ID)->delete();
+                    return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+                }
+                try {
+                   $PD = Quotation::find($Quotationid);
+                   $PD->status_guest = 9 ;
+                   $PD->save();
+                } catch (\Throwable $e) {
                     return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
                 }
                 return redirect()->route('BillingFolioOver.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
@@ -2178,7 +2186,21 @@ class BillingFolioOverbill extends Controller
             $company =  companys::where('Profile_ID',$id)->first();
             if ($company) {
                 $fullname = "";
-                $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+                $Company_typeID=$company->Company_type;
+                if ($company->Company_Name) {
+                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                    }else {
+                        $fullnameCom = $comtype->name_th . $company->Company_Name;
+                    }
+                }else{
+                    $fullnameCom = "";
+                }
                 $Address=$company->Address;
                 $CityID=$company->City;
                 $amphuresID = $company->Amphures;
@@ -2192,9 +2214,21 @@ class BillingFolioOverbill extends Controller
                 $fullname = $company && $company->Companny_name
                             ? ""
                             : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
-                $fullnameCom = $company && $company->Companny_name
-                            ? 'บริษัท ' . $company->Companny_name . ' จำกัด'
-                            : "";
+                $Company_typeID=$company->Company_type;
+                if ($company->Companny_name) {
+                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                    }else {
+                        $fullnameCom = $comtype->name_th . $company->Companny_name;
+                    }
+                }else{
+                    $fullnameCom = "";
+                }
                 $Address=$company->Address;
                 $CityID=$company->City;
                 $amphuresID = $company->Amphures;
@@ -2222,9 +2256,21 @@ class BillingFolioOverbill extends Controller
                 $fullname = $guestdata && $guestdata->Company_name
                             ? ""
                             : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
-                $fullnameCom = $guestdata && $guestdata->Company_name
-                            ? "'บริษัท ' . $guestdata->Company_name . ' จำกัด'"
-                            : "";
+                $Company_typeID=$guestdata->Company_type;
+                if ($guestdata->Company_name) {
+                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                    }else {
+                        $fullnameCom = $comtype->name_th . $guestdata->Company_name;
+                    }
+                }else{
+                    $fullnameCom = "";
+                }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
                 $amphuresID = $guestdata->Amphures;
@@ -2354,7 +2400,21 @@ class BillingFolioOverbill extends Controller
                 $company =  companys::where('Profile_ID',$guest)->first();
                 if ($company) {
                     $fullname = "";
-                    $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+                    $Company_typeID=$company->Company_type;
+                    if ($company->Company_Name) {
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                        }else {
+                            $fullnameCom = $comtype->name_th . $company->Company_Name;
+                        }
+                    }else{
+                        $fullnameCom = "";
+                    }
                     $Address=$company->Address;
                     $CityID=$company->City;
                     $amphuresID = $company->Amphures;
@@ -2379,9 +2439,21 @@ class BillingFolioOverbill extends Controller
                     $fullname = $company && $company->Companny_name
                                 ? ""
                                 : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
-                    $fullnameCom = $company && $company->Companny_name
-                                ? 'บริษัท ' . $company->Companny_name . ' จำกัด'
-                                : "";
+                    $Company_typeID=$company->Company_type;
+                    if ($company->Companny_name) {
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                        }else {
+                            $fullnameCom = $comtype->name_th . $company->Companny_name;
+                        }
+                    }else{
+                        $fullnameCom = "";
+                    }
                     $Address=$company->Address;
                     $CityID=$company->City;
                     $amphuresID = $company->Amphures;
@@ -2431,9 +2503,21 @@ class BillingFolioOverbill extends Controller
                     $fullname = $guestdata && $guestdata->Company_name
                                 ? ""
                                 : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $fullnameCom = $guestdata && $guestdata->Company_name
-                                ? "'บริษัท ' . $guestdata->Company_name . ' จำกัด'"
-                                : "";
+                    $Company_typeID=$guestdata->Company_type;
+                    if ($guestdata->Company_name) {
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                        }else {
+                            $fullnameCom = $comtype->name_th . $guestdata->Company_name;
+                        }
+                    }else{
+                        $fullnameCom = "";
+                    }
                     $Address=$guestdata->Address;
                     $CityID=$guestdata->City;
                     $amphuresID = $guestdata->Amphures;
@@ -2614,7 +2698,17 @@ class BillingFolioOverbill extends Controller
         if ($type == 'Company') {
             $data = companys::where('Profile_ID',$guest)->first();
             $Identification = $data->Taxpayer_Identification;
-            $name =  'บริษัท '.$data->Company_Name.' จำกัด';
+            $Company_typeID=$data->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $name = "ห้างหุ้นส่วนจำกัด ". $data->Company_Name ;
+            }else{
+                $name = $comtype->name_th . $data->Company_Name;
+            }
             $name_ID = $data->Profile_ID;
             $datasub = company_tax::where('Company_ID',$name_ID)->get();
             $Address=$data->Address;
@@ -3036,7 +3130,21 @@ class BillingFolioOverbill extends Controller
         if ($data['type_Proposal'] == 'Company') {
             $company =  companys::where('Profile_ID',$data['company'])->first();
             $fullname = "";
-            $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+            $Company_typeID=$company->Company_type;
+            if ($company->Company_Name) {
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                }else {
+                    $fullnameCom = $comtype->name_th . $company->Company_Name;
+                }
+            }else{
+                $fullnameCom = "";
+            }
             $Address=$company->Address;
             $CityID=$company->City;
             $amphuresID = $company->Amphures;
@@ -3061,9 +3169,21 @@ class BillingFolioOverbill extends Controller
             $fullname = $company && $company->Companny_name
                         ? ""
                         : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
-            $fullnameCom = $company && $company->Companny_name
-                        ? 'บริษัท ' . $company->Companny_name . ' จำกัด'
-                        : "";
+            $Company_typeID=$company->Company_type;
+            if ($company->Companny_name) {
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                }else {
+                    $fullnameCom = $comtype->name_th . $company->Companny_name;
+                }
+            }else{
+                $fullnameCom = "";
+            }
             $Address=$company->Address;
             $CityID=$company->City;
             $amphuresID = $company->Amphures;
@@ -3111,9 +3231,21 @@ class BillingFolioOverbill extends Controller
             $fullname = $guestdata && $guestdata->Company_name
                         ? ""
                         : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
-            $fullnameCom = $guestdata && $guestdata->Company_name
-                        ? "'บริษัท ' . $guestdata->Company_name . ' จำกัด'"
-                        : "";
+            $Company_typeID=$guestdata->Company_type;
+            if ($guestdata->Company_name) {
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                }else {
+                    $fullnameCom = $comtype->name_th . $guestdata->Company_name;
+                }
+            }else{
+                $fullnameCom = "";
+            }
             $Address=$guestdata->Address;
             $CityID=$guestdata->City;
             $amphuresID = $guestdata->Amphures;
@@ -3250,9 +3382,17 @@ class BillingFolioOverbill extends Controller
                 if ($firstPart == 'C') {
                     $company =  companys::where('Profile_ID',$id)->first();
                     if ($company) {
-
-                        $name = 'ลูกค้า : '.'บริษัท ' . $company->Company_Name . ' จำกัด' ;
-
+                        $Company_typeID=$company->Company_type;
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $name = "ลูกค้า : "." บริษัท ". $company->Company_Name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $name = "ลูกค้า : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $name = "ลูกค้า : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                        }else {
+                            $name = 'ลูกค้า : '.$comtype->name_th . $company->Company_Name;
+                        }
                     }else{
                         $company =  company_tax::where('ComTax_ID',$id)->first();
                         $name = $company && $company->Companny_name
@@ -3265,9 +3405,21 @@ class BillingFolioOverbill extends Controller
                         $name =  'ลูกค้า : '.'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
                     }else{
                         $guestdata =  guest_tax::where('GuestTax_ID',$id)->first();
-                        $name = $guestdata && $guestdata->Company_name
-                                    ? ""
-                                    : 'ลูกค้า : '.'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
+                        $Company_typeID=$guestdata->Company_type;
+                        if ($guestdata->Company_name) {
+                            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                            if ($comtype->name_th =="บริษัทจำกัด") {
+                                $name = "ลูกค้า : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                                $name = "ลูกค้า : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                                $name = "ลูกค้า : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                            }else {
+                                $name = "ลูกค้า : ".$comtype->name_th . $guestdata->Company_name;
+                            }
+                        }else{
+                            $name = "";
+                        }
                     }
                 }
             }
@@ -3344,7 +3496,21 @@ class BillingFolioOverbill extends Controller
                 $company =  companys::where('Profile_ID',$guest)->first();
                 if ($company) {
                     $fullname = "";
-                    $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+                    $Company_typeID=$company->Company_type;
+                    if ($company->Company_Name) {
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                        }else {
+                            $fullnameCom = $comtype->name_th . $company->Company_Name;
+                        }
+                    }else{
+                        $fullnameCom = "";
+                    }
                     $Address=$company->Address;
                     $CityID=$company->City;
                     $amphuresID = $company->Amphures;
@@ -3369,9 +3535,21 @@ class BillingFolioOverbill extends Controller
                     $fullname = $company && $company->Companny_name
                                 ? ""
                                 : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
-                    $fullnameCom = $company && $company->Companny_name
-                                ? 'บริษัท ' . $company->Companny_name . ' จำกัด'
-                                : "";
+                    $Company_typeID=$company->Company_type;
+                    if ($company->Companny_name) {
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                        }else {
+                            $fullnameCom = $comtype->name_th . $company->Companny_name;
+                        }
+                    }else{
+                        $fullnameCom = "";
+                    }
                     $Address=$company->Address;
                     $CityID=$company->City;
                     $amphuresID = $company->Amphures;
@@ -3421,9 +3599,21 @@ class BillingFolioOverbill extends Controller
                     $fullname = $guestdata && $guestdata->Company_name
                                 ? ""
                                 : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $fullnameCom = $guestdata && $guestdata->Company_name
-                                ? "'บริษัท ' . $guestdata->Company_name . ' จำกัด'"
-                                : "";
+                    $Company_typeID=$guestdata->Company_type;
+                    if ($guestdata->Company_name) {
+                        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                        }else {
+                            $fullnameCom = $comtype->name_th . $guestdata->Company_name;
+                        }
+                    }else{
+                        $fullnameCom = "";
+                    }
                     $Address=$guestdata->Address;
                     $CityID=$guestdata->City;
                     $amphuresID = $guestdata->Amphures;

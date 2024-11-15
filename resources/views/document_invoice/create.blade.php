@@ -351,7 +351,7 @@
 
                                     </div>
                                 @else
-                                    <div class="proposal-cutomer-detail" id="guestTable" style="display: none">
+                                    <div class="proposal-cutomer-detail" id="guestTable" >
                                         <ul>
                                         <b class="font-upper com">Guest Information</b>
                                         <li class="mt-3">
@@ -423,24 +423,32 @@
                             <div class="row mt-2">
                                 <div class="col-lg-6">
                                     <label for="Payment">Payment by (%) Remaining 100%</label>
+                                    @php
+                                        $paymentPercentNew = 0;
+                                        $balancePercent= 0;
+                                        $paymentcheck= 0;
+                                        $sumpayment= 0;
+                                        $invoice = DB::table('document_invoice')
+                                        ->where('Quotation_ID', $QuotationID)
+                                        ->whereIn('document_status', [1, 2])
+                                        ->get();
+                                        foreach ($invoice as $value) {
+                                            $paymentPercentNew += $value->paymentPercent;
+                                            $paymentcheck += $value->payment;
+                                            $balancePercent = 100 - $paymentPercentNew;
+                                            $sumpayment += $value->sumpayment;
+                                        }
+                                    @endphp
                                     <div class="input-group">
-                                        <div class="input-group-text">
-                                            <input class="custom-radio mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
-                                        </div>
+                                        @if ($paymentcheck == 0)
+                                            <div class="input-group-text">
+                                                <input class="custom-radio mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
+                                            </div>
+                                        @endif
+
                                         <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)">
                                         <span class="input-group-text">%</span>
-                                        @php
-                                            $paymentPercentNew = 0;
-                                            $balancePercent= 0;
-                                            $invoice = DB::table('document_invoice')
-                                            ->where('Quotation_ID', $QuotationID)
-                                            ->whereIn('document_status', [1, 2])
-                                            ->get();
-                                            foreach ($invoice as $value) {
-                                                $paymentPercentNew += $value->paymentPercent;
-                                                $balancePercent = 100 - $paymentPercentNew;
-                                            }
-                                        @endphp
+
                                         <input type="hidden" id="paymentPercentNew" name="paymentPercentNew" value="{{ $paymentPercentNew }}">
                                         <input type="hidden" id="netTotal" value="{{ $Nettotal }}">
                                         <input type="hidden" id="balancePercent" name="balancePercent" value="{{ $balancePercent }}">
@@ -478,21 +486,19 @@
                                         <tr>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Amount</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;text-align:center">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody id="display-selected-items">
 
                                         @if ($invoices)
-
-
                                             <tr>
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">
                                                         Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
                                                         <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit"  style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}
                                                 </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
+                                                <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal-$sumpayment}}"></td>
                                             </tr>
                                         @else
                                             <tr>

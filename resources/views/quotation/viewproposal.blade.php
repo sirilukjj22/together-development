@@ -902,7 +902,7 @@
                                             <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                                 Back
                                             </button>
-                                            <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="view({{$id}})">
+                                            <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="view({{$ids}})">
                                                 Send Email
                                             </button>
                                         </div>
@@ -2074,7 +2074,8 @@
                 }
             });
         }
-        function view(id){
+        function view(ids){
+            var id = ids;
             event.preventDefault();
             Swal.fire({
                 title: "คุณต้องการส่งอีเมล์ใช่หรือไม่?",
