@@ -586,6 +586,7 @@
                             <div class="col-12 row mt-5">
                                 <div class="col-12 row mt-5">
                                     <div class="col-4">
+                                        <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
                                         <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
                                         <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                                         <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
@@ -690,16 +691,25 @@
         $(document).on('keyup', '#Payment0', function() {
             var Payment0 =  Number($(this).val());
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            var vat_type = parseFloat(document.getElementById('vat_type').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            Subtotal = (Nettotal*Payment0)/100;
-            total = Subtotal/1.07;
-            addtax = Subtotal-total;
-            before = Subtotal-addtax;
-            balance = Subtotal;
+            if (vat_type == 51) {
+                Subtotal = (Nettotal*Payment0)/100;
+                total = Subtotal;
+                addtax = 0;
+                before = Subtotal;
+                balance = Subtotal;
+            }else{
+                Subtotal = (Nettotal*Payment0)/100;
+                total = Subtotal/1.07;
+                addtax = Subtotal-total;
+                before = Subtotal-addtax;
+                balance = Nettotal-Subtotal;
+            }
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -712,17 +722,24 @@
         $(document).on('keyup', '#Payment1', function() {
             var Payment1 =  Number($(this).val());
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            var vat_type = parseFloat(document.getElementById('vat_type').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            Subtotal = Payment1;
-            total = Subtotal;
-            addtax = 0;
-            before = Subtotal;
-            balance = Nettotal-Subtotal;
-            console.log(balance);
+            if (vat_type == 51) {
+                Subtotal = Payment1;
+                total = Subtotal;
+                addtax = 0;
+                before = Subtotal;
+                balance = Nettotal-Subtotal;
+            }else{
+                total = Subtotal/1.07;
+                addtax = Subtotal-total;
+                before = Subtotal-addtax;
+                balance = Nettotal-Subtotal;
+            }
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -779,21 +796,29 @@
         function payment() {
             var payment0 = document.getElementById('Payment0');
             var payment1 = document.getElementById('Payment1');
+
             if (payment0.value !== "") {
             var Payment0 =  parseFloat(document.getElementById('Payment0').value);
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            var vat_type = parseFloat(document.getElementById('vat_type').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            Subtotal = (Nettotal*Payment0)/100;
-            console.log(Nettotal);
-
-            total = Subtotal/1.07;
-            addtax = Subtotal-total;
-            before = Subtotal-addtax;
-            balance = Subtotal;
+            if (vat_type == 51) {
+                Subtotal = (Nettotal*Payment0)/100;
+                total = Subtotal;
+                addtax = 0;
+                before = Subtotal;
+                balance = Subtotal;
+            }else{
+                Subtotal = (Nettotal*Payment0)/100;
+                total = Subtotal/1.07;
+                addtax = Subtotal-total;
+                before = Subtotal-addtax;
+                balance = Nettotal-Subtotal;
+            }
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -804,17 +829,24 @@
             } else if (payment1.value !== "") {
             var Payment1 =  parseFloat(document.getElementById('Payment1').value);
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            var vat_type = parseFloat(document.getElementById('vat_type').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            Subtotal = Payment1;
-            total = Subtotal;
-            addtax = 0;
-            before = Subtotal;
-            balance = Subtotal;
-            console.log(balance);
+            if (vat_type == 51) {
+                Subtotal = Payment1;
+                total = Subtotal;
+                addtax = 0;
+                before = Subtotal;
+                balance = Nettotal-Subtotal;
+            }else{
+                total = Subtotal/1.07;
+                addtax = Subtotal-total;
+                before = Subtotal-addtax;
+                balance = Nettotal-Subtotal;
+            }
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));

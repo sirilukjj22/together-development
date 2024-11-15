@@ -1085,6 +1085,7 @@ class Document_invoice extends Controller
         $Quotation = Quotation::where('id', $id)->first();
         $QuotationID = $Quotation->Quotation_ID;
         $Nettotal = $Quotation->Nettotal;
+        $vat_type = $Quotation->vat_type;
 
         if ($Quotation->type_Proposal == 'Company') {
             $CompanyID = $Quotation->Company_ID;
@@ -1176,7 +1177,7 @@ class Document_invoice extends Controller
             $Refler_ID = $QuotationID;
         }
         return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company','Address'
-        ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal'));
+        ,'Refler_ID','TambonID','company_phone','vat_type','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal'));
     }
     public function save(Request $request){
         try {
@@ -1310,13 +1311,21 @@ class Document_invoice extends Controller
                     $addtax = 0;
                     $before = 0;
                     $balance =0;
+                    if ($vattype == 51) {
+                        $Subtotal = $payment;
+                        $total = $payment;
+                        $addtax = 0;
+                        $before = $payment;
+                        // $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
+                    }else{
+                        $Subtotal = $payment;
+                        $total = $Subtotal/1.07;
+                        $addtax = $Subtotal-$total;
+                        $before = $Subtotal-$addtax;
+                        $balance = $Subtotal;
+                    }
 
-                    $Subtotal = $payment;
-                    $total = $payment;
-                    $addtax = 0;
-                    $before = $payment;
-                    // $balance = $Nettotal-$Subtotal;
-                    $balance = $Subtotal;
                 }
                 $paymentPercent=$datarequest['PaymentPercent'];
                 if ($paymentPercent) {
@@ -1328,11 +1337,22 @@ class Document_invoice extends Controller
                     $balance =0;
                     $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
                     $paymentPercent = floatval($paymentPercent);
-                    $Subtotal = ($Nettotal*$paymentPercent)/100;
-                    $total = $Subtotal/1.07;
-                    $addtax = $Subtotal-$total;
-                    $before = $Subtotal-$addtax;
-                    $balance = $Subtotal;
+                    if ($vattype == 51) {
+                        $Subtotal = ($Nettotal*$paymentPercent)/100;
+                        $total = $Subtotal;
+                        $addtax = 0;
+                        $before = $Subtotal;
+                        // $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
+
+                    }else{
+                        $Subtotal = ($Nettotal*$paymentPercent)/100;
+                        $total = $Subtotal/1.07;
+                        $addtax = $Subtotal-$total;
+                        $before = $Subtotal-$addtax;
+                        $balance = $Subtotal;
+                    }
+
                 }
                 $balanceold =$request->balance;
 
@@ -1372,6 +1392,7 @@ class Document_invoice extends Controller
                     'addtax'=>$addtax,
                     'before'=>$before,
                     'balanceold'=>$balanceold,
+                    'vattype'=>$vattype,
                 ];
                 $pdf = FacadePdf::loadView('invoicePDF.preview',$data);
                 return $pdf->stream();
@@ -1588,13 +1609,21 @@ class Document_invoice extends Controller
                         $addtax = 0;
                         $before = 0;
                         $balance =0;
+                        if ($vattype == 51) {
+                            $Subtotal = $payment;
+                            $total = $payment;
+                            $addtax = 0;
+                            $before = $payment;
+                            // $balance = $Nettotal-$Subtotal;
+                            $balance = $Subtotal;
+                        }else{
+                            $Subtotal = $payment;
+                            $total = $Subtotal/1.07;
+                            $addtax = $Subtotal-$total;
+                            $before = $Subtotal-$addtax;
+                            $balance = $Subtotal;
+                        }
 
-                        $Subtotal = $payment;
-                        $total = $payment;
-                        $addtax = 0;
-                        $before = $payment;
-                        // $balance = $Nettotal-$Subtotal;
-                        $balance = $Subtotal;
                     }
                     $paymentPercent=$datarequest['PaymentPercent'];
                     if ($paymentPercent) {
@@ -1604,13 +1633,23 @@ class Document_invoice extends Controller
                         $addtax = 0;
                         $before = 0;
                         $balance =0;
-                        $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
+                        $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
                         $paymentPercent = floatval($paymentPercent);
-                        $Subtotal = ($Nettotal*$paymentPercent)/100;
-                        $total = $Subtotal/1.07;
-                        $addtax = $Subtotal-$total;
-                        $before = $Subtotal-$addtax;
-                        $balance = $Subtotal;
+                        if ($vattype == 51) {
+                            $Subtotal = ($Nettotal*$paymentPercent)/100;
+                            $total = $Subtotal;
+                            $addtax = 0;
+                            $before = $Subtotal;
+                            // $balance = $Nettotal-$Subtotal;
+                            $balance = $Subtotal;
+
+                        }else{
+                            $Subtotal = ($Nettotal*$paymentPercent)/100;
+                            $total = $Subtotal/1.07;
+                            $addtax = $Subtotal-$total;
+                            $before = $Subtotal-$addtax;
+                            $balance = $Subtotal;
+                        }
 
                     }
                     $balanceold =$datarequest['Balance'];
@@ -1651,6 +1690,7 @@ class Document_invoice extends Controller
                         'addtax'=>$addtax,
                         'before'=>$before,
                         'balanceold'=>$balanceold,
+                        'vattype'=>$vattype,
                     ];
                     $template = master_template::query()->latest()->first();
                     $view= $template->name;
@@ -1756,6 +1796,7 @@ class Document_invoice extends Controller
         $adult = $Quotation->adult;
         $children = $Quotation->children;
         $type_Proposal = $Quotation->type_Proposal;
+        $vat_type = $Quotation->vat_type;
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         if ($Quotation->type_Proposal == 'Company') {
             $CompanyID = $Quotation->Company_ID;
@@ -1832,12 +1873,20 @@ class Document_invoice extends Controller
             $addtax = 0;
             $before = 0;
             $balance = 0;
-
-            $Subtotal = $payment;
-            $total = $payment;
-            $addtax = 0;
-            $before = $payment;
-            $balance = $Subtotal;
+            if ($vat_type == 51) {
+                $Subtotal = $payment;
+                $total = $payment;
+                $addtax = 0;
+                $before = $payment;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+            }else{
+                $Subtotal = $payment;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
         }
         if ($paymentPercent) {
             $payment0 = $paymentPercent.'%';
@@ -1848,18 +1897,28 @@ class Document_invoice extends Controller
             $balance = 0;
             $Nettotal = floatval(str_replace(',', '', $Nettotal));
             $paymentPercent = floatval($paymentPercent);
-            $Subtotal = ($Nettotal*$paymentPercent)/100;
-            $total = $Subtotal/1.07;
-            $addtax = $Subtotal-$total;
-            $before = $Subtotal-$addtax;
-            $balance = $Subtotal;
+            if ($vat_type == 51) {
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal;
+                $addtax = 0;
+                $before = $Subtotal;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+
+            }else{
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
 
         }
         $formattedNumber = number_format($balance, 2, '.', ',');
 
         return view('document_invoice.view',compact('Quotation_ID','InvoiceID','comtypefullname','Company','TambonID','amphuresID','provinceNames','company_phone','company_fax','Contact_name'
         ,'Contact_phone','checkin','checkout','Quotation','QuotationID','Deposit','CompanyID','IssueDate','Expiration','day','night','adult','children','valid','Nettotal','payment'
-        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','Address'));
+        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','Address','vat_type'));
     }
 
     public function edit($id){
@@ -1877,6 +1936,7 @@ class Document_invoice extends Controller
         $QuotationID = $Quotation->Quotation_ID;
         $CompanyID = $Quotation->Company_ID;
         $type_Proposal = $Quotation->type_Proposal;
+        $vat_type = $Quotation->vat_type;
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         if ($Quotation->type_Proposal == 'Company') {
             $CompanyID = $Quotation->Company_ID;
@@ -1948,7 +2008,7 @@ class Document_invoice extends Controller
         $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
         return view('document_invoice.edit',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
             ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','valid','payment','paymentPercent'
-            ,'invoice','id','settingCompany','IssueDate','Expiration','Address'));
+            ,'invoice','id','settingCompany','IssueDate','Expiration','Address','vat_type'));
     }
 
     public function update(Request $request ,$id){
@@ -2081,13 +2141,21 @@ class Document_invoice extends Controller
                     $addtax = 0;
                     $before = 0;
                     $balance =0;
+                    if ($vattype == 51) {
+                        $Subtotal = $payment;
+                        $total = $payment;
+                        $addtax = 0;
+                        $before = $payment;
+                        // $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
+                    }else{
+                        $Subtotal = $payment;
+                        $total = $Subtotal/1.07;
+                        $addtax = $Subtotal-$total;
+                        $before = $Subtotal-$addtax;
+                        $balance = $Subtotal;
+                    }
 
-                    $Subtotal = $payment;
-                    $total = $payment;
-                    $addtax = 0;
-                    $before = $payment;
-                    // $balance = $Nettotal-$Subtotal;
-                    $balance = $Subtotal;
                 }
                 $paymentPercent=$datarequest['PaymentPercent'];
                 if ($paymentPercent) {
@@ -2099,11 +2167,21 @@ class Document_invoice extends Controller
                     $balance =0;
                     $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
                     $paymentPercent = floatval($paymentPercent);
-                    $Subtotal = ($Nettotal*$paymentPercent)/100;
-                    $total = $Subtotal/1.07;
-                    $addtax = $Subtotal-$total;
-                    $before = $Subtotal-$addtax;
-                    $balance = $$Subtotal;
+                    if ($vattype == 51) {
+                        $Subtotal = ($Nettotal*$paymentPercent)/100;
+                        $total = $Subtotal;
+                        $addtax = 0;
+                        $before = $Subtotal;
+                        // $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
+
+                    }else{
+                        $Subtotal = ($Nettotal*$paymentPercent)/100;
+                        $total = $Subtotal/1.07;
+                        $addtax = $Subtotal-$total;
+                        $before = $Subtotal-$addtax;
+                        $balance = $Subtotal;
+                    }
 
                 }
                 $balanceold =$request->balance;
@@ -2144,6 +2222,7 @@ class Document_invoice extends Controller
                     'addtax'=>$addtax,
                     'before'=>$before,
                     'balanceold'=>$balanceold,
+                    'vattype'=>$vattype,
                 ];
                 $pdf = FacadePdf::loadView('invoicePDF.preview',$data);
                 return $pdf->stream();
@@ -2367,13 +2446,21 @@ class Document_invoice extends Controller
                         $addtax = 0;
                         $before = 0;
                         $balance =0;
+                        if ($vattype == 51) {
+                            $Subtotal = $payment;
+                            $total = $payment;
+                            $addtax = 0;
+                            $before = $payment;
+                            // $balance = $Nettotal-$Subtotal;
+                            $balance = $Subtotal;
+                        }else{
+                            $Subtotal = $payment;
+                            $total = $Subtotal/1.07;
+                            $addtax = $Subtotal-$total;
+                            $before = $Subtotal-$addtax;
+                            $balance = $Subtotal;
+                        }
 
-                        $Subtotal = $payment;
-                        $total = $payment;
-                        $addtax = 0;
-                        $before = $payment;
-                        // $balance = $Nettotal-$Subtotal;
-                        $balance = $Subtotal;
                     }
                     $paymentPercent=$datarequest['PaymentPercent'];
                     if ($paymentPercent) {
@@ -2383,13 +2470,23 @@ class Document_invoice extends Controller
                         $addtax = 0;
                         $before = 0;
                         $balance =0;
-                        $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
+                        $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
                         $paymentPercent = floatval($paymentPercent);
-                        $Subtotal = ($Nettotal*$paymentPercent)/100;
-                        $total = $Subtotal/1.07;
-                        $addtax = $Subtotal-$total;
-                        $before = $Subtotal-$addtax;
-                        $balance = $Subtotal;
+                        if ($vattype == 51) {
+                            $Subtotal = ($Nettotal*$paymentPercent)/100;
+                            $total = $Subtotal;
+                            $addtax = 0;
+                            $before = $Subtotal;
+                            // $balance = $Nettotal-$Subtotal;
+                            $balance = $Subtotal;
+
+                        }else{
+                            $Subtotal = ($Nettotal*$paymentPercent)/100;
+                            $total = $Subtotal/1.07;
+                            $addtax = $Subtotal-$total;
+                            $before = $Subtotal-$addtax;
+                            $balance = $Subtotal;
+                        }
 
                     }
                     $balanceold =$datarequest['Balance'];
@@ -2430,6 +2527,7 @@ class Document_invoice extends Controller
                         'addtax'=>$addtax,
                         'before'=>$before,
                         'balanceold'=>$balanceold,
+                        'vattype'=>$vattype,
                     ];
                     $template = master_template::query()->latest()->first();
                     $view= $template->name;
@@ -2474,6 +2572,7 @@ class Document_invoice extends Controller
     public function sheetpdf(Request $request ,$id) {
         $Quotation = Quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation->Quotation_ID;
+        $vattype= $Quotation->vat_type;
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $datarequest = [
             'Proposal_ID' => $Quotation['Quotation_ID'] ?? null,
@@ -2784,6 +2883,7 @@ class Document_invoice extends Controller
             'Contact_phone'=>$Contact_phone,
             'Contact_Email'=>$Contact_Email,
             'SpecialDistext'=>$SpecialDistext,
+            'vattype'=>$vattype,
         ];
         $view= $template->name;
         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
@@ -2980,13 +3080,21 @@ class Document_invoice extends Controller
             $addtax = 0;
             $before = 0;
             $balance =0;
+            if ($vattype == 51) {
+                $Subtotal = $payment;
+                $total = $payment;
+                $addtax = 0;
+                $before = $payment;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+            }else{
+                $Subtotal = $payment;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
 
-            $Subtotal = $payment;
-            $total = $payment;
-            $addtax = 0;
-            $before = $payment;
-            // $balance = $Nettotal-$Subtotal;
-            $balance = $Subtotal;
         }
         $paymentPercent=$datarequest['PaymentPercent'];
         if ($paymentPercent) {
@@ -2996,13 +3104,24 @@ class Document_invoice extends Controller
             $addtax = 0;
             $before = 0;
             $balance =0;
-            $Nettotal = floatval(str_replace(',', '',$datarequest['Nettotal']));
+            $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
             $paymentPercent = floatval($paymentPercent);
-            $Subtotal = ($Nettotal*$paymentPercent)/100;
-            $total = $Subtotal/1.07;
-            $addtax = $Subtotal-$total;
-            $before = $Subtotal-$addtax;
-            $balance = $Subtotal;
+            if ($vattype == 51) {
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal;
+                $addtax = 0;
+                $before = $Subtotal;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+
+            }else{
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
+
         }
         $balanceold =$request->balance;
         $data= [
@@ -3041,6 +3160,7 @@ class Document_invoice extends Controller
             'addtax'=>$addtax,
             'before'=>$before,
             'balanceold'=>$balanceold,
+            'vattype'=>$vattype,
         ];
         $template = master_template::query()->latest()->first();
         $view= $template->name;
@@ -3271,6 +3391,7 @@ class Document_invoice extends Controller
         $adult = $Quotation->adult;
         $children = $Quotation->children;
         $type_Proposal = $Quotation->type_Proposal;
+        $vat_type = $Quotation->vat_type;
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         if ($Quotation->type_Proposal == 'Company') {
             $CompanyID = $Quotation->Company_ID;
@@ -3347,12 +3468,20 @@ class Document_invoice extends Controller
             $addtax = 0;
             $before = 0;
             $balance = 0;
-
-            $Subtotal = $payment;
-            $total = $payment;
-            $addtax = 0;
-            $before = $payment;
-            $balance = $Subtotal;
+            if ($vat_type == 51) {
+                $Subtotal = $payment;
+                $total = $payment;
+                $addtax = 0;
+                $before = $payment;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+            }else{
+                $Subtotal = $payment;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
         }
         if ($paymentPercent) {
             $payment0 = $paymentPercent.'%';
@@ -3363,18 +3492,28 @@ class Document_invoice extends Controller
             $balance = 0;
             $Nettotal = floatval(str_replace(',', '', $Nettotal));
             $paymentPercent = floatval($paymentPercent);
-            $Subtotal = ($Nettotal*$paymentPercent)/100;
-            $total = $Subtotal/1.07;
-            $addtax = $Subtotal-$total;
-            $before = $Subtotal-$addtax;
-            $balance = $Nettotal-$Subtotal;
+            if ($vat_type == 51) {
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal;
+                $addtax = 0;
+                $before = $Subtotal;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+
+            }else{
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
 
         }
         $formattedNumber = number_format($balance, 2, '.', ',');
         $id = $idss;
         return view('document_invoice.viewinvoice',compact('Quotation_ID','InvoiceID','comtypefullname','Company','TambonID','amphuresID','provinceNames','company_phone','company_fax','Contact_name'
         ,'Contact_phone','checkin','checkout','Quotation','QuotationID','Deposit','CompanyID','IssueDate','Expiration','day','night','adult','children','valid','Nettotal','payment'
-        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','id','Address'));
+        ,'paymentPercent','Subtotal','before','formattedNumber','vat_type','addtax','settingCompany','id','Address'));
     }
      public function email($id){
         $quotation = document_invoices::where('id',$id)->first();

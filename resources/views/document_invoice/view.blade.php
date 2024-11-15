@@ -515,6 +515,7 @@
                             </div>
                             <div class="col-12 row mt-5">
                                 <div class="col-4">
+                                    <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
                                     <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
                                     <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                                     <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
