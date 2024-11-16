@@ -2324,10 +2324,14 @@ class BillingFolioOverbill extends Controller
         $numberOfGuests = $request->numberOfGuests;
         $arrival = $request->arrival;
         $departure = $request->departure;
+
         $paymentType = 'cash';
         $datanamebank = ' Cash ' ;
         $paymentDate = $request->paymentDate;
         $note = $request->note;
+        if ($paymentType || $guest || $reservationNo || $room || $numberOfGuests || $arrival || $departure) {
+            return redirect()->route('BillingFolio.index')->with('error', 'กรุณากรอกข้อมูลให้ครบ');
+        }
         $Additionaldata = proposal_overbill::where('Additional_ID', $Additional)->first();
         $parts = explode('-', $guest);
         $firstPart = $parts[0];

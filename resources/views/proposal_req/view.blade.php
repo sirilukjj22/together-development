@@ -116,7 +116,7 @@
                                             <b>Identification_Number : </b><label> {{$item['Identification']}}</label><br>
                                             <div class="styled-hr"></div>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
                                             @if ($item['checkin'])
                                                 <b>Check in : </b><label> {{$item['checkin']}}</label><b style="margin-left: 20px"> Check out : </b><label> {{$item['checkout']}}</label><br>
                                             @else
@@ -387,9 +387,10 @@
                                                 <b>Contact Email : </b><label> {{$item['emailcontact']}}</label><br>
                                                 <b>Contact Number : </b><label> {{$item['phonecontact']}}</label><br>
                                             </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 mt-2" >
                                                 @if ($item['checkin'])
-                                                    <b>Check in : </b><label> {{$item['checkin']}}</label><br><b> Check out : </b><label> {{$item['checkout']}}</label><br>
+                                                    <b>Check in : </b><label> {{$item['checkin']}}</label>
+                                                    <b> Check out : </b><label> {{$item['checkout']}}</label><br>
                                                 @else
                                                     <b>Check in : </b><label> {{$item['checkin'] ?? 'No Check in date'}}</label><br>
                                                 @endif
@@ -411,9 +412,9 @@
                                             <b>Identification_Number : </b><label> {{$item['Identification']}}</label><br>
                                             <div class="styled-hr"></div>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 mt-2" >
                                             @if ($item['checkin'])
-                                                <b>Check in : </b><label> {{$item['checkin']}}</label><b style="margin-left: 20px"> Check out : </b><label> {{$item['checkout']}}</label><br>
+                                                <b>Check in : </b><label> {{$item['checkin']}}</label><b> Check out : </b><label> {{$item['checkout']}}</label><br>
                                             @else
                                                 <b>Check in : </b><label> {{$item['checkin'] ?? 'No Check in date'}}</label><br>
                                             @endif

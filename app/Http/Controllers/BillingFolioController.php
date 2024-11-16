@@ -977,6 +977,11 @@ class BillingFolioController extends Controller
         $departure = $request->departure;
         $paymentType = $request->paymentTypecheque ?? $request->paymentType;
 
+
+            if ($paymentType || $guest || $reservationNo || $room || $numberOfGuests || $arrival || $departure) {
+                return redirect()->route('BillingFolio.index')->with('error', 'กรุณากรอกข้อมูลให้ครบ');
+            }
+
         $invoice = $request->invoice;
         //bank
         $bank = $request->bank;

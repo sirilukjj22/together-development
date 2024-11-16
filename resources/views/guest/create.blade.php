@@ -81,6 +81,12 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <label for="address">ที่อยู่ / Address</label><br>
+                                    <textarea type="text" id="address" name="address" rows="5" cols="25" class="textarea form-control" aria-label="With textarea" required></textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
                                 <div class="col-lg-6 col-md-6 col-sm-12"><label for="country">ประเทศ / Country</label><br>
                                     <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()">
                                         @foreach($country as $item)
@@ -119,12 +125,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mt-2">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <label for="address">ที่อยู่ / Address</label><br>
-                                    <textarea type="text" id="address" name="address" rows="5" cols="25" class="textarea form-control" aria-label="With textarea" required></textarea>
-                                </div>
-                            </div>
+
                             <div class="row mt-2">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <span for="Company_Phone" class="flex-container">
@@ -158,7 +159,7 @@
                                 </div>
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
-                                    <input type="text" class="form-control idcard" id="identification_number" name="identification_number"maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required>
+                                    <input type="text" class="form-control idcard" id="identification_number" name="identification_number"maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" >
                                 </div>
                             </div>
                             <div class="row mt-2">

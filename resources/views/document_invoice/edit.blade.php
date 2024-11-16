@@ -819,6 +819,7 @@
                 before = Subtotal-addtax;
                 balance = Nettotal-Subtotal;
             }
+
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -842,6 +843,7 @@
                 before = Subtotal;
                 balance = Nettotal-Subtotal;
             }else{
+                Subtotal = Payment1;
                 total = Subtotal/1.07;
                 addtax = Subtotal-total;
                 before = Subtotal-addtax;
