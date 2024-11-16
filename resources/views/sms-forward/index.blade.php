@@ -894,7 +894,7 @@
                                         </div>
                                     </caption>
                                     <div style="min-height: 70vh;">
-                                        <table id="" class="example ui striped table nowrap unstackable hover">
+                                        <table id="splitTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;" data-priority="1">#</th>

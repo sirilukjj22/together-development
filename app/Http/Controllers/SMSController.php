@@ -470,16 +470,17 @@ class SMSController extends Controller
 
         } elseif ($request->table_name == "transferTable") {
             if (!empty($request->search_value)) {
-                $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
-                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                $data_query = SMS_alerts::
+                // whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                    where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
                     ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('transfer_status', 1)
-                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
-                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('status', 4)->where('split_status', 0)
+                    // ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                    // ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('status', 4)->where('split_status', 0)
                     
-                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
-                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('transfer_status', 1)
-                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
-                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('status', 4)->where('split_status', 0)
+                    // ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                    // ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('transfer_status', 1)
+                    // ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                    // ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('status', 4)->where('split_status', 0)
                     ->orderBy('date', 'asc')->paginate($perPage);
             } else {
                 $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
@@ -835,7 +836,7 @@ class SMSController extends Controller
                         $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
                     } else {
                         $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
-                        // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
+                        $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
                         $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2);
                     }
                 }
