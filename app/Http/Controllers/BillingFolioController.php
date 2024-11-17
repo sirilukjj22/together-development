@@ -431,18 +431,18 @@ class BillingFolioController extends Controller
         $totalreceiptre =0;
         if ($vat == 50) {
             $total =  $totalAmount;
-            $subtotal = $totalAmount-$SpecialDiscountBath;
+            $subtotal = $totalAmount;
             $beforeTax = $subtotal/1.07;
             $AddTax = $subtotal-$beforeTax;
             $Nettotal = $subtotal;
 
         }elseif ($vat == 51) {
             $total =  $totalAmount;
-            $subtotal = $totalAmount-$SpecialDiscountBath;
+            $subtotal = $totalAmount;
             $Nettotal = $subtotal;
         }elseif ($vat == 52) {
             $total =  $totalAmount;
-            $subtotal = $totalAmount-$SpecialDiscountBath;
+            $subtotal = $totalAmount;
             $AddTax =$subtotal*7/100;
             $Nettotal = $subtotal+$AddTax;
         }
@@ -858,11 +858,11 @@ class BillingFolioController extends Controller
                 if ($company->Company_Name) {
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="บริษัทจำกัด") {
-                        $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                        $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด";
                     }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                        $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                        $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                        $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                        $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
                     }else {
                         $fullnameCom = $comtype->name_th . $company->Company_Name;
                     }
@@ -886,11 +886,11 @@ class BillingFolioController extends Controller
                 if ($company->Companny_name) {
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="บริษัทจำกัด") {
-                        $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                        $fullnameCom = " บริษัท ". $company->Companny_name . " จำกัด";
                     }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                        $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                        $fullnameCom = " บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                        $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                        $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
                     }else {
                         $fullnameCom = $comtype->name_th . $company->Companny_name;
                     }

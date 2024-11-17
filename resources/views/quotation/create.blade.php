@@ -735,6 +735,14 @@
                                                     <b>Subtotal</b>
                                                     <span id="total-amount"></span>
                                                 </li>
+                                                <li class="mt-3"id="Special" style="display: none;">
+                                                    <b>Special Discount</b>
+                                                    <span id="sp"></span>
+                                                </li>
+                                                <li class="mt-3"id="Subtotal" style="display: none;">
+                                                    <b>Subtotal less Discount</b>
+                                                    <span id="lessDiscount"></span>
+                                                </li>
                                                 <li class="mt-3">
                                                     <b>Price Before Tax</b>
                                                     <span id="Net-price"></span>
@@ -751,6 +759,14 @@
                                                     <b>Subtotal</b>
                                                     <span id="total-amountEXCLUDE"></span>
                                                 </li>
+                                                <li class="mt-3"id="Special11" style="display: none;">
+                                                    <b>Special Discount</b>
+                                                    <span id="spEXCLUDE"></span>
+                                                </li>
+                                                <li class="mt-3"id="Subtotal11" style="display: none;">
+                                                    <b>Subtotal less Discount</b>
+                                                    <span id="lessDiscountEXCLUDE"></span>
+                                                </li>
                                             </ul>
                                         </div>
                                         <div class="proposal-number-cutomer-detail" id="PRICE_PLUS_VAT" style="display: none;">
@@ -758,6 +774,14 @@
                                                 <li class="mt-3">
                                                     <b>Subtotal</b>
                                                     <span id="total-amountpus"></span>
+                                                </li>
+                                                <li class="mt-3" id="Special1" style="display: none;">
+                                                    <b>Special Discount</b>
+                                                    <span id="sppus"></span>
+                                                </li>
+                                                <li class="mt-3" id="Subtotal1" style="display: none;">
+                                                    <b>Subtotal less Discount</b>
+                                                    <span id="lessDiscountpus"></span>
                                                 </li>
                                                 <li class="mt-3">
                                                     <b>Value Added Tax</b>
@@ -1834,13 +1858,13 @@
             $(document).on('keyup', '.DiscountAmount', function() {
                 var DiscountAmount =  Number($(this).val());
                 if (DiscountAmount) {
-                    $('#Special').css('display', 'table-row');
-                    $('#Subtotal').css('display', 'table-row');
+                    $('#Special').css('display', 'grid');
+                    $('#Subtotal').css('display', 'grid');
                 }else{
                     $('#Special').css('display', 'none');
                     $('#Subtotal').css('display', 'none');
                 }
-
+                totalAmost();
             });
         });
         function totalAmost() {
@@ -1876,6 +1900,10 @@
                         Nettotal= beforetax+addedtax;
                         totalperson = Nettotal/paxtotal;
 
+                        if (Discount) {
+                            $('#Special').css('display', 'grid');
+                            $('#Subtotal').css('display', 'grid');
+                        }
                         $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1902,6 +1930,10 @@
                         addedtax =0;
                         Nettotal= beforetax;
                         totalperson = Nettotal/paxtotal;
+                        if (Discount) {
+                            $('#Special11').css('display', 'grid');
+                            $('#Subtotal11').css('display', 'grid');
+                        }
                         $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1922,12 +1954,16 @@
                         PaxToTalall = paxtotal;
                         allprice += pricetotal;
                         lessDiscount = allprice-DiscountAmount;
-                        addedtax = lessDiscount*7/100;;
+                        addedtax = lessDiscount*7/100;
                         beforetax= lessDiscount+addedtax;
                         Nettotal= beforetax;
                         totalperson = Nettotal/paxtotal;
 
-
+                        console.log(Discount);
+                        if (Discount) {
+                            $('#Special1').css('display', 'grid');
+                            $('#Subtotal1').css('display', 'grid');
+                        }
                         $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));

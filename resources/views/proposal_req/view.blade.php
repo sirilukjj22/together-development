@@ -193,7 +193,7 @@
                                                             $price50 += (float) @$itemproduct->totaldiscount;
                                                             $sp = (float) $itemdata->SpecialDiscountBath;
 
-                                                            $sp50 = $price50 ;
+                                                            $sp50 = $price50-$sp ;
                                                             $priceless50 = $sp50 / 1.07;
                                                             $Add50 = $sp50 - $priceless50;
                                                             $Net50 = $priceless50 + $Add50;
@@ -235,7 +235,7 @@
 
                                             </style>
                                             <div class="row mt-2">
-                                                @if ($itemdata->vat_type = 50)
+                                                @if ($itemdata->vat_type == 50)
                                                     <div class="col-lg-6 col-md-6 col-sm-6 "></div>
                                                     <div class="col-lg-6 col-md-6 col-sm-6 ">
                                                         <div class="d-grid-2column" >
@@ -265,11 +265,11 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                @elseif ($itemdata->vat_type = 51)
-                                                <div class="col-6 col-md-12 col-sm-12"></div>
-                                                <div class="col-6 col-md-12 col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-8 col-md-4 col-sm-4">
+                                                @elseif ($itemdata->vat_type == 51)
+                                                <div class="col-lg-6 col-md-6 col-sm-6"></div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="d-grid-2column">
+                                                        <div class="">
                                                                 <span id="Subtotal">Subtotal : </span><br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 <span id="Special">Special Discount : </span><br>
@@ -279,7 +279,7 @@
                                                                 <span id="Net">Number of Guests : </span><br>
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
-                                                            <div class="col-4 col-md-8 col-sm-8">
+                                                            <div class="">
                                                                 {{ number_format($price51, 2, '.', ',') }} <br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
@@ -292,11 +292,11 @@
                                                         </div>
 
                                                     </div>
-                                                @elseif ($itemdata->vat_type = 52)
-                                                    <div class="col-6"></div>
-                                                    <div class="col-6">
-                                                        <div class="row">
-                                                            <div class="col-8">
+                                                @elseif ($itemdata->vat_type == 52)
+                                                    <div class="col-lg-6 col-md-6 col-sm-6"></div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                                        <div class="d-grid-2column">
+                                                            <div class="">
                                                                 <span id="Subtotal">Subtotal : </span><br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 <span id="Special">Special Discount : </span><br>
@@ -307,7 +307,7 @@
                                                                 <span id="Net">Number of Guests : </span><br>
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
-                                                            <div class="col-4">
+                                                            <div class="">
                                                                 {{ number_format($price52, 2, '.', ',') }} <br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
@@ -487,9 +487,9 @@
                                                         @php
                                                             // Ensure the variables are numeric (float or int) to avoid type errors
                                                             $price50 += (float) @$itemproduct->totaldiscount;
-                                                            $sp = (float) $itemdata->SpecialDiscountBath;
+                                                            $sp = (float) $itemdata->SpecialDiscountBath ?? 0;
 
-                                                            $sp50 = $price50 ;
+                                                            $sp50 = $price50 -$sp;
                                                             $priceless50 = $sp50 / 1.07;
                                                             $Add50 = $sp50 - $priceless50;
                                                             $Net50 = $priceless50 + $Add50;
@@ -562,10 +562,10 @@
                                                         </div>
                                                     </div>
                                                 @elseif ($itemdata->vat_type = 51)
-                                                <div class="col-6 col-md-12 col-sm-12"></div>
-                                                <div class="col-6 col-md-12 col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-8 col-md-4 col-sm-4">
+                                                <div class="col-lg-6 col-md-6 col-sm-6"></div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="d-grid-2column">
+                                                        <div class="">
                                                                 <span id="Subtotal">Subtotal : </span><br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 <span id="Special">Special Discount : </span><br>
@@ -575,7 +575,7 @@
                                                                 <span id="Net">Number of Guests : </span><br>
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
-                                                            <div class="col-4 col-md-8 col-sm-8">
+                                                            <div class="">
                                                                 {{ number_format($price51, 2, '.', ',') }} <br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
@@ -589,10 +589,10 @@
 
                                                     </div>
                                                 @elseif ($itemdata->vat_type = 52)
-                                                    <div class="col-6"></div>
-                                                    <div class="col-6">
-                                                        <div class="row">
-                                                            <div class="col-8">
+                                                <div class="col-lg-6 col-md-6 col-sm-6"></div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="d-grid-2column">
+                                                        <div class="">
                                                                 <span id="Subtotal">Subtotal : </span><br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 <span id="Special">Special Discount : </span><br>
@@ -603,7 +603,7 @@
                                                                 <span id="Net">Number of Guests : </span><br>
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
-                                                            <div class="col-4">
+                                                            <div class="">
                                                                 {{ number_format($price52, 2, '.', ',') }} <br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>

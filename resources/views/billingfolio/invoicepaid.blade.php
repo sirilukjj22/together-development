@@ -22,6 +22,9 @@
     color: white;
     min-height: 20rem;
     }
+    #arrival{
+        z-index: 1000;
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -71,15 +74,15 @@
                                         <ul class="card-list-withColon">
                                             <li>
                                             <span>Guest Name</span>
-                                            @if ($type == 'Comapny')
-                                                <span> - </span>
-                                            @else
+                                            @if ($type == 'Guest')
                                                 <span>{{$name}}</span>
+                                            @else
+                                                <span> - </span>
                                             @endif
                                             </li>
                                             <li>
                                             <span>Company</span>
-                                            @if ($type == 'Comapny')
+                                            @if ($type == 'Company')
                                                 <span>{{$name}}</span>
                                             @else
                                                 <span> - </span>

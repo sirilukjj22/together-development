@@ -462,14 +462,50 @@
                                                 var paymentPercentNew = document.getElementById('paymentPercentNew').value;
                                                 var balancePercent = document.getElementById('balancePercent').value;
                                                 var balancePercentnetTotal = document.getElementById('netTotal').value;
-                                                if (parseFloat(input.value) >= 100) {
-                                                    if (parseFloat(input.value) > balancePercent) {
-                                                        input.value = balancePercent;
-                                                    }else{
-                                                        input.value = 100;
+                                                console.log(balancePercent);
+
+                                                if (balancePercent == 0) {
+
+
+                                                    if (parseFloat(input.value) > 99 ) {
+
+                                                        console.log('1');
+                                                        if (balancePercent != 0 && balancePercent != null) {
+
+                                                            if (parseFloat(input.value) >= 100) {
+                                                                input.value = balancePercent;
+                                                                $('#Amount').text(input.value + '%');
+                                                            }else{
+
+                                                                $('#Amount').text(input.value + '%');
+                                                            }
+                                                        }else{
+                                                            console.log('no');
+                                                            if (parseFloat(input.value) >= 100 ) {
+                                                                if (parseFloat(input.value) > balancePercent) {
+                                                                    input.value = 100;
+                                                                    $('#Amount').text(input.value + '%');
+                                                                }else{
+                                                                    input.value = balancePercent;
+                                                                    $('#Amount').text(input.value + '%');
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (parseFloat(input.value) < 99 ) {
+
+                                                        $('#Amount').text(input.value + '%');
                                                     }
                                                 }
-                                                $('#Amount').text(input.value + '%');
+                                                if (balancePercent != 0 && balancePercent != null) {
+                                                    console.log('2');
+                                                    if (parseFloat(input.value) > balancePercent ) {
+                                                        input.value = balancePercent;
+                                                        $('#Amount').text(input.value + '%');
+                                                    }else{
+                                                        $('#Amount').text(input.value + '%');
+                                                    }
+                                                }
                                             }
                                         </script>
                                     </div>
