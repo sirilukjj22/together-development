@@ -96,17 +96,17 @@
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->Nettotal) }}
+                                                    {{ number_format($item->Nettotal, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->total_payment == 0 )
                                                         0
                                                     @else
-                                                        {{ number_format($item->total_payment) }}
+                                                        {{ number_format($item->total_payment, 2) }}
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->Nettotal - $item->total_payment) }}
+                                                    {{ number_format($item->Nettotal - $item->total_payment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userConfirm->name == null)
@@ -253,7 +253,7 @@
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                                 <td style="text-align: center;">{{ $item->Expiration }}</td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->sumpayment) }}
+                                                    {{ number_format($item->sumpayment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
@@ -369,7 +369,7 @@
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                                 <td style="text-align: center;">{{ $item->Expiration }}</td>
-                                                <td style="text-align: center;"> {{ number_format($item->sumpayment) }}</td>
+                                                <td style="text-align: center;"> {{ number_format($item->sumpayment , 2) }}</td>
                                                 <td style="text-align: center;">
                                                     <span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>
                                                 </td>
@@ -451,7 +451,7 @@
                                                     @endif
                                                     <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                                     <td style="text-align: center;">{{ $item->Expiration }}</td>
-                                                    <td style="text-align: center;"> {{ number_format($item->sumpayment) }}</td>
+                                                    <td style="text-align: center;"> {{ number_format($item->sumpayment, 2) }}</td>
                                                     <td style="text-align: center;">
                                                         <span class="badge rounded-pill bg-danger" >Cancel</span>
                                                     </td>

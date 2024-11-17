@@ -439,6 +439,7 @@
                                             $sumpayment += $value->sumpayment;
                                         }
                                     @endphp
+                                    <input type="hidden"id="sumpayment" value="{{$sumpayment}}">
                                     <div class="input-group">
                                         @if ($paymentcheck == 0)
                                             <div class="input-group-text">
@@ -502,7 +503,7 @@
                                                         Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
                                                         <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit"  style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}
                                                 </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal-$sumpayment}}"></td>
+                                                <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
                                             </tr>
                                         @else
                                             <tr>
@@ -592,6 +593,7 @@
                                     <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                                     <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
                                     <input type="hidden" name="balance"  id="balance">
+                                    <input type="hidden" name="Nettotalbath" id="Nettotalbath" value="{{$Nettotal-$sumpayment}}">
                                     <input type="hidden" name="sum"  id="sum">
                                     <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                                     <input type="hidden" name="selecttype"  id="selecttype" value="{{$Quotation->type_Proposal}}">
@@ -670,13 +672,23 @@
         function validateInput1(input) {
             var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
             var inputValue = input.value.replace(/,/g, ''); // ลบจุลภาคออกจากค่าที่กรอก
+            var payment = parseFloat(document.getElementById('sumpayment').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
+            console.log(payment);
 
             if (inputValue) {
                 var numericValue = parseFloat(inputValue); // แปลงค่าเป็นตัวเลข
-                if (numericValue > Nettotal) {
-                    numericValue = Nettotal;
-                    input.value = Nettotal; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+                if (payment) {
+                    if (numericValue > Nettotal-payment) {
+                        numericValue = Nettotal-payment;
+                        input.value = Nettotal-payment; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+                    }
+                }else{
+                    if (numericValue > Nettotal) {
+                        numericValue = Nettotal;
+                        input.value = Nettotal; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+                    }
                 }
+
 
                 // จัดรูปแบบตัวเลขให้มีจุดทศนิยม 2 ตำแหน่งและคั่นหลักพันด้วยจุลภาค
                 var formattedValue = numericValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -724,7 +736,9 @@
         });
         $(document).on('keyup', '#Payment1', function() {
             var Payment1 =  Number($(this).val());
-            var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            var Nettotal = parseFloat(document.getElementById('Nettotalbath').value);
+            console.log(Nettotal);
+
             var vat_type = parseFloat(document.getElementById('vat_type').value);
             let Subtotal =0;
             let total =0;

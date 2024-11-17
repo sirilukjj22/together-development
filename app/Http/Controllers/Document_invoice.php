@@ -208,7 +208,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'Amount' => number_format($value->Nettotal),
+                        'Amount' => number_format($value->Nettotal ?? 0, 2),
                         'Deposit' => number_format($value->total_payment ?? 0, 2),
                         'Balance' => number_format($value->Nettotal - $value->total_payment ?? 0, 2),
                         'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
@@ -357,7 +357,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
-                    'Amount' => number_format($value->Nettotal),
+                    'Amount' => number_format($value->Nettotal ?? 0, 2),
                     'Deposit' => number_format($value->total_payment ?? 0, 2),
                     'Balance' => number_format($value->Nettotal - $value->total_payment ?? 0, 2),
                     'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
@@ -470,7 +470,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->IssueDate,
                         'ExpirationDate' => $value->Expiration,
-                        'Amount' => number_format($value->sumpayment),
+                        'Amount' => number_format($value->sumpayment ?? 0, 2),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -585,7 +585,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->IssueDate,
                     'ExpirationDate' => $value->Expiration,
-                    'Amount' => number_format($value->sumpayment),
+                    'Amount' => number_format($value->sumpayment ?? 0, 2),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -654,7 +654,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->IssueDate,
                         'ExpirationDate' => $value->Expiration,
-                        'Amount' => number_format($value->sumpayment),
+                        'Amount' => number_format($value->sumpayment ?? 0, 2),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -729,7 +729,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->IssueDate,
                     'ExpirationDate' => $value->Expiration,
-                    'Amount' => number_format($value->sumpayment),
+                    'Amount' => number_format($value->sumpayment ?? 0, 2),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -801,7 +801,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->IssueDate,
                         'ExpirationDate' => $value->Expiration,
-                        'Amount' => number_format($value->sumpayment),
+                        'Amount' => number_format($value->sumpayment ?? 0, 2),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -878,7 +878,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->IssueDate,
                     'ExpirationDate' => $value->Expiration,
-                    'Amount' => number_format($value->sumpayment),
+                    'Amount' => number_format($value->sumpayment ?? 0, 2),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -946,7 +946,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->IssueDate,
                         'ExpirationDate' => $value->Expiration,
-                        'Amount' => number_format($value->sumpayment),
+                        'Amount' => number_format($value->sumpayment ?? 0, 2),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -1020,7 +1020,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->IssueDate,
                     'ExpirationDate' => $value->Expiration,
-                    'Amount' => number_format($value->sumpayment),
+                    'Amount' => number_format($value->sumpayment ?? 0, 2),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -1572,13 +1572,14 @@ class Document_invoice extends Controller
                         $Fax_number = '-';
                         $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
                     }
+
                     $id = $datarequest['InvoiceID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
-
-                    // Generate the QR code as PNG
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/Quotation/cover/document/PDF/$id";
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                     $qrCodeBase64 = base64_encode($qrCodeImage);
+
+
                     $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
 
                     $settingCompany = Master_company::orderBy('id', 'desc')->first();
@@ -1932,11 +1933,13 @@ class Document_invoice extends Controller
         $IssueDate=$invoice->IssueDate;
         $Expiration=$invoice->Expiration;
         $sequence = $invoice->sequence;
-        $Quotation =  Quotation::where('Refler_ID',$Refler_ID)->first();
+        $Quotation =  Quotation::where('Quotation_ID',$Refler_ID)->first();
         $QuotationID = $Quotation->Quotation_ID;
         $CompanyID = $Quotation->Company_ID;
         $type_Proposal = $Quotation->type_Proposal;
         $vat_type = $Quotation->vat_type;
+        $Nettotal = $Quotation->Nettotal;
+
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         if ($Quotation->type_Proposal == 'Company') {
             $CompanyID = $Quotation->Company_ID;
@@ -2008,7 +2011,7 @@ class Document_invoice extends Controller
         $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
         return view('document_invoice.edit',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
             ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','valid','payment','paymentPercent'
-            ,'invoice','id','settingCompany','IssueDate','Expiration','Address','vat_type'));
+            ,'invoice','id','settingCompany','IssueDate','Expiration','Address','vat_type','Nettotal'));
     }
 
     public function update(Request $request ,$id){
@@ -2107,11 +2110,10 @@ class Document_invoice extends Controller
                 }
                 $id = $datarequest['InvoiceID'];
                 $protocol = $request->secure() ? 'https' : 'http';
-                $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
-
-                // Generate the QR code as PNG
+                $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/Quotation/cover/document/PDF/$id";
                 $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                 $qrCodeBase64 = base64_encode($qrCodeImage);
+
                 $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
 
                 $settingCompany = Master_company::orderBy('id', 'desc')->first();
@@ -2412,11 +2414,10 @@ class Document_invoice extends Controller
                     }
                     $id = $datarequest['InvoiceID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
-
-                    // Generate the QR code as PNG
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/Quotation/cover/document/PDF/$id";
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                     $qrCodeBase64 = base64_encode($qrCodeImage);
+
                     $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
 
                     $settingCompany = Master_company::orderBy('id', 'desc')->first();
@@ -3048,11 +3049,10 @@ class Document_invoice extends Controller
         }
         $id = $datarequest['InvoiceID'];
         $protocol = $request->secure() ? 'https' : 'http';
-        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
-
-        // Generate the QR code as PNG
+        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/Quotation/cover/document/PDF/$id";
         $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
         $qrCodeBase64 = base64_encode($qrCodeImage);
+
         $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
 
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
@@ -3104,7 +3104,7 @@ class Document_invoice extends Controller
             $addtax = 0;
             $before = 0;
             $balance =0;
-            $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
+            $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
             $paymentPercent = floatval($paymentPercent);
             if ($vattype == 51) {
                 $Subtotal = ($Nettotal*$paymentPercent)/100;

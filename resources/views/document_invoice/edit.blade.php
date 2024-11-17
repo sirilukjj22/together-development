@@ -428,11 +428,11 @@
                                         $sumpayment= 0;
                                         $invoices = DB::table('document_invoice')
                                         ->where('Quotation_ID', $Quotation->Quotation_ID)
-                                        ->whereIn('document_status', [1, 2])
+                                        ->where('document_status',  2)
                                         ->get();
                                         $invoicescount = DB::table('document_invoice')
                                         ->where('Quotation_ID', $Quotation->Quotation_ID)
-                                        ->whereIn('document_status', [1, 2])
+                                        ->where('document_status',  2)
                                         ->count();
                                         foreach ($invoices as $value) {
                                             $paymentPercentNew += $value->paymentPercent;
@@ -440,9 +440,10 @@
                                             $balancePercent = 100 - $value->paymentPercent;
                                             $sumpayment += $value->sumpayment;
                                         }
+
                                         // ส่งค่า $Nettotal ไปที่ JavaScript ผ่านการฝังค่า
                                     @endphp
-
+                                    <input type="hidden"id="sumpayment" value="{{$sumpayment}}">
                                     <input type="hidden" id="paymentPercentNew" name="paymentPercentNew" value="{{ $paymentPercentNew }}">
                                     <input type="hidden" id="netTotal" value="{{ $Quotation->Nettotal }}">
                                     <input type="hidden" id="balancePercent" name="balancePercent" value="{{ $balancePercent }}">
@@ -492,7 +493,7 @@
                                         <tr>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Amount</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:20%;text-align:center">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody id="display-selected-items">
@@ -506,7 +507,7 @@
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
                                                 <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
-                                                <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$invoice->Nettotal - $sumpayment}}"></td>
+                                                <td style="text-align:right"><span id="Subtotal"></span> THB <input type="hidden" name="Nettotal" id="Nettotal" value="{{$invoice->Nettotal}}"></td>
                                             @endif
 
                                         </tr>
@@ -591,6 +592,7 @@
                                         <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                                         <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
                                         <input type="hidden" name="balance"  id="balance">
+                                        <input type="hidden"id="NettotalBath" value="{{$Nettotal}}">
                                         <input type="hidden" name="sum"  id="sum">
                                         <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                                         <input type="hidden" name="selecttype"  id="selecttype" value="{{$Quotation->type_Proposal}}">
@@ -669,22 +671,25 @@
         // }
         function validateInput1(input) {
             var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
+            var sumpayment = parseFloat(document.getElementById('sumpayment').value);
             var inputValue = input.value.replace(/,/g, ''); // ลบจุลภาคออกจากค่าที่กรอก
+            console.log(sumpayment);
 
-            if (inputValue) {
-                var numericValue = parseFloat(inputValue); // แปลงค่าเป็นตัวเลข
-                if (numericValue > Nettotal) {
-                    numericValue = Nettotal;
-                    input.value = Nettotal; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+            if (sumpayment) {
+                if (inputValue) {
+                    var numericValue = parseFloat(inputValue); // แปลงค่าเป็นตัวเลข
+                    if (numericValue > Nettotal-sumpayment) {
+                        numericValue = Nettotal-sumpayment;
+                        input.value = Nettotal-sumpayment; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+                    }
+                    // จัดรูปแบบตัวเลขให้มีจุดทศนิยม 2 ตำแหน่งและคั่นหลักพันด้วยจุลภาค
+                    var formattedValue = numericValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    $('#Amount1').text(formattedValue); // แสดงค่าที่จัดรูปแบบแล้ว
+                } else {
+                    $('#Amount1').text(''); // ถ้า input ว่าง ให้แสดงเป็นค่าว่าง
                 }
-
-                // จัดรูปแบบตัวเลขให้มีจุดทศนิยม 2 ตำแหน่งและคั่นหลักพันด้วยจุลภาค
-                var formattedValue = numericValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-                $('#Amount1').text(formattedValue); // แสดงค่าที่จัดรูปแบบแล้ว
-            } else {
-                $('#Amount1').text(''); // ถ้า input ว่าง ให้แสดงเป็นค่าว่าง
             }
+
         }
 
 
@@ -692,24 +697,28 @@
             var Payment0 =  Number($(this).val());
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
             var vat_type = parseFloat(document.getElementById('vat_type').value);
+            var sumpayment = parseFloat(document.getElementById('sumpayment').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            if (vat_type == 51) {
-                Subtotal = (Nettotal*Payment0)/100;
-                total = Subtotal;
-                addtax = 0;
-                before = Subtotal;
-                balance = Subtotal;
-            }else{
-                Subtotal = (Nettotal*Payment0)/100;
-                total = Subtotal/1.07;
-                addtax = Subtotal-total;
-                before = Subtotal-addtax;
-                balance = Nettotal-Subtotal;
-            }
+
+                if (vat_type == 51) {
+                    Subtotal = (Nettotal*Payment0)/100;
+                    total = Subtotal;
+                    addtax = 0;
+                    before = Subtotal;
+                    balance = Subtotal;
+                }else{
+                    Subtotal = (Nettotal*Payment0)/100;
+                    total = Subtotal/1.07;
+                    addtax = Subtotal-total;
+                    before = Subtotal-addtax;
+                    balance = Nettotal-Subtotal;
+                }
+
+
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -723,23 +732,28 @@
             var Payment1 =  Number($(this).val());
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
             var vat_type = parseFloat(document.getElementById('vat_type').value);
+            var sumpayment = parseFloat(document.getElementById('sumpayment').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            if (vat_type == 51) {
-                Subtotal = Payment1;
-                total = Subtotal;
-                addtax = 0;
-                before = Subtotal;
-                balance = Nettotal-Subtotal;
-            }else{
-                total = Subtotal/1.07;
-                addtax = Subtotal-total;
-                before = Subtotal-addtax;
-                balance = Nettotal-Subtotal;
-            }
+
+                if (vat_type == 51) {
+                    Subtotal = Payment1;
+                    total = Subtotal;
+                    addtax = 0;
+                    before = Subtotal;
+                    balance = Nettotal-Subtotal;
+                }else{
+                    Subtotal = Payment1;
+                    total = Subtotal/1.07;
+                    addtax = Subtotal-total;
+                    before = Subtotal-addtax;
+                    balance = Nettotal-Subtotal;
+                }
+
+
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -800,25 +814,43 @@
             if (payment0.value !== "") {
             var Payment0 =  parseFloat(document.getElementById('Payment0').value);
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            var sumpayment = parseFloat(document.getElementById('sumpayment').value);
             var vat_type = parseFloat(document.getElementById('vat_type').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            if (vat_type == 51) {
-                Subtotal = (Nettotal*Payment0)/100;
-                total = Subtotal;
-                addtax = 0;
-                before = Subtotal;
-                balance = Subtotal;
+            if (sumpayment) {
+                if (vat_type == 51) {
+                    Subtotal = (Nettotal*Payment0)/100;
+                    total = Subtotal;
+                    addtax = 0;
+                    before = Subtotal;
+                    balance = Subtotal;
+                }else{
+                    Subtotal = (Nettotal*Payment0)/100;
+                    total = Subtotal/1.07;
+                    addtax = Subtotal-total;
+                    before = Subtotal-addtax;
+                    balance = Nettotal-Subtotal;
+                }
             }else{
-                Subtotal = (Nettotal*Payment0)/100;
-                total = Subtotal/1.07;
-                addtax = Subtotal-total;
-                before = Subtotal-addtax;
-                balance = Nettotal-Subtotal;
+                if (vat_type == 51) {
+                    Subtotal = (Nettotal-sumpayment*Payment0)/100;
+                    total = Subtotal;
+                    addtax = 0;
+                    before = Subtotal;
+                    balance = Subtotal;
+                }else{
+                    Subtotal = (Nettotal-sumpayment*Payment0)/100;
+                    total = Subtotal/1.07;
+                    addtax = Subtotal-total;
+                    before = Subtotal-addtax;
+                    balance = Nettotal-Subtotal;
+                }
             }
+
 
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -831,24 +863,27 @@
             var Payment1 =  parseFloat(document.getElementById('Payment1').value);
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
             var vat_type = parseFloat(document.getElementById('vat_type').value);
+            var sumpayment = parseFloat(document.getElementById('sumpayment').value);
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
-            if (vat_type == 51) {
-                Subtotal = Payment1;
-                total = Subtotal;
-                addtax = 0;
-                before = Subtotal;
-                balance = Nettotal-Subtotal;
-            }else{
-                Subtotal = Payment1;
-                total = Subtotal/1.07;
-                addtax = Subtotal-total;
-                before = Subtotal-addtax;
-                balance = Nettotal-Subtotal;
-            }
+
+                if (vat_type == 51) {
+                    Subtotal = Payment1;
+                    total = Subtotal;
+                    addtax = 0;
+                    before = Subtotal;
+                    balance = Nettotal-Subtotal;
+                }else{
+                    Subtotal = Payment1;
+                    total = Subtotal/1.07;
+                    addtax = Subtotal-total;
+                    before = Subtotal-addtax;
+                    balance = Nettotal-Subtotal;
+                }
+
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));

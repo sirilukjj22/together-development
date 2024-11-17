@@ -657,6 +657,8 @@ class DummyQuotationController extends Controller
                             $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $fullName = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->first();

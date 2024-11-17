@@ -361,7 +361,7 @@ class LinkPDFProposal extends Controller
         return $pdf->stream();
     }
     public function invoice(Request $request,$id){
-        $Invoice = document_invoices::where('id',$id)->first();
+        $Invoice = document_invoices::where('Invoice_ID',$id)->first();
         $datarequest = [
             'Proposal_ID' => $Invoice['Quotation_ID'] ?? null,
             'InvoiceID' => $Invoice['Invoice_ID'] ?? null,
@@ -446,11 +446,10 @@ class LinkPDFProposal extends Controller
         }
         $id = $datarequest['InvoiceID'];
         $protocol = $request->secure() ? 'https' : 'http';
-        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
-
-        // Generate the QR code as PNG
+        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/Quotation/cover/document/PDF/$id";
         $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
         $qrCodeBase64 = base64_encode($qrCodeImage);
+
         $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
 
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
@@ -478,13 +477,21 @@ class LinkPDFProposal extends Controller
             $addtax = 0;
             $before = 0;
             $balance =0;
+            if ($vattype == 51) {
+                $Subtotal = $payment;
+                $total = $payment;
+                $addtax = 0;
+                $before = $payment;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
+            }else{
+                $Subtotal = $payment;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
 
-            $Subtotal = $payment;
-            $total = $payment;
-            $addtax = 0;
-            $before = $payment;
-            // $balance = $Nettotal-$Subtotal;
-            $balance = $Subtotal;
         }
         $paymentPercent=$datarequest['PaymentPercent'];
         if ($paymentPercent) {
@@ -494,20 +501,24 @@ class LinkPDFProposal extends Controller
             $addtax = 0;
             $before = 0;
             $balance =0;
-            $Nettotal = floatval(str_replace(',', '',$datarequest['Nettotal']));
+            $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
             $paymentPercent = floatval($paymentPercent);
-            $Subtotal = ($Nettotal*$paymentPercent)/100;
-            $total = $Subtotal/1.07;
-            $addtax = $Subtotal-$total;
-            $before = $Subtotal-$addtax;
-            $balance = $Nettotal-$Subtotal;
+            if ($vattype == 51) {
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal;
+                $addtax = 0;
+                $before = $Subtotal;
+                // $balance = $Nettotal-$Subtotal;
+                $balance = $Subtotal;
 
-            $Subtotal = ($Nettotal*$paymentPercent)/100;
-            $total = $Subtotal/1.07;
-            $addtax = $Subtotal-$total;
-            $before = $Subtotal-$addtax;
-            // $balance = $Nettotal-$Subtotal;
-            $balance = $Nettotal-$Subtotal;
+            }else{
+                $Subtotal = ($Nettotal*$paymentPercent)/100;
+                $total = $Subtotal/1.07;
+                $addtax = $Subtotal-$total;
+                $before = $Subtotal-$addtax;
+                $balance = $Subtotal;
+            }
+
         }
         $balanceold =$request->balance;
         $data= [
@@ -546,6 +557,7 @@ class LinkPDFProposal extends Controller
             'addtax'=>$addtax,
             'before'=>$before,
             'balanceold'=>$balanceold,
+            'vattype'=>$vattype,
         ];
         $template = master_template::query()->latest()->first();
         $view= $template->name;
