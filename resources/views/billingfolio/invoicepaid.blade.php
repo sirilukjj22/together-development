@@ -568,6 +568,13 @@
                 // จำกัดความยาวเป็น 5 ตัวอักษร (MM/YY)
                 $(this).val(input.substring(0, 5));
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(document).ready(function() {
             $('.select2').select2({
@@ -590,6 +597,13 @@
             $('#Expiry').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -605,6 +619,13 @@
             $('#arrival').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
             });
         });
         $(function() {
@@ -622,6 +643,13 @@
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -638,6 +666,13 @@
             $('#paymentDate').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
             });
         });
         const table_name = ['roomTable','fbTable','banquetTable','entertainmentTable','ProposalTable','InvoiceTable'];

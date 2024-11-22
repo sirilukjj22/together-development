@@ -319,7 +319,7 @@
                     <td style="text-align: right">
                         ------------------------------------------------- <br>
                         <span>Cashier's Signature</span><br>
-                        <span>Nopparat</span>
+                        <span>{{$user->firstname}}</span>
                     </td>
                     <td style="width: 10%"></td>
                 </tr>

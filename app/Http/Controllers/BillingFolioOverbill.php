@@ -2131,7 +2131,17 @@ class BillingFolioOverbill extends Controller
         if ($type == 'Company') {
             $data = companys::where('Profile_ID',$guest)->first();
             $Identification = $data->Taxpayer_Identification;
-            $name =  'บริษัท '.$data->Company_Name.' จำกัด';
+            $Company_typeID=$data->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $name = "บริษัท ". $data->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $name = "ห้างหุ้นส่วนจำกัด ". $data->Company_Name ;
+            }else{
+                $name = $comtype->name_th . $data->Company_Name;
+            }
             $name_ID = $data->Profile_ID;
             $datasub = company_tax::where('Company_ID',$name_ID)->get();
             $Address=$data->Address;
@@ -2190,11 +2200,11 @@ class BillingFolioOverbill extends Controller
                 if ($company->Company_Name) {
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="บริษัทจำกัด") {
-                        $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                        $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด";
                     }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                        $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                        $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                        $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                        $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
                     }else {
                         $fullnameCom = $comtype->name_th . $company->Company_Name;
                     }
@@ -2329,8 +2339,8 @@ class BillingFolioOverbill extends Controller
         $datanamebank = ' Cash ' ;
         $paymentDate = $request->paymentDate;
         $note = $request->note;
-        if ($paymentType || $guest || $reservationNo || $room || $numberOfGuests || $arrival || $departure) {
-            return redirect()->route('BillingFolio.index')->with('error', 'กรุณากรอกข้อมูลให้ครบ');
+        if ( $guest == null || $reservationNo == null || $room == null || $numberOfGuests == null || $arrival == null || $departure == null) {
+            return redirect()->route('BillingFolioOver.index')->with('error', 'กรุณากรอกข้อมูลให้ครบ');
         }
         $Additionaldata = proposal_overbill::where('Additional_ID', $Additional)->first();
         $parts = explode('-', $guest);
@@ -2408,11 +2418,11 @@ class BillingFolioOverbill extends Controller
                     if ($company->Company_Name) {
                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                         if ($comtype->name_th =="บริษัทจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                            $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด";
                         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                            $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                         }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                            $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
                         }else {
                             $fullnameCom = $comtype->name_th . $company->Company_Name;
                         }
@@ -2447,11 +2457,11 @@ class BillingFolioOverbill extends Controller
                     if ($company->Companny_name) {
                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                         if ($comtype->name_th =="บริษัทจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                            $fullnameCom = " บริษัท ". $company->Companny_name . " จำกัด";
                         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                            $fullnameCom = " บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
                         }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                            $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
                         }else {
                             $fullnameCom = $comtype->name_th . $company->Companny_name;
                         }
@@ -2511,11 +2521,11 @@ class BillingFolioOverbill extends Controller
                     if ($guestdata->Company_name) {
                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                         if ($comtype->name_th =="บริษัทจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                            $fullnameCom = " บริษัท ". $guestdata->Company_name . " จำกัด";
                         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                            $fullnameCom = " บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
                         }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                            $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
                         }else {
                             $fullnameCom = $comtype->name_th . $guestdata->Company_name;
                         }
@@ -2551,6 +2561,8 @@ class BillingFolioOverbill extends Controller
             $dateTime = $date->format('H:i');
             $Amount = $sumpayment;
             $datanamebank = ' Cash ' ;
+            $userid = Auth::user()->id;
+            $user = User::where('id',$userid)->first();
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -2574,7 +2586,7 @@ class BillingFolioOverbill extends Controller
                 'note'=>$note,
                 'datanamebank'=>$datanamebank,
                 'invoice'=>$REID,
-
+                'user'=>$user,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
@@ -3138,11 +3150,11 @@ class BillingFolioOverbill extends Controller
             if ($company->Company_Name) {
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="บริษัทจำกัด") {
-                    $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                    $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด";
                 }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                    $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                    $fullnameCom = " บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                 }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                    $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                    $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
                 }else {
                     $fullnameCom = $comtype->name_th . $company->Company_Name;
                 }
@@ -3177,11 +3189,11 @@ class BillingFolioOverbill extends Controller
             if ($company->Companny_name) {
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="บริษัทจำกัด") {
-                    $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                    $fullnameCom = " บริษัท ". $company->Companny_name . " จำกัด";
                 }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                    $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                    $fullnameCom = " บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
                 }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                    $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                    $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
                 }else {
                     $fullnameCom = $comtype->name_th . $company->Companny_name;
                 }
@@ -3239,11 +3251,11 @@ class BillingFolioOverbill extends Controller
             if ($guestdata->Company_name) {
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="บริษัทจำกัด") {
-                    $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                    $fullnameCom = " บริษัท ". $guestdata->Company_name . " จำกัด";
                 }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                    $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                    $fullnameCom = " บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
                 }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                    $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                    $fullnameCom = " ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
                 }else {
                     $fullnameCom = $comtype->name_th . $guestdata->Company_name;
                 }
@@ -3276,7 +3288,8 @@ class BillingFolioOverbill extends Controller
         $dateTime = $date->format('H:i');
 
         $datanamebank = ' Cash ' ;
-
+        $userid = Auth::user()->id;
+        $user = User::where('id',$userid)->first();
         $data = [
             'settingCompany'=>$settingCompany,
             'fullname'=>$fullname,
@@ -3300,7 +3313,7 @@ class BillingFolioOverbill extends Controller
             'note'=>$data['note'],
             'datanamebank'=>$datanamebank,
             'invoice'=>$data['Receipt_ID'],
-
+            'user'=>$user,
         ];
         $view= $template->name;
         $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
@@ -3504,11 +3517,11 @@ class BillingFolioOverbill extends Controller
                     if ($company->Company_Name) {
                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                         if ($comtype->name_th =="บริษัทจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด";
+                            $fullnameCom = " "." บริษัท ". $company->Company_Name . " จำกัด";
                         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                            $fullnameCom = " "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                         }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                            $fullnameCom = " "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
                         }else {
                             $fullnameCom = $comtype->name_th . $company->Company_Name;
                         }
@@ -3543,11 +3556,11 @@ class BillingFolioOverbill extends Controller
                     if ($company->Companny_name) {
                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                         if ($comtype->name_th =="บริษัทจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด";
+                            $fullnameCom = " "." บริษัท ". $company->Companny_name . " จำกัด";
                         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                            $fullnameCom = " "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
                         }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                            $fullnameCom = " "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
                         }else {
                             $fullnameCom = $comtype->name_th . $company->Companny_name;
                         }
@@ -3607,11 +3620,11 @@ class BillingFolioOverbill extends Controller
                     if ($guestdata->Company_name) {
                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                         if ($comtype->name_th =="บริษัทจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                            $fullnameCom = " "." บริษัท ". $guestdata->Company_name . " จำกัด";
                         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                            $fullnameCom = "Company : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                            $fullnameCom = " "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
                         }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                            $fullnameCom = "Company : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                            $fullnameCom = " "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
                         }else {
                             $fullnameCom = $comtype->name_th . $guestdata->Company_name;
                         }
@@ -3645,7 +3658,8 @@ class BillingFolioOverbill extends Controller
             $dateFormatted = $date->format('d/m/Y').' / ';
             $dateTime = $date->format('H:i');
             $Amount = $sumpayment;
-
+            $userid = Auth::user()->id;
+            $user = User::where('id',$userid)->first();
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -3669,7 +3683,7 @@ class BillingFolioOverbill extends Controller
                 'note'=>$note,
                 'datanamebank'=>$datanamebank,
                 'invoice'=>$REID,
-
+                'user'=>$user,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);

@@ -924,6 +924,13 @@
                 $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
                 CheckDate();
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
             month();
 
         });
@@ -942,7 +949,13 @@
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
                 CheckDate();
             });
-
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         function CheckDate() {
             var CheckinNew = document.getElementById('Checkin').value;

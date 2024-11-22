@@ -987,7 +987,7 @@
                                             <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                                 Cancel
                                             </button>
-                                            <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                            <button type="button" class="btn btn-primary lift btn_modal btn-space" id="Preview" onclick="submitPreview()">
                                                 Preview
                                             </button>
                                             <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
@@ -1444,6 +1444,13 @@
                 $('#inputmonth').val(currentMonthIndex + 1);
                 CheckDateAdditional();
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             var checkinValue = document.getElementById('Checkin').value;
@@ -1540,6 +1547,13 @@
 
                 $('#checkmonth').val(month);
                 CheckDateAdditional();
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
             });
         });
         function CheckDateAdditional() {

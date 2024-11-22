@@ -71,18 +71,18 @@
                                         <ul class="card-list-withColon">
                                             <li>
                                             <span>Guest Name</span>
-                                            @if ($type == 'Comapny')
-                                                <span> - </span>
-                                            @else
+                                            @if ($type == 'Guest')
                                                 <span>{{$name}}</span>
+                                            @else
+                                                <span>-</span>
                                             @endif
                                             </li>
                                             <li>
                                             <span>Company</span>
-                                            @if ($type == 'Comapny')
+                                            @if ($type == 'Company')
                                                 <span>{{$name}}</span>
                                             @else
-                                                <span> - </span>
+                                                <span>-</span>
                                             @endif
                                             </li>
                                             <li>
@@ -502,6 +502,13 @@
                 // จำกัดความยาวเป็น 5 ตัวอักษร (MM/YY)
                 $(this).val(input.substring(0, 5));
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(document).ready(function() {
             $('.select2').select2({
@@ -524,6 +531,13 @@
             $('#Expiry').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -540,6 +554,13 @@
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -555,6 +576,13 @@
             $('#departure').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
             });
         });
         $(function() {

@@ -358,17 +358,15 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="font-weight: bold;">CODE</th>
                                 <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
-                                <th style="text-align:center;font-weight: bold;">AMOUNT</th>
+                                <th style="text-align:right;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
                                     <tr>
                                         <td style="text-align:center;">{{$key+1}}</td>
-                                        <td style="text-align:center;">{{ $item['product']->code}}</td>
                                         <td>{{ $item['product']->description}}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                        <td style="text-align:center;">{{ number_format($item['Amount']) }}</td>
+                                        <td style="text-align:right;">{{ number_format($item['Amount']) }}</td>
                                     </tr>
                                     @php
                                         $num2 +=1;
@@ -646,17 +644,15 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="font-weight: bold;">CODE</th>
                                 <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
-                                <th style="text-align:center;font-weight: bold;">AMOUNT</th>
+                                <th style="text-align:right;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
                                     <tr>
                                         <td style="text-align:center;">{{$key+1}}</td>
-                                        <td style="text-align:center;">{{ $item['product']->code}}</td>
                                         <td>{{ $item['product']->description}}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                        <td style="text-align:center;">{{ number_format($item['Amount']) }}</td>
+                                        <td style="text-align:right;">{{ number_format($item['Amount']) }}</td>
                                     </tr>
                                     @php
                                         $num2 +=1;

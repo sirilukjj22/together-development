@@ -1384,6 +1384,13 @@
                 $('#inputmonth').val(currentMonthIndex + 1);
                 CheckDateAdditional();
             });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             var checkinValue = document.getElementById('Checkin').value;
@@ -1480,6 +1487,13 @@
 
                 $('#checkmonth').val(month);
                 CheckDateAdditional();
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
             });
         });
         function CheckDateAdditional() {
