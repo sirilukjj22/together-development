@@ -405,8 +405,8 @@
                     datatype:   "JSON",
                     async:  false,
                     success: function(result) {
-                            if (result.data) {
-                                $('#comment').text("** '" + result.data.name_th + "' มีอยูในระบบแล้ว !");
+                            if (result.data.name_th == datakey && result.data.name_en == dataEN) {
+                                $('#comment').text("** '" + result.data.name_th + "', '" + result.data.name_en + "' มีอยูในระบบแล้ว !");
                                 document.getElementById('btn-save').disabled = true;
                             }else{
                                 if (module_name == "edit") {

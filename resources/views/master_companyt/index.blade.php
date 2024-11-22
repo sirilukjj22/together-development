@@ -407,11 +407,10 @@
                     datatype:   "JSON",
                     async:  false,
                     success: function(result) {
-                            // if (result.data.name_th && result.data.name_en) {
-                            //     $('#comment').text("** '" + result.data.name_th +" และ "+ result.data.name_en + "' มีอยูในระบบแล้ว !");
-                            //     document.getElementById('btn-save').disabled = true;
-                            // }else{
-                            if (module_name == "edit") {
+                            if (result.data.name_th == datakey && result.data.name_en == dataEN) {
+                                $('#comment').text("** '" + result.data.name_th + "', '" + result.data.name_en + "' มีอยูในระบบแล้ว !");
+                                document.getElementById('btn-save').disabled = true;
+                            }else{
                                 jQuery.ajax({
                                 type:   "GET",
                                 url:    "{!! url('/Mcomt/update/"+id+"/"+datakey+"/"+dataEN+"') !!}",
