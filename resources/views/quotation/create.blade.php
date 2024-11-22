@@ -450,6 +450,7 @@
 
                                                 // Set the total discount to the SpecialDiscount field
                                                 document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
+                                                document.getElementById('Preview').disabled = true;
                                             }
                                             $(document).ready(function() {
 
@@ -908,7 +909,7 @@
                                         <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                             Cancel
                                         </button>
-                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" id="Preview" onclick="submitPreview()">
                                             Preview
                                         </button>
                                         <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
@@ -1860,9 +1861,11 @@
                 if (DiscountAmount) {
                     $('#Special').css('display', 'grid');
                     $('#Subtotal').css('display', 'grid');
+                    document.getElementById('Preview').disabled = true;
                 }else{
                     $('#Special').css('display', 'none');
                     $('#Subtotal').css('display', 'none');
+                    document.getElementById('Preview').disabled = false;
                 }
                 totalAmost();
             });
@@ -2074,7 +2077,8 @@
         }
         function submitPreview() {
             var previewValue = document.getElementById("preview").value;
-
+            var DiscountAmount = document.getElementById('DiscountAmount').value;
+            var Add_discount = document.getElementById('Add_discount').value;
             // สร้าง input แบบ hidden ใหม่
             var input = document.createElement("input");
             input.type = "hidden";

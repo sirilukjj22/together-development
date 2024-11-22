@@ -244,7 +244,7 @@
                                 <div class="modal-body">
                                     <div class="col-12">
                                         <div class="card-body">
-                                            <form action="{{ url('/Proposal/cancel/') }}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
+                                            <form action="{{ url('/Proposal/cancel/') }}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form">
                                                 @csrf
                                                 <textarea name="note" id="not" class="form-control mt-2" cols="30" rows="5" style="resize: none; overflow: hidden;" oninput="autoResize(this)"></textarea>
                                                 <script>
@@ -778,7 +778,6 @@
                                                             @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif

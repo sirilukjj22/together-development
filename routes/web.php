@@ -573,7 +573,7 @@ Route::middleware(['auth'])->group(function () {
         //---------------------------------------LOG-----------------------------------------------------------
         Route::get('/Proposal/view/quotation/LOG/{id}','LOG')->name('Proposal.LOG');
         //-------------------------------------------------------------.
-        Route::get('/Proposal/cancel/{id}','cancel')->name('Proposal.cancel');
+        Route::post('/Proposal/cancel/{id}','cancel')->name('Proposal.cancel');
         //--------------------------------------------------------------
         Route::get('/Proposal/Revice/{id}','Revice')->name('Proposal.Revice');
         //--------------------------------------------------------------

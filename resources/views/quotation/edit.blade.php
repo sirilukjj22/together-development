@@ -475,6 +475,7 @@
 
                                                 // Set the total discount to the SpecialDiscount field
                                                 document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
+                                                document.getElementById('Preview').disabled = true;
                                             }
                                             $(document).ready(function() {
 
@@ -2371,9 +2372,11 @@
                 if (DiscountAmount) {
                     $('#Special').css('display', 'grid');
                     $('#Subtotal').css('display', 'grid');
+                    document.getElementById('Preview').disabled = true;
                 }else{
                     $('#Special').css('display', 'none');
                     $('#Subtotal').css('display', 'none');
+                    document.getElementById('Preview').disabled = false;
                 }
 
             });

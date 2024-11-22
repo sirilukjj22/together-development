@@ -874,7 +874,6 @@ class QuotationController extends Controller
                     if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
                         if ($canViewProposal == 1) {
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                         }
                     }
@@ -967,7 +966,6 @@ class QuotationController extends Controller
                 if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
                     if ($canViewProposal == 1) {
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
