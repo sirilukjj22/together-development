@@ -912,6 +912,15 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-12 row mt-5">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4 "  style="display:flex; justify-content:center; align-items:center;">
+                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                        Back
+                    </button>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -926,7 +935,24 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableBilling.js')}}"></script>
     <script>
-
+        function BACKtoEdit(){
+            event.preventDefault();
+            Swal.fire({
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "ตกลง",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#2C7F7A",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(1);
+                    // If user confirms, submit the form
+                    window.location.href = "{{ route('BillingFolio.index') }}";
+                }
+            });
+        }
 
     </script>
     <script>

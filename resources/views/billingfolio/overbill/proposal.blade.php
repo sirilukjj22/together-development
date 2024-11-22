@@ -722,7 +722,6 @@
                                         <thead >
                                             <tr>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Code</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"></th>
@@ -910,7 +909,10 @@
             var flexCheckChecked = document.getElementById('flexCheckChecked');
             var dayName = checkinDate.format('dddd'); // Format to get the day name
             var enddayName = checkoutDate.format('dddd'); // Format to get the day name
-
+            $('#checkinpo').text(checkinDate);
+            $('#checkoutpo').text(checkoutDate);
+            $('#checkinpoguest').text(checkinDate);
+            $('#checkoutpoguest').text(checkoutDate);
 
             if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
                 if (dayName === 'Thursday' && enddayName === 'Saturday') {
@@ -1456,6 +1458,8 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text(nights + ' คืน');
                 $('#daypoguest').text(totalDays + ' วัน');
@@ -1467,6 +1471,8 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
                 $('#daypoguest').text(totalDays + ' วัน');
@@ -1879,8 +1885,7 @@
                                                 '</div>';
                                     $('#display-selected-items').append(
                                         '<tr id="tr-select-addmain' + val.id + '">' +
-                                        '<td style="text-align:center;width:10%;vertical-align: middle;">' + rowNumbemain + '</td>' +
-                                        '<td style="text-align:center;width:10%;vertical-align: middle;"><input type="hidden" id="Code" name="Code[]" value="' + val.code + '">' + val.code +'</td>' +
+                                        '<td style="text-align:center;width:10%;vertical-align: middle;"><input type="hidden" id="Code" name="Code[]" value="' + val.code + '">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:left;width:50%;vertical-align: middle;">'+ val.description +'</td>' +
                                         '<td style="text-align:center;width:10%;">'+ quantity +'</td>' +
                                         '<td  style="text-align:center;width:20%;vertical-align: middle;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
