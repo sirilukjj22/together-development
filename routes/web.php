@@ -36,6 +36,7 @@ use App\Http\Controllers\BillingFolioOverbill;
 use App\Http\Controllers\LinkPDFProposal;
 use App\Http\Controllers\ReportAuditRevenueDateController;
 use App\Http\Controllers\ReportHotelManualChangeController;
+use App\Http\Controllers\ReportHotelWaterparkRevenueController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -205,6 +206,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('report-audit-revenue-date-search', 'search')->name('report-audit-revenue-date-search');
         Route::post('report-audit-paginate-table', 'paginate_table')->name('report-audit-paginate-table');
         Route::post('report-audit-search-table', 'search_table')->name('report-audit-search-table');
+    });
+
+    Route::controller(ReportHotelWaterparkRevenueController::class)->middleware('role:report')->group(function () {
+        Route::get('report-hotel-water-park-revenue', 'index')->name('report-hotel-water-park-revenue');
+        Route::post('report-hotel-water-park-revenue-search', 'search')->name('report-hotel-water-park-revenue-search');
     });
 
     Route::controller(ReportHotelManualChangeController::class)->middleware('role:report')->group(function () {

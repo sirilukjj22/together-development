@@ -275,7 +275,7 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Report">
                                         {{-- @if (Auth::user()->roleMenu->sms_alert == 1) --}}
-                                            <li><a class="ms-link" href="#">Hotel & Water Park Revenue</a></li>
+                                            <li><a class="ms-link" href="{{ route('report-hotel-water-park-revenue') }}">Hotel & Water Park Revenue</a></li>
                                             <li><a class="ms-link" href="{{ route('report-hotel-manual-charge') }}">Hotel Manual Charge</a></li>
                                         {{-- @endif --}}
                                     </ul>
@@ -421,7 +421,7 @@
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
 
     <!-- Jquery Page Js -->
-    {{-- <script src="{{ asset('assets/js/template.js') }}"></script> --}}
+    <script src="{{ asset('assets/js/template.js') }}"></script>
 
     <script>
         $(document).ready(function() {
