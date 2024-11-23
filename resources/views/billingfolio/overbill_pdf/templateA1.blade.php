@@ -350,7 +350,6 @@
                         </span>
                         <div style="border: 1px solid #2D7F7B"></div>
                         <div  style="line-height:15px;">
-                            <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                             @if ($page_item > 1)
                             <span style="font-weight: bold; float: right;color:#afafaf">Page {{ $i }}/{{$page_item}}</span>
                             @endif
@@ -358,8 +357,8 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
-                                <th style="text-align:right;font-weight: bold;">AMOUNT</th>
+                                <th style="text-align:center;font-weight: bold;">DESCRIPTION</th>
+                                <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
@@ -398,21 +397,6 @@
                                         </div>
                                     </td>
                                 </tr>
-
-                                <br>
-                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                </tr>
-
                             </table>
                         @endif
                         <b>Notes or Special Comment : </b><br>
@@ -422,22 +406,12 @@
                         <div style="line-height:10px;">
                         </div>
                         <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
-                        @if ($Mevent == '43')
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 50% deposit within 7 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @else
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 100% deposit within 3 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @endif
-
+                        <span style="line-height:10px;font-size: 13px;">
+                            <br>
+                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                        </span>
                         <div style="margin-top: 15px">
                             <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
                             <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">
@@ -636,7 +610,6 @@
                         </span>
                         <div style="border: 1px solid #2D7F7B"></div>
                         <div  style="line-height:15px;">
-                            <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                             @if ($page_item > 1)
                             <span style="font-weight: bold; float: right;color:#afafaf">Page {{ $i }}/{{$page_item}}</span>
                             @endif
@@ -644,8 +617,8 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
-                                <th style="text-align:right;font-weight: bold;">AMOUNT</th>
+                                <th style="text-align:center;font-weight: bold;">DESCRIPTION</th>
+                                <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
@@ -686,19 +659,6 @@
                                 </tr>
 
                                 <br>
-                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                </tr>
-
                             </table>
                         @endif
                         <b>Notes or Special Comment : </b><br>
@@ -708,22 +668,12 @@
                         <div style="line-height:10px;">
                         </div>
                         <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
-                        @if ($Mevent == '43')
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 50% deposit within 7 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @else
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 100% deposit within 3 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @endif
-
+                        <span style="line-height:10px;font-size: 13px;">
+                            <br>
+                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                        </span>
                         <div style="margin-top: 15px">
                             <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
                             <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">

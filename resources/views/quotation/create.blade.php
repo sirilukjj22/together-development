@@ -871,7 +871,7 @@
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
                                                 @if ($user->signature)
-                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
                                                 @endif
                                                 @if ($user->firstname)
                                                     <span>{{$user->firstname}} {{$user->lastname}}</span>
@@ -880,8 +880,8 @@
                                             </div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                                <br><br>
-                                                <span>{{@Auth::user()->name}}</span>
+                                                <img src="/boss.png" style="width: 70%;"/>
+                                                <span>Sopida Thuphom</span>
                                                 <span id="issue_date_document1"></span>
                                             </div>
                                             <div class="col-lg-2 centered-content">

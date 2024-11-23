@@ -386,7 +386,7 @@
                                 <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                                 <td style="text-align: center;" >
                                     @if ($user->signature)
-                                        <img src="upload/signature/{{$user->signature}}" style="width: 40%;"/>
+                                        <img src="upload/signature/{{$user->signature}}" style="width: 50%;"/>
                                     @endif
                                     @if ($user->firstname)
                                         <span style="display: block; text-align: center;">{{$user->firstname}} {{$user->lastname}}</span>
@@ -394,8 +394,8 @@
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td style="text-align: center;">
-                                    <img src="test.png" style="width: 40%;"/>
-                                    <span style="display: block; text-align: center;">ชื่อ</span>
+                                    <img src="boss.png" style="width: 50%;"/>
+                                    <span style="display: block; text-align: center;">Sopida Thuphom</span>
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">
@@ -990,7 +990,7 @@
                                 <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                                 <td style="text-align: center;" >
                                     @if ($user->signature)
-                                        <img src="upload/signature/{{$user->signature}}" style="width: 40%;"/>
+                                        <img src="upload/signature/{{$user->signature}}" style="width: 50%;"/>
                                     @endif
 
                                     @if ($user->firstname)
@@ -999,8 +999,8 @@
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td style="text-align: center;">
-                                    <img src="test.png" style="width: 40%;"/>
-                                    <span style="display: block; text-align: center;">ชื่อ</span>
+                                    <img src="boss.png" style="width: 50%;"/>
+                                    <span style="display: block; text-align: center;">Sopida Thuphom</span>
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">

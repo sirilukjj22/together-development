@@ -53,23 +53,23 @@
                                                     @foreach ($log as $key => $item)
                                                     <tr>
                                                         <td class="text-center">{{ $key + 1 }}</td>
-                                                        <td>{{ $item->Additional_ID }}</td>
+                                                        <td>{{ $item->Quotation_ID }}</td>
                                                         <td class="text-center">{{ $item->QuotationType }}</td>
                                                         <td class="text-center">{{ $item->correct}}</td>
                                                         <td class="text-center">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                                                         <td class="text-center">
                                                             @if ($item->correct == $correct)
                                                                 @if ($correct == 0)
-                                                                    <a href="{{ asset($path.$item->Additional_ID.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
+                                                                    <a href="{{ asset($path.$item->Quotation_ID.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
                                                                         <i class="fa fa-print"></i>
                                                                     </a>
                                                                 @else
-                                                                    <a href="{{ asset($path.$item->Additional_ID.'-'.$correct.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
+                                                                    <a href="{{ asset($path.$item->Quotation_ID.'-'.$correct.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
                                                                         <i class="fa fa-print"></i>
                                                                     </a>
                                                                 @endif
                                                             @else
-                                                                <a href="{{ asset($path.$item->Additional_ID.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
+                                                                <a href="{{ asset($path.$item->Quotation_ID.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
                                                                     <i class="fa fa-print"></i>
                                                                 </a>
                                                             @endif

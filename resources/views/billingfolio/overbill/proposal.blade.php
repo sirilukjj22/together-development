@@ -195,8 +195,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Proposal ( Over Bill ).</small>
-                    <div class=""><span class="span1">Proposal ( Over Bill )</span></div>
+                    <small class="text-muted">Welcome to Additional ( Over Bill ).</small>
+                    <div class=""><span class="span1">Additional ( Over Bill )</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -293,207 +293,6 @@
                                     </div>
                                 </div>
                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                <div class="row mt-5">
-                                    <div class="col-lg-3 col-md-3 col-sm-12">
-                                        <select name="selectdata" id="select" class="select2" onchange="showselectInput()" disabled>
-                                            <option value="Company"{{$Quotation->type_Proposal == "Company" ? 'selected' : ''}}>นามบริษัท</option>
-                                            <option value="Guest"{{$Quotation->type_Proposal == "Guest" ? 'selected' : ''}}>นามบุคคล</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div id="Companyshow" style="display: block">
-                                    <div class="row mt-2" >
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label class="labelcontact" for="">Customer Company</label>
-                                            <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
-                                                <option value=""></option>
-                                                @foreach($Company as $item)
-                                                    <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label class="labelcontact" for="">Customer Contact</label>
-                                            <button style="float: right; border: none; background-color: transparent;color:#fff;" type="button" class="btn" disabled>0</button>
-                                            <input type="text" name="Company_Contact" id="Company_Contact" class="form-control">
-                                            <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="Guestshow" style="display: none">
-                                    <div class="row mt-2" >
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label class="labelcontact" for="">Customer Guest </label>
-                                            <button style="float: right" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest','index') }}'"><i class="fa fa-plus"></i> เพิ่มลูกค้า</button>
-                                            <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" disabled>
-                                                <option value=""></option>
-                                                @foreach($Guest as $item)
-                                                    <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{$item->Last_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="mt-3 my-3" style="border: 1px solid #000">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-lg-2 col-md-12 col-sm-12">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
-                                        </div>
-                                        <div class="col-lg-10 col-md-12 col-sm-12" style="float: right">
-                                            <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check In Date
-                                        <div class="input-group">
-                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" value="{{$Quotation->checkin}}"  readonly  disabled>
-                                            <input type="hidden" id="inputmonth" name="inputmonth" value="">
-                                            <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="">
-                                            <input type="hidden" id="Date_type" name="Date_type" value="">
-                                            <input type="hidden" id="CheckinNew" name="CheckinNew" value="{{$Quotation->checkin}}">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check Out Date </span>
-                                        <div class="input-group"  >
-                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" value="{{$Quotation->checkout}}"  readonly disabled>
-                                            <input type="hidden" id="checkmonth" name="checkmonth" value="">
-                                            <input type="hidden" id="CheckoutNew" name="CheckoutNew" value="{{$Quotation->checkout}}">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <span for="">จำนวน</span>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน"value="{{$Quotation->day}}" @readonly(true)>
-                                            <span class="input-group-text">Day</span>
-                                            <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"value="{{$Quotation->night}}" @readonly(true)>
-                                            <span class="input-group-text">Night</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <span for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</span>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่"value="{{$Quotation->adult}}"disabled>
-                                            <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"value="{{$Quotation->children}}"disabled>
-                                            <span class="input-group-text">เด็ก</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Event</span>
-                                        <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" disabled>
-                                            <option value=""></option>
-                                            @foreach($Mevent as $item)
-                                                <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Vat Type</span>
-                                        <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" disabled>
-                                            @foreach($Mvat as $item)
-                                                <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span class="Freelancer_member" for="">Introduce By</span>
-                                        <select name="Freelancer_member" id="Freelancer_member" class="select2" required disabled>
-                                            <option value=""></option>
-                                            @foreach($Freelancer_member as $item)
-                                                <option value="{{ $item->Profile_ID }}"{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{ $item->Last_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Company Discount Contract</span>{{--ดึงของcompanyมาใส่--}}
-                                        <div class="input-group">
-                                            <span class="input-group-text">DC</span>
-                                            <input type="text" class="form-control" name="Company_Discount" id="Company_Discount" aria-label="Amount (to the nearest dollar)"value="{{$Quotation->ComRateCode}}" disabled>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span  for="">Company Commission</span>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control"  name="Company_Commission_Rate_Code" value="{{$Quotation->commissionratecode}}"disabled>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-12 col-sm-12">
-                                                <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
-                                                    <span class="input-group-text">%</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-12 col-sm-12">
-                                                <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
-                                                <div class="input-group">
-                                                    <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="{{$Quotation->additional_discount}}" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
-                                                            oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
-                                                            onchange="adddis()"readonly>
-                                                    <span class="input-group-text">%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Total User Discount</span>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                        <script>
-                                            function adddis() {
-                                                // Get the discount values from the input fields
-                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-
-                                                // Calculate the total discount
-                                                var total = User_discount + Add_discount;
-
-
-                                                // Set the total discount to the SpecialDiscount field
-                                                document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
-                                            }
-                                            $(document).ready(function() {
-
-                                                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-                                                    var total = User_discount+Add_discount;
-                                                    $('#SpecialDiscount').val(total);
-
-                                            });
-                                        </script>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Discount Amount</span>
-                                        <div class="input-group">
-                                            <input type="number" class="DiscountAmount form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled>
-                                            <span class="input-group-text">Bath</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -510,44 +309,44 @@
                                         <b class="font-upper com">Company Information</b>
                                         <li class="mt-3">
                                             <b>Company Name</b>
-                                            <span id="Company_name"></span>
+                                            <span id="Company_name">{{$fullName}}</span>
                                         </li>
                                         <li>
                                             <b>Company Address</b>
-                                            <span id="Address"></span>
+                                            <span id="Address">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
                                             <b></b>
                                         </li>
                                         <span class="wrap-full">
                                             <li >
                                                 <b>Company Number</b>
-                                                <span id="Company_Number"></span>
+                                                <span id="Company_Number">{{$phone->Phone_number}}</span>
                                             </li>
                                             <li >
                                                 <b>Company Fax</b>
-                                                <span id="Company_Fax"></span>
+                                                <span id="Company_Fax">{{$Fax_number}}</span>
                                             </li>
                                         </span>
                                         <li>
                                             <b>Company Email</b>
-                                            <span id="Company_Email"></span>
+                                            <span id="Company_Email">{{$Email}}</span>
                                         </li>
                                         <li>
                                             <b>Taxpayer Identification</b>
-                                            <span id="Taxpayer" ></span>
+                                            <span id="Taxpayer" >{{$Taxpayer_Identification}}</span>
                                         </li>
                                         <li> </li>
                                         <b class="font-upper com">Personal Information</b>
                                         <li class="mt-3">
                                             <b>Contact Name</b>
-                                            <span id="Company_contact"></span>
+                                            <span id="Company_contact">{{$Contact_Name}}</span>
                                         </li>
                                         <li >
                                             <b>Contact Number</b>
-                                            <span id="Contact_Phone"></span>
+                                            <span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span>
                                         </li>
                                         <li>
                                             <b>Contact Email</b>
-                                            <span id="Contact_Email" ></span>
+                                            <span id="Contact_Email" >{{$Quotation->checkin}}</span>
                                         </li>
                                         <li></li>
                                         </ul>
@@ -560,11 +359,11 @@
                                         <li></li>
                                         <li>
                                             <b>Check In</b>
-                                            <span id="checkinpo"></span>
+                                            <span id="checkinpo">{{$Quotation->checkin}}</span>
                                         </li>
                                         <li>
                                             <b>Check Out</b>
-                                            <span id="checkoutpo"></span>
+                                            <span id="checkoutpo">{{$Quotation->checkout}}</span>
                                         </li>
                                         <li>
                                             <b>Length of Stay</b>
@@ -583,28 +382,26 @@
                                         <b class="font-upper com">Guest Information</b>
                                         <li class="mt-3">
                                             <b>Guest  Name</b>
-                                            <span id="guest_name"></span>
+                                            <span id="guest_name">{{$fullName}}</span>
                                         </li>
-
-
                                         <li>
                                             <b>Guest  Address</b>
-                                            <span id="guestAddress"></span>
+                                            <span id="guestAddress">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
                                             <b></b>
                                         </li>
 
                                         <li >
                                             <b>Guest  Number</b>
-                                            <span id="guest_Number"></span>
+                                            <span id="guest_Number">{{$phone->Phone_number}}</span>
                                         </li>
 
                                         <li>
                                             <b>Guest  Email</b>
-                                            <span id="guest_Email"></span>
+                                            <span id="guest_Email">{{$Email}}</span>
                                         </li>
                                         <li>
                                             <b>Identification Number</b>
-                                            <span id="guestTaxpayer" ></span>
+                                            <span id="guestTaxpayer" >{{$Taxpayer_Identification}}</span>
                                         </li>
                                         <li> </li>
                                         <li></li>
@@ -638,9 +435,6 @@
 
                                     </div>
                                     <div class="styled-hr"></div>
-                                </div>
-                                <div class="mt-2">
-                                    <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-12 col-sm-12">
@@ -722,7 +516,7 @@
                                         <thead >
                                             <tr>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:50%"data-priority="1">Description</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"></th>
                                             </tr>
@@ -766,38 +560,12 @@
                                     <div class="flex-end" >
                                         <b class="text-center text-white p-2" style="font-size: 14px; background-color: #2D7F7B; border-radius: 5px; " ><p class="mr-2" style="width:260px;" >Net Total <span id="Net-Total">0</span></p></b>
                                     </div>
-                                    <div class="wrap-b">
-                                        <div class="kw">
-                                        </div>
-
-                                        <div class="lek mt-3" style="border-top:2px solid #2D7F7B;">
-                                            <div class="proposal-number-cutomer-detail" id="Pax">
-                                                <ul>
-                                                    <li class="mt-3" >
-                                                        <b>Number of Guests</b>
-                                                        <span><span id="PaxToTal"></span><span> Adults</span> </span>
-                                                        <input type="hidden" name="PaxToTalall" id="PaxToTalall">
-                                                    </li>
-                                                    <li class="mt-3">
-                                                        <b>Average per person</b>
-                                                        <span><span id="Average"></span> THB</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="col-12 mt-3">
                                         <div class="col-lg-4 col-md-6 col-sm-12">
                                             <strong class="com" style="font-size: 18px">Method of Payment</strong>
                                         </div>
-                                        <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                                            Please make a 50% deposit within 7 days after confirmed. <br>
-                                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                        </span>
-                                        <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
-                                            Please make a 100% deposit within 3 days after confirmed. <br>
+                                        <span class="col-md-8 col-sm-12">
+                                           <br>
                                             Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                             If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                             pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -878,9 +646,6 @@
                                         <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                                             <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                                 Cancel
-                                            </button>
-                                            <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
-                                                Preview
                                             </button>
                                             <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                         </div>
