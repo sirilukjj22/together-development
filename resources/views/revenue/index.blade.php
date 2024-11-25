@@ -112,7 +112,7 @@
                             <span class="dropdown">
                                 <button class="dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                                     <span id="txt-daily">
-                                        @if ($filter_by == 'today' || $filter_by == 'date' && count($exp_date) != 2 || !isset($filter_by) && $date_current == date('Y-m-d'))
+                                        @if ($filter_by == 'today' || $filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y') && $exp_date[1] == date('d/m/Y' || !isset($filter_by)))
                                             Today
                                         @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
                                             Yesterday
@@ -125,7 +125,7 @@
                                         @elseif (isset($filter_by) && $filter_by == 'thisYear')
                                             This Year
                                         @else
-                                            @if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('Y-m-d') && $exp_date[1] == date('Y-m-d'))
+                                            @if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y') && $exp_date[1] == date('d/m/Y'))
                                                 Today
                                             @else
                                                 Custom
@@ -1213,12 +1213,12 @@
                             <td>Summary Elexa EGAT Revenue</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format($ev_charge[0]['total'], 2) }}
+                                    {{ number_format($today_ev_revenue + $ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? ($today_ev_revenue + $ev_charge[0]['total']) : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
+                            <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? ($total_ev_month + $ev_charge[0]['total_month']) : 0, 2) }}</td>
                             <td class="y-t-d">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr>
@@ -1255,16 +1255,16 @@
                             <td class="text-end f-semi"> All Revenue </td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + $ev_charge[0]['total'], 2) }}
+                                    {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + ($total_ev_revenue + $ev_charge[0]['total']), 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + $ev_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + ($today_ev_revenue + $ev_charge[0]['total']) : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">
-                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
+                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($total_ev_month + $ev_charge[0]['total_month'])) : 0, 2) }}
                             </td>
                             <td class="y-t-d">
-                                {{ number_format(($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year'], 2) }}
+                                {{ number_format(($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($ev_charge[0]['total_year']), 2) }}
                             </td>
                         </tr>
                         <tr>
@@ -1277,16 +1277,16 @@
                             <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + ($agoda_charge[0]['total'] + $ev_charge[0]['total']) + $total_agoda_revenue, 2) }}
+                                    {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + ($total_ev_revenue + $ev_charge[0]['total']), 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? ($today_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + ($agoda_charge[0]['total'] + $ev_charge[0]['total']) + $today_agoda_revenue : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + ($today_ev_revenue + $ev_charge[0]['total']) : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">
-                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
+                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($total_ev_month + $ev_charge[0]['total_month'])) : 0, 2) }}
                             </td>
                             <td class="y-t-d">
-                                {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year']), 2) }}
+                                {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year'] + ($agoda_outstanding_last_year + $elexa_outstanding_last_year)), 2) }}
                             </td>
                         </tr>
           
