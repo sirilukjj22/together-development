@@ -26,6 +26,7 @@ use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\Quotation_main_confirm;
 use App\Models\Master_company;
+use App\Models\receive_payment;
 use App\Models\phone_guest;
 use App\Models\Guest;
 use Auth;
@@ -1108,17 +1109,231 @@ class proposal_request extends Controller
         $Quotation_ID = $Quotation->Quotation_ID;
         $Quotation_IDoverbill = $Quotation->Additional_ID;
         $Operated_by= $Quotation->Operated_by;
+        $additional_type= $Quotation->additional_type;
+        $Mvat= $Quotation->vat_type;
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
-        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
-        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $selectproduct = document_proposal_overbill::where('Additional_ID', $Additional_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         $user = User::where('id',$Operated_by)->first();
         $path = 'Log_PDF/proposaloverbill/';
-        return view('proposal_req.additional',compact('user','path','settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill','Additional_ID'));
+
+        $Proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+        $Selectdata =  $Proposal->type_Proposal;
+        if ($Selectdata == 'Guest') {
+            $Data = Guest::where('Profile_ID',$Proposal->Company_ID)->first();
+            $prename = $Data->preface;
+            $First_name = $Data->First_name;
+            $Last_name = $Data->Last_name;
+            $Address = $Data->Address;
+            $Email = $Data->Email;
+            $Taxpayer_Identification = $Data->Identification_Number;
+            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+            $name = $prefix->name_th;
+            $fullName = $name.' '.$First_name.' '.$Last_name;
+            //-------------ที่อยู่
+            $CityID=$Data->City;
+            $amphuresID = $Data->Amphures;
+            $TambonID = $Data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $Fax_number = '-';
+            $phone = phone_guest::where('Profile_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
+
+            $Contact_Name = null;
+            $Contact_phone =null;
+            $Contact_Email = null;
+        }else{
+            $Company = companys::where('Profile_ID',$Proposal->Company_ID)->first();
+            $Company_type = $Company->Company_type;
+            $Compannyname = $Company->Company_Name;
+            $Address = $Company->Address;
+            $Email = $Company->Company_Email;
+            $Taxpayer_Identification = $Company->Taxpayer_Identification;
+            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+            if ($comtype) {
+                if ($comtype->name_th == "บริษัทจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }else{
+                    $fullName = $comtype->name_th . $Compannyname;
+                }
+            }
+            $representative = representative::where('Company_ID',$Proposal->Company_ID)->first();
+            $prename = $representative->prefix;
+            $Contact_Email = $representative->Email;
+            $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+            $name = $prefix->name_th;
+            $Contact_Name = 'คุณ '.$representative->First_name.' '.$representative->Last_name;
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $company_fax = company_fax::where('Profile_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
+            if ($company_fax) {
+                $Fax_number =  $company_fax->Fax_number;
+            }else{
+                $Fax_number = '-';
+            }
+            $phone = company_phone::where('Profile_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
+            $Contact_phone = representative_phone::where('Company_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
+        }
+        $ProposalID = $Proposal->id;
+        $Proposal_ID = $Proposal->Quotation_ID;
+        $totalAmount = $Proposal->Nettotal;
+        $vat = $Proposal->vat_type;
+        $nameid = $Proposal->Company_ID;
+        $SpecialDiscountBath = $Proposal->SpecialDiscountBath;
+        $SpecialDiscount = $Proposal->SpecialDiscount;
+        $Selectdata =  $Proposal->type_Proposal;
+        $subtotal = 0;
+        $beforeTax =0;
+        $AddTax =0;
+        $Nettotal =0;
+        $total =0;
+        $totalreceipt =0;
+        $totalreceiptre =0;
+        if ($vat == 50) {
+            $total =  $totalAmount;
+            $subtotal = $totalAmount;
+            $beforeTax = $subtotal/1.07;
+            $AddTax = $subtotal-$beforeTax;
+            $Nettotal = $subtotal;
+
+        }elseif ($vat == 51) {
+            $total =  $totalAmount;
+            $subtotal = $totalAmount;
+            $Nettotal = $subtotal;
+        }elseif ($vat == 52) {
+            $total =  $totalAmount;
+            $subtotal = $totalAmount;
+            $AddTax =$subtotal*7/100;
+            $Nettotal = $subtotal+$AddTax;
+        }
+        $parts = explode('-', $nameid);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $company =  companys::where('Profile_ID',$nameid)->first();
+            $Company_type = $company->Company_type;
+            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+            if ($comtype) {
+                if ($comtype->name_th == "บริษัทจำกัด") {
+                    $fullname = "บริษัท " . $company->Company_Name . " จำกัด";
+                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                    $fullname = "บริษัท " . $company->Company_Name . " จำกัด (มหาชน)";
+                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                    $fullname = "ห้างหุ้นส่วนจำกัด " . $company->Company_Name;
+                }else{
+                    $fullname = $comtype->name_th . $company->Company_Name;
+                }
+            }
+            $Address=$company->Address;
+            $CityID=$company->City;
+            $amphuresID = $company->Amphures;
+            $TambonID = $company->Tambon;
+            $Identification = $company->Taxpayer_Identification;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$nameid)->first();
+            $fullname =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+            $Address=$guestdata->Address;
+            $CityID=$guestdata->City;
+            $amphuresID = $guestdata->Amphures;
+            $TambonID = $guestdata->Tambon;
+            $Identification = $guestdata->Identification_Number;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+        }
+
+        $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->first();
+
+        $Rm = []; // กำหนดตัวแปร $Rm เป็น array ว่าง
+        $FB = [];
+        $BQ = [];
+        $AT = [];
+        $EM = [];
+        $RmCount = 0;
+        $FBCount = 0;
+        $BQCount = 0;
+        $EMCount = 0;
+        $ATCount = 0;
+        $AdditionaltotalReceipt = 0;
+        $statusover = 1;
+        $Receiptover = null;
+        $Additional_ID = null;
+        if ($Additional) {
+            $AdditionaltotalReceipt =  $Additional->Nettotal;
+            $Additional_ID = $Additional->Additional_ID;
+            $document = document_proposal_overbill::where('Additional_ID',$Additional_ID)->get();
+
+            $master = Master_additional::query()->get();
+            $combinedData = $document->map(function($doc) use ($master) {
+                $matchedMaster = $master->firstWhere('code', $doc->Code);
+
+                if ($matchedMaster) { // ตรวจสอบว่าเจอข้อมูลที่ Code ตรงกันหรือไม่
+                    return [
+                        'Additional_ID' => $doc->Additional_ID,
+                        'Code' => $doc->Code,
+                        'Detail' => $doc->Detail,
+                        'Amount' => $doc->Amount,
+                        'type' => $matchedMaster->type,
+                    ];
+                }
+                return null; // ถ้าไม่ตรงให้ส่งค่า null
+            })->filter(); // ใช้ filter เพื่อกรอง null ออก
+
+            foreach ($combinedData as $item) {
+                if ($item['type'] == 'RM') {
+                    $Rm[] = $item;
+                } elseif ($item['type'] == 'FB') {
+                    $FB[] = $item;
+                } elseif ($item['type'] == 'BQ') {
+                    $BQ[] = $item;
+                } elseif ($item['type'] == 'AT') {
+                    $AT[] = $item;
+                } elseif ($item['type'] == 'EM') {
+                    $EM[] = $item;
+                }
+            }
+
+            foreach ($Rm as $item) {
+                $RmCount +=  $item['Amount'];
+            }
+
+            foreach ($FB as $item) {
+                $FBCount +=  $item['Amount'];
+            }
+
+            foreach ($BQ as $item) {
+                $BQCount +=  $item['Amount'];
+            }
+
+            foreach ($EM as $item) {
+                $EMCount +=  $item['Amount'];
+            }
+
+            foreach ($AT as $item) {
+                $ATCount +=  $item['Amount'];
+            }
+        }
+        return view('proposal_req.additional',compact('user','path','settingCompany','Quotation','Quotation_ID','Company','Guest','Mvat','Freelancer_member','selectproduct','Quotation_IDoverbill','Additional_ID',
+                    'Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','Proposal','ProposalID','additional_type',
+                    'fullname','firstPart','Identification','address','vat','Additional','AdditionaltotalReceipt','Receiptover','statusover','Additional_ID',
+                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone'
+                    ,'Selectdata'));
     }
     public function Additional_Approve(Request $request){
         try {

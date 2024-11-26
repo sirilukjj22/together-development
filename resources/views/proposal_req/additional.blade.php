@@ -1,5 +1,33 @@
 @extends('layouts.masterLayout')
 <style>
+@media screen and (max-width: 500px) {
+    .mobileHidden {
+    display: none;
+    }
+
+    .mobileLabelShow {
+    display: inline;
+    }
+
+    #mobileshow {
+    margin-top: 60px;
+    }
+}
+.table-revenue-detail {
+    display: none;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: aliceblue;
+    border-radius: 7px;
+    color: white;
+    min-height: 20rem;
+    }
+    .modal-dialog-custom-90p {
+        min-width: 50%;
+    }
+
+</style>
+<style>
     .image-container {
         display: flex;
         flex-direction: row;
@@ -196,7 +224,11 @@
             <div class="row align-items-center">
                 <div class="col sms-header">
                     <small class="text-muted">Welcome to Additional.</small>
-                    <div class=""><span class="span1">Additional</span></div>
+                    @if ($additional_type == 'H/G')
+                        <div class=""><span class="span1">Additional (H/G Online)</span></div>
+                    @else
+                        <div class=""><span class="span1">Additional (Cash + Complimentary)</span></div>
+                    @endif
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
@@ -205,11 +237,6 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                         <ul class="dropdown-menu border-0 shadow p-3">
-                            @if ($Quotation->correct >= 1 )
-                                <li><a href="{{ asset($path.$Additional_ID.'-'.$Quotation->correct.".pdf") }}"  class="dropdown-item py-2 rounded" target="_blank" >PDF</a></li>
-                            @else
-                                <li><a href="{{ asset($path.$Additional_ID.".pdf") }}" class="dropdown-item py-2 rounded" target="_blank" >PDF</a></li>
-                            @endif
                             <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Appovel</a></li>
                             <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
                         </ul>
@@ -218,6 +245,7 @@
             </div> <!-- .row end -->
         </div>
     </div>
+
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >
@@ -228,13 +256,6 @@
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
                 @endif
-                @if (session("error"))
-                    <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
-                        <hr>
-                        <p class="mb-0">{{ session('error') }}</p>
-                    </div>
-                @endif
                 <div class="col">
                     <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
                         <li></li>
@@ -242,11 +263,373 @@
                         <li></li>
                     </ol>
                 </div>
-                <div class="col-auto">
-
-                </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
+        <div class="container-xl">
+            <div class="row clearfix">
+                <div class="col-sm-12 col-12 pi">
+                    <div class="">
+                        <div class="card-body">
+                            <section class="card-container bg-card-container">
+                                <section class="card2 gradient-bg">
+                                    <div class="card-content bg-card-content-white" class="card-content">
+                                        <h5 class="card-title center">Client Details</h5>
+                                        <ul class="card-list-withColon">
+                                            <li>
+                                            <span>Guest Name</span>
+                                            @if ($firstPart == 'C')
+                                                <span> - </span>
+                                            @else
+                                                <span>{{$fullname}}</span>
+                                            @endif
+                                            </li>
+                                            <li>
+                                            <span>Company</span>
+                                            @if ($firstPart == 'C')
+                                                <span>{{$fullname}}</span>
+                                            @else
+                                                <span> - </span>
+                                            @endif
+                                            </li>
+                                            <li>
+                                                <span>Tax ID/Gst Pass</span>
+                                                <span>{{$Identification}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Address</span>
+                                                <span>{{$address}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Check In Date</span>
+                                                <span>{{$Proposal->checkin ?? 'No Check In Date'}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Check Out Date</span>
+                                                <span>{{$Proposal->checkout ?? '-'}}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                                <section class="card2 card-circle">
+                                    <div class="tech-circle-container mx-4" style="background-color: #135d58;">
+                                        <div class="outer-glow-circle"></div>
+                                        <div class="circle-content">
+                                            <p class="circle-text">
+                                            <p class="f-w-bold fs-3">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</p>
+                                            <span class="subtext fs-6" >Total Amount</span>
+                                            </p>
+                                        </div>
+                                        <div class="outer-ring">
+                                            <div class="rotating-dot"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            <section class="card2 gradient-bg">
+                            <div class="card-content3 bg-card-content-white">
+                                <div class="card-title center" style="position: relative;"><span>Folio </span></div>
+                                <ul class="card-list-between">
+                                    <span>
+                                        <li class="pr-3">
+                                            <span >Additional ({{$Additional_ID}})</span>
+                                            <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($AdditionaltotalReceipt, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
+                                        </li>
+                                        <li class="pr-3">
+                                            <span >Total</span>
+                                            <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                    </span>
+                                    @if ($additional_type == 'H/G')
+                                        {{-- <span id="defaultContent">
+                                            <li class="pr-3 ">
+                                                <span>Additional</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                            </li>
+                                        </span> --}}
+                                    @else
+                                        <span id="defaultContent">
+                                            <li class="pr-3 ">
+                                                <span>Cash</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt*0.37, 2, '.', ',') }}</span>
+                                            </li>
+                                            <li class="pr-3">
+                                                <span>Complimentary</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt*0.37, 2, '.', ',') }}</span>
+                                            </li>
+                                        </span>
+                                    @endif
+                                </ul>
+                                <li class="outstanding-amount">
+                                    <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                </li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade pi" id="ModalAdditionalSummary" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-custom-90p">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #2c7f7a">
+                            <h3 class="modal-title fs-3" id="exampleModalLabel" style="color: white"> Additional Summary </h3>
+                            <button type="button" class="btn-close light" data-bs-dismiss="modal" aria-label="Close" style="color: white !important"></button>
+                        </div>
+                        <div class="modal-body">
+                        <div class="">
+                            <div class="d-flex-wrap-at-300">
+                            <section class="card-content2">
+                                @if ($Mvat == '50')
+                                    <h5 class="card-title">Additional</h5>
+                                    <div class="card-list-between">
+                                        <li>
+                                            <span>Subtotal</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Price Before Tax</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Value Added Tax</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                        </li>
+                                    </div>
+                                    <div class="card-list-between">
+                                        <li>
+                                            <span>Total Balance</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                    </div>
+                                @elseif ($Mvat == '51')
+                                    <h5 class="card-title">Proposal</h5>
+                                    <div class="card-list-between">
+                                        <li>
+                                            <span>Subtotal</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                    </div>
+                                    <div class="card-list-between">
+                                        <li>
+                                            <span>Total Balance</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                    </div>
+                                @elseif ($Mvat == '52')
+                                    <h5 class="card-title">Proposal</h5>
+                                    <div class="card-list-between">
+                                        <li>
+                                            <span>Subtotal</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Price Before Tax</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Value Added Tax</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                        </li>
+                                    </div>
+                                    <div class="card-list-between">
+                                        <li>
+                                            <span>Total Balance</span>
+                                            <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        </li>
+                                    </div>
+                                @endif
+
+                            </section>
+                            <section class="card-content2">
+                                <h5 class="card-title">Revenue Summary</h5>
+                                <div class="card-list-between">
+                                <li>
+                                    <span>Room Revenue</span>
+                                    <span>{{ number_format($RmCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>F&B Revenue</span>
+                                    <span>{{ number_format($FBCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>Banquet Revenue</span>
+                                    <span>{{ number_format($BQCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>Entertainment Revenue</span>
+                                    <span>{{ number_format($EMCount, 2, '.', ',') }}</span>
+                                </li>
+                                <li>
+                                    <span>Other items</span>
+                                    <span>{{ number_format($ATCount, 2, '.', ',') }}</span>
+                                </li>
+                                </div>
+                                <div class="card-list-between">
+                                <li>
+                                    <span>Total Balance</span>
+                                    <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                </li>
+                                </div>
+                            </section>
+                            </div>
+                            <div class="container-sub-table-proposal">
+                            <section>
+                                <h4>Room Revenue </h4>
+                                <details onclick="nav($id='nav1')">
+                                    <div class="wrap-table-together">
+                                        <table id="roomTable" class="table-together ui striped table nowrap unstackable hover" >
+                                            <thead>
+                                                <tr>
+                                                <th >No</th>
+                                                <th data-priority="1">Code</th>
+                                                <th data-priority="1">Description</th>
+                                                <th data-priority="1">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($Rm))
+                                                    @foreach ($Rm as $key => $item)
+                                                        <tr >
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>{{ $item['Code'] }}</td>
+                                                            <td>{{ $item['Detail'] }}</td>
+                                                            <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </details>
+                            </section>
+                            <!-- Table2 F&B Revenue -->
+                            <section>
+                                <h4>F&B Revenue</h4>
+                                <details onclick="nav($id='nav2')">
+                                <div class="wrap-table-together">
+                                    <table id="fbTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($FB))
+                                                @foreach ($FB as $key => $item)
+                                                    <tr >
+                                                        <<td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            <!-- Table3 Banquet Revenue-->
+                            <section>
+                                <h4>Banquet Revenue</h4>
+                                <details onclick="nav($id='nav3')">
+                                <div class="wrap-table-together">
+                                    <table id="banquetTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($BQ))
+                                                @foreach ($BQ as $key => $item)
+                                                    <tr >
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            <!-- Table4 Entertainment Revenue -->
+                            <section>
+                                <h4>Entertainment Revenue</h4>
+                                <details onclick="nav($id='nav4')">
+                                <div class="wrap-table-together">
+                                    <table id="entertainmentTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($EM))
+                                                @foreach ($EM as $key => $item)
+                                                    <tr >
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            <section>
+                                <h4>Other items</h4>
+                                <details onclick="nav($id='nav5')">
+                                <div class="wrap-table-together">
+                                    <table id="entertainmentTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th >No</th>
+                                            <th data-priority="1">Code</th>
+                                            <th data-priority="1">Description</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($AT))
+                                                @foreach ($AT as $key => $item)
+                                                    <tr >
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $item['Code'] }}</td>
+                                                        <td>{{ $item['Detail'] }}</td>
+                                                        <td>{{ number_format($item['Amount'], 2, '.', ',') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </details>
+                            </section>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bt-tg-normal btn-secondary sm" style="background-color: grey; margin-right: 5px" data-bs-dismiss="modal"> Close </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
@@ -306,361 +689,148 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                            <div class="row mt-5">
-                                <div class="col-lg-3 col-md-3 col-sm-12">
-                                    <select name="selectdata" id="select" class="select2" onchange="showselectInput()" disabled>
-                                        <option value="Company"{{$Quotation->type_Proposal == "Company" ? 'selected' : ''}}>นามบริษัท</option>
-                                        <option value="Guest"{{$Quotation->type_Proposal == "Guest" ? 'selected' : ''}}>นามบุคคล</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div id="Companyshow" style="display: block">
-                                <div class="row mt-2" >
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label class="labelcontact" for="">Customer Company</label>
-                                        <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
-                                            <option value=""></option>
-                                            @foreach($Company as $item)
-                                                <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label class="labelcontact" for="">Customer Contact</label>
-                                        <button style="float: right; border: none; background-color: transparent;color:#fff;" type="button" class="btn" disabled>0</button>
-                                        <input type="text" name="Company_Contact" id="Company_Contact" class="form-control">
-                                        <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="Guestshow" style="display: none">
-                                <div class="row mt-2" >
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label class="labelcontact" for="">Customer Guest </label>
-                                        <button style="float: right" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest','index') }}'"><i class="fa fa-plus"></i> เพิ่มลูกค้า</button>
-                                        <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" disabled>
-                                            <option value=""></option>
-                                            @foreach($Guest as $item)
-                                                <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{$item->Last_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr class="mt-3 my-3" style="border: 1px solid #000">
-                            <div class="col-lg-12 col-md-12 col-sm-12">
-                                <div class="row">
-                                    <div class="col-lg-2 col-md-12 col-sm-12">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
-                                    </div>
-                                    <div class="col-lg-10 col-md-12 col-sm-12" style="float: right">
-                                        <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row mt-2">
-                                <div class="col-lg-2 col-md-6 col-sm-12">
-                                    <span for="chekin">Check In Date
-                                    <div class="input-group">
-                                        <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" value="{{$Quotation->checkin}}"  readonly  disabled>
-                                        <input type="hidden" id="inputmonth" name="inputmonth" value="">
-                                        <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="">
-                                        <input type="hidden" id="Date_type" name="Date_type" value="">
-                                        <input type="hidden" id="CheckinNew" name="CheckinNew" value="{{$Quotation->checkin}}">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-6 col-sm-12">
-                                    <span for="chekin">Check Out Date </span>
-                                    <div class="input-group"  >
-                                        <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" value="{{$Quotation->checkout}}"  readonly disabled>
-                                        <input type="hidden" id="checkmonth" name="checkmonth" value="">
-                                        <input type="hidden" id="CheckoutNew" name="CheckoutNew" value="{{$Quotation->checkout}}">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
-                                                <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <span for="">จำนวน</span>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน"value="{{$Quotation->day}}" @readonly(true)>
-                                        <span class="input-group-text">Day</span>
-                                        <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"value="{{$Quotation->night}}" @readonly(true)>
-                                        <span class="input-group-text">Night</span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <span for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</span>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่"value="{{$Quotation->adult}}"disabled>
-                                        <span class="input-group-text">ผู้ใหญ่</span>
-                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"value="{{$Quotation->children}}"disabled>
-                                        <span class="input-group-text">เด็ก</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-lg-3 col-md-6 col-sm-12">
-                                    <span  for="">Event</span>
-                                    <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" disabled>
-                                        <option value=""></option>
-                                        @foreach($Mevent as $item)
-                                            <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12">
-                                    <span  for="">Vat Type</span>
-                                    <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" disabled>
-                                        @foreach($Mvat as $item)
-                                            <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12">
-                                    <span class="Freelancer_member" for="">Introduce By</span>
-                                    <select name="Freelancer_member" id="Freelancer_member" class="select2" required disabled>
-                                        <option value=""></option>
-                                        @foreach($Freelancer_member as $item)
-                                            <option value="{{ $item->Profile_ID }}"{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{ $item->Last_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12">
-                                    <span  for="">Company Discount Contract</span>{{--ดึงของcompanyมาใส่--}}
-                                    <div class="input-group">
-                                        <span class="input-group-text">DC</span>
-                                        <input type="text" class="form-control" name="Company_Discount" id="Company_Discount" aria-label="Amount (to the nearest dollar)"value="{{$Quotation->ComRateCode}}" disabled>
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-lg-2 col-md-6 col-sm-12">
-                                    <span  for="">Company Commission</span>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control"  name="Company_Commission_Rate_Code" value="{{$Quotation->commissionratecode}}"disabled>
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                            <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                            <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
-                                            <div class="input-group">
-                                                <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="{{$Quotation->additional_discount}}" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
-                                                        oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
-                                                        onchange="adddis()"readonly>
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12">
-                                    <span  for="">Total User Discount</span>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly>
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                    <script>
-                                        function adddis() {
-                                            // Get the discount values from the input fields
-                                            var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                            var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-
-                                            // Calculate the total discount
-                                            var total = User_discount + Add_discount;
-
-
-                                            // Set the total discount to the SpecialDiscount field
-                                            document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
-                                        }
-                                        $(document).ready(function() {
-
-                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-                                                var total = User_discount+Add_discount;
-                                                $('#SpecialDiscount').val(total);
-
-                                        });
-                                    </script>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12">
-                                    <span  for="">Discount Amount</span>
-                                    <div class="input-group">
-                                        <input type="number" class="DiscountAmount form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled>
-                                        <span class="input-group-text">Bath</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-xl">
-            <div class="row clearfix">
-                <div class="col-md-12 col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="row mt-2">
-                                <div class="proposal-cutomer-detail" id="companyTable">
-                                    <ul>
-                                    <b class="font-upper com">Company Information</b>
-                                    <li class="mt-3">
-                                        <b>Company Name</b>
-                                        <span id="Company_name"></span>
-                                    </li>
-                                    <li>
-                                        <b>Company Address</b>
-                                        <span id="Address"></span>
-                                        <b></b>
-                                    </li>
-                                    <span class="wrap-full">
-                                        <li >
-                                            <b>Company Number</b>
-                                            <span id="Company_Number"></span>
+                                @if ($Selectdata == 'Company')
+                                    <div class="proposal-cutomer-detail" >
+                                        <ul>
+                                        <b class="font-upper com">Company Information</b>
+                                        <li class="mt-3">
+                                            <b>Company Name</b>
+                                            <span id="Company_name">{{$fullname}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Company Address</b>
+                                            <span id="Address">{{$address}}</span>
+                                            <b></b>
+                                        </li>
+                                        <span class="wrap-full">
+                                            <li >
+                                                <b>Company Number</b>
+                                                <span id="Company_Number">{{$phone->Phone_number}}</span>
+                                            </li>
+                                            <li >
+                                                <b>Company Fax</b>
+                                                <span id="Company_Fax">{{$Fax_number}}</span>
+                                            </li>
+                                        </span>
+                                        <li>
+                                            <b>Company Email</b>
+                                            <span id="Company_Email">{{$Email}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Taxpayer Identification</b>
+                                            <span id="Taxpayer" >{{$Taxpayer_Identification}}</span>
+                                        </li>
+                                        <li> </li>
+                                        <b class="font-upper com">Personal Information</b>
+                                        <li class="mt-3">
+                                            <b>Contact Name</b>
+                                            <span id="Company_contact">{{$Contact_Name}}</span>
                                         </li>
                                         <li >
-                                            <b>Company Fax</b>
-                                            <span id="Company_Fax"></span>
+                                            <b>Contact Number</b>
+                                            <span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span>
                                         </li>
-                                    </span>
-                                    <li>
-                                        <b>Company Email</b>
-                                        <span id="Company_Email"></span>
-                                    </li>
-                                    <li>
-                                        <b>Taxpayer Identification</b>
-                                        <span id="Taxpayer" ></span>
-                                    </li>
-                                    <li> </li>
-                                    <b class="font-upper com ">Personal Information</b>
-                                    <li class="mt-3">
-                                        <b>Contact Name</b>
-                                        <span id="Company_contact"></span>
-                                    </li>
-                                    <li >
-                                        <b>Contact Number</b>
-                                        <span id="Contact_Phone"></span>
-                                    </li>
-                                    <li>
-                                        <b>Contact Email</b>
-                                        <span id="Contact_Email" ></span>
-                                    </li>
-                                    <li></li>
-                                    </ul>
-                                    <ul>
-                                    <li> </li>
-                                    <li></li>
-                                    <li> </li>
-                                    <li></li>
-                                    <li> </li>
-                                    <li></li>
-                                    <li>
-                                        <b>Check In</b>
-                                        <span id="checkinpo">{{$Quotation->checkin}}</span>
-                                    </li>
-                                    <li>
-                                        <b>Check Out</b>
-                                        <span id="checkoutpo">{{$Quotation->checkout}}</span>
-                                    </li>
-                                    <li>
-                                        <b>Length of Stay</b>
-                                        <span style="display: flex"><p id="daypo" class="m-0"> </p> <p id="nightpo" class="m-0"> </p></span>
-                                    </li>
-                                    <li>
-                                        <b>Number of Guests</b>
-                                        <span style="display: flex"><p id="Adultpo" class="m-0"> </p> <p id="Childrenpo" class="m-0"> </p></span>
-                                    </li>
-
-                                    </ul>
-
-                                </div>
-                                <div class="proposal-cutomer-detail" id="guestTable" style="display: none">
-                                    <ul>
-                                    <b class="font-upper com">Guest Information</b>
-                                    <li class="mt-3">
-                                        <b>Guest  Name</b>
-                                        <span id="guest_name"></span>
-                                    </li>
-
-
-                                    <li>
-                                        <b>Guest  Address</b>
-                                        <span id="guestAddress"></span>
-                                        <b></b>
-                                    </li>
-
-                                    <li >
-                                        <b>Guest  Number</b>
-                                        <span id="guest_Number"></span>
-                                    </li>
-
-                                    <li>
-                                        <b>Guest  Email</b>
-                                        <span id="guest_Email"></span>
-                                    </li>
-                                    <li>
-                                        <b>Identification Number</b>
-                                        <span id="guestTaxpayer" ></span>
-                                    </li>
-                                    <li> </li>
-                                    <li></li>
-                                    </ul>
-
-                                    <ul>
+                                        <li>
+                                            <b>Contact Email</b>
+                                            <span id="Contact_Email" >{{$Quotation->checkin}}</span>
+                                        </li>
+                                        <li></li>
+                                        </ul>
+                                        <ul>
                                         <li> </li>
                                         <li></li>
                                         <li> </li>
-                                    <li></li>
-                                    <li> </li>
-                                    <li></li>
-                                    <li>
-                                        <b>Check In</b>
-                                        <span id="checkinpoguest">{{$Quotation->checkin}}</span>
-                                    </li>
-                                    <li>
-                                        <b>Check Out</b>
-                                        <span id="checkoutpoguest">{{$Quotation->checkout}}</span>
-                                    </li>
-                                    <li>
-                                        <b>Length of Stay</b>
-                                        <span style="display: flex"><p id="daypoguest" class="m-0">{{$Quotation->day}} </p><p id="nightpoguest" class="m-0"> </p></span>
-                                    </li>
-                                    <li>
-                                        <b>Number of Guests</b>
-                                        <span style="display: flex"><p id="Adultpoguest" class="m-0"> </p><p id="Childrenpoguest" class="m-0"> </p></span>
-                                    </li>
-                                    </ul>
-                                </div>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpo">{{$Quotation->checkin ? $Quotation->checkin : 'No Check In Date' }}</span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpo">{{$Quotation->checkout ? $Quotation->checkout : '-' }}</span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypo" class="m-0">{{($Quotation->day ?? '-') . ' วัน ';}} </p><p id="nightpo" class="m-0"> {{(' , '.$Quotation->night ?? '-').' คืน'}} </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpo" class="m-0">{{($Quotation->adult ?? '-') . ' Adult ';}} </p><p id="Childrenpo" class="m-0"> {{(' , '.$Quotation->children ?? '-').' Children'}} </p></span>
+                                        </li>
+
+                                        </ul>
+
+                                    </div>
+                                @else
+                                    <div class="proposal-cutomer-detail" >
+                                        <ul>
+                                        <b class="font-upper com">Guest Information</b>
+                                        <li class="mt-3">
+                                            <b>Guest  Name</b>
+                                            <span id="guest_name">{{$fullname}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Guest  Address</b>
+                                            <span id="guestAddress">{{$address}}</span>
+                                            <b></b>
+                                        </li>
+
+                                        <li >
+                                            <b>Guest  Number</b>
+                                            <span id="guest_Number">{{$phone->Phone_number}}</span>
+                                        </li>
+
+                                        <li>
+                                            <b>Guest  Email</b>
+                                            <span id="guest_Email">{{$Email}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Identification Number</b>
+                                            <span id="guestTaxpayer" >{{$Taxpayer_Identification}}</span>
+                                        </li>
+                                        <li> </li>
+                                        <li></li>
+                                        </ul>
+
+                                        <ul>
+                                            <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpoguest">{{$Quotation->checkin ? $Quotation->checkin : 'No Check In Date' }}</span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpoguest">{{$Quotation->checkout ? $Quotation->checkout : '-' }}</span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypoguest" class="m-0">{{($Quotation->day ?? '-') . ' วัน ';}} </p><p id="nightpoguest" class="m-0"> {{' , '.$Quotation->night .' คืน'}}</p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpoguest" class="m-0">{{($Quotation->adult ?? '-') . ' Adult ';}}  </p><p id="Childrenpoguest" class="m-0">{{(' , '.$Quotation->children ?? '-').' Children'}} </p></span>
+                                        </li>
+
+                                        </ul>
+
+                                    </div>
+                                @endif
                                 <div class="styled-hr"></div>
-                            </div>
-                            <div class="mt-2">
-                                <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                             </div>
                             <div class="row mt-2">
                                 <table id="main" class=" example2 ui striped table nowrap unstackable " style="width:100%">
                                     <thead >
                                         <tr>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Code</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%;text-align:center;"data-priority="1">Description</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
                                         </tr>
                                     </thead>
@@ -673,12 +843,10 @@
                                                 <tr id="tr-select-main{{$item->Code}}">
                                                     <input type="hidden" id="CheckProduct" name="CheckProduct[]" value="{{$item->Code}}">
                                                     <td style="text-align:center;vertical-align: middle;"><input type="hidden" id="ProductID" name="Code[]" value="{{$item->Code}}">{{$key+1}}</td>
-                                                    <td style="text-align:center;vertical-align: middle;">{{$item->Code}} </td>
                                                     <td style="text-align:left;vertical-align: middle;">{{$item->Detail}} </td>
                                                     <td class="Quantity" data-value="{{$item->Amount}}" style="text-align:center;">
-                                                        <input type="text" id="quantity{{$var}}" name="Amount[]" rel="{{$var}}" style="text-align:center;vertical-align: middle;"class="quantity-input form-control" value="{{$item->Amount}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
+                                                        <input type="text" id="quantity{{$var}}" name="Amount[]" rel="{{$var}}" style="text-align:center;vertical-align: middle;"class="quantity-input form-control" value="{{number_format($item->Amount)}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
                                                     </td>
-
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -697,60 +865,61 @@
                                         <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                                     </div>
                                     <div class="lek" >
-                                        <div class="proposal-number-cutomer-detail" >
-                                            <ul>
-                                                <li class="mt-3">
-                                                    <b>Subtotal</b>
-                                                    <span id="total-amount"></span>
-                                                </li>
-                                                <li class="mt-3">
-                                                    <b>Price Before Tax</b>
-                                                    <span id="Net-price"></span>
-                                                </li>
-                                                <li class="mt-3">
-                                                    <b>Value Added Tax</b>
-                                                    <span id="total-Vat"></span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        @php
+                                            $total = $AdditionaltotalReceipt
 
+                                        @endphp
+                                        @if ($Mvat == '50')
+                                            <div class="proposal-number-cutomer-detail">
+                                                <ul>
+                                                    <li class="mt-3">
+                                                        <b>Subtotal</b>
+                                                        <span id="total-amount">{{number_format($total, 2, '.', ',')}}</span>
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Price Before Tax</b>
+                                                        <span id="Net-price">{{number_format($total/1.07, 2, '.', ',')}}</span>
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Value Added Tax</b>
+                                                        <span id="total-Vat">{{number_format($total -$total/1.07, 2, '.', ',')}}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        @elseif ($Mvat == '51')
+                                            <div class="proposal-number-cutomer-detail">
+                                                <ul>
+                                                    <li class="mt-3">
+                                                        <b>Subtotal</b>
+                                                        <span id="total-amountEXCLUDE">{{number_format($total, 2, '.', ',')}}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        @else
+                                            <div class="proposal-number-cutomer-detail">
+                                                <ul>
+                                                    <li class="mt-3">
+                                                        <b>Subtotal</b>
+                                                        <span id="total-amountpus">{{number_format($total, 2, '.', ',')}}</span>
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Value Added Tax</b>
+                                                        <span id="total-Vatpus">{{number_format($total -$total/1.07, 2, '.', ',')}}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="flex-end" >
-                                    <b class="text-center text-white p-2" style="font-size: 14px; background-color: #2D7F7B; border-radius: 5px; " ><p class="mr-2" style="width:260px;" >Net Total <span id="Net-Total">0</span></p></b>
-                                </div>
-                                <div class="wrap-b">
-                                    <div class="kw">
-                                    </div>
-
-                                    <div class="lek mt-3" style="border-top:2px solid #2D7F7B;">
-                                        <div class="proposal-number-cutomer-detail" id="Pax">
-                                            <ul>
-                                                <li class="mt-3" >
-                                                    <b>Number of Guests</b>
-                                                    <span><span id="PaxToTal"></span><span> Adults</span> </span>
-                                                    <input type="hidden" name="PaxToTalall" id="PaxToTalall">
-                                                </li>
-                                                <li class="mt-3">
-                                                    <b>Average per person</b>
-                                                    <span><span id="Average"></span> THB</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <b class="text-center text-white p-2" style="font-size: 14px; background-color: #2D7F7B; border-radius: 5px; " ><p class="mr-2" style="width:260px;" >Net Total <span id="Net-Total">{{number_format($total, 2, '.', ',')}}</span></p></b>
                                 </div>
                                 <div class="col-12 mt-3">
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <strong class="com" style="font-size: 18px">Method of Payment</strong>
                                     </div>
-                                    <span class="col-md-8 col-sm-12 mt-1"id="Payment50" style="display: block" >
-                                        Please make a 50% deposit within 7 days after confirmed. <br>
-                                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                    </span>
-                                    <span class="col-md-8 col-sm-12 mt-1"  id="Payment100" style="display: none">
-                                        Please make a 100% deposit within 3 days after confirmed. <br>
+                                    <span class="col-md-8 col-sm-12 mt-1">
+                                        <br>
                                         Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -789,7 +958,7 @@
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
                                                 @if ($user->signature)
-                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
                                                 @endif
                                                 @if ($user->firstname)
                                                     <span>{{$user->firstname}} {{$user->lastname}}</span>
@@ -798,13 +967,13 @@
                                             </div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                                <br><br>
-                                                <span>{{@Auth::user()->name}}</span>
+                                                <img src="/boss.png" style="width: 70%;"/>
+                                                <span>Sopida Thuphom</span>
                                                 <span id="issue_date_document1"></span>
                                             </div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>ตราประทับ (ผู้ขาย)</span>
-                                                <img src="{{ asset('assets/images/' . $settingCompany->image) }}" style="width: 50%;">
+                                                <img src="{{ asset('assets/images/' . $settingCompany->image) }}" style="width: 70%;">
                                             </div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>ผู้รับเอกสาร (ลูกค้า)</span>
@@ -820,6 +989,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -835,653 +1005,18 @@
         @csrf
         <input type="hidden" name="approved_id" id="approved_id" value="{{$Additional_ID}}">
     </form>
-    <input type="hidden" name="preview" value="1" id="preview">
-    <input type="hidden" name="hiddenProductData" id="hiddenProductData">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
-    <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
-    <script type="text/javascript">
-        $(document).ready(function() {
-            const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
-            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
-            var flexCheckChecked = document.getElementById('flexCheckChecked');
-            var dayName = checkinDate.format('dddd'); // Format to get the day name
-            var enddayName = checkoutDate.format('dddd'); // Format to get the day name
-
-
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#inputcalendartext').val("Weekday-Weekend");
-                    flexCheckChecked.disabled = true;
-                }else{
-                    $('#calendartext').text("Weekday");
-                    $('#inputcalendartext').val("Weekday");
-                    flexCheckChecked.disabled = true;
-                }
-            } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#inputcalendartext').val("Weekday-Weekend");
-                    flexCheckChecked.disabled = true;
-                }else{
-                    $('#calendartext').text("Weekend");
-                    $('#inputcalendartext').val("Weekend");
-                    flexCheckChecked.disabled = true;
-                }
-            }
-            CheckDateAdditional();
-        });
-        $(document).ready(function() {
-            $('.select2').select2({
-                placeholder: "Please select an option"
-            });
-            var dayview = @json($Quotation->day);
-            var nightview = @json($Quotation->night);
-
-            var day = dayview ? dayview : '-';
-            var night = nightview ? nightview : '-';
-
-            console.log(day, night);
-
-
-
-            var adult ={{$Quotation->adult ? $Quotation->adult : 0 }};
-            var children ={{$Quotation->children ? $Quotation->children : 0}};
-            $('#Adultpo').text(adult +' Adult');
-            $('#Adultpoguest').text(adult +' Adult');
-
-            $('#Childrenpo').text(' , '+ children +' Children');
-            $('#Childrenpoguest').text(' , '+ children +' Children');
-
-            $('#daypo').text(day + ' วัน');
-            $('#nightpo').text(night + ' คืน');
-
-            $('#daypoguest').text(day + ' วัน');
-            $('#nightpoguest').text(night + ' คืน');
-            //----------------ส่วนบน---------------
-            var countrySelect = $('#select');
-            var select = countrySelect.val();
-
-            var select = document.getElementById("select");
-            //------------------------บริษัท------------------
-            var Companyshow = document.getElementById("Companyshow");
-            var Company = document.getElementById("Company");
-            // -----------------------ลูกค้า--------------------
-
-            var Guest = document.getElementById("Guest");
-            var Guestshow = document.getElementById("Guestshow");
-            //-------------------ตาราง---------------------------
-            var companyTable = document.getElementById("companyTable");
-
-            var guestTable = document.getElementById("guestTable");
-            if (select.value === "Company") {
-                Companyshow.style.display = "Block";
-                Guestshow.style.display = "none";
-                guestTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = false;
-                Company_Contactname.disabled = false;
-                Guest.disabled = true;
-                companyTable.style.display = "flex";
-                companyContact();
-            } else {
-                guestTable.style.display = "flex";
-                Guestshow.style.display = "Block";
-                Companyshow.style.display = "none";
-                companyTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = true;
-                Company_Contactname.disabled = true;
-                Guest.disabled = true;
-                GuestContact();
-            }
-        });
-        function showselectInput() {
-            var select = document.getElementById("select");
-           //------------------------บริษัท------------------
-            var Companyshow = document.getElementById("Companyshow");
-            var Company = document.getElementById("Company");
-            // -----------------------ลูกค้า--------------------
-
-            var Guest = document.getElementById("Guest");
-            var Guestshow = document.getElementById("Guestshow");
-            //-------------------ตาราง---------------------------
-            var companyTable = document.getElementById("companyTable");
-
-            var guestTable = document.getElementById("guestTable");
-            if (select.value === "Company") {
-                Companyshow.style.display = "Block";
-                Guestshow.style.display = "none";
-                guestTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = false;
-                Company_Contactname.disabled = false;
-                Guest.disabled = true;
-                companyTable.style.display = "flex";
-            } else {
-                guestTable.style.display = "flex";
-                Guestshow.style.display = "Block";
-                Companyshow.style.display = "none";
-                companyTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = true;
-                Company_Contactname.disabled = true;
-                Guest.disabled = true;
-            }
-        }
-        function companyContact() {
-            console.log(1);
-            var companyID = $('#Company').val();
-
-            jQuery.ajax({
-                type: "GET",
-                url: "{!! url('/Dummy/Proposal/create/company/" + companyID + "') !!}",
-                datatype: "JSON",
-                async: false,
-                success: function(response) {
-                    var prename = response.prename.name_th;
-                    var fullName = prename+response.data.First_name + ' ' + response.data.Last_name;
-                    var fullid = response.data.id ;
-                    if (response.Company_type.name_th === 'บริษัทจำกัด') {
-                        var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด';
-                    }
-                    else if (response.Company_type.name_th === 'บริษัทมหาชนจำกัด') {
-                        var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด'+' '+'(มหาชน)';
-                    }
-                    else if (response.Company_type.name_th === 'ห้างหุ้นส่วนจำกัด') {
-                        var fullNameCompany = 'ห้างหุ้นส่วนจำกัด' + ' ' + response.company.Company_Name ;
-                    }else{
-                        var fullNameCompany =  response.Company_type.name_th+ response.company.Company_Name ;
-                    }
-                    var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
-                    var companyfax = response.company_fax.Fax_number;
-                    var CompanyEmail = response.company.Company_Email;
-                    var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
-                    var TaxpayerIdentification = response.company.Taxpayer_Identification;
-                    var companyphone = response.company_phone.Phone_number;
-
-                    var Contactphones =response.Contact_phones.Phone_number;
-                    var Contactemail =response.data.Email;
-
-                    console.log(response.data.First_name);
-
-                    var formattedPhoneNumber = companyphone;
-
-
-                    var formattedContactphones = Contactphones;
-                    $('#Company_Contact').val(fullName).prop('disabled', true);
-                    $('#Company_Discount').val(Discount_Contract_Rate);
-                    $('#Company_Contactname').val(fullid);
-                    $('#Company_name').text(fullNameCompany);
-                    $('#Address').text(Address);
-                    $('#Company_Number').text(formattedPhoneNumber);
-                    $('#Company_Fax').text(companyfax);
-                    $('#Company_Email').text(CompanyEmail);
-                    $('#Taxpayer').text(TaxpayerIdentification);
-                    $('#Company_contact').text(fullName);
-                    $('#Contact_Phone').text(formattedContactphones);
-                    $('#Contact_Email').text(Contactemail);
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX request failed: ", status, error);
-                }
-            });
-        }
-        function GuestContact() {
-            var Guest = $('#Guest').val();
-            console.log(Guest);
-            jQuery.ajax({
-                type: "GET",
-                url: "{!! url('/Dummy/Proposal/create/Guest/" + Guest + "') !!}",
-                datatype: "JSON",
-                async: false,
-                success: function(response) {
-                    var prename = response.Company_type.name_th;
-                    var fullName = prename +' '+response.data.First_name + ' ' + response.data.Last_name;
-                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
-
-                    var Email = response.data.Email;
-                    var Identification = response.data.Identification_Number;
-                    var phone = response.phone.Phone_number;
-
-                    var formattedPhoneNumber = phone;
-
-
-                    $('#guest_name').text(fullName);
-                    $('#guestAddress').text(Address);
-                    $('#guest_Number').text(formattedPhoneNumber);
-                    $('#guest_Email').text(Email);
-                    $('#guestTaxpayer').text(Identification);
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX request failed: ", status, error);
-                }
-            });
-        }
-        $(document).ready(function() {
-            var dateInput = document.getElementById('Checkin');
-            var dateout = document.getElementById('Checkout');
-            var Day = document.getElementById('Day');
-            var Night = document.getElementById('Night');
-            var flexCheckChecked = document.getElementById('flexCheckChecked');
-
-            // ตรวจสอบค่า Checkin และตั้งค่า disabled และ flexCheckChecked
-            function updateFields() {
-                var Checkin = dateInput.value;
-
-                if (Checkin === "" || Checkin === null) {
-                    dateInput.disabled = true;
-                    dateout.disabled = true;
-                    Day.disabled = true;
-                    Night.disabled = true;
-                    flexCheckChecked.checked = true;
-                    dateInput.classList.add('disabled-input');
-                    dateout.classList.add('disabled-input');
-                    $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
-                    $('#checkoutpo').text('-');
-                    $('#checkinpoguest').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
-                    $('#checkoutpoguest').text('-');
-                    $('#daypo').text('-');
-                    $('#nightpo').text(' ');
-                } else {
-                    dateInput.classList.remove('disabled-input');
-                    dateout.classList.remove('disabled-input');
-                    dateInput.disabled = false;
-                    dateout.disabled = false;
-                    Day.disabled = false;
-                    Night.disabled = false;
-                    flexCheckChecked.checked = false;
-                // ตั้งค่า flexCheckChecked เป็น unchecked
-                }
-            }
-
-            // เรียกใช้ updateFields เมื่อโหลดเริ่มต้น
-            updateFields();
-
-            // ตั้งค่าการเปลี่ยนแปลงสำหรับ flexCheckChecked
-            flexCheckChecked.addEventListener('change', function(event) {
-                var isChecked = event.target.checked;
-
-                if (isChecked) {
-                    dateInput.disabled = true;
-                    dateout.disabled = true;
-                    Day.disabled = true;
-                    Night.disabled = true;
-                    dateInput.classList.add('disabled-input');
-                    dateout.classList.add('disabled-input');
-                    $('#checkinpo').text('No Check in date');
-                    $('#checkoutpo').text('-');
-                    $('#checkinpoguest').text('No Check in date');
-                    $('#checkoutpoguest').text('-');
-                    $('#daypo').text('-');
-                    $('#nightpo').text(' ');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                    $('#Day').val('');
-                    $('#Night').val('');
-                } else {
-                    dateInput.disabled = false;
-                    dateout.disabled = false;
-                    Day.disabled = false;
-                    Night.disabled = false;
-                    dateInput.classList.remove('disabled-input');
-                    dateout.classList.remove('disabled-input');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                    $('#Day').val('');
-                    $('#Night').val('');
-                }
-            });
-        });
-        $(document).on('keyup', '#Children', function() {
-            var Children =  Number($(this).val());
-            $('#Childrenpo').text(' , '+ Children +' Children');
-            $('#Childrenpoguest').text(' , '+ Children +' Children');
-            totalAmost();
-        });
-        $(document).on('keyup', '#Adult', function() {
-            var adult =  Number($(this).val());
-            $('#Adultpo').text(adult +' Adult');
-            $('#Adultpoguest').text(adult +' Adult');
-            totalAmost();
-        });
-        $(document).on('keyup', '#DiscountAmount', function() {
-            var DiscountAmount =  Number($(this).val());
-            totalAmost();
-        });
-        function masterevent() {
-            var Mevent =$('#Mevent').val();
-            if (Mevent == '43') {
-                $('#Payment50').css('display', 'block');
-                $('#Payment100').css('display', 'none');
-            } else if (Mevent == '53') {
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            }else if (Mevent == '54') {
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            }
-        }
-        function mastervat() {
-            var Mvat =$('#Mvat').val();
-            if (Mvat == '50') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'block');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }else if (Mvat == '51') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'block');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            else if (Mvat == '52') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'block');
-            }else{
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            totalAmost()
-        }
-        $(document).ready(function() {
-            var Mvat ={{$Quotation->vat_type}};
-            if (Mvat == '50') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'block');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }else if (Mvat == '51') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'block');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            else if (Mvat == '52') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'block');
-            }else{
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            var Mevent ={{$Quotation->eventformat}};
-            if (Mevent == '43') {
-
-                $('#Payment50').css('display', 'block');
-                $('#Payment100').css('display', 'none');
-            } else if (Mevent == '53') {
-
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            } else if (Mevent == '54'){
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            }else{
-                $('#Payment50').css('display', 'block');
-                $('#Payment100').css('display', 'none');
-            }
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- dataTable -->
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-
-        function CheckDateAdditional() {
-            var CheckinNew = document.getElementById('CheckinNew').value;
-            var CheckoutNew = document.getElementById('CheckoutNew').value;
-            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
-            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
-            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
-            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
-            const checkinDate = new Date(checkinDateValue);
-            const checkoutDate = new Date(checkoutDateValue);
-            if (checkoutDate > checkinDate) {
-                const timeDiff = checkoutDate - checkinDate;
-                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
-                const nights = diffDays;
-
-                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-                $('#Night').val(isNaN(nights) ? '0' : nights);
-
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays + ' วัน');
-                $('#nightpo').text(nights + ' คืน');
-                $('#daypoguest').text(totalDays + ' วัน');
-                $('#nightpoguest').text(nights + ' คืน');
-            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-                const totalDays = 1;
-                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-                $('#Night').val('0');
-
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays + ' วัน');
-                $('#nightpo').text('0 คืน');
-                $('#daypoguest').text(totalDays + ' วัน');
-                $('#nightpoguest').text('0 คืน');
-            } else {
-                if (CheckoutNew) {
-                    alert('วัน Check-out ต้องมากกว่าวัน Check-in');
-                    $('#Day').val('0');
-                    $('#Night').val('0');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                }
-            }
-
-            month();
-        }
-        function CheckDate() {
-            var CheckinNew = document.getElementById('Checkin').value;
-            var CheckoutNew = document.getElementById('Checkout').value;
-
-            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
-            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
-
-            // Retrieve the full month names
-            var daymonthName = momentCheckinNew.format('MMMM');  // Full month name like January
-            var endmonthName = momentCheckoutNew.format('MMMM'); // Full month name like January
-
-            // Retrieve the full day names
-            var dayName = momentCheckinNew.format('dddd'); // Full day name like Monday
-            var enddayName = momentCheckoutNew.format('dddd'); // Full day name like Monday
-
-            // Calculate the difference in months
-            var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
-            $('#checkmonth').val(monthDiff);
-
-            // Weekday or weekend logic
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else {
-                    $('#calendartext').text("Weekday");
-                    $('#Date_type').val("Weekday");
-                }
-            } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else {
-                    $('#calendartext').text("Weekend");
-                    $('#Date_type').val("Weekend");
-
-                }
-            }
-
-            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
-            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
-
-
-            const checkinDate = new Date(checkinDateValue);
-            const checkoutDate = new Date(checkoutDateValue);
-            if (checkoutDate > checkinDate) {
-                const timeDiff = checkoutDate - checkinDate;
-                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
-                const nights = diffDays;
-
-                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-                $('#Night').val(isNaN(nights) ? '0' : nights);
-
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays + ' วัน');
-                $('#nightpo').text(nights + ' คืน');
-                $('#daypoguest').text(totalDays + ' วัน');
-                $('#nightpoguest').text(nights + ' คืน');
-            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-                const totalDays = 1;
-                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-                $('#Night').val('0');
-
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays + ' วัน');
-                $('#nightpo').text('0 คืน');
-                $('#daypoguest').text(totalDays + ' วัน');
-                $('#nightpoguest').text('0 คืน');
-            } else {
-                if (CheckoutNew) {
-                    alert('วัน Check-out ต้องมากกว่าวัน Check-in');
-                    $('#Day').val('0');
-                    $('#Night').val('0');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                }
-            }
-
-            month();
-        }
-        function setMinDate() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('Checkin').setAttribute('min', today);
-            document.getElementById('Checkout').setAttribute('min', today);
-        }
-
-        // เรียกใช้เมื่อโหลดหน้า
-        setMinDate();
-        document.addEventListener('DOMContentLoaded', setMinDate);
-        function month() {
-            var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
-            var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
-            var start = moment(); // เริ่มที่วันที่ปัจจุบัน
-            var end; // ประกาศตัวแปร end
-            var currentMonthIndex = start.month();
-            var monthDiff = inputmonth - currentMonthIndex;
-              // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
-            if (monthDiff < 0) {
-                monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
-            }
-
-            if (monthDiff <= 1) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
-            } else if (monthDiff >= 2 && monthDiff < 3 ) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
-            } else {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
-            }
-
-            function cb(start, end) {
-                $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
-                $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
-            }
-
-            // ตั้งค่า daterangepicker
-            $('#reportrange1').daterangepicker({
-                start: start,
-                end: end,
-                ranges: {
-                    '3 Days': [moment(), moment().add(3, 'days')],
-                    '7 Days': [moment(), moment().add(7, 'days')],
-                    '15 Days': [moment(), moment().add(15, 'days')],
-                    '30 Days': [moment(), moment().add(30, 'days')],
-                },
-                autoApply: true, // ใช้เพื่อไม่ต้องกด Apply
-            }, cb);
-
-            cb(start, end); // เรียก callback ทันทีหลังจากตั้งค่าเริ่มต้น
-        }
-    </script>
-    <script>
-        function month() {
-            var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
-            var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
-            var start = moment(); // เริ่มที่วันที่ปัจจุบัน
-            var end; // ประกาศตัวแปร end
-            var currentMonthIndex = start.month();
-            var monthDiff = inputmonth - currentMonthIndex;
-              // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
-            if (monthDiff < 0) {
-                monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
-            }
-
-            if (monthDiff <= 1) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
-            } else if (monthDiff >= 2 && monthDiff < 3 ) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
-            } else {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
-            }
-
-            function cb(start, end) {
-                $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
-                $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
-            }
-
-            // ตั้งค่า daterangepicker
-            $('#reportrange1').daterangepicker({
-                start: start,
-                end: end,
-                ranges: {
-                    '3 Days': [moment(), moment().add(3, 'days')],
-                    '7 Days': [moment(), moment().add(7, 'days')],
-                    '15 Days': [moment(), moment().add(15, 'days')],
-                    '30 Days': [moment(), moment().add(30, 'days')],
-                },
-                autoApply: true, // ใช้เพื่อไม่ต้องกด Apply
-            }, cb);
-
-            cb(start, end); // เรียก callback ทันทีหลังจากตั้งค่าเริ่มต้น
-        }
-
-    </script>
-    <script>
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
-
-        if (performance.navigation.type === 2) {
-            // โหลดหน้าเว็บใหม่เมื่อกดย้อนกลับ
-            sessionStorage.setItem('reloadAfterBack', 'true');
-        }
-
-        window.addEventListener('pageshow', function(event) {
-            if (sessionStorage.getItem('reloadAfterBack')) {
-                sessionStorage.removeItem('reloadAfterBack');
-                window.location.reload();
-            }
-        });
-    </script>
-    <script>
-        const table_name = ['mainselect1'];
+        const table_name = ['main'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
@@ -1503,129 +1038,49 @@
                 });
             }
         });
-        const table_name2 = ['main'];
         $(document).ready(function() {
-            for (let index = 0; index < table_name2.length; index++) {
-                new DataTable('#'+table_name2[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    language: {
-                        emptyTable: "",
-                        zeroRecords: ""
-                    },
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: false,
-                        target: null,
-                    }],
-                    order:  false,
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
+            var table = $(".table-together").DataTable({
+                paging: false,
+                searching: false,
+                ordering: true,
+                info: false,
+                responsive: {
+                    details: {
+                    type: "column",
+                    target: "tr"
                     }
-                });
-                $('#'+table_name2[index] + ' thead th').removeClass('sorting sorting_asc sorting_desc');
+                }
+            });
+            function adjustDataTable() {
+                $.fn.dataTable
+                .tables({
+                visible: true,
+                api: true,
+                })
+                .columns.adjust()
+                .responsive.recalc();
+            }
+            $("#ModalProposalSummary").on("shown.bs.modal", adjustDataTable);
+            $('#ModalProposalSummary details').on('toggle', function() {
+                if (this.open) {
+                    adjustDataTable();
+                }
+            });
+        });
+        document.getElementById("switchButton").addEventListener("click", function () {
+            const defaultContent = document.getElementById("defaultContent");
+            const toggleContent = document.getElementById("toggleContent");
+
+            if (defaultContent.style.display === "none") {
+                defaultContent.style.display = "block";
+                toggleContent.style.display = "none";
+                this.innerHTML = "&#8644;";
+            } else {
+                defaultContent.style.display = "none";
+                toggleContent.style.display = "block";
+                this.innerHTML = "&#8646;";
             }
         });
-
-        //----------------------------------------รายการ---------------------------
-
-        function totalAmost() {
-            $(document).ready(function() {
-                var typevat  = $('#Mvat').val();
-                let allprice = 0;
-                let lessDiscount = 0;
-                let beforetax =0;
-                let addedtax =0;
-                let Nettotal =0;
-                let totalperson=0;
-                let priceArray = [];
-                let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
-                var Adult  = parseFloat($('#Adult').val());
-                var Children  = parseFloat($('#Children').val());
-                let PaxToTalall=0;
-                var discountElement  = $('#DiscountAmount').val();
-                $('#display-selected-items tr').each(function() {
-                    let priceCell = $(this).find('.Amount').val();
-                    let pricetotal = parseFloat(priceCell) || 0;
-                    let priceCellMain = $(this).find('.quantity-input').val();
-                    let pricetotalMain = parseFloat(priceCellMain) || 0;
-                    paxtotal =  Adult+Children;
-                    allprice += pricetotal+pricetotalMain;
-                    totalperson = allprice/paxtotal;
-                    beforetax = allprice/1.07;
-                    addedtax = allprice-allprice/1.07;
-                    $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
-                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
-                    if (paxtotal == 0) {
-                        $('#Pax').css('display', 'none');
-                    }else{
-                        $('#Pax').css('display', 'block');
-                    }
-                });
-                var rowCount = $('#display-selected-items tr').not(':first').length;
-                if (rowCount === 0) {
-                        var Count = $('#display-selected-items tr:last').length;
-                        if (Count == 0 ) {
-                            if (typevat == '50') {
-                                $('#total-amount').text(0.00);
-                                $('#lessDiscount').text(0.00);
-                                $('#Net-price').text(0.00);
-                                $('#total-Vat').text(0.00);
-                                $('#Net-Total').text(0.00);
-                                $('#Average').text(0.00);
-                                $('#PaxToTal').text(0.00);
-                            }else if(typevat == '51')
-                            {
-                                $('#total-amountEXCLUDE').text(0.00);
-                                $('#lessDiscountEXCLUDE').text(0.00);
-                                $('#Net-priceEXCLUDE').text(0.00);
-                                $('#total-VatEXCLUDE').text(0.00);
-                                $('#Net-Total').text(0.00);
-                                $('#Average').text(0.00);
-                                $('#PaxToTal').text(0.00);
-                            } else if(typevat == '52'){
-                                $('#total-amountpus').text(0.00);
-                                $('#lessDiscountpus').text(0.00);
-                                $('#Net-pricepus').text(0.00);
-                                $('#total-Vatpus').text(0.00);
-                                $('#Net-Total').text(0.00);
-                                $('#Average').text(0.00);
-                                $('#PaxToTal').text(0.00);
-                            }
-                        }
-                }
-            });
-        }
-        totalAmost();
-    </script>
-    <script>
-        function BACKtoEdit(){
-            event.preventDefault();
-            Swal.fire({
-                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "ตกลง",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log(1);
-                    // If user confirms, submit the form
-                    window.location.href = "{{ route('ProposalReq.index') }}";
-                }
-            });
-        }
         function Appovel(id) {
             var Additional_ID = $('#Additional_ID').val();
             Swal.fire({
@@ -1658,5 +1113,8 @@
                 }
             });
         }
+
+
     </script>
+
 @endsection

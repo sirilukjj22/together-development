@@ -1209,7 +1209,7 @@ textarea {
 .pi .card-content {
   display: grid;
   grid-template-rows: 60px 1fr;
-  gap: 1em;
+  gap: 0px;
 }
 
 .outstanding-amount {

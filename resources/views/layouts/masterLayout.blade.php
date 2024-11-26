@@ -188,6 +188,10 @@
                                         @if (Auth::user()->roleMenu->proposal == 1)
                                             <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a></li>
                                         @endif
+                                        @if (Auth::user()->roleMenu->additional == 1)
+                                            <li><a class="ms-link" href="{{ route('Additional.index') }}">Additional Charge</a></li>
+                                        @endif
+
                                         @if (Auth::user()->roleMenu->banquet_event_order == 1)
                                             <li><a class="ms-link" href="#">Banquet Event Order</a></li>
                                         @endif
@@ -198,7 +202,10 @@
                                         @if (Auth::user()->roleMenu->proforma_invoice == 1)
                                             <li><a class="ms-link" href="{{ route('invoice.index') }}">Proforma Invoice</a></li>
                                         @endif
+                                        @if (Auth::user()->roleMenu->receipt_cheque == 1)
                                             <li><a class="ms-link"  href="{{ route('ReceiveCheque.index') }}">Receive Cheque</a></li>
+                                        @endif
+
                                         @if (Auth::user()->roleMenu->billing_folio == 1)
                                             <li><a class="ms-link"  href="{{ route('BillingFolio.index') }}">Billing Folio</a></li>
                                         @endif

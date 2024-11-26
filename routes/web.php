@@ -32,7 +32,7 @@ use App\Http\Controllers\Master_Address_System;
 use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
-use App\Http\Controllers\BillingFolioOverbill;
+use App\Http\Controllers\Additional;
 use App\Http\Controllers\LinkPDFProposal;
 use App\Http\Controllers\ReportAuditRevenueDateController;
 use App\Http\Controllers\ReportHotelManualChangeController;
@@ -730,6 +730,7 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(Document_invoice::class)->middleware('role:document')->group(function () {
         Route::get('/Document/invoice/index', 'index')->name('invoice.index');
         Route::get('/Document/invoice/Generate/{id}','Generate')->name('invoice.Generate');
+        Route::get('/Document/invoice/Generate/Additional/{id}','Generate_Additional')->name('invoice.Generate_Additional');
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
         Route::get('/Invoice/cover/document/PDF/{id}','export')->name('invoice.export');
         Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
@@ -807,6 +808,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('billingPD-search-table', 'search_table_billingpd');
         Route::post('billingPD-paginate-table', 'paginate_table_billingpd');
 
+
         //--------------------------LogPdf-----------
         Route::post('billing-Log-search-table', 'search_table_paginate_log_pdf');
         Route::post('billing-Log-paginate-table', 'paginate_log_pdf_table_billing');
@@ -816,26 +818,57 @@ Route::middleware(['auth'])->group(function () {
 
 
     });
-    Route::controller(BillingFolioOverbill::class)->middleware('role:document')->group(function () {
-        Route::get('/Document/BillingFolio/Over/index', 'index')->name('BillingFolioOver.index');
-        Route::get('/Document/BillingFolio/Over/select', 'select')->name('BillingFolioOver.select');
-        Route::get('/Document/BillingFolio/Proposal/Over/{id}','proposal')->name('BillingFolioOver.proposal');
-        Route::post('/Document/BillingFolio/Proposal/Over/create/{id}', 'create')->name('BillingFolioOver.create');
-        Route::get('/Document/BillingFolio/Proposal/Over/document/PDF/{id}', 'sheetpdf')->name('BillingFolioOver.sheet');
-        Route::get('/Document/BillingFolio/Proposal/Over/log/{id}', 'log')->name('BillingFolioOver.log');
-        Route::get('/Document/BillingFolio/Proposal/Over/edit/{id}','edit')->name('BillingFolioOver.edit');
-        Route::post('/Document/BillingFolio/Proposal/Over/edit/update/{id}', 'update')->name('BillingFolioOver.update');
-        Route::get('/Document/BillingFolio/Proposal/Over/view/{id}','view')->name('BillingFolioOver.view');
-        Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
-        Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
+    Route::controller(Additional::class)->middleware('role:document')->group(function () {
+        Route::get('/Document/Additional/Charge/index', 'index')->name('Additional.index');
+        Route::get('/Document/Additional/Charge/select', 'select')->name('Additional.select');
+        Route::get('/Document/Additional/Charge/create/{id}','create')->name('Additional.create');
+        Route::post('/Document/Additional/Charge/save/{id}', 'save')->name('Additional.save');
+        Route::get('/Document/Additional/Charge/document/PDF/{id}', 'sheetpdf')->name('BillingFolioOver.sheet');
+        Route::get('/Document/Additional/Charge/log/{id}', 'log')->name('Additional.log');
+        Route::get('/Document/Additional/Charge/edit/{id}','edit')->name('Additional.edit');
+        Route::post('/Document/Additional/Charge/update/{id}', 'update')->name('Additional.update');
+        Route::get('/Document/Additional/Charge/view/{id}','view')->name('Additional.view');
+        Route::post('/Document/Additional/Charge/Cancel/{id}','Cancel')->name('Additional.Cancel');
+        Route::get('/Document/Additional/Charge/Delete/{id}','Delete')->name('Additional.Delete');
+        Route::get('/Document/Additional/Charge/Revice/{id}','Revice')->name('Additional.Revice');
+
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProduct', 'addProduct')->name('BillingFolioOver.addProduct');
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProductselect', 'addProductselect')->name('BillingFolioOver.addProductselect');
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');
+
         Route::post('billingover-search-table', 'search_table_billingover');
         Route::post('billingover-paginate-table', 'paginate_table_billingover');
+
+        //--------------------------Awaiting---------
+        Route::post('billingover-Awaiting-search-table', 'search_table_paginate_awaiting');
+        Route::post('billingover-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
+
+        //--------------------------Approved---------
+        Route::post('billingover-Approved-search-table', 'search_table_paginate_approved');
+        Route::post('billingover-Approved-paginate-table', 'paginate_approved_table_proposal');
+
+        //--------------------------Reject-----------
+        Route::post('billingover-Reject-search-table', 'search_table_paginate_reject');
+        Route::post('billingover-Reject-paginate-table', 'paginate_reject_table_proposal');
+
+        //--------------------------Cancel-----------
+        Route::post('billingover-Cancel-search-table', 'search_table_paginate_cancel');
+        Route::post('billingover-Cancel-paginate-table', 'paginate_cancel_table_proposal');
+        //--------------------------LogPdf-----------
+        Route::post('billing-Log-search-table', 'search_table_paginate_log_pdf');
+        Route::post('billing-Log-paginate-table', 'paginate_log_pdf_table_billing');
+        //--------------------------LogDoc-----------
+        Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
+        Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
+
+
+
+
+        Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
+        Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
+
         Route::get('/Document/BillingFolio/Proposal/Over/Generate/{id}','Generate')->name('BillingFolioOver.Generate');
-        Route::get('/Document/BillingFolio/Proposal/Over/Cancel/{id}','Cancel')->name('BillingFolioOver.Cancel');
-        Route::get('/Document/BillingFolio/Proposal/Over/Delete/{id}','Delete')->name('BillingFolioOver.Delete');
+
         Route::get('/Document/BillingFolio/Proposal/Additional/prewive/{id}','PaidDataprewive')->name('BillingFolioOver.PaidDataprewive');
 
         Route::post('/Document/BillingFolio/Proposal/Additional/Generate/save', 'savere')->name('BillingFolioOver.savere');
@@ -844,31 +877,19 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/Document/BillingFolio/Over/log/re/{id}', 'logre')->name('BillingFolioOver.logre');
         Route::post('/Document/BillingFolio/Over/Generate/update/{id}', 'update_re')->name('BillingFolioOver.update_re');
+
+
         Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
         Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
 
-         //--------------------------Awaiting---------
-        Route::post('billingover-Awaiting-search-table', 'search_table_paginate_awaiting');
-        Route::post('billingover-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
 
-         //--------------------------Approved---------
-        Route::post('billingover-Approved-search-table', 'search_table_paginate_approved');
-        Route::post('billingover-Approved-paginate-table', 'paginate_approved_table_proposal');
 
-        //--------------------------Reject-----------
-        Route::post('billingover-Reject-search-table', 'search_table_paginate_reject');
-        Route::post('billingover-Reject-paginate-table', 'paginate_reject_table_proposal');
-
-         //--------------------------Cancel-----------
-         Route::post('billingover-Cancel-search-table', 'search_table_paginate_cancel');
-         Route::post('billingover-Cancel-paginate-table', 'paginate_cancel_table_proposal');
-
-          //--------------------------LogPdf-----------
-        Route::post('billing-Logre-search-table', 'search_table_paginate_log_pdf');
-        Route::post('billing-Logre-paginate-table', 'paginate_log_pdf_table_billing');
-        //--------------------------LogDoc-----------
-        Route::post('billing-LogDocre-search-table', 'search_table_paginate_log_doc');
-        Route::post('billing-LogDocre-paginate-table', 'paginate_log_doc_table_billing');
+        //   //--------------------------LogPdf-----------
+        // Route::post('billing-Logre-search-table', 'search_table_paginate_log_pdf');
+        // Route::post('billing-Logre-paginate-table', 'paginate_log_pdf_table_billing');
+        // //--------------------------LogDoc-----------
+        // Route::post('billing-LogDocre-search-table', 'search_table_paginate_log_doc');
+        // Route::post('billing-LogDocre-paginate-table', 'paginate_log_doc_table_billing');
     });
 
 

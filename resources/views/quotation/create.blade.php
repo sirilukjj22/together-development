@@ -1604,7 +1604,7 @@
                 renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
             });
             $(document).on('click', '.confirm-button', function() {
-                var number = $('#randomKey').val();
+
                 var all = 'all';
                 $.ajax({
                     url: '{{ route("Proposal.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', all),
@@ -1622,7 +1622,7 @@
                             $('#main').DataTable().destroy();
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
-                                    number += 1;
+                                    var number = val.Product_ID;
                                     var name = '';
                                     var price = 0;
                                     var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
@@ -1699,7 +1699,7 @@
                                             '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                                             '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +
                                             '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span></td>' +
-             '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
+                                            '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal-' + number + '">' + valpax + '</span></td>' +
                                             '<td style="text-align:center;width:12%;">' + quantity + '</td>' +
                                             '<td style="text-align:center;width:12%;">' + unit + '</td>' +
                                             '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
@@ -1770,10 +1770,11 @@
             });
         }
         //----------------------------------------รายการ---------------------------
-        $(document).ready(function() {
+        $(document).ready(function() {});
             $(document).on('keyup', '.quantitymain', function() {
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
+                    console.log(number_ID);
                     var quantitymain =  Number($(this).val());
                     var discountmain =  $('#discountmain'+number_ID).val();
                     var unitmain =  $('#unitmain'+number_ID).val();
@@ -1781,14 +1782,15 @@
                     if (isNaN(paxmain)) {
                         paxmain = 0;
                     }
+                    console.log($('#pax' + number_ID).val());
                     var pax = paxmain*quantitymain;
                     console.log(pax);
 
-                    $('#paxtotal'+number_ID).text(pax);
+                    $('#paxtotal-'+number_ID).text(pax);
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
                     var pricenew = quantitymain*unitmain*price
-                    console.log(discountmain);
+
 
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
@@ -1881,7 +1883,7 @@
                 }
                 totalAmost();
             });
-        });
+
         function totalAmost() {
 
             $(document).ready(function() {

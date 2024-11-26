@@ -159,7 +159,7 @@
                             <div class="col-12 row mt-5">
                                 <div class="col-4"></div>
                                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('BillingFolioOver.index') }}'">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('Additional.index') }}'">
                                         Back
                                     </button>
                                 </div>
@@ -181,7 +181,7 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableBillingOver.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableAdditional.js')}}"></script>
     <script>
         const table_name = ['proposalLogTable','proposal-LogTable'];
             $(document).ready(function() {
@@ -246,7 +246,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/Proposal-Log-search-table',
+                    url: '/billing-Log-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -312,7 +312,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/Proposal-LogDoc-search-table',
+                    url: '/billing-LogDoc-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,

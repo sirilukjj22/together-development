@@ -1975,7 +1975,6 @@
                 renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
             });
             $(document).on('click', '.confirm-button', function() {
-                var number = $('#randomKey').val();
                 var all ='all';
                 $.ajax({
                     url: '{{ route("Proposal.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', all),
@@ -1989,8 +1988,7 @@
                             $('#tr-select-add' + val.id).prop('hidden',true);
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
-
-                                    number += 1;
+                                    var number = val.Product_ID;
                                     var name = '';
                                     var price = 0;
                                     var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม

@@ -440,6 +440,7 @@
                                         }
                                     @endphp
                                     <input type="hidden"id="sumpayment" value="{{$sumpayment}}">
+                                    <input type="hidden"id="document_type" name="document_type" value="AD">
                                     <div class="input-group">
                                         @if ($paymentcheck == 0)
                                             <div class="input-group-text">
@@ -629,12 +630,11 @@
                                     <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                                     <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
                                     <input type="hidden" name="balance"  id="balance">
-                                    <input type="hidden" name="Nettotalbath" id="Nettotalbath" value="{{$Nettotal-$sumpayment}}">
+                                    <input type="hidden" name="Nettotalbath" id="Nettotalbath" value="{{$Nettotal}}">
                                     <input type="hidden" name="sum"  id="sum">
                                     <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                                     <input type="hidden" name="selecttype"  id="selecttype" value="{{$Quotation->type_Proposal}}">
                                     <input type="hidden" name="Refler_ID"  id="Refler_ID" value="{{$Refler_ID}}">
-                                    <input type="hidden"id="document_type" name="document_type" value="PD">
                                 </div>
                                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                                     <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
@@ -709,27 +709,14 @@
         function validateInput1(input) {
             var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
             var inputValue = input.value.replace(/,/g, ''); // ลบจุลภาคออกจากค่าที่กรอก
-            var payment = parseFloat(document.getElementById('sumpayment').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
-            console.log(payment);
 
             if (inputValue) {
                 var numericValue = parseFloat(inputValue); // แปลงค่าเป็นตัวเลข
-                if (payment) {
-                    if (numericValue > Nettotal-payment) {
-                        numericValue = Nettotal-payment;
-                        input.value = Nettotal-payment; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
-                    }
-                }else{
-                    if (numericValue > Nettotal) {
-                        numericValue = Nettotal;
-                        input.value = Nettotal; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
-                    }
+                if (numericValue > Nettotal) {
+                    numericValue = Nettotal;
+                    input.value = Nettotal; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
                 }
-
-
-                // จัดรูปแบบตัวเลขให้มีจุดทศนิยม 2 ตำแหน่งและคั่นหลักพันด้วยจุลภาค
                 var formattedValue = numericValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
                 $('#Amount1').text(formattedValue); // แสดงค่าที่จัดรูปแบบแล้ว
             } else {
                 $('#Amount1').text(''); // ถ้า input ว่าง ให้แสดงเป็นค่าว่าง

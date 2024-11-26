@@ -96,7 +96,7 @@
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->Nettotal, 2) }}
+                                                    {{ number_format($item->Nettotal + $item->Adtotal, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->total_payment == 0 )
@@ -106,7 +106,7 @@
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->Nettotal - $item->total_payment, 2) }}
+                                                    {{ number_format($item->Nettotal+ $item->Adtotal - $item->total_payment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userConfirm->name == null)
@@ -136,9 +136,12 @@
 
                                                                 @if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1)
                                                                     @if(!empty($invoice) && $invoice->count() == 0)
-                                                                        @if ($item->Nettotal - $item->total_payment != 0)
+                                                                        @if ($item->Nettotal - $item->total_payment != 0 &&$item->Nettotal - $item->total_payment > 0 )
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
+                                                                        @elseif ($item->Nettotal + $item->Adtotal - $item->total_payment != 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/Additional/'.$item->id) }}">Create</a></li>
                                                                         @endif
+
                                                                     @else
                                                                         @php
                                                                             $hasStatusReceiveZero = false;
@@ -153,14 +156,16 @@
                                                                             @endif
                                                                         @endforeach
 
-                                                                        @if (!$hasStatusReceiveZero && $item->Nettotal - $item->total_payment != 0)
+                                                                        @if (!$hasStatusReceiveZero && $item->Nettotal - $item->total_payment != 0 &&$item->Nettotal - $item->total_payment > 0 )
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3 && $canEditProposal == 1)
                                                                     @if(!empty($invoice) && $invoice->count() == 0)
-                                                                        @if ($item->Nettotal - $item->total_payment != 0)
+                                                                        @if ($item->Nettotal - $item->total_payment != 0 && $item->Nettotal - $item->total_payment > 0 )
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
+                                                                        @elseif ($item->Nettotal + $item->Adtotal - $item->total_payment  != 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/Additional/'.$item->id) }}">Create</a></li>
                                                                         @endif
                                                                     @else
                                                                         @php
@@ -176,8 +181,8 @@
                                                                             @endif
                                                                         @endforeach
 
-                                                                        @if (!$hasStatusReceiveZero  && $item->Nettotal - $item->total_payment != 0)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
+                                                                        @if (!$hasStatusReceiveZero  && $item->Nettotal - $item->total_payment != 0 && $item->Nettotal - $item->total_payment > 0 )
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create3</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @endif

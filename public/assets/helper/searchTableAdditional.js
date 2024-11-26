@@ -108,7 +108,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,1,2,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
+                { targets: [0,1,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -119,7 +119,6 @@ function getPage(page, perPage, table_n)
             },
             columns: [
                 { data: 'number' },
-                { data: 'Additional_ID' },
                 { data: 'Proposal_ID' },
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
@@ -1086,7 +1085,7 @@ function getPageLog(page, perPage, table_n)
             paging: false,
             info: false,
             ajax: {
-                url: '/Proposal-Log-paginate-table',
+                url: '/billing-Log-paginate-table',
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -1126,6 +1125,7 @@ function getPageLog(page, perPage, table_n)
     $('#' + table_n + '-paginate').append(paginateSearchLog(total, table_n, getUrl));
 
 }
+
 //--------------------logDoc-----------
 function showingEntriesSearchLogDoc($page, $total, $table_name)
 {
@@ -1222,7 +1222,7 @@ function getPageLogDoc(page, perPage, table_n)
             paging: false,
             info: false,
             ajax: {
-                url: '/Proposal-LogDoc-paginate-table',
+                url: '/billing-LogDoc-paginate-table',
                 type: 'POST',
                 dataType: "json",
                 cache: false,

@@ -26,6 +26,7 @@ use App\Models\document_quotation;
 use App\Models\master_promotion;
 use Illuminate\Support\Arr;
 use App\Models\master_document_sheet;
+use App\Models\proposal_overbill;
 use Auth;
 use App\Models\User;
 use Carbon\Carbon;
@@ -49,11 +50,13 @@ class Document_invoice extends Controller
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
             'document_invoice.Quotation_ID as QID',
-            'document_invoice.document_status',  // Separate this field for clarity
+            'document_invoice.document_status',
+            'proposal_overbill.Nettotal as Adtotal',  // Separate this field for clarity
             DB::raw('1 as status'),
             DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment')
         )
@@ -1061,6 +1064,125 @@ class Document_invoice extends Controller
         return view('document_invoice.view_invoicelist', compact('invoice', 'Quotation_ID'));
     }
 
+    public function Generate_Additional($id){
+
+        $currentDate = Carbon::now();
+        $ID = 'PI-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = document_invoices::latest()->first();
+        $nextNumber = 1;
+
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $Issue_date = Carbon::parse($currentDate)->translatedFormat('d/m/Y');
+        $Valid_Until = Carbon::parse($currentDate)->addDays(7)->translatedFormat('d/m/Y');
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $InvoiceID = $ID.$year.$month.$newRunNumber;
+        $Quotation = Quotation::where('id', $id)->first();
+        $QuotationID = $Quotation->Quotation_ID;
+        $Additional = proposal_overbill::where('Quotation_ID', $QuotationID)->first();
+        $Nettotal = $Additional->Nettotal;
+        $vat_type = $Quotation->vat_type;
+
+        if ($Quotation->type_Proposal == 'Company') {
+            $CompanyID = $Quotation->Company_ID;
+            $Company = companys::where('Profile_ID',$CompanyID)->first();
+            $Company_typeID=$Company->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
+            }else {
+                $comtypefullname = $Company->Company_Name;
+            }
+            $Address = $Company->Address;
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $company_fax = company_fax::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+            $company_phone = company_phone::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+            $Contact_name = representative::where('Company_ID',$CompanyID)->where('status',1)->first();
+
+            $profilecontact = $Contact_name->Profile_ID;
+            $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        }else{
+            $CompanyID = $Quotation->Company_ID;
+            $Company = Guest::where('Profile_ID',$CompanyID)->first();
+            $prename = $Company->preface;
+            $First_name = $Company->First_name;
+            $Last_name = $Company->Last_name;
+            $Address = $Company->Address;
+            $Email = $Company->Email;
+            $Taxpayer_Identification = $Company->Identification_Number;
+            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+            $name = $prefix->name_th;
+            $comtypefullname = $name.' '.$First_name.' '.$Last_name;
+
+            $Contact_name =0;
+            $profilecontact = 0;
+            $Contact_phone=0;
+            $company_fax =0;
+            //-------------ที่อยู่
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $Fax_number = '-';
+            $company_phone = phone_guest::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+
+        }
+        $Checkin = $Quotation->checkin;
+        $Checkout = $Quotation->checkout;
+        if ($Checkin) {
+            $checkin = $Checkin;
+            $checkout = $Checkout;
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+
+        $invoices =document_invoices::where('Quotation_ID',$QuotationID)->whereIn('document_status',[1,2])->latest()->first();
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $totalreceiptre = 0;
+        $receipt = receive_payment::where('Quotation_ID', $QuotationID)->get();
+        foreach ($receipt as $item) {
+            $totalreceiptre +=  $item->Amount;
+        }
+        $totalreceipt = $Nettotal-$totalreceiptre;
+        if ($invoices) {
+            $deposit = $invoices->deposit;
+            $Deposit =$deposit+ 1;
+            $balance = $totalreceipt;
+            $parts = explode('-', $QuotationID);
+            $cleanedID = $parts[0] . '-' . $parts[1];
+            $Refler_ID = $cleanedID;
+        }else{
+
+            $parts = explode('-', $QuotationID);
+            $cleanedID = $parts[0] . '-' . $parts[1];
+            $invoices =document_invoices::where('Quotation_ID',$cleanedID)->where('document_status',1)->latest()->first();
+            $Deposit = 1;
+            $balance = 0;
+            $Refler_ID = $QuotationID;
+        }
+        return view('document_invoice.additional',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company','Address'
+        ,'Refler_ID','TambonID','company_phone','vat_type','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal','Additional'));
+    }
     public function Generate($id){
 
         $currentDate = Carbon::now();
@@ -1084,6 +1206,7 @@ class Document_invoice extends Controller
         $InvoiceID = $ID.$year.$month.$newRunNumber;
         $Quotation = Quotation::where('id', $id)->first();
         $QuotationID = $Quotation->Quotation_ID;
+        $Additional = proposal_overbill::where('Quotation_ID', $QuotationID)->first();
         $Nettotal = $Quotation->Nettotal;
         $vat_type = $Quotation->vat_type;
 
@@ -1177,7 +1300,7 @@ class Document_invoice extends Controller
             $Refler_ID = $QuotationID;
         }
         return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company','Address'
-        ,'Refler_ID','TambonID','company_phone','vat_type','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal'));
+        ,'Refler_ID','TambonID','company_phone','vat_type','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal','Additional'));
     }
     public function save(Request $request){
         try {
@@ -1752,6 +1875,7 @@ class Document_invoice extends Controller
                     $save->sequence = $sequencenumber;
                     $save->sumpayment = $datarequest['Sum'];
                     $save->total = $NettotalPD;
+                    $save->document_type = $request->document_type;
                     $save->save();
                     return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
                 }

@@ -195,14 +195,14 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Additional ( Over Bill ).</small>
-                    <div class=""><span class="span1">Additional ( Over Bill )</span></div>
+                    <small class="text-muted">Welcome to Additional.</small>
+                    <div class=""><span class="span1">Additional</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
 
-    <form id="myForm" action="{{url('/Document/BillingFolio/Proposal/Over/create/'.$Quotation->id)}}" method="POST">
+    <form id="myForm" action="{{url('/Document/Additional/Charge/save/'.$Quotation->id)}}" method="POST">
         @csrf
         <div id="content-index" class="body d-flex py-lg-4 py-3">
             <div class="container-xl">
@@ -292,149 +292,149 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-xl">
-                <div class="row clearfix">
-                    <div class="col-md-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
+                                <input type="hidden" id="select" name="select" value="{{$Quotation->type_Proposal}}">
                                 <div class="row mt-2">
-                                    <div class="proposal-cutomer-detail" id="companyTable">
-                                        <ul>
-                                        <b class="font-upper com">Company Information</b>
-                                        <li class="mt-3">
-                                            <b>Company Name</b>
-                                            <span id="Company_name">{{$fullName}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Company Address</b>
-                                            <span id="Address">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
-                                            <b></b>
-                                        </li>
-                                        <span class="wrap-full">
-                                            <li >
-                                                <b>Company Number</b>
-                                                <span id="Company_Number">{{$phone->Phone_number}}</span>
+                                    @if ($Selectdata == 'Company')
+                                        <div class="proposal-cutomer-detail" >
+                                            <ul>
+                                            <b class="font-upper com">Company Information</b>
+                                            <li class="mt-3">
+                                                <b>Company Name</b>
+                                                <span id="Company_name">{{$fullName}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Company Address</b>
+                                                <span id="Address">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
+                                                <b></b>
+                                            </li>
+                                            <span class="wrap-full">
+                                                <li >
+                                                    <b>Company Number</b>
+                                                    <span id="Company_Number">{{$phone->Phone_number}}</span>
+                                                </li>
+                                                <li >
+                                                    <b>Company Fax</b>
+                                                    <span id="Company_Fax">{{$Fax_number}}</span>
+                                                </li>
+                                            </span>
+                                            <li>
+                                                <b>Company Email</b>
+                                                <span id="Company_Email">{{$Email}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Taxpayer Identification</b>
+                                                <span id="Taxpayer" >{{$Taxpayer_Identification}}</span>
+                                            </li>
+                                            <li> </li>
+                                            <b class="font-upper com">Personal Information</b>
+                                            <li class="mt-3">
+                                                <b>Contact Name</b>
+                                                <span id="Company_contact">{{$Contact_Name}}</span>
                                             </li>
                                             <li >
-                                                <b>Company Fax</b>
-                                                <span id="Company_Fax">{{$Fax_number}}</span>
+                                                <b>Contact Number</b>
+                                                <span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span>
                                             </li>
-                                        </span>
-                                        <li>
-                                            <b>Company Email</b>
-                                            <span id="Company_Email">{{$Email}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Taxpayer Identification</b>
-                                            <span id="Taxpayer" >{{$Taxpayer_Identification}}</span>
-                                        </li>
-                                        <li> </li>
-                                        <b class="font-upper com">Personal Information</b>
-                                        <li class="mt-3">
-                                            <b>Contact Name</b>
-                                            <span id="Company_contact">{{$Contact_Name}}</span>
-                                        </li>
-                                        <li >
-                                            <b>Contact Number</b>
-                                            <span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Contact Email</b>
-                                            <span id="Contact_Email" >{{$Quotation->checkin}}</span>
-                                        </li>
-                                        <li></li>
-                                        </ul>
-                                        <ul>
-                                        <li> </li>
-                                        <li></li>
-                                        <li> </li>
-                                        <li></li>
-                                        <li> </li>
-                                        <li></li>
-                                        <li>
-                                            <b>Check In</b>
-                                            <span id="checkinpo">{{$Quotation->checkin}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Check Out</b>
-                                            <span id="checkoutpo">{{$Quotation->checkout}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Length of Stay</b>
-                                            <span style="display: flex"><p id="daypo" class="m-0"> </p><p id="nightpo" class="m-0"> </p></span>
-                                        </li>
-                                        <li>
-                                            <b>Number of Guests</b>
-                                            <span style="display: flex"><p id="Adultpo" class="m-0"> </p><p id="Childrenpo" class="m-0"> </p></span>
-                                        </li>
-
-                                        </ul>
-
-                                    </div>
-                                    <div class="proposal-cutomer-detail" id="guestTable" style="display: none">
-                                        <ul>
-                                        <b class="font-upper com">Guest Information</b>
-                                        <li class="mt-3">
-                                            <b>Guest  Name</b>
-                                            <span id="guest_name">{{$fullName}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Guest  Address</b>
-                                            <span id="guestAddress">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
-                                            <b></b>
-                                        </li>
-
-                                        <li >
-                                            <b>Guest  Number</b>
-                                            <span id="guest_Number">{{$phone->Phone_number}}</span>
-                                        </li>
-
-                                        <li>
-                                            <b>Guest  Email</b>
-                                            <span id="guest_Email">{{$Email}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Identification Number</b>
-                                            <span id="guestTaxpayer" >{{$Taxpayer_Identification}}</span>
-                                        </li>
-                                        <li> </li>
-                                        <li></li>
-                                        </ul>
-
-                                        <ul>
+                                            <li>
+                                                <b>Contact Email</b>
+                                                <span id="Contact_Email" >{{$Quotation->checkin}}</span>
+                                            </li>
+                                            <li></li>
+                                            </ul>
+                                            <ul>
                                             <li> </li>
                                             <li></li>
                                             <li> </li>
-                                        <li></li>
-                                        <li> </li>
-                                        <li></li>
-                                        <li>
-                                            <b>Check In</b>
-                                            <span id="checkinpoguest"></span>
-                                        </li>
-                                        <li>
-                                            <b>Check Out</b>
-                                            <span id="checkoutpoguest"></span>
-                                        </li>
-                                        <li>
-                                            <b>Length of Stay</b>
-                                            <span style="display: flex"><p id="daypoguest" class="m-0"> </p><p id="nightpoguest" class="m-0"> </p></span>
-                                        </li>
-                                        <li>
-                                            <b>Number of Guests</b>
-                                            <span style="display: flex"><p id="Adultpoguest" class="m-0"> </p><p id="Childrenpoguest" class="m-0"> </p></span>
-                                        </li>
+                                            <li></li>
+                                            <li> </li>
+                                            <li></li>
+                                            <li>
+                                                <b>Check In</b>
+                                                <span id="checkinpo">{{$Quotation->checkin}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Check Out</b>
+                                                <span id="checkoutpo">{{$Quotation->checkout}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Length of Stay</b>
+                                                <span style="display: flex"><p id="daypo" class="m-0"> </p><p id="nightpo" class="m-0"> </p></span>
+                                            </li>
+                                            <li>
+                                                <b>Number of Guests</b>
+                                                <span style="display: flex"><p id="Adultpo" class="m-0"> </p><p id="Childrenpo" class="m-0"> </p></span>
+                                            </li>
+                                            </ul>
+                                        </div>
+                                    @else
+                                        <div class="proposal-cutomer-detail" >
+                                            <ul>
+                                            <b class="font-upper com">Guest Information</b>
+                                            <li class="mt-3">
+                                                <b>Guest  Name</b>
+                                                <span id="guest_name">{{$fullName}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Guest  Address</b>
+                                                <span id="guestAddress">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
+                                                <b></b>
+                                            </li>
 
-                                        </ul>
+                                            <li >
+                                                <b>Guest  Number</b>
+                                                <span id="guest_Number">{{$phone->Phone_number}}</span>
+                                            </li>
 
-                                    </div>
+                                            <li>
+                                                <b>Guest  Email</b>
+                                                <span id="guest_Email">{{$Email}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Identification Number</b>
+                                                <span id="guestTaxpayer" >{{$Taxpayer_Identification}}</span>
+                                            </li>
+                                            <li> </li>
+                                            <li></li>
+                                            </ul>
+
+                                            <ul>
+                                                <li> </li>
+                                                <li></li>
+                                                <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                            <li></li>
+                                            <li>
+                                                <b>Check In</b>
+                                                <span id="checkinpoguest"></span>
+                                            </li>
+                                            <li>
+                                                <b>Check Out</b>
+                                                <span id="checkoutpoguest"></span>
+                                            </li>
+                                            <li>
+                                                <b>Length of Stay</b>
+                                                <span style="display: flex"><p id="daypoguest" class="m-0"> </p><p id="nightpoguest" class="m-0"> </p></span>
+                                            </li>
+                                            <li>
+                                                <b>Number of Guests</b>
+                                                <span style="display: flex"><p id="Adultpoguest" class="m-0"> </p><p id="Childrenpoguest" class="m-0"> </p></span>
+                                            </li>
+
+                                            </ul>
+
+                                        </div>
+                                    @endif
                                     <div class="styled-hr"></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
+                                        <label for="">Document Type Additional</label>
+                                        <select name="additional_type" id="additional_type" class="select2">
+                                            <option value="H/G">H/G Online</option>
+                                            <option value="Cash">Cash + Complimentary</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-12 col-sm-12">
@@ -538,7 +538,7 @@
                                             <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                                         </div>
                                         <div class="lek" >
-                                            <div class="proposal-number-cutomer-detail" >
+                                            <div class="proposal-number-cutomer-detail" id="PRICE_INCLUDE_VAT">
                                                 <ul>
                                                     <li class="mt-3">
                                                         <b>Subtotal</b>
@@ -554,6 +554,26 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            <div class="proposal-number-cutomer-detail" id="PRICE_EXCLUDE_VAT" style="display: none;">
+                                                <ul>
+                                                    <li class="mt-3">
+                                                        <b>Subtotal</b>
+                                                        <span id="total-amountEXCLUDE"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="proposal-number-cutomer-detail" id="PRICE_PLUS_VAT" style="display: none;">
+                                                <ul>
+                                                    <li class="mt-3">
+                                                        <b>Subtotal</b>
+                                                        <span id="total-amountpus"></span>
+                                                    </li>
+                                                    <li class="mt-3">
+                                                        <b>Value Added Tax</b>
+                                                        <span id="total-Vatpus"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
 
                                         </div>
                                     </div>
@@ -565,7 +585,7 @@
                                             <strong class="com" style="font-size: 18px">Method of Payment</strong>
                                         </div>
                                         <span class="col-md-8 col-sm-12">
-                                           <br>
+                                        <br>
                                             Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                             If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                             pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -609,7 +629,7 @@
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
                                                     @if ($user->signature)
-                                                        <img src="/upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                                                        <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
                                                     @endif
                                                     @if ($user->firstname)
                                                         <span>{{$user->firstname}} {{$user->lastname}}</span>
@@ -618,8 +638,8 @@
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
                                                     <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                                    <br><br>
-                                                    <span>{{@Auth::user()->name}}</span>
+                                                    <img src="/boss.png" style="width: 70%;"/>
+                                                    <span>Sopida Thuphom</span>
                                                     <span id="issue_date_document1"></span>
                                                 </div>
                                                 <div class="col-lg-2 centered-content">
@@ -669,41 +689,6 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript">
         $(document).ready(function() {
-            const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
-            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
-            var flexCheckChecked = document.getElementById('flexCheckChecked');
-            var dayName = checkinDate.format('dddd'); // Format to get the day name
-            var enddayName = checkoutDate.format('dddd'); // Format to get the day name
-            $('#checkinpo').text(checkinDate);
-            $('#checkoutpo').text(checkoutDate);
-            $('#checkinpoguest').text(checkinDate);
-            $('#checkoutpoguest').text(checkoutDate);
-
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#inputcalendartext').val("Weekday-Weekend");
-                    flexCheckChecked.disabled = true;
-                }else{
-                    $('#calendartext').text("Weekday");
-                    $('#inputcalendartext').val("Weekday");
-                    flexCheckChecked.disabled = true;
-                }
-            } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#inputcalendartext').val("Weekday-Weekend");
-                    flexCheckChecked.disabled = true;
-                }else{
-                    $('#calendartext').text("Weekend");
-                    $('#inputcalendartext').val("Weekend");
-                    flexCheckChecked.disabled = true;
-                }
-            }
-            CheckDateAdditional();
-        });
-
-        $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
@@ -712,8 +697,6 @@
 
             var day = dayview ? dayview : '-';
             var night = nightview ? nightview : '-';
-
-            console.log(day, night);
             var adult ={{$Quotation->adult}};
             var children ={{$Quotation->children ? $Quotation->children : 0 }};
             $('#Adultpo').text(adult +' Adult');
@@ -721,17 +704,36 @@
 
             $('#Childrenpo').text(' , '+ children +' Children');
             $('#Childrenpoguest').text(' , '+ children +' Children');
+            if (day == '-') {
+                $('#daypo').text('-');
+                $('#daypoguest').text('-');
+            }else{
+                $('#daypo').text(day + ' วัน');
+                $('#nightpo').text(night + ' คืน');
 
-            $('#daypo').text(day + ' วัน');
-            $('#nightpo').text(night + ' คืน');
+                $('#daypoguest').text(day + ' วัน');
+                $('#nightpoguest').text(night + ' คืน');
+            }
 
-            $('#daypoguest').text(day + ' วัน');
-            $('#nightpoguest').text(night + ' คืน');
+            var checkinDate = @json($Quotation->checkin);
+            var checkoutDate = @json($Quotation->checkout);
+            if (checkinDate == null) {
+                $('#checkinpo').text('No Check In Date');
+                $('#checkinpoguest').text('No Check In Date');
+                $('#checkoutpo').text('-');
+                $('#checkoutpoguest').text('-');
+            }else{
+                $('#checkinpo').text(checkinDate);
+                $('#checkoutpo').text(checkoutDate);
+
+                $('#checkinpoguest').text(checkinDate);
+                $('#checkoutpoguest').text(checkoutDate);
+            }
             //----------------ส่วนบน---------------
             var countrySelect = $('#select');
             var select = countrySelect.val();
 
-            var select = document.getElementById("select");
+
             //------------------------บริษัท------------------
             var Companyshow = document.getElementById("Companyshow");
             var Company = document.getElementById("Company");
@@ -743,42 +745,7 @@
             var companyTable = document.getElementById("companyTable");
 
             var guestTable = document.getElementById("guestTable");
-            if (select.value === "Company") {
-                Companyshow.style.display = "Block";
-                Guestshow.style.display = "none";
-                guestTable.style.display = "none";
-                Company.disabled = false;
-                Company_Contact.disabled = false;
-                Company_Contactname.disabled = false;
-                Guest.disabled = true;
-                companyTable.style.display = "flex";
-                companyContact();
-            } else {
-                guestTable.style.display = "flex";
-                Guestshow.style.display = "Block";
-                Companyshow.style.display = "none";
-                companyTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = true;
-                Company_Contactname.disabled = true;
-                Guest.disabled = false;
-                GuestContact();
-            }
-        });
-        function showselectInput() {
-            var select = document.getElementById("select");
-           //------------------------บริษัท------------------
-            var Companyshow = document.getElementById("Companyshow");
-            var Company = document.getElementById("Company");
-            // -----------------------ลูกค้า--------------------
-
-            var Guest = document.getElementById("Guest");
-            var Guestshow = document.getElementById("Guestshow");
-            //-------------------ตาราง---------------------------
-            var companyTable = document.getElementById("companyTable");
-
-            var guestTable = document.getElementById("guestTable");
-            if (select.value === "Company") {
+            if (select === "Company") {
                 Companyshow.style.display = "Block";
                 Guestshow.style.display = "none";
                 guestTable.style.display = "none";
@@ -797,231 +764,7 @@
                 Company_Contactname.disabled = true;
                 Guest.disabled = false;
             }
-        }
-        function companyContact() {
-            var companyID = $('#Company').val();
-            console.log(companyID);
-            jQuery.ajax({
-                type: "GET",
-                url: "{!! url('/Proposal/create/company/" + companyID + "') !!}",
-                datatype: "JSON",
-                async: false,
-                success: function(response) {
-                    var prename = response.prename.name_th;
-                    var fullName = prename+response.data.First_name + ' ' + response.data.Last_name;
-
-
-                    var fullid = response.data.id ;
-                    if (response.Company_type.name_th === 'บริษัทจำกัด') {
-                        var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด';
-                    }
-                    else if (response.Company_type.name_th === 'บริษัทมหาชนจำกัด') {
-                        var fullNameCompany = 'บริษัท' + ' ' + response.company.Company_Name + ' ' + 'จำกัด'+' '+'(มหาชน)';
-                    }
-                    else if (response.Company_type.name_th === 'ห้างหุ้นส่วนจำกัด') {
-                        var fullNameCompany = 'ห้างหุ้นส่วนจำกัด' + ' ' + response.company.Company_Name ;
-                    }else{
-                        var fullNameCompany = response.Company_type.name_th + response.company.Company_Name ;
-                    }
-                    var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th + ' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
-                    var companyfax = response.company_fax.Fax_number;
-                    var CompanyEmail = response.company.Company_Email;
-                    var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
-                    var TaxpayerIdentification = response.company.Taxpayer_Identification;
-                    var companyphone = response.company_phone.Phone_number;
-
-                    var Contactphones =response.Contact_phones.Phone_number;
-                    var Contactemail =response.data.Email;
-                    var formattedPhoneNumber = companyphone;
-
-
-                    var formattedContactphones = Contactphones;
-                    $('#Company_Contact').val(fullName).prop('disabled', true);
-                    $('#Company_Discount').val(Discount_Contract_Rate);
-                    $('#Company_Contactname').val(fullid);
-                    $('#Company_name').text(fullNameCompany);
-                    $('#Address').text(Address);
-                    $('#Company_Number').text(formattedPhoneNumber);
-                    $('#Company_Fax').text(companyfax);
-                    $('#Company_Email').text(CompanyEmail);
-                    $('#Taxpayer').text(TaxpayerIdentification);
-                    $('#Company_contact').text(fullName);
-                    $('#Contact_Phone').text(formattedContactphones);
-                    $('#Contact_Email').text(Contactemail);
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX request failed: ", status, error);
-                }
-            });
-        }
-        function GuestContact(){
-            var Guest = $('#Guest').val();
-            console.log(Guest);
-            jQuery.ajax({
-                type: "GET",
-                url: "{!! url('/Proposal/create/Guest/" + Guest + "') !!}",
-                datatype: "JSON",
-                async: false,
-                success: function(response) {
-                    var prename = response.Company_type.name_th;
-                    var fullName = prename +' '+response.data.First_name + ' ' + response.data.Last_name;
-                    var Address = response.data.Address + ' '+ 'ตำบล'+ response.Tambon.name_th+' '+' อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
-                    var Email = response.data.Email;
-                    var Identification = response.data.Identification_Number;
-                    var phone = response.phone.Phone_number;
-
-
-                    var formattedPhoneNumber = phone;
-
-                    $('#guest_name').text(fullName);
-                    $('#guestAddress').text(Address);
-                    $('#guest_Number').text(formattedPhoneNumber);
-                    $('#guest_Email').text(Email);
-                    $('#guestTaxpayer').text(Identification);
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX request failed: ", status, error);
-                }
-            });
-        }
-        $(document).ready(function() {
-            var dateInput = document.getElementById('Checkin');
-            var dateout = document.getElementById('Checkout');
-            var Day = document.getElementById('Day');
-            var Night = document.getElementById('Night');
-            var flexCheckChecked = document.getElementById('flexCheckChecked');
-
-            // ตรวจสอบค่า Checkin และตั้งค่า disabled และ flexCheckChecked
-            function updateFields() {
-                var Checkin = dateInput.value;
-
-                if (Checkin === "" || Checkin === null) {
-                    dateInput.disabled = true;
-                    dateout.disabled = true;
-                    Day.disabled = true;
-                    Night.disabled = true;
-                    flexCheckChecked.checked = true;
-                    flexCheckChecked.disabled = true;
-                    dateInput.classList.add('disabled-input');
-                    dateout.classList.add('disabled-input');
-
-                    $('#calendartext').text('No Check in date');
-                    $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
-                    $('#checkoutpo').text('-');
-                    $('#checkinpoguest').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
-                    $('#checkoutpoguest').text('-');
-                    $('#daypo').text('-');
-                    $('#nightpo').text(' ');
-                    $('#daypoguest').text('-');
-                    $('#nightpoguest').text(' ');
-                } else {
-                    dateInput.classList.remove('disabled-input');
-                    dateout.classList.remove('disabled-input');
-                    dateInput.disabled = false;
-                    dateout.disabled = false;
-                    Day.disabled = false;
-                    Night.disabled = false;
-                    flexCheckChecked.checked = false;
-                // ตั้งค่า flexCheckChecked เป็น unchecked
-                }
-            }
-
-            // เรียกใช้ updateFields เมื่อโหลดเริ่มต้น
-            updateFields();
-
-            // ตั้งค่าการเปลี่ยนแปลงสำหรับ flexCheckChecked
-            document.getElementById('flexCheckChecked').addEventListener('change', function(event) {
-                var isChecked = event.target.checked;
-                var dateInput = document.getElementById('Checkin');
-                var dateout = document.getElementById('Checkout');
-                var Day = document.getElementById('Day');
-                var Night = document.getElementById('Night');
-                if (isChecked == true) {
-                    dateInput.disabled = true;
-                    dateout.disabled = true;
-                    Day.disabled = true;
-                    Night.disabled = true;
-
-                    dateInput.classList.add('disabled-input');
-                    dateout.classList.add('disabled-input');
-                    $('#checkinpo').text('No Check in date');
-                    $('#checkoutpo').text('-');
-                    $('#checkinpoguest').text('No Check in date');
-                    $('#checkoutpoguest').text('-');
-                    $('#daypo').text('-');
-                    $('#nightpo').text(' ');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                    $('#Day').val('');
-                    $('#Night').val('');
-                    $('#calendartext').text('-');
-                    month();
-                } else {
-                    dateInput.disabled = false;
-                    dateout.disabled = false;
-                    Day.disabled = false;
-                    Night.disabled = false;
-
-                    dateInput.classList.remove('disabled-input');
-                    dateout.classList.remove('disabled-input');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                    $('#Day').val('');
-                    $('#Night').val('');
-                }
-            });
         });
-        $(document).on('keyup', '#Children', function() {
-            var Children =  Number($(this).val());
-            $('#Childrenpo').text(' , '+ Children +' Children');
-            $('#Childrenpoguest').text(' , '+ Children +' Children');
-            totalAmost();
-        });
-        $(document).on('keyup', '#Adult', function() {
-            var adult =  Number($(this).val());
-            $('#Adultpo').text(adult +' Adult');
-            $('#Adultpoguest').text(adult +' Adult');
-            totalAmost();
-        });
-        $(document).on('keyup', '#DiscountAmount', function() {
-            var DiscountAmount =  Number($(this).val());
-            totalAmost();
-        });
-        function masterevent() {
-            var Mevent =$('#Mevent').val();
-            if (Mevent == '43') {
-                $('#Payment50').css('display', 'block');
-                $('#Payment100').css('display', 'none');
-            } else if (Mevent == '53') {
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            }else if (Mevent == '54') {
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            }
-        }
-        function mastervat() {
-            var Mvat =$('#Mvat').val();
-            if (Mvat == '50') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'block');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }else if (Mvat == '51') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'block');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            else if (Mvat == '52') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'block');
-            }else{
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            totalAmost()
-        }
         $(document).ready(function() {
             var Mvat ={{$Quotation->vat_type}};
             if (Mvat == '50') {
@@ -1059,254 +802,6 @@
                 $('#Payment100').css('display', 'none');
             }
         });
-    </script>
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-        $(function() {
-            var checkinDate = document.getElementById('inputcalendartext').value;
-            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
-
-            var enddayName = checkoutDate.format('dddd');
-            var DiscountAmount = document.getElementById('DiscountAmount').value;
-            var Add_discount = document.getElementById('Add_discount').value;
-            $('#Checkin').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น DD/MM/YYYY
-                },
-                isInvalidDate: function(date) {
-                    if (checkinDate == 'Weekday') {
-                        if (checkinDate === 'Weekday' && ['Friday','Saturday','Sunday'].includes(date.format('dddd'))) {
-                            return true; // ไม่ให้เลือกวันในช่วงนี้
-                        }
-                    }else if (checkinDate == 'Weekend') {
-                        if (checkinDate === 'Weekend' && ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(date.format('dddd'))) {
-                            return true; // ไม่ให้เลือกวันในช่วงนี้
-                        }
-                    }else if (checkinDate == 'Weekday-Weekend' && enddayName == 'Saturday'|| enddayName == 'Monday') {
-                        if (checkinDate === 'Weekday-Weekend' && ['Monday','Sunday', 'Tuesday', 'Wednesday', 'Friday'].includes(date.format('dddd'))) {
-                            return true; // ไม่ให้เลือกวัน
-                        }
-                    }
-                }
-            });
-            $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
-                var datefirst = picker.startDate.format('DD/MM/YYYY');
-                $(this).val(datefirst);
-                $('#CheckinNew').val(datefirst);
-                var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
-                $('#inputmonth').val(currentMonthIndex + 1);
-                CheckDateAdditional();
-            });
-        });
-        $(function() {
-            var checkinValue = document.getElementById('Checkin').value;
-            var DiscountAmount = document.getElementById('DiscountAmount').value;
-            var Add_discount = document.getElementById('Add_discount').value;
-            $('#Checkout').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                },
-                isInvalidDate: function(date) {
-                    var CheckinNew = document.getElementById('CheckinNew').value;
-                    var checkDate = document.getElementById('inputcalendartext').value;
-                    var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
-                    var indayName = momentCheckinNew.format('dddd'); // รับค่าเป็นชื่อวัน
-                    if (checkDate === 'Weekday') {
-                        if (indayName === 'Thursday') {
-                            if ([ 'Saturday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        }else{
-                            return false;
-                        }
-                    } else if (checkDate === 'Weekend') {
-                        if (indayName === 'Friday') {
-                            return false;
-                        }else{
-                            if ([ 'Monday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        }
-                    } else if (checkDate === 'Weekday-Weekend'){
-                        if (indayName === 'Thursday') {
-                            if (['Monday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        } else {
-                            if (['Saturday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        }
-                    }else{
-                        if (['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
-                            return true;
-                        }
-                    }
-                }
-            });
-            $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
-                var dateend = picker.startDate.format('DD/MM/YYYY');
-                $(this).val(dateend);
-                $('#CheckoutNew').val(dateend);
-
-                var checkDate = document.getElementById('inputcalendartext').value;
-                var CheckinNew = document.getElementById('CheckinNew').value;
-
-                // แปลงวันที่ CheckinNew และ dateend เป็น moment object
-                var datefirst = moment(CheckinNew, 'DD/MM/YYYY');
-                var dateendMoment = moment(dateend, 'DD/MM/YYYY');
-
-                // ตรวจสอบว่า checkinDate คือ 'Weekday-Weekend'
-                if (checkDate === 'Weekday-Weekend') {
-                    // ตรวจสอบว่า datefirst และ dateend ถูกต้อง
-                    if (datefirst.isValid() && dateendMoment.isValid()) {
-                        // คำนวณความแตกต่างระหว่าง datefirst และ dateend เป็นจำนวนวัน
-                        var diffDays = dateendMoment.diff(datefirst, 'days');
-
-                        // เช็คว่าห่างกันไม่เกิน 3 วันหรือไม่
-                        if (diffDays <= 3) {
-                            console.log('วันห่างกันไม่เกิน 3 วัน');
-                            // คุณสามารถทำสิ่งที่ต้องการได้ที่นี่ เช่น อนุญาตให้เลือกวันที่
-                        } else {
-                            alert('วันสิ้นสุดไม่สามารถห่างจากวันเริ่มต้นเกิน 3 วันได้');
-                            // เพิ่มโค้ดสำหรับการแสดงข้อผิดพลาด หรือการแจ้งเตือน
-                        }
-                    } else {
-                        console.error('วันที่ไม่ถูกต้อง');
-                    }
-                }
-                var daymonthName = datefirst.format('MMMM'); // ชื่อเดือนเต็ม เช่น January, February
-                var endmonthName = dateendMoment.format('MMMM');   // ชื่อเดือนเต็ม เช่น January, February
-                var monthDiff = dateendMoment.diff(datefirst, 'months');
-                var month;
-
-                if (daymonthName === endmonthName) {
-                    month = monthDiff; // เดือนเดียวกัน
-                } else {
-                    month = monthDiff + 1; // ข้ามเดือน
-                }
-
-                $('#checkmonth').val(month);
-                CheckDateAdditional();
-            });
-        });
-        function CheckDateAdditional() {
-            var CheckinNew = document.getElementById('CheckinNew').value;
-            var CheckoutNew = document.getElementById('CheckoutNew').value;
-            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
-            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
-            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
-            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
-            const checkinDate = new Date(checkinDateValue);
-            const checkoutDate = new Date(checkoutDateValue);
-            if (checkoutDate > checkinDate) {
-                const timeDiff = checkoutDate - checkinDate;
-                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
-                const nights = diffDays;
-
-                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-                $('#Night').val(isNaN(nights) ? '0' : nights);
-
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays + ' วัน');
-                $('#nightpo').text(nights + ' คืน');
-                $('#daypoguest').text(totalDays + ' วัน');
-                $('#nightpoguest').text(nights + ' คืน');
-            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-                const totalDays = 1;
-                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-                $('#Night').val('0');
-
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays + ' วัน');
-                $('#nightpo').text('0 คืน');
-                $('#daypoguest').text(totalDays + ' วัน');
-                $('#nightpoguest').text('0 คืน');
-            } else {
-                if (CheckoutNew) {
-                    alert('วัน Check-out ต้องมากกว่าวัน Check-in');
-                    $('#Day').val('0');
-                    $('#Night').val('0');
-                    $('#Checkin').val('');
-                    $('#Checkout').val('');
-                }
-            }
-
-            month();
-        }
-
-        function setMinDate() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('Checkin').setAttribute('min', today);
-            document.getElementById('Checkout').setAttribute('min', today);
-        }
-
-        // เรียกใช้เมื่อโหลดหน้า
-        setMinDate();
-        document.addEventListener('DOMContentLoaded', setMinDate);
-        function month() {
-            var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
-            var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
-            var start = moment(); // เริ่มที่วันที่ปัจจุบัน
-            var end; // ประกาศตัวแปร end
-            var currentMonthIndex = start.month();
-            var monthDiff = inputmonth - currentMonthIndex;
-              // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
-            if (monthDiff < 0) {
-                monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
-            }
-
-            if (monthDiff <= 1) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
-            } else if (monthDiff >= 2 && monthDiff < 3 ) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
-            } else {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
-            }
-
-            function cb(start, end) {
-                $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
-                $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
-            }
-
-            // ตั้งค่า daterangepicker
-            $('#reportrange1').daterangepicker({
-                start: start,
-                end: end,
-                ranges: {
-                    '3 Days': [moment(), moment().add(3, 'days')],
-                    '7 Days': [moment(), moment().add(7, 'days')],
-                    '15 Days': [moment(), moment().add(15, 'days')],
-                    '30 Days': [moment(), moment().add(30, 'days')],
-                },
-                autoApply: true, // ใช้เพื่อไม่ต้องกด Apply
-            }, cb);
-
-            cb(start, end); // เรียก callback ทันทีหลังจากตั้งค่าเริ่มต้น
-        }
     </script>
     <script>
         window.addEventListener('pageshow', function(event) {
@@ -1701,7 +1196,7 @@
         });
         function totalAmost() {
             $(document).ready(function() {
-                var typevat  = $('#Mvat').val();
+                var typevat  = {{$Quotation->vat_type}};
                 let allprice = 0;
                 let lessDiscount = 0;
                 let beforetax =0;
@@ -1717,24 +1212,31 @@
                 $('#display-selected-items tr').each(function() {
                     let priceCell = $(this).find('.Amount').val();
                     let pricetotal = parseFloat(priceCell) || 0;
-                    paxtotal =  Adult+Children;
-                    console.log(Adult);
-                    console.log(Children);
-                    allprice += pricetotal;
-                    totalperson = allprice/paxtotal;
-                    beforetax = allprice/1.07;
-                    addedtax = allprice-allprice/1.07;
-                    $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
-                    $('#PaxToTalall').val(isNaN(paxtotal) ? '0' : paxtotal);
-                    if (paxtotal == 0) {
-                        $('#Pax').css('display', 'none');
-                    }else{
-                        $('#Pax').css('display', 'block');
+                    console.log(typevat);
+                    if (typevat == '50') {
+                        allprice += pricetotal;
+
+                        beforetax = allprice/1.07;
+                        addedtax = allprice-allprice/1.07;
+                        $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    }else if(typevat == '51')
+                    {
+                        allprice += pricetotal;
+                        console.log(allprice);
+
+                        $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    } else if(typevat == '52'){
+                        allprice += pricetotal;
+
+                        beforetax = allprice/1.07;
+                        addedtax = allprice-allprice/1.07;
+                        $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     }
                 });
                 var rowCount = $('#display-selected-items tr').not(':first').length;
@@ -1788,7 +1290,7 @@
                 if (result.isConfirmed) {
                     console.log(1);
                     // If user confirms, submit the form
-                    window.location.href = "{{ route('BillingFolioOver.index') }}";
+                    window.location.href = "{{ route('Additional.index') }}";
                 }
             });
         }
