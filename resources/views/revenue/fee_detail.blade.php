@@ -48,7 +48,7 @@
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                             {{-- <td class="td-content-center">{{ $item->batch }}</td> --}}
-                                            <td class="td-content-center">Credit Card Hotel Fee</td>
+                                            <td class="td-content-center">{{ $item->credit_status == 8 ? "Elexa EGAT Fee" : "Credit Card Hotel Fee" }}</td>
                                             <td style="text-align: left;">{{ number_format($item->amount, 2) }}</td>
                                         </tr>
                                     @endforeach

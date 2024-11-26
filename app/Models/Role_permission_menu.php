@@ -31,6 +31,8 @@ class Role_permission_menu extends Model
         'proforma_invoice',
         'receipt_payment',
         'billing_folio',
+        'additional',
+        'receipt_cheque',
 
         'general_ledger',
         'sms_alert',
@@ -60,6 +62,9 @@ class Role_permission_menu extends Model
         'company_event',
         'booking',
         'report',
+        'audit_hotel_water_park_revenue',
+        'report_hotel_water_park_revenue',
+        'report_hotel_manual_charge',
         
         'select_menu_all',
     ];

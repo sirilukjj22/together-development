@@ -1,10 +1,10 @@
 function get_graph() {
 
-    var dateString = $('#date').val();
-    var date = new Date(dateString);
-    var m = date.getMonth() + 1;
-    var d = date.getDate();
-    var date_now = date.getFullYear() + '-' + m.toString().padStart(2, '0') + '-' + d.toString().padStart(2, '0');
+    var dateString = $('#combined-selected-box').val();
+    var dateRange = dateString.split(" - ");
+    var date = dateRange[0].replaceAll("/", "-");
+    
+    var date_now = date;
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -148,11 +148,10 @@ var revenueChart = new Chart(ctx, {
 function updateChart(days) {
     var newData = [];
     var newLabels = [];
-    var dateString = $('#date').val();
-    var date = new Date(dateString);
-    var m = date.getMonth() + 1;
-    var d = date.getDate();
-    var date_now = date.getFullYear() + '-' + m.toString().padStart(2, '0') + '-' + d.toString().padStart(2, '0');
+    var dateString = $('#combined-selected-box').val();
+    var dateRange = dateString.split(" - ");
+    var date = moment(dateRange[0].replaceAll("/", "-"), 'DD/MM/YYYY').format("YYYY-MM-DD");
+    var date_now = date;
     var adate = new Date(date_now);
     var today = new Date(adate.setDate(adate.getDate() - 1));
 

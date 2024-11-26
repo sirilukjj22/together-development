@@ -138,10 +138,8 @@
                     <div class="span3">Hotel & Water Park Revenue</div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print 
-                        <img src="/image/front/pdf.png" width="30px" alt=""></button>
-                    <button type="button" class="bt-tg-normal export-excel" id="export-excel"> Export 
-                        <img src="/image/front/xls.png" width="30px" alt=""></button>
+                    <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
+                    <button type="button" class="bt-tg-normal export-excel" id="export-excel"> Export <img src="/image/front/xls.png" width="30px" alt=""></button>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -152,8 +150,7 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                     <!-- Form Container -->
                     <div class="form-container mb-3 mb-md-0">
-                        <form action="{{ route('report-hotel-water-park-revenue-search') }}" method="POST"
-                            enctype="multipart/form-data" id="form-search" class="row g-3">
+                        <form action="{{ route('report-hotel-water-park-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                             @csrf
                             <div class="col-md-12">
                                 <h3>Search</h3>
@@ -258,6 +255,10 @@
             var statusDetail = document.getElementById("statusDetail");
             startYear.disabled = true;
 
+            $('.to-day').prop('hidden', false);
+            $('.m-t-d').prop('hidden', false);
+            $('.y-t-d').prop('hidden', false);
+
             if (filterBy == "date") {
                 startDate.type = "text";
                 startDate.disabled = false;
@@ -266,6 +267,14 @@
                 $('#box-month').prop('hidden', true);
                 $('#box-start-date').prop('hidden', false);
                 $('#filter-by').val("date");
+
+                var dateRang = document.getElementById("startDate").value;
+                var dateSplit = dateRang.split(" - "); // แยกค่าด้วย "-"
+
+                if (dateSplit[0] != dateSplit[1]) {
+                    $('.m-t-d').prop('hidden', true);
+                    $('.y-t-d').prop('hidden', true);
+                }
             }
 
             if (filterBy == "month") {
@@ -276,6 +285,8 @@
                 $('#box-start-date').prop('hidden', true);
                 $('#box-month').prop('hidden', false);
                 $('#filter-by').val("month");
+
+                $('.to-day').prop('hidden', true);
             }
 
             if (filterBy == "year") {
@@ -287,11 +298,17 @@
                 $('#box-month').prop('hidden', true);
                 $('#box-start-year').prop('hidden', false);
                 $('#filter-by').val("year");
+
+                $('.to-day').prop('hidden', true);
+                $('.m-t-d').prop('hidden', true);
             }
 
             $('input[name="startDate"]').daterangepicker({
                 locale: {
                     format: 'DD/MM/YYYY' // กำหนดรูปแบบวันที่เป็น 'ปี-เดือน-วัน'
+                },
+                maxSpan: {
+                    days: 10 // กำหนดช่วงเวลาไม่เกิน 10 วัน
                 }
             });
         });

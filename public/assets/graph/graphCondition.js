@@ -1,8 +1,9 @@
 function get_graphThisWeek($amount) {
 
-    var dateString = $('#date').val();
-    var date = new Date(dateString);
-    var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var dateString = $('#combined-selected-box').val();
+    var dateRange = dateString.split(" - ");
+    var date = moment(dateRange[0].replaceAll("/", "-"), 'DD/MM/YYYY').format("YYYY-MM-DD");
+    var date_now = date;
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -31,8 +32,8 @@ function get_graphThisWeek($amount) {
 
 function get_graphThisMonth($amount) {
 
-    var dateString = $('#date').val();
-    var date = new Date(dateString);
+    var dateString = new Date();
+    var date = dateString;
     var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     var type = $('#status').val();
     var account = $('#into_account').val();
@@ -66,8 +67,8 @@ function get_graphThisMonth($amount) {
 
 function get_graphThisMonthByDay($amount) {
 
-    var dateString = $('#date').val();
-    var date = new Date(dateString);
+    var dateString = new Date();
+    var date = dateString;
     var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     var type = $('#status').val();
     var account = $('#into_account').val();

@@ -1,3 +1,140 @@
+.border-top-table {
+  border-top: 3px solid rgb(8, 97, 78);
+}
+
+.border-bottom-table {
+  border-bottom: 3px solid rgb(8, 97, 78);
+}
+
+.litepicker .container__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#calendarContainer {
+  margin-top: 20px;
+}
+
+.md-330px {
+  width: 330px;
+  padding: 0px;
+  margin: 4em auto;
+}
+
+@media (max-width: 600px) {
+  .md-330px {
+    margin: auto;
+    margin-bottom: 1em;
+  }
+}
+
+.container__months {
+  padding-top: 0px !important;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  width: 275px !important;
+}
+
+.month-item {
+  padding: 0px !important;
+  width: 275px !important;
+}
+
+.month-item-header {
+  background-color: rgb(23, 123, 118);
+  color: #fff;
+
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+}
+
+.month-item-header > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 7px;
+}
+
+.button-next-month,
+.button-previous-month {
+  scale: 0.8;
+  cursor: pointer !important;
+}
+
+.month-item-name,
+.month-item-year {
+  scale: 0.8;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  background-color: transparent;
+  background-color: rgb(55, 139, 135);
+  color: white;
+  border: none;
+  text-align: end;
+  margin-right: 5px;
+  border: none !important;
+  height: 32px;
+}
+
+.month-item-name option,
+.month-item-year option {
+  background-color: white;
+  color: #2c7f7a;
+}
+
+.month-item-name option:hover,
+.month-item-year option:hover {
+  background-color: rgb(212, 238, 234) !important;
+}
+
+.month-item-name option {
+  text-align: start;
+}
+
+.month-item-year option {
+  text-align: center;
+}
+
+.month-item-weekdays-row > div {
+  scale: 1.15;
+  font-weight: 500;
+  color: #62a7a0;
+}
+
+.month-item .day-item {
+  scale: 1;
+  padding: 7px !important;
+  margin-top: 1px !important;
+  margin-bottom: 1px !important;
+}
+
+.is-today {
+  color: #4f9792 !important;
+}
+
+.is-start-date {
+  color: #edf1f1 !important;
+  background-color: rgb(23, 123, 118) !important;
+}
+
+.is-end-date {
+  color: #edf1f1 !important;
+  background-color: rgb(23, 123, 118) !important;
+}
+
+.is-in-range {
+  background-color: rgb(212, 238, 234) !important;
+}
+
+.day-item:hover {
+  color: rgb(14, 95, 91);
+  box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset,
+    rgba(163, 224, 206, 0.9) 0px 0px 3px 1px !important;
+}
+
 /* Remove text selection */
 .no-select {
   user-select: none; /* Standard CSS property for most browsers */
@@ -193,3 +330,4 @@ button,
   font-weight: 600;
   margin-top: 1rem;
 }
+

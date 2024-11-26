@@ -5,37 +5,23 @@
         if (isset($search_date)) {
             $date_current = $search_date;
         } else {
-            $date_current = date('d/m/Y').' - '.date('d/m/Y');
+            $date_current = date('Y-m-d');
         }
 
         $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
         
         $formatMonth = date('Y-m', strtotime($date_current));
 
-        $exp_date = array_map('trim', explode(' - ', $date_current));
-
-        if ($filter_by == 'date' && count($exp_date) == 2) {
-            $FormatDate = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0]);
-            $FormatDate2 = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[1]);
-
-            $diffInDay = Carbon\Carbon::create(Carbon\Carbon::parse($FormatDate->format('Y-m-d')))->diffInDays(Carbon\Carbon::parse($FormatDate2->format('Y-m-d'))) + 1;
-
-            $day_sum = $diffInDay == 1 ? date('t') : $diffInDay;
-
+        if ($filter_by == 'customRang') {
+            $day_sum = Carbon\Carbon::create(Carbon\Carbon::parse($customRang_start))->diffInDays(Carbon\Carbon::parse($customRang_end));
         } elseif ($filter_by == 'week') {
-            $diffInDay = 7;
             $day_sum = 7;
         } else {
-            $diffInDay = isset($formatMonth) ? date('t', strtotime($formatMonth)) : date('t');
-            $day_sum = $diffInDay;
+            $day_sum = isset($formatMonth) ? date('t', strtotime($formatMonth)) : date('t');
         }
-
-        $pickup_time = $date_current;
-
-        if ($filter_by == 'date' && count($exp_date) != 2 || $filter_by == 'today' || $filter_by == 'yesterday' || $filter_by == 'tomorrow') {
+        
+        if ($filter_by == 'date' || $filter_by == 'today' || $filter_by == 'yesterday' || $filter_by == 'tomorrow') {
             $pickup_time = date('d F Y', strtotime($search_date));
-        } elseif ($filter_by == 'date' && count($exp_date) == 2) {
-            $pickup_time = date('d M', strtotime($FormatDate)) . " " . substr(date('Y', strtotime($FormatDate)), -2) . " ~ ". date('d M', strtotime($FormatDate2)) . " " . substr(date('Y', strtotime($FormatDate2)), -2);
         } elseif ($filter_by == 'month') {
             $pickup_time = $search_date;
         } elseif ($filter_by == 'year') {
@@ -45,11 +31,11 @@
         } elseif ($filter_by == 'thisMonth') {
             $pickup_time = "01 " . date('M') . " ~ " . date('t M');
         } elseif ($filter_by == 'thisYear') {
-            $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-d')));
+            $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-01')));
+        } elseif ($filter_by == 'customRang') {
+            $pickup_time = date('d M', strtotime($customRang_start)) . " " . substr(date('Y', strtotime($customRang_start)), -2) . " ~ ". date('d M', strtotime($customRang_end)) . " " . substr(date('Y', strtotime($customRang_end)), -2);
         }
-        if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == $exp_date[1]) {
-            $pickup_time = date('d F Y', strtotime(Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0])));
-        }
+
     ?>
 
     <?php
@@ -102,7 +88,7 @@
                 </div>
                 <div class="nav-right">
                     <div class="nav-right-in">
-                        <input type="text" id="select-date" name="" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" value="{{ $pickup_time }}" readonly>
+                        <input type="text" id="select-date" name="" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
                                 <button data-toggle="modal" data-target="#ModalShowCalendar" type="button" class="ch-button" style="border-top: 0px; border-left: 0px">
                                     <span class="d-sm-none d-none d-md-inline-block">Search</span>
                                     <i class="fa fa-search" style="font-size: 15px;"></i>
@@ -110,7 +96,7 @@
                             <span class="dropdown">
                                 <button class="dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                                     <span id="txt-daily">
-                                        @if ($filter_by == 'today' || $filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y') && $exp_date[1] == date('d/m/Y' || !isset($filter_by)))
+                                        @if ($filter_by == 'today' || $filter_by == 'date' || !isset($filter_by) && $date_current == date('Y-m-d'))
                                             Today
                                         @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
                                             Yesterday
@@ -123,11 +109,7 @@
                                         @elseif (isset($filter_by) && $filter_by == 'thisYear')
                                             This Year
                                         @else
-                                            @if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y') && $exp_date[1] == date('d/m/Y'))
-                                                Today
-                                            @else
-                                                Custom
-                                            @endif
+                                            Custom
                                         @endif
                                     </span>
                                 </button>
@@ -136,6 +118,7 @@
                                     <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
                                     <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
                                     <a class="dropdown-item" href="#" onclick="search_daily('thisYear')">This Year</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalChoseDateRange">Custom Date Range</a>
                                 </div>
                                 <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(isset($filter_by) ? date($date_current) : date('Y-m-d')))))  }}">
                             </span>
@@ -145,25 +128,20 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-action" aria-labelledby="dropdownMenuOperation">
                                     @if ($total_revenue_today->status == 0)
-                                        {{-- @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by)) --}}
-                                        @if ($diffInDay == 1 || $filter_by == 'date' && strpos($pickup_time, '-') == false && strpos($pickup_time, '~') == false)
+                                        @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by))
                                             @if (@Auth::user()->roleMenuAdd('Hotel & Water Park Revenue', Auth::user()->id) == 1 )
-                                                <a class="dropdown-item" href="#" onclick="Add_data('{{ date('Y-m-d', strtotime($pickup_time)) }}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
+                                                <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
                                                     <i class="fa-solid fa-sack-dollar"></i>Add
                                                 </a>
                                             @endif
                                         @endif
                                     @endif
-
-                                    @if ($diffInDay == 1 || $filter_by == 'date' && strpos($pickup_time, '-') == false && strpos($pickup_time, '~') == false)
-                                        <a class="dropdown-item" href="#" onclick="view_data('{{ date('Y-m-d', strtotime($pickup_time)) }}')" data-toggle="modal" data-target="#ViewDataModalCenter">
-                                            <i class="fa fa-info-circle fa-solid"></i>Details 
-                                        </a>
-                                    @endif
+                                    <a class="dropdown-item" href="#" onclick="view_data('{{$date_current}}')" data-toggle="modal" data-target="#ViewDataModalCenter">
+                                        <i class="fa fa-info-circle fa-solid"></i>Details 
+                                    </a>
                                     <a class="dropdown-item" href="#" onclick="export_data(1)"><i class="fa fa-print"></i>Print </a>
     
-                                    {{-- @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by)) --}}
-                                    @if ($diffInDay == 1 || $filter_by == 'date' && strpos($pickup_time, '-') == false && strpos($pickup_time, '~') == false)
+                                    @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by))
                                         @if (Auth::user()->permission > 0)
                                             @if ($total_revenue_today->status == 0)
                                                 <a href="#" class="dropdown-item btn-close-daily" value="1"><i class="fa fa-lock"></i>Lock </a>
@@ -674,8 +652,8 @@
                       <span class="f-semi">Together Resort Kaengkrachan</span>
                       <span>Hotel and water park revenue</span>
                       <span>Date On : {{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}</span>
-                        @if ($filter_by == "date" || $filter_by == "today" || $filter_by == "yesterday" || $filter_by == "tomorrow" || !isset($filter_by))
-                            @if ($total_revenue_today->status == 1 && $filter_by == 'date' && strpos($pickup_time, '-') == false && strpos($pickup_time, '~') == false)
+                        @if (isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "today" || isset($filter_by) && $filter_by == "yesterday" || isset($filter_by) && $filter_by == "tomorrow" || !isset($filter_by))
+                            @if ($total_revenue_today->status == 1)
                                 <span>Status : <span class="text-danger">ตรวจสอบเรียบร้อยแล้ว</span></span>
                             @else 
                                 <span>Status : -</span>
@@ -690,7 +668,7 @@
                             <th class="to-day th-topic-today">
                                 @if ($filter_by == 'week')
                                     This Week
-                                @elseif ($filter_by == 'date' && strpos($pickup_time, '~') == true)
+                                @elseif ($filter_by == 'customRang')
                                     {{ $pickup_time }}
                                 @else
                                     Today
@@ -811,7 +789,7 @@
                             $total_cash_bank_today = ($today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash) + ($today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_other_revenue);
                             $total_cash_bank_week = ($total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash) + ($total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $total_other_revenue);
 
-                            $total_credit_card_revenue = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
+                            $total_credit_card_revenue = $front_charge[0]['revenue_credit_today'] + $guest_deposit_charge[0]['revenue_credit_today'] + $fb_charge[0]['revenue_credit_today'];
                             $total_credit_card_revenue_week = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
                             $total_credit_card_revenue_month = $front_charge[0]['revenue_credit_month'] + $guest_deposit_charge[0]['revenue_credit_month'] + $fb_charge[0]['revenue_credit_month'];
                             $total_credit_card_revenue_year = $front_charge[0]['revenue_credit_year'] + $guest_deposit_charge[0]['revenue_credit_year'] + $fb_charge[0]['revenue_credit_year'];
@@ -821,12 +799,12 @@
                             $total_charge_month = $credit_revenue_month->total_credit ?? 0;
                             $total_charge_year = $credit_revenue_year->total_credit ?? 0;
 
-                            $total_wp_credit_card_revenue = $wp_charge[0]['revenue_credit_date'];
+                            $total_wp_credit_card_revenue = $wp_charge[0]['revenue_credit_today'];
                             $total_wp_credit_card_revenue_week = $wp_charge[0]['revenue_credit_date'];
                             $total_wp_credit_card_revenue_month = $wp_charge[0]['revenue_credit_month'];
                             $total_wp_credit_card_revenue_year = $wp_charge[0]['revenue_credit_year'];
 
-                            $today_wp_charge = $wp_charge[0]['total'];
+                            $today_wp_charge = $wp_charge[0]['total_today'];
                             $total_wp_charge = $wp_charge[0]['total'];
                             $total_wp_charge_month = $wp_charge[0]['total_month'];
                             $total_wp_charge_year = $wp_charge[0]['total_year'];
@@ -841,7 +819,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($front_charge[0]['revenue_credit_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $front_charge[0]['revenue_credit_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $front_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $front_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -851,9 +829,9 @@
                             <td>Credit Card Guest Deposit Charge</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}
+                                    {{ number_format($guest_deposit_charge[0]['revenue_credit_today'], 2) }}
                                 @else
-                                {{ number_format($filter_by == "date" ? $guest_deposit_charge[0]['revenue_credit_date'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $guest_deposit_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $guest_deposit_charge[0]['revenue_credit_month'] : 0, 2) }}
@@ -866,7 +844,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $fb_charge[0]['revenue_credit_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $fb_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $fb_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -908,7 +886,7 @@
                         </tr>
 
                         @php
-                            $agoda_revenue_outstanding_today = $agoda_charge[0]['total'];
+                            $agoda_revenue_outstanding_today = $agoda_charge[0]['total_today'];
                             $agoda_revenue_outstanding_date = $agoda_charge[0]['total']; // Week, Custom Rang
                             $agoda_revenue_outstanding_month = $agoda_charge[0]['total_month'];
                             $agoda_revenue_outstanding_year = $agoda_charge[0]['total_year'] - $total_agoda_year;
@@ -923,7 +901,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ?  $agoda_charge[0]['revenue_credit_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ?  $agoda_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -935,7 +913,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($agoda_charge[0]['fee_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $agoda_charge[0]['fee_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $agoda_charge[0]['fee_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['fee_month'] : 0, 2) }}</td>
@@ -947,7 +925,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($agoda_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $agoda_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $agoda_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1107,7 +1085,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($wp_charge[0]['fee_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $wp_charge[0]['fee_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $wp_charge[0]['fee_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $wp_charge[0]['fee_month'] : 0, 2) }}</td>
@@ -1150,7 +1128,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['revenue_credit_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -1162,7 +1140,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($ev_charge[0]['fee_date'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['fee_date'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['fee_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['fee_month'] : 0, 2) }}</td>
@@ -1174,7 +1152,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1198,7 +1176,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1211,12 +1189,12 @@
                             <td>Summary Elexa EGAT Revenue</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format($today_ev_revenue + $ev_charge[0]['total'], 2) }}
+                                    {{ number_format($ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? ($today_ev_revenue + $ev_charge[0]['total']) : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? ($total_ev_month + $ev_charge[0]['total_month']) : 0, 2) }}</td>
+                            <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
                             <td class="y-t-d">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr>
@@ -1237,7 +1215,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1253,16 +1231,16 @@
                             <td class="text-end f-semi"> All Revenue </td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + ($total_ev_revenue + $ev_charge[0]['total']), 2) }}
+                                    {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + $ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + ($today_ev_revenue + $ev_charge[0]['total']) : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">
-                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($total_ev_month + $ev_charge[0]['total_month'])) : 0, 2) }}
+                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
                             </td>
                             <td class="y-t-d">
-                                {{ number_format(($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($ev_charge[0]['total_year']), 2) }}
+                                {{ number_format(($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year'], 2) }}
                             </td>
                         </tr>
                         <tr>
@@ -1275,16 +1253,16 @@
                             <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + ($total_ev_revenue + $ev_charge[0]['total']), 2) }}
+                                    {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + ($agoda_charge[0]['total'] + $ev_charge[0]['total']) + $total_agoda_revenue, 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + ($today_ev_revenue + $ev_charge[0]['total']) : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? ($today_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + ($agoda_charge[0]['total_today'] + $ev_charge[0]['total_today']) + $today_agoda_revenue : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">
-                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($total_ev_month + $ev_charge[0]['total_month'])) : 0, 2) }}
+                                {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
                             </td>
                             <td class="y-t-d">
-                                {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year'] + ($agoda_outstanding_last_year + $elexa_outstanding_last_year)), 2) }}
+                                {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year']), 2) }}
                             </td>
                         </tr>
           
@@ -1377,7 +1355,7 @@
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($ev_charge[0]['total'], 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1386,7 +1364,7 @@
 
                           @php
                                 $revenue_outstanding_report_today = $agoda_revenue_outstanding_today + $ev_charge[0]['total'];
-                                $revenue_outstanding_report_date = $agoda_revenue_outstanding_date + $ev_charge[0]['total'];
+                                $revenue_outstanding_report_date = $agoda_revenue_outstanding_date + $ev_charge[0]['total_today'];
                                 $revenue_outstanding_report_month = $agoda_revenue_outstanding_month + $ev_charge[0]['total_month'];
                                 $revenue_outstanding_report_year = $agoda_revenue_outstanding_year + ($ev_charge[0]['total_year'] - $total_ev_year);
                           @endphp
@@ -1411,72 +1389,100 @@
 
     <!-- Modal: เลือกวันที่ modal fade -->
     <div class="modal fade" id="ModalShowCalendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-bottom md-330px" role="document">
-            <div class="modal-content">
+        <div class="modal-dialog mw-350" role="document">
+            <div class="modal-content rounded-xl">
                 <div class="modal-header md-header text-white">
-                    <h5>ค้นหารายการ</h5>
+                    <div class="w-full">
+                        <h5 class=".modal-hd">ค้นหารายการ</h5>
+                    </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
                     @csrf
-                    <div class="modal-body" style="padding-top: 0; padding-bottom: 0px">
-                        <div style="place-items: center">
-                            <div class="center py-2" style="gap: 0.3rem; width: 100%">
-                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-date">Filter by Date</button>
-                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-month">Filter by Month</button>
-                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-year">Filter by Year</button>
+                    <div class="modal-body">
+                        <!-- Modal: เลือกวันที่ modal fade -->
+                        <div class="" style="place-items: center;">
+                            <div class="center" style="gap:0.3rem;">
+                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1" id="filter-date">Filter by Date</button>
+                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1" id="filter-month">Filter by Month</button>
+                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1" id="filter-year">Filter by Year</button>
                             </div>
-                            <input type="text" id="combined-selected-box" name="date" value="{{ $date_current }}" class="selected-value-box t-alight-center" style="width: 300px" />
+
+                            <div style="width: 100%;">
+                                <input type="text" class="selected-value-box t-alight-center" id="combined-selected-box" value="{{ date('d F Y') }}" />
+                            </div>
                             <!-- box แสดงวันที่ เดือน ปี -->
                             <div class="calendars-container" id="calendars-container">
-                                <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper" style="transform: translateY(-10px); height: 250px">
-                                    <div style="text-align: center">
-                                        <div style="transform: scale(1.09)" id="calendarContainer"></div> <!-- เพิ่ม div สำหรับแสดงปฏิทิน -->
+                                <!-- Calendar for Picking a Specific Date -->
+                                <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Date</span>
+                                    <div class="calendar" id="date-picker">
+                                        <header>
+                                            <button type="button" id="prev-month">&lt;</button>
+                                            <h2 id="month-year">{{ date('F Y') }}</h2>
+                                            <button type="button" id="next-month">&gt;</button>
+                                        </header>
+                                        <div class="days-of-week">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="dates-grid" id="dates-grid"></div>
                                     </div>
                                 </div>
+
                                 <!-- Calendar for Picking a Month Range -->
                                 <div class="calendar-wrapper flex-grow-1" id="month-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Month Range</span>
                                     <div class="calendar" id="month-range-picker">
                                         <header>
-                                            <button id="prev-year"><i class="arrow fa fa-angle-left" style="font-weight: 900; font-size: 20px"></i></button>
+                                            <button type="button" id="prev-year">&lt;</button>
                                             <h2 id="year"></h2>
-                                            <button id="next-year"><i class="arrow fa fa-angle-right" style="font-weight: 900; font-size: 20px"></i></button>
+                                            <button type="button" id="next-year">&gt;</button>
                                         </header>
                                         <div class="months-grid"></div>
                                     </div>
                                 </div>
+
                                 <!-- Calendar for Picking a Year -->
-                                <div class="calendar-wrapper flex-grow-1" id="year-picker-wrapper">
+                                <div class="calendar-wrapper flex-grow-1" id="year-picker-wrapper" style="width: 320px;">
+                                    <span class="top-calendar" style="float: left;">Pick a Year</span>
                                     <div class="calendar" id="year-picker">
                                         <div class="years-grid"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Input ส่งค่าไป Controller -->
+                        <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
+                        <input type="hidden" id="date" name="date" value="{{ $date_current }}">
+                        <input type="hidden" name="customRang_start" id="customRang-start2" value="{{ isset($customRang_start) ? $customRang_start : date('Y-m-d')  }}">
+                        <input type="hidden" name="customRang_end" id="customRang-end2" value="{{ isset($customRang_end) ? $customRang_end : date('Y-m-d')  }}">
+                        <!-- ประเภทรายได้ -->
+                        <input type="hidden" id="revenue-type" name="revenue_type" value="">
+
+                        <input type="hidden" name="daily_page" id="daily_page">
+                        <input type="hidden" name="export_pdf" id="export_pdf" value="0">
+
+                        <!-- ล่าง modal -->
+                        <div class="modal-footer flex-between" style="padding:0 0.7rem;">
+                            <div class="">
+                                <button type="button" class="bt-tg-normal bg-tg-light sm" id="select-today-button">Today</button>
+                            </div>
+                            <div>
+                                <button type="button" class="bt-tg-normal sm bt-grey" data-dismiss="modal">Close</button>
+                                <button type="button" id="btn-search-date" class="bt-tg-normal bg-tg-light sm btn-submit-search" style="background-color: #2C7F7A;">Search</button>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Input ส่งค่าไป Controller -->
-                    <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
-
-                    <!-- ประเภทรายได้ -->
-                    <input type="hidden" id="revenue-type" name="revenue_type" value="">
-
-                    <input type="hidden" name="daily_page" id="daily_page">
-                    <input type="hidden" name="export_pdf" id="export_pdf" value="0">
                 </form>
-
-                <!-- ล่าง modal -->
-                <div class="modal-footer border-top d-flex justify-content-between mt-2" style="padding: 0 0.7rem">
-                    <div>
-                        <button class="bt-tg-normal bg-tg-light sm" id="select-today-button">Today</button>
-                    </div>
-                    <div>
-                        <button type="button" class="bt-tg-normal sm bt-grey" data-dismiss="modal">Close</button>
-                        <button type="button" id="btn-search-date" class="bt-tg-normal bg-tg-light sm btn-submit-search" style="background-color: #2c7f7a">Search</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -1497,7 +1503,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date_add" name="date" value="{{ date('Y-m-d', strtotime($pickup_time)) }}" readonly>
+                        <input type="date" class="input-date" id="date_add" name="date" value="{{ date('Y-m-d', strtotime($date_current)) }}" readonly>
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1912,8 +1918,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn button text-white" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
-                        <button type="button" class="btn button text-white" onclick="revenue_store()" style="background-color: rgb(5, 122, 108)"> Save changes </button>
+                        <button type="button" class="btn button" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
+                        <button type="button" class="btn button" onclick="revenue_store()" style="background-color: rgb(5, 122, 108)"> Save changes </button>
                     </div>
                 </div>
             </form>
@@ -1934,7 +1940,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date_view_detail" value="{{ date('Y-m-d', strtotime($pickup_time)) }}">
+                        <input type="date" class="input-date" id="date_view_detail" value="{{ date('Y-m-d', strtotime($date_current)) }}">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -2144,7 +2150,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn button text-white" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
+                        <button type="button" class="btn button" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
                     </div>
                 </div>
             </div>
@@ -2158,16 +2164,17 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+    <!-- Calendar -->
+    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
+    <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
+    {{-- <script src="{{ asset('assets/js/calendar-draftT.js')}}"></script> --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
     <!-- Sweet Alert 2 -->
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
-
-    <!-- Calendar -->
-    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft-litePicker.css') }}?v={{ time() }}">
-    <script src="{{ asset('assets/js/calendar-draft-noDate.js')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+    <script src="{{ asset('assets/js/searh-calendar.js') }}"></script>
 
 <script type="text/javascript">
     const monthName = [
@@ -2187,99 +2194,25 @@
 
     $(document).ready(function() { 
 
-        // เก็บอินสแตนซ์ Litepicker ในตัวแปร
-        let picker;
-        const datepickerElement = document.getElementById("combined-selected-box");
-
         var filter_by = $('#filter-by').val();
-        var dateRange = $('#select-date').val(); 
-
-        if (filter_by != "month" && filter_by != "year") {
-            localStorage.removeItem("selectedYear");
-            localStorage.removeItem("selectedMonthRange");
-            
-            // สร้าง Litepicker
-            picker = new Litepicker({
-                element: datepickerElement,
-                inlineMode: true,
-                singleMode: false,
-                parentEl: document.getElementById("calendarContainer"),
-                allowRepick: true,
-                numberOfMonths: 1,
-                numberOfColumns: 1,
-                format: "DD/MM/YYYY", // ใช้ 'DD' เพื่อให้วันที่แสดงเป็นสองหลัก
-                dropdowns: {
-                    minYear: 2024,
-                    maxYear: 2030,
-                    months: true,
-                    years: true,
-                },
-            });
-        }
-
-        if (filter_by == "month") {
-            localStorage.removeItem("selectedYear");
-            $('#filter-month').click();
-        }
-
-        if (filter_by == "year") {
-            localStorage.removeItem("selectedMonthRange");
-            $('#filter-year').click();
-        }
-
-        // ทำลาย Litepicker เมื่อคลิกปุ่ม filter
-        $(document).on("click", ".filter", function () {
-            var ID = $(this).attr("id");
-            if (ID == "filter-month" || ID == "filter-year") {
-                if (picker) {
-                    picker.destroy(); // ทำลายอินสแตนซ์
-                }
-
-                picker = null; // รีเซ็ตตัวแปร
-
-            } else {
-
-                if (picker) {
-                    picker.destroy(); // ทำลายอินสแตนซ์
-                }
-
-                picker = null; // รีเซ็ตตัวแปร
-
-                // สร้าง Litepicker
-                picker = new Litepicker({
-                    element: datepickerElement,
-                    inlineMode: true,
-                    singleMode: false,
-                    parentEl: document.getElementById("calendarContainer"),
-                    allowRepick: true,
-                    numberOfMonths: 1,
-                    numberOfColumns: 1,
-                    format: "DD/MM/YYYY",
-                    dropdowns: {
-                        minYear: 2024,
-                        maxYear: 2030,
-                        months: true,
-                        years: true,
-                    },
-                });
-            }
-        });
 
         // Calendar
         if (filter_by == "date" || filter_by == "today" || filter_by == "tomorrow" || filter_by == "yesterday") {
-            var dates = dateRange.split(" ~ ");
-
-            // เก็บวันที่เริ่มต้นและวันที่สิ้นสุดลงในตัวแปร
-            var startDate = dates[0].replaceAll("/", "-");
-            var endDate = dates[1].replaceAll("/", "-");
+            var day_now = $('#input-search-day').val();
+            var date_now = new Date($('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val());
+            document.getElementById("myDay").innerHTML = day_now + " " + monthName[date_now.getMonth()] + " " + date_now.getFullYear();
             
-            if (startDate != endDate) {
-                $('.m-t-d').prop('hidden', true);
-                $('.y-t-d').prop('hidden', true);
-            }
+            // Delete class
+            $('#day-'+day_now).removeClass('select-day');
+            $('.select-day').removeClass('today');
+
+            // Add class
+            $('#day-'+day_now).addClass('today');
+            $('#day-'+day_now).addClass('select-day');
         } 
 
-        if (filter_by == "week") {
+        // Hidden <td>
+        if (filter_by == "customRang") {
             $('.m-t-d').prop('hidden', true);
             $('.y-t-d').prop('hidden', true);
         }
@@ -3201,12 +3134,32 @@
             $('#txt-daily').text("This Year");
         }
 
+        if ($search == 'customRang') {
+            var date = new Date($('#customRang-start').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            $('#txt-daily').text("Custom Date Range");
+        }
+
         $('#filter-by').val($search);
         $('#input-search-day').val(day);
         $('#input-search-month').val(month);
         $('#input-search-year').val(year);
+        $('#customRang-start2').val($('#customRang-start').val());
+        $('#customRang-end2').val($('#customRang-end').val());
         $('#form-revenue').submit();
     }
+
+    $('#customRang-start').on('change', function () {
+        $('#customRang-start2').val($('#customRang-start').val());
+        $('#filter-by').val("customRang");
+    });
+
+    $('#customRang-end').on('change', function () {
+        $('#customRang-end2').val($('#customRang-end').val());
+        $('#filter-by').val("customRang");
+    });
 
     function export_data(params) {
         document.getElementById("form-revenue").setAttribute("target", "_blank");
@@ -3216,10 +3169,8 @@
 
     $('.btn-close-daily').on('click', function () {
         var filter_by = $('#filter-by').val();
-        var date = $('#select-date').val();
-        var dates = date.split(" - ");
-        var startDate = moment(dates[0].replaceAll("/", "-")).format('YYYY-MM-DD');
-        var format_date = moment(dates[0].replaceAll("/", "-")).format('DD/MM/YYYY');
+        var date = $('#date').val();
+        var format_date = moment(date).format('DD/MM/YYYY');
 
         Swal.fire({
         icon: "info",
@@ -3238,7 +3189,7 @@
                 cache: false,
                 data: {
                     filter_by: filter_by,
-                    date: startDate
+                    date: date
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success(response) {
@@ -3259,10 +3210,8 @@
 
     $('.btn-open-daily').on('click', function () {
         var filter_by = $('#filter-by').val();
-        var date = $('#select-date').val();
-        var dates = date.split(" - ");
-        var startDate = moment(dates[0].replaceAll("/", "-")).format('YYYY-MM-DD');
-        var format_date = moment(dates[0].replaceAll("/", "-")).format('DD/MM/YYYY');
+        var date = $('#date').val();
+        var format_date = moment(date).format('DD/MM/YYYY');
 
         Swal.fire({
         icon: "info",
@@ -3282,7 +3231,7 @@
                 cache: false,
                 data: {
                     filter_by: filter_by,
-                    date: startDate
+                    date: date
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success(response) {

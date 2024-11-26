@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\HotelWaterParkRevenueExport;
+use App\Exports\HotelWaterParkRevenueSummaryExport;
 use App\Models\Revenues;
 use App\Models\TB_outstanding_balance;
 use Carbon\Carbon;
@@ -102,19 +104,11 @@ class ReportHotelWaterparkRevenueController extends Controller
 
             } elseif ($request->method_name == "pdf") {
 
-                $sum_page = count($data_query) / 25;
-                $page_item = 1;
-                if ($sum_page > 1.2 && $sum_page < 2.5) {
-                    $page_item += 1;
-                } elseif ($sum_page >= 2.5) {
-                    $page_item = 1 + $sum_page > 2.5 ? ceil($sum_page) : 1;
-                }
-
-                $pdf = FacadePdf::loadView('pdf.hotel_water_park_revenue.1A', compact('data_query', 'filter_by', 'search_date', 'startDate', 'status', 'page_item'));
+                $pdf = FacadePdf::loadView('pdf.hotel_water_park_revenue.1A', compact('data_query', 'filter_by', 'search_date', 'startDate', 'status'));
                 return $pdf->stream();
 
             } elseif ($request->method_name == "excel") {
-                // return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+                return Excel::download(new HotelWaterParkRevenueExport($filter_by, $data_query, $search_date, $startDate, $status), 'hotel_water_park_revenue.xlsx', \Maatwebsite\Excel\Excel::XLSX);
             }
         }
     }
@@ -145,6 +139,8 @@ class ReportHotelWaterparkRevenueController extends Controller
                 $ToYear = null;
             }
 
+            $search_date = $request->startDate;
+
         } elseif ($request->filter_by == "month") {
             $FormatDate = Carbon::createFromFormat('Y-m', $request->month);
             $FormatDate2 = Carbon::createFromFormat('Y-m', $request->month);
@@ -161,6 +157,8 @@ class ReportHotelWaterparkRevenueController extends Controller
             $FromYear = $FormatDate->format('Y-01-01');
             $ToYear = $FormatDate->endOfMonth()->format('Y-m-d');
 
+            $search_date = $request->month;
+
         } elseif ($request->filter_by == "year") {
             $FormatDate = Carbon::createFromFormat('Y', $request->startDate);
             $FormatDate2 = Carbon::createFromFormat('Y', $request->startDate);
@@ -176,6 +174,8 @@ class ReportHotelWaterparkRevenueController extends Controller
             // Year
             $FromYear = $FormatDate->format('Y-01-01');
             $ToYear = $FormatDate->format('Y-12-31');
+
+            $search_date = $request->startDate;
         }
 
         // Outstanding Balance From Last Year
@@ -285,53 +285,58 @@ class ReportHotelWaterparkRevenueController extends Controller
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $search_date = $request->startDate;
         $status = $request->status;
 
-        return view('report.hotel_water_park_revenue.index', compact(
-            'credit_revenue',
-            'credit_revenue_month',
-            'credit_revenue_year',
+        if ($request->method_name == "search") {
+            return view('report.hotel_water_park_revenue.index', compact(
+                'credit_revenue', 'credit_revenue_month', 'credit_revenue_year',
+    
+                'total_front_revenue', 'total_front_month','total_front_year', 'front_charge',
+    
+                'total_guest_deposit', 'total_guest_deposit_month', 'total_guest_deposit_year', 'guest_deposit_charge',
+    
+                'total_fb_revenue', 'total_fb_month', 'total_fb_year', 'fb_charge',
+    
+                'total_agoda_revenue', 'total_agoda_month', 'total_agoda_year', 'agoda_charge',
+    
+                'total_wp_revenue', 'total_wp_month', 'total_wp_year', 'wp_charge',
+    
+                'total_ev_revenue', 'total_ev_month', 'total_ev_year', 'ev_charge',
+    
+                'total_other_revenue', 'total_other_month', 'total_other_year',
+    
+                'agoda_outstanding_last_year', 'elexa_outstanding_last_year',
+    
+                'filter_by', 'search_date', 'status'
+            ));
 
-            'total_front_revenue',
-            'total_front_month',
-            'total_front_year',
-            'front_charge',
+        } elseif ($request->method_name == "pdf") {
 
-            'total_guest_deposit',
-            'total_guest_deposit_month',
-            'total_guest_deposit_year',
-            'guest_deposit_charge',
+            $pdf = FacadePdf::loadView('pdf.hotel_water_park_revenue.1B', compact(
+                'credit_revenue', 'credit_revenue_month', 'credit_revenue_year',
+    
+                'total_front_revenue', 'total_front_month','total_front_year', 'front_charge',
+    
+                'total_guest_deposit', 'total_guest_deposit_month', 'total_guest_deposit_year', 'guest_deposit_charge',
+    
+                'total_fb_revenue', 'total_fb_month', 'total_fb_year', 'fb_charge',
+    
+                'total_agoda_revenue', 'total_agoda_month', 'total_agoda_year', 'agoda_charge',
+    
+                'total_wp_revenue', 'total_wp_month', 'total_wp_year', 'wp_charge',
+    
+                'total_ev_revenue', 'total_ev_month', 'total_ev_year', 'ev_charge',
+    
+                'total_other_revenue', 'total_other_month', 'total_other_year',
+    
+                'agoda_outstanding_last_year', 'elexa_outstanding_last_year',
+    
+                'filter_by', 'search_date', 'status'));
+            return $pdf->stream();
 
-            'total_fb_revenue',
-            'total_fb_month',
-            'total_fb_year',
-            'fb_charge',
-
-            'total_agoda_revenue',
-            'total_agoda_month',
-            'total_agoda_year',
-            'agoda_charge',
-
-            'total_wp_revenue',
-            'total_wp_month',
-            'total_wp_year',
-            'wp_charge',
-
-            'total_ev_revenue',
-            'total_ev_month',
-            'total_ev_year',
-            'ev_charge',
-
-            'total_other_revenue',
-            'total_other_month',
-            'total_other_year',
-
-            'agoda_outstanding_last_year',
-            'elexa_outstanding_last_year',
-
-            'filter_by', 'search_date', 'status'
-        ));
+        } elseif ($request->method_name == "excel") {
+            return Excel::download(new HotelWaterParkRevenueSummaryExport($filter_by, $search_date, $status), 'hotel_water_park_revenue.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        }
     }
 
     public function search_year_detail(Request $request)

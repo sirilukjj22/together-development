@@ -4,55 +4,27 @@
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
             @php
-                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
-                $date_current = isset($search_date) ? $search_date : date('d/m/Y').' - '.date('d/m/Y'); // วันปัจจุบัน
+                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(isset($search_date) ? $search_date : date('Y-m-d'))))); // อาทิตย์ - เสาร์
+                $date_current = isset($search_date) ? $search_date : date('Y-m-d'); // วันปัจจุบัน
 
-                $exp_date = array_map('trim', explode(' - ', $date_current));
-
-                if ($filter_by == 'date' && count($exp_date) == 2) {
-                    $FormatDate = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0]);
-                    $FormatDate2 = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[1]);
-                } elseif ($filter_by == 'yesterday') {
-                    $FormatDate = Carbon\Carbon::now()->subDays(1);
-                    $FormatDate2 = Carbon\Carbon::now()->subDays(1);
-                } elseif ($filter_by == 'tomorrow') {
-                    $FormatDate = Carbon\Carbon::now()->addDays(1);
-                    $FormatDate2 = Carbon\Carbon::now()->addDays(1);
-                }
-
-                $pickup_time = $date_current;
-
-                if ($filter_by == 'date' && count($exp_date) != 2 || $filter_by == 'today') {
+                if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
                     $pickup_time = date('d F Y', strtotime($search_date));
-                } elseif ($filter_by == 'date' && count($exp_date) == 2) {
-                    $pickup_time = date('d M', strtotime($FormatDate)) . " " . substr(date('Y', strtotime($FormatDate)), -2) . " ~ ". date('d M', strtotime($FormatDate2)) . " " . substr(date('Y', strtotime($FormatDate2)), -2);
-                } elseif ($filter_by == 'yesterday') {
-                    $pickup_time = date('d F Y', strtotime('-1 day'));
-                } elseif ($filter_by == 'tomorrow') {
-                    $pickup_time = date('d F Y', strtotime('+1 day'));
-                } elseif ($filter_by == 'month') {
+                } elseif (isset($filter_by) && $filter_by == 'month') {
                     $pickup_time = $search_date;
-                } elseif ($filter_by == 'year') {
-                    $pickup_time = $search_date;
-                } elseif ($filter_by == 'week') {
-                    $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
-                } elseif ($filter_by == 'thisMonth') {
+                } elseif (isset($filter_by) && $filter_by == 'year') {
+                    $pickup_time = date('Y', strtotime($search_date));
+                } elseif (isset($filter_by) && $filter_by == 'week') {
+                    $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime($search_date))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
+                } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
                     $pickup_time = "01 " . date('M') . " ~ " . date('t M');
-                } elseif ($filter_by == 'thisYear') {
-                    $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-d')));
-                }
-                if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == $exp_date[1]) {
-                    $pickup_time = date('d F Y', strtotime(Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0])));
+                } elseif (isset($filter_by) && $filter_by == 'thisYear') {
+                    $pickup_time = date('Y');
                 }
 
                 ## Check Close Day
-                if ($filter_by == 'date'  && count($exp_date) == 2 && $exp_date[0] == $exp_date[1] || $filter_by == 'today' || $filter_by == 'yesterday' || $filter_by == 'tomorrow') {
-                    $close_day = App\Models\SMS_alerts::checkCloseDay($FormatDate);
-                } 
-                // elseif ($filter_by == 'week' || $filter_by == 'month' || $filter_by == 'thisMonth' || $filter_by == 'year' || $filter_by == 'thisYear') {
-                //     $close_day = 1;
-                // } 
-                else {
+                if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by)) {
+                    $close_day = App\Models\SMS_alerts::checkCloseDay($date_current);
+                } else {
                     $close_day = 0;
                 }
             @endphp
@@ -94,8 +66,7 @@
                                 </span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                <a class="dropdown-item" href="{{ route('sms-alert') }}">Today</a>
-                                {{-- <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a> --}}
+                                <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('yesterday')">Yesterday</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
@@ -502,10 +473,10 @@
                                         <div class="flex-end-g2">
                                             <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
                                             </select>
                                             <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
                                         </div>
@@ -1414,11 +1385,11 @@
                     @csrf
                     <div class="modal-body">
                         <!-- Modal: เลือกวันที่ modal fade -->
-                        <div style="place-items: center;">
-                            <div class="center py-2" style="gap: 0.3rem; width: 100%">
-                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-date">Filter by Date</button>
-                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-month">Filter by Month</button>
-                                <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-year">Filter by Year</button>
+                        <div class="" style="place-items: center;">
+                            <div class="center" style="gap:0.3rem;">
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-date">Filter by Date</button>
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-month">Filter by Month</button>
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-year">Filter by Year</button>
                             </div>
                             <div class="center w-100" style="gap:0.3rem;">
                                 <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
@@ -1459,27 +1430,47 @@
                                 <option value="9" {{ isset($status) && $status == 9 ? 'selected' : '' }}>Other Bank Transfer Revenue</option>
                             </select>
 
-                            <input type="text" id="combined-selected-box" name="date" value="{{ $date_current }}" class="selected-value-box t-alight-center" style="width: 300px" />
+                            <input type="text" class="selected-value-box t-alight-center" id="combined-selected-box" value="{{ date('d F Y') }}" />
                             <!-- box แสดงวันที่ เดือน ปี -->
                             <div class="calendars-container" id="calendars-container">
-                                <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper" style="transform: translateY(-10px); height: 250px">
-                                    <div style="text-align: center">
-                                        <div style="transform: scale(1.09)" id="calendarContainer"></div> <!-- เพิ่ม div สำหรับแสดงปฏิทิน -->
+                                <!-- Calendar for Picking a Specific Date -->
+                                <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Date</span>
+                                    <div class="calendar" id="date-picker">
+                                        <header>
+                                            <button type="button" id="prev-month">&lt;</button>
+                                            <h2 id="month-year">{{ date('F Y') }}</h2>
+                                            <button type="button" id="next-month">&gt;</button>
+                                        </header>
+                                        <div class="days-of-week">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="dates-grid" id="dates-grid"></div>
                                     </div>
                                 </div>
+
                                 <!-- Calendar for Picking a Month Range -->
                                 <div class="calendar-wrapper flex-grow-1" id="month-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Month Range</span>
                                     <div class="calendar" id="month-range-picker">
                                         <header>
-                                            <button id="prev-year"><i class="arrow fa fa-angle-left" style="font-weight: 900; font-size: 20px"></i></button>
+                                            <button type="button" id="prev-year">&lt;</button>
                                             <h2 id="year"></h2>
-                                            <button id="next-year"><i class="arrow fa fa-angle-right" style="font-weight: 900; font-size: 20px"></i></button>
+                                            <button type="button" id="next-year">&gt;</button>
                                         </header>
                                         <div class="months-grid"></div>
                                     </div>
                                 </div>
+
                                 <!-- Calendar for Picking a Year -->
                                 <div class="calendar-wrapper flex-grow-1" id="year-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Year</span>
                                     <div class="calendar" id="year-picker">
                                         <div class="years-grid"></div>
                                     </div>
@@ -1489,18 +1480,18 @@
 
                         <!-- Input ส่งค่าไป Controller -->
                         <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
-                        {{-- <input type="hidden" id="date" name="date" value="{{ $date_current }}"> --}}
+                        <input type="hidden" id="date" name="date" value="{{ $date_current }}">
                         <!-- ประเภทรายได้ -->
                         <input type="hidden" id="revenue-type" name="revenue_type" value="">
 
                         <!-- ล่าง modal -->
-                        <div class="modal-footer border-top d-flex justify-content-between mt-2" style="padding: 0 0.7rem">
-                            <div>
-                                <button class="bt-tg-normal bg-tg-light sm" id="select-today-button">Today</button>
+                        <div class="modal-footer flex-between" style="padding:0 0.7rem;">
+                            <div class="">
+                                <button type="button" class="bt-tg bg-tg-light sm" id="select-today-button">Today</button>
                             </div>
                             <div>
-                                <button type="button" class="bt-tg-normal sm bt-grey" data-dismiss="modal">Close</button>
-                                <button type="button" id="btn-search-date" class="bt-tg-normal bg-tg-light sm btn-submit-search" style="background-color: #2c7f7a">Search</button>
+                                <button type="button" class="bt-tg  sm bt-grey" data-dismiss="modal">Close</button>
+                                <button type="button" id="btn-search-date" class="bt-tg bg-tg-light sm" style="background-color: #2C7F7A;">Search</button>
                             </div>
                         </div>
                     </div>
@@ -1530,9 +1521,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <!-- Calendar -->
-    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft-litePicker.css') }}?v={{ time() }}">
-    <script src="{{ asset('assets/js/calendar-draft-noDate.js')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
+    <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
@@ -1601,6 +1591,14 @@
     </style>
 
     <script type="text/javascript">
+        function dayPickup() {
+            let x1 = document.getElementById("myDate").value;
+            let x2 = document.getElementById("myDate2").value;
+            document.getElementById("demo-date").innerHTML = x1 + " - " + x2;
+        }
+    </script>
+
+    <script type="text/javascript">
         const monthName = [
             "January",
             "February",
@@ -1635,130 +1633,45 @@
                 }
             });
 
-            // Calendar
-            let picker;
-            const datepickerElement = document.getElementById("combined-selected-box");
-
             var filter_by = $('#filter-by').val();
-            var dateRange = $('#select-date').val(); 
-
-            if (filter_by != "month" && filter_by != "year") {
-                localStorage.removeItem("selectedYear");
-                localStorage.removeItem("selectedMonthRange");
-                
-                // สร้าง Litepicker
-                picker = new Litepicker({
-                    element: datepickerElement,
-                    inlineMode: true,
-                    singleMode: false,
-                    parentEl: document.getElementById("calendarContainer"),
-                    allowRepick: true,
-                    numberOfMonths: 1,
-                    numberOfColumns: 1,
-                    format: "DD/MM/YYYY", // ใช้ 'DD' เพื่อให้วันที่แสดงเป็นสองหลัก
-                    dropdowns: {
-                        minYear: 2024,
-                        maxYear: 2030,
-                        months: true,
-                        years: true,
-                    },
-                });
-            }
 
             if (filter_by == "month") {
-                localStorage.removeItem("selectedYear");
-                $('#filter-month').click();
-            }
-
-            if (filter_by == "year") {
-                localStorage.removeItem("selectedMonthRange");
-                $('#filter-year').click();
-            }
-
-            // ทำลาย Litepicker เมื่อคลิกปุ่ม filter
-            $(document).on("click", ".filter", function () {
-                var ID = $(this).attr("id");
-                if (ID == "filter-month" || ID == "filter-year") {
-                    if (picker) {
-                        picker.destroy(); // ทำลายอินสแตนซ์
-                    }
-
-                    picker = null; // รีเซ็ตตัวแปร
-
-                } else {
-
-                    if (picker) {
-                        picker.destroy(); // ทำลายอินสแตนซ์
-                    }
-
-                    picker = null; // รีเซ็ตตัวแปร
-
-                    // สร้าง Litepicker
-                    picker = new Litepicker({
-                        element: datepickerElement,
-                        inlineMode: true,
-                        singleMode: false,
-                        parentEl: document.getElementById("calendarContainer"),
-                        allowRepick: true,
-                        numberOfMonths: 1,
-                        numberOfColumns: 1,
-                        format: "DD/MM/YYYY",
-                        dropdowns: {
-                            minYear: 2024,
-                            maxYear: 2030,
-                            months: true,
-                            years: true,
-                        },
-                    });
-                }
-            });
-            // END Calendar
-
-            if (filter_by == "month") {
-                var dateString = $('#combined-selected-box').val();
+                var dateString = $('#date').val();
                 var dateSplit = dateString.split('-');
 
                 if (dateSplit.length == 1) {
-                    var fDate_start = moment(dateSplit[0]).format('MM');
-                    var fDate_end = moment(dateSplit[0]).format('MM');
-                    var fYear = moment(dateSplit[0]).format('YYYY');
+                    var fDate_start = new Date(dateSplit[0]);
+                    var fDate_end = new Date(dateSplit[0]);
                 } else {
-                    var fDate_start = moment(dateSplit[0], "MMMM").format('MM');
-                    var fDate_end = moment(dateSplit[1]).format('MM');
-                    var fYear = moment(dateSplit[1]).format('YYYY');
+                    var fDate_start = new Date(dateSplit[0]);
+                    var fDate_end = new Date(dateSplit[1]);
                 }
-
-                var start_month = fDate_start;
-                var end_month = fDate_end;
-                var year = fYear;
+                
+                var start_month = (fDate_start.getMonth() + 1).toString().padStart(2, '0');
+                var end_month = (fDate_end.getMonth() + 1).toString().padStart(2, '0');
+                var year = fDate_end.getFullYear();
 
                 chartMonthToMonth(start_month, end_month, year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
             } if (filter_by == "thisMonth") {
-                var dateString = new Date();
-                var start_month = dateString.getMonth() + 1;
-                var end_month = dateString.getMonth() + 1;
-                var year = dateString.getFullYear();
-
-                console.log(start_month, end_month, year);
-                
+                var dateString = $('#date').val();
+                var dateSplit = dateString.split('-');
+                var fDate_start = new Date(dateSplit[0]);
+                var fDate_end = new Date(dateSplit[1]);
+                var start_month = fDate_start.getMonth() + 1;
+                var end_month = fDate_end.getMonth() + 1;
+                var year = fDate_end.getFullYear();
 
                 chartThisMonth2(start_month, end_month, year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
             } if (filter_by == "year") { 
-                var year = $('#combined-selected-box').val();
-                
-                chartFilterByYear(year);
-                $('.graph-date').prop('hidden', true);
-                $('#graphChartByMonthOrYear').prop('hidden', false);
-
-            } if (filter_by == "thisYear") { 
-                var dateString = new Date();
-                var year = dateString.getFullYear();
+                var dateString = $('#date').val();
+                var dateSplit = dateString.split('-');
+                var year = dateSplit[0];
                 
                 chartFilterByYear(year);
                 $('.graph-date').prop('hidden', true);
@@ -1783,10 +1696,6 @@
 
                 document.getElementById("myDay").innerHTML = date_now;
             }
-        });
-
-        $('.ch-button').on('click', function () {
-            $('#filter-by').val("date");
         });
 
         //เปิดปิด coustome date range
@@ -1821,7 +1730,7 @@
             var table_name = id+'Table';
 
             var filter_by = $('#filter-by').val();
-            var dateString = $('#combined-selected-box').val();
+            var dateString = $('#date').val();
             var type = $('#status').val();
             var account = $('#into_account').val();
             var count_total = 0;
@@ -1922,37 +1831,49 @@
             } 
 
             if ($search == 'yesterday') {
-                var startDate = moment().subtract(1, 'days').format('DD/MM/YYYY');
-                var endDate = moment().subtract(1, 'days').format('DD/MM/YYYY');
+                var date = AddOrSubractDays(new Date(), 1, false);
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
                 $('#txt-daily').text("Yesterday");
             } 
 
             if ($search == 'tomorrow') {
-                var startDate = moment().add(1, 'days').format('DD/MM/YYYY');
-                var endDate = moment().add(1, 'days').format('DD/MM/YYYY');
+                var date = AddOrSubractDays(new Date(), 1, true);
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
                 $('#txt-daily').text("Tomorrow");
             } 
 
             if ($search == 'week') {
-                var startDate = moment().format('DD/MM/YYYY');
-                var endDate = moment().format('DD/MM/YYYY');
+                var date = new Date($('#week-from').val());
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
                 $('#txt-daily').text("This Week");
             }
             
             if ($search == 'thisMonth') {
-                var startDate = moment().format('DD/MM/YYYY');
-                var endDate = moment().format('DD/MM/YYYY');
+                var date = new Date();
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
                 $('#txt-daily').text("This Month");
             }
 
             if ($search == 'thisYear') {
-                var startDate = moment().format('DD/MM/YYYY');
-                var endDate = moment().format('DD/MM/YYYY');
+                var date = new Date();
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
                 $('#txt-daily').text("This Year");
             }
 
             $('#filter-by').val($search);
-            $('#combined-selected-box').val(startDate+" - "+endDate);
+            $('#input-search-day').val(day);
+            $('#input-search-month').val(month);
+            $('#input-search-year').val(year);
             $('#revenue-type').val('');
             $('#form-calendar').submit();
         }
@@ -2291,10 +2212,7 @@
                 success: function(response) {
                     if (response.data) {
                         var myArray = response.data.date.split(" ");
-
-                        if (response.data.date_into != null) {
-                            var myArray2 = response.data.date_into.split(" ");
-                        }
+                        var myArray2 = response.data.date_into.split(" ");
 
                         $('#status').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
@@ -2303,9 +2221,7 @@
                         $('#transfer_from').val(response.data.transfer_from).trigger('change');
                         $('#add_into_account').val(response.data.into_account).trigger('change');
                         $('#amount').val(response.data.amount);
-                        if (response.data.date_into != null) {
-                            $('#sms-date-transfer').val(myArray2[0]);
-                        }
+                        $('#sms-date-transfer').val(myArray2[0]);
                     }
                 },
             });
@@ -2507,14 +2423,11 @@
 
     {{-- กราฟ 2 --}}
     <script>
-        var dateString = $('#combined-selected-box').val();
-        var dateRange = dateString.split(" - ");
-        if (dateRange[1]) {
-            var date = moment(dateRange[0].replaceAll("/", "-"), 'DD/MM/YYYY').format("YYYY-MM-DD");
-        } else {
-            var date = moment().format("YYYY-MM-DD");
-        }
-        var date_now = date;
+        var dateString = $('#date').val();
+        var date = new Date(dateString);
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        var date_now = date.getFullYear() + '-' + m.toString().padStart(2, '0') + '-' + d.toString().padStart(2, '0');
         var type = $('#status').val();
         var account = $('#into_account').val();
 

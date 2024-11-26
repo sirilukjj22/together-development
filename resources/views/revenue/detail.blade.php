@@ -23,10 +23,10 @@
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                     <select class="entriespage-button" id="search-per-page-revenue" onchange="getPage(1, this.value, 'revenue')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>100</option>
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                     </select>
                                     <input class="search-button search-data" id="revenue" style="text-align:left;" placeholder="Search" />
                                 </div>
@@ -57,7 +57,7 @@
                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                                 ?>
-                                                <div class="flex-jc p-left-4 center">
+                                                <div class="flex-jc p-left-4">
                                                     @if (file_exists($filename))
                                                         <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
                                                     @elseif (file_exists($filename2))
