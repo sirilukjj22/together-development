@@ -153,6 +153,8 @@ class AuthController extends Controller
             'proforma_invoice' => $data['menu_proforma_invoice'] ?? 0,
             'receipt_payment' => $data['menu_receipt_payment'] ?? 0,
             'billing_folio' => $data['menu_billing_folio'] ?? 0,
+            'additional' => $data['menu_additional'] ?? 0,
+            'receipt_cheque' => $data['menu_receipt_cheque'] ?? 0,
 
             'debtor' => $data['menu_debtor_main'] ?? 0,
             'agoda' => $data['menu_agoda'] ?? 0,
@@ -182,6 +184,9 @@ class AuthController extends Controller
             'booking' => $data['menu_booking'] ?? 0,
             'document_template_pdf' => $data['menu_document_template_pdf'] ?? 0,
             'report' => $data['menu_report_main'] ?? 0,
+            'audit_hotel_water_park_revenue' => $data['menu_audit_hotel_water_park_revenue'] ?? 0,
+            'report_hotel_water_park_revenue' => $data['menu_report_hotel_water_park_revenue'] ?? 0,
+            'report_hotel_manual_charge' => $data['menu_report_hotel_manual_charge'] ?? 0,
 
             'select_menu_all' => $data['select_menu_all'] ?? 0,
           ]);

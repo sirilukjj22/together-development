@@ -279,6 +279,8 @@ class UsersController extends Controller
                 'proforma_invoice' => $request->menu_proforma_invoice ?? 0,
                 'receipt_payment' => $request->menu_receipt_payment ?? 0,
                 'billing_folio' => $request->menu_billing_folio ?? 0,
+                'additional' => $request->menu_additional ?? 0,
+                'receipt_cheque' => $request->menu_receipt_cheque ?? 0,
 
                 'debtor' => $request->menu_debtor_main ?? 0,
                 'agoda' => $request->menu_agoda ?? 0,
@@ -308,6 +310,9 @@ class UsersController extends Controller
                 'booking' => $request->menu_booking ?? 0,
                 'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
                 'report' => $request->menu_report_main ?? 0,
+                'audit_hotel_water_park_revenue' => $request->menu_audit_hotel_water_park_revenue ?? 0,
+                'report_hotel_water_park_revenue' => $request->menu_report_hotel_water_park_revenue ?? 0,
+                'report_hotel_manual_charge' => $request->menu_report_hotel_manual_charge ?? 0,
 
                 'select_menu_all' => $request->select_menu_all ?? 0,
               ]);

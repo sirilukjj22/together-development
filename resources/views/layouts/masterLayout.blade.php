@@ -262,7 +262,9 @@
                                         @if (Auth::user()->roleMenu->revenue == 1)
                                             <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
                                         @endif
-                                        <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue</a></li>
+                                        @if (Auth::user()->roleMenu->audit_hotel_water_park_revenue == 1)
+                                            <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue</a></li>
+                                        @endif
                                     </ul>
                                 </li>
                             @endif
@@ -274,10 +276,12 @@
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Report">
-                                        {{-- @if (Auth::user()->roleMenu->sms_alert == 1) --}}
+                                        @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1)
                                             <li><a class="ms-link" href="{{ route('report-hotel-water-park-revenue') }}">Hotel & Water Park Revenue</a></li>
+                                        @endif
+                                        @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1)
                                             <li><a class="ms-link" href="{{ route('report-hotel-manual-charge') }}">Hotel Manual Charge</a></li>
-                                        {{-- @endif --}}
+                                        @endif
                                     </ul>
                                 </li>
                             @endif
