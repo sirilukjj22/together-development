@@ -406,7 +406,7 @@
     <!-- END MODAL -->
 
     <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
-    <input type="hidden" id="date" name="date" value="{{ $search_date }}">
+    <input type="hidden" id="combined-selected-box" name="date" value="{{ $search_date }}">
     <input type="hidden" id="status" value="5">
     <input type="hidden" id="into_account" value="{{ $into_account }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
@@ -470,7 +470,7 @@
             var table_name = id+'Table';
 
             var filter_by = $('#filter-by').val();
-            var dateString = $('#date').val();
+            var dateString = $('#combined-selected-box').val();
             var type_status = $('#status').val();
             var account = $('#account').val();
             var getUrl = window.location.pathname;         

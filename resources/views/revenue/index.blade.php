@@ -46,9 +46,7 @@
             $pickup_time = "01 " . date('M') . " ~ " . date('t M');
         } elseif ($filter_by == 'thisYear') {
             $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-d')));
-        } elseif ($filter_by == 'customRang') {
-            $pickup_time = date('d M', strtotime($customRang_start)) . " " . substr(date('Y', strtotime($customRang_start)), -2) . " ~ ". date('d M', strtotime($customRang_end)) . " " . substr(date('Y', strtotime($customRang_end)), -2);
-        } 
+        }
         if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == $exp_date[1]) {
             $pickup_time = date('d F Y', strtotime(Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0])));
         }
@@ -3203,20 +3201,10 @@
             $('#txt-daily').text("This Year");
         }
 
-        if ($search == 'customRang') {
-            var date = new Date($('#customRang-start').val());
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
-            $('#txt-daily').text("Custom Date Range");
-        }
-
         $('#filter-by').val($search);
         $('#input-search-day').val(day);
         $('#input-search-month').val(month);
         $('#input-search-year').val(year);
-        $('#customRang-start2').val($('#customRang-start').val());
-        $('#customRang-end2').val($('#customRang-end').val());
         $('#form-revenue').submit();
     }
 
