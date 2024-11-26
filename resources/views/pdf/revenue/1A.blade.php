@@ -417,27 +417,50 @@
                 if (isset($search_date)) {
                     $date_current = $search_date;
                 } else {
-                    $date_current = date('Y-m-d');
+                    $date_current = date('d/m/Y').' - '.date('d/m/Y');
                 }
 
                 $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
-                
-                $day_sum = isset($search_date) ? date('j', strtotime($search_date)) : date('j');
+        
+                $formatMonth = date('Y-m', strtotime($date_current));
 
-                if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
+                $exp_date = array_map('trim', explode(' - ', $date_current));
+
+                if ($filter_by == 'date' && count($exp_date) == 2) {
+                    $FormatDate = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0]);
+                    $FormatDate2 = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[1]);
+
+                    $diffInDay = Carbon\Carbon::create(Carbon\Carbon::parse($FormatDate->format('Y-m-d')))->diffInDays(Carbon\Carbon::parse($FormatDate2->format('Y-m-d'))) + 1;
+
+                    $day_sum = $diffInDay == 1 ? date('t') : $diffInDay;
+
+                } elseif ($filter_by == 'week') {
+                    $diffInDay = 7;
+                    $day_sum = 7;
+                } else {
+                    $diffInDay = isset($formatMonth) ? date('t', strtotime($formatMonth)) : date('t');
+                    $day_sum = $diffInDay;
+                }
+
+                $pickup_time = $date_current;
+
+                if ($filter_by == 'date' && count($exp_date) != 2 || $filter_by == 'today' || $filter_by == 'yesterday' || $filter_by == 'tomorrow') {
                     $pickup_time = date('d F Y', strtotime($search_date));
-                } elseif (isset($filter_by) && $filter_by == 'month') {
+                } elseif ($filter_by == 'date' && count($exp_date) == 2) {
+                    $pickup_time = date('d M', strtotime($FormatDate)) . " " . substr(date('Y', strtotime($FormatDate)), -2) . " ~ ". date('d M', strtotime($FormatDate2)) . " " . substr(date('Y', strtotime($FormatDate2)), -2);
+                } elseif ($filter_by == 'month') {
                     $pickup_time = $search_date;
-                } elseif (isset($filter_by) && $filter_by == 'year') {
+                } elseif ($filter_by == 'year') {
                     $pickup_time = $search_date;
-                } elseif (isset($filter_by) && $filter_by == 'week') {
+                } elseif ($filter_by == 'week') {
                     $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
-                } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
+                } elseif ($filter_by == 'thisMonth') {
                     $pickup_time = "01 " . date('M') . " ~ " . date('t M');
-                } elseif (isset($filter_by) && $filter_by == 'thisYear') {
-                    $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-01')));
-                } elseif (isset($filter_by) && $filter_by == 'customRang') {
-                    $pickup_time = date('d M', strtotime($customRang_start)) . " " . substr(date('Y', strtotime($customRang_start)), -2) . " ~ ". date('d M', strtotime($customRang_end)) . " " . substr(date('Y', strtotime($customRang_end)), -2);
+                } elseif ($filter_by == 'thisYear') {
+                    $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-d')));
+                }
+                if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == $exp_date[1]) {
+                    $pickup_time = date('d F Y', strtotime(Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0])));
                 }
 
             ?>
@@ -603,7 +626,7 @@
                         $total_cash_bank_today = ($today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash) + ($today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_other_revenue);
                         $total_cash_bank_week = ($total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash) + ($total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $total_other_revenue);
 
-                        $total_credit_card_revenue = $front_charge[0]['revenue_credit_today'] + $guest_deposit_charge[0]['revenue_credit_today'] + $fb_charge[0]['revenue_credit_today'];
+                        $total_credit_card_revenue = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
                         $total_credit_card_revenue_week = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
                         $total_credit_card_revenue_month = $front_charge[0]['revenue_credit_month'] + $guest_deposit_charge[0]['revenue_credit_month'] + $fb_charge[0]['revenue_credit_month'];
                         $total_credit_card_revenue_year = $front_charge[0]['revenue_credit_year'] + $guest_deposit_charge[0]['revenue_credit_year'] + $fb_charge[0]['revenue_credit_year'];
@@ -613,20 +636,15 @@
                         $total_charge_month = $credit_revenue_month->total_credit ?? 0;
                         $total_charge_year = $credit_revenue_year->total_credit ?? 0;
 
-                        $total_wp_credit_card_revenue = $wp_charge[0]['revenue_credit_today'];
+                        $total_wp_credit_card_revenue = $wp_charge[0]['revenue_credit_date'];
                         $total_wp_credit_card_revenue_week = $wp_charge[0]['revenue_credit_date'];
                         $total_wp_credit_card_revenue_month = $wp_charge[0]['revenue_credit_month'];
                         $total_wp_credit_card_revenue_year = $wp_charge[0]['revenue_credit_year'];
 
-                        $today_wp_charge = $wp_charge[0]['total_today'];
+                        $today_wp_charge = $wp_charge[0]['total'];
                         $total_wp_charge = $wp_charge[0]['total'];
                         $total_wp_charge_month = $wp_charge[0]['total_month'];
                         $total_wp_charge_year = $wp_charge[0]['total_year'];
-
-                        $agoda_revenue_outstanding_today = $agoda_charge[0]['total_today'];
-                        $agoda_revenue_outstanding_date = $agoda_charge[0]['total']; // Week, Custom Rang
-                        $agoda_revenue_outstanding_month = $agoda_charge[0]['total_month'];
-                        $agoda_revenue_outstanding_year = $agoda_charge[0]['total_year'] - $total_agoda_year;
                     @endphp
 
                     <tr>
@@ -638,7 +656,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($front_charge[0]['revenue_credit_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $front_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $front_charge[0]['revenue_credit_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $front_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -648,9 +666,9 @@
                         <td colspan="2"><b>Credit Card Guest Deposit Charge</b></td>
                         <td class="to-day">
                             @if ($filter_by == "week" || $filter_by == "customRang")
-                                {{ number_format($guest_deposit_charge[0]['revenue_credit_today'], 2) }}
+                                {{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}
                             @else
-                            {{ number_format($filter_by == "date" ? $guest_deposit_charge[0]['revenue_credit_today'] : 0, 2) }}
+                            {{ number_format($filter_by == "date" ? $guest_deposit_charge[0]['revenue_credit_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $guest_deposit_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -662,7 +680,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $fb_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $fb_charge[0]['revenue_credit_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $fb_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -712,7 +730,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ?  $agoda_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ?  $agoda_charge[0]['revenue_credit_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -724,19 +742,27 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($agoda_charge[0]['fee_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $agoda_charge[0]['fee_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $agoda_charge[0]['fee_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['fee_month'] : 0, 2) }}</td>
                         <td class="y-t-d">{{ number_format($agoda_charge[0]['fee_year'], 2) }}</td>
                     </tr>
+
+                    @php
+                        $agoda_revenue_outstanding_today = $agoda_charge[0]['total'];
+                        $agoda_revenue_outstanding_date = $agoda_charge[0]['total']; // Week, Custom Rang
+                        $agoda_revenue_outstanding_month = $agoda_charge[0]['total_month'];
+                        $agoda_revenue_outstanding_year = $agoda_charge[0]['total_year'] - $total_agoda_year;
+                    @endphp
+
                     <tr>
                         <td colspan="2"><b>Agoda Revenue</b></td>
                         <td class="to-day">
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($agoda_charge[0]['total'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $agoda_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $agoda_charge[0]['total'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['total_month'] : 0, 2) }}</td>
@@ -946,7 +972,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($wp_charge[0]['fee_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $wp_charge[0]['fee_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $wp_charge[0]['fee_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $wp_charge[0]['fee_month'] : 0, 2) }}</td>
@@ -990,7 +1016,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $ev_charge[0]['revenue_credit_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
@@ -1002,7 +1028,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($ev_charge[0]['fee_date'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['fee_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $ev_charge[0]['fee_date'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['fee_month'] : 0, 2) }}</td>
@@ -1014,7 +1040,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($ev_charge[0]['total'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1038,7 +1064,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($ev_charge[0]['total'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1053,25 +1079,25 @@
                         <td colspan="2" style="background-color: rgb(42, 136, 127); color: #FFFFFF;"><b>Summary Elexa EGAT Revenue</b></td>
                         <td class="to-day" style="background-color: rgb(42, 136, 127); color: #FFFFFF;">
                             @if ($filter_by == "week" || $filter_by == "customRang")
-                                {{ number_format($ev_charge[0]['total'], 2) }}
+                                {{ number_format($ev_charge[0]['total'] + $today_ev_revenue, 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? ($ev_charge[0]['total'] + $today_ev_revenue) : 0, 2) }}
                             @endif
                         </td>
-                        <td class="m-t-d" style="background-color: rgb(42, 136, 127); color: #FFFFFF;">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
+                        <td class="m-t-d" style="background-color: rgb(42, 136, 127); color: #FFFFFF;">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? ($ev_charge[0]['total_month'] + $total_ev_month) : 0, 2) }}</td>
                         <td class="y-t-d" style="background-color: rgb(42, 136, 127); color: #FFFFFF;">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: right;"><b>Bank Transfer</b></td>
                         <td class="to-day">
                             @if ($filter_by == "week" || $filter_by == "customRang")
-                                {{ number_format($ev_charge[0]['total'], 2) }}
+                                {{ number_format($total_ev_revenue, 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $today_ev_revenue : 0, 2) }}
                             @endif
                         </td>
-                        <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
-                        <td class="y-t-d">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                        <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $total_ev_month : 0, 2) }}</td>
+                        <td class="y-t-d">{{ number_format($total_ev_year, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: right;"><b>Elexa EGAT Outstanding Balance</b></td>
@@ -1079,7 +1105,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($ev_charge[0]['total'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1097,13 +1123,13 @@
                         <td colspan="2" style="text-align: right;"><b>All Revenue</b></td>
                         <td class="to-day">
                             @if ($filter_by == "week" || $filter_by == "customRang")
-                                {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + $ev_charge[0]['total'], 2) }}
+                                {{ number_format(($summary_hotel_revenue_bank_date + $total_cash + $agoda_revenue_outstanding_date) + ($total_wp_cash_bank + $total_wp_charge) + ($ev_charge[0]['total'] + $today_ev_revenue), 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? ($summary_hotel_revenue_bank_today + $today_cash + $agoda_revenue_outstanding_today) + ($today_wp_cash_bank + $today_wp_charge) + ($ev_charge[0]['total'] + $today_ev_revenue) : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">
-                            {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
+                            {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($ev_charge[0]['total_month'] + $total_ev_month)) : 0, 2) }}
                         </td>
                         <td class="y-t-d">
                             {{ number_format(($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year'], 2) }}
@@ -1119,16 +1145,16 @@
                         <td colspan="2" style="text-align: right;"><b>Total Revenue & Outstanding Balance From Last Year</b></td>
                         <td class="to-day">
                             @if ($filter_by == "week" || $filter_by == "customRang")
-                                {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + ($agoda_charge[0]['total'] + $ev_charge[0]['total']) + $total_agoda_revenue, 2) }}
+                                {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + ($agoda_charge[0]['total'] + ($ev_charge[0]['total'] + $today_ev_revenue)) + $total_agoda_revenue, 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? ($today_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + ($agoda_charge[0]['total_today'] + $ev_charge[0]['total_today']) + $today_agoda_revenue : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? ($today_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + ($agoda_charge[0]['total'] + ($ev_charge[0]['total'] + $today_ev_revenue)) + $today_agoda_revenue : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">
-                            {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
+                            {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($ev_charge[0]['total_month'] + $total_ev_month)) : 0, 2) }}
                         </td>
                         <td class="y-t-d">
-                            {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year']), 2) }}
+                            {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($agoda_outstanding_last_year + $elexa_outstanding_last_year) + $ev_charge[0]['total_year']), 2) }}
                         </td>
                     </tr>
 
@@ -1272,7 +1298,7 @@
                             @if ($filter_by == "week" || $filter_by == "customRang")
                                 {{ number_format($ev_charge[0]['total'], 2) }}
                             @else
-                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                {{ number_format($filter_by == "date" ? $ev_charge[0]['total'] : 0, 2) }}
                             @endif
                         </td>
                         <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['total_month'] : 0, 2) }}</td>
@@ -1281,7 +1307,7 @@
 
                     @php
                         $revenue_outstanding_report_today = $agoda_revenue_outstanding_today + $ev_charge[0]['total'];
-                        $revenue_outstanding_report_date = $agoda_revenue_outstanding_date + $ev_charge[0]['total_today'];
+                        $revenue_outstanding_report_date = $agoda_revenue_outstanding_date + $ev_charge[0]['total'];
                         $revenue_outstanding_report_month = $agoda_revenue_outstanding_month + $ev_charge[0]['total_month'];
                         $revenue_outstanding_report_year = $agoda_revenue_outstanding_year + ($ev_charge[0]['total_year'] - $total_ev_year);
                     @endphp
