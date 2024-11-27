@@ -1063,126 +1063,6 @@ class Document_invoice extends Controller
         // Return the view with the data
         return view('document_invoice.view_invoicelist', compact('invoice', 'Quotation_ID'));
     }
-
-    public function Generate_Additional($id){
-
-        $currentDate = Carbon::now();
-        $ID = 'PI-';
-        $formattedDate = Carbon::parse($currentDate);       // วันที่
-        $month = $formattedDate->format('m'); // เดือน
-        $year = $formattedDate->format('y');
-        $lastRun = document_invoices::latest()->first();
-        $nextNumber = 1;
-
-        if ($lastRun == null) {
-            $nextNumber = $lastRun + 1;
-
-        }else{
-            $lastRunid = $lastRun->id;
-            $nextNumber = $lastRunid + 1;
-        }
-        $Issue_date = Carbon::parse($currentDate)->translatedFormat('d/m/Y');
-        $Valid_Until = Carbon::parse($currentDate)->addDays(7)->translatedFormat('d/m/Y');
-        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-        $InvoiceID = $ID.$year.$month.$newRunNumber;
-        $Quotation = Quotation::where('id', $id)->first();
-        $QuotationID = $Quotation->Quotation_ID;
-        $Additional = proposal_overbill::where('Quotation_ID', $QuotationID)->first();
-        $Nettotal = $Additional->Nettotal;
-        $vat_type = $Quotation->vat_type;
-
-        if ($Quotation->type_Proposal == 'Company') {
-            $CompanyID = $Quotation->Company_ID;
-            $Company = companys::where('Profile_ID',$CompanyID)->first();
-            $Company_typeID=$Company->Company_type;
-            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
-            if ($comtype->name_th =="บริษัทจำกัด") {
-                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด";
-            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
-            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
-            }else {
-                $comtypefullname = $Company->Company_Name;
-            }
-            $Address = $Company->Address;
-            $CityID=$Company->City;
-            $amphuresID = $Company->Amphures;
-            $TambonID = $Company->Tambon;
-            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-            $company_fax = company_fax::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
-            $company_phone = company_phone::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
-            $Contact_name = representative::where('Company_ID',$CompanyID)->where('status',1)->first();
-
-            $profilecontact = $Contact_name->Profile_ID;
-            $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
-        }else{
-            $CompanyID = $Quotation->Company_ID;
-            $Company = Guest::where('Profile_ID',$CompanyID)->first();
-            $prename = $Company->preface;
-            $First_name = $Company->First_name;
-            $Last_name = $Company->Last_name;
-            $Address = $Company->Address;
-            $Email = $Company->Email;
-            $Taxpayer_Identification = $Company->Identification_Number;
-            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
-            $name = $prefix->name_th;
-            $comtypefullname = $name.' '.$First_name.' '.$Last_name;
-
-            $Contact_name =0;
-            $profilecontact = 0;
-            $Contact_phone=0;
-            $company_fax =0;
-            //-------------ที่อยู่
-            $CityID=$Company->City;
-            $amphuresID = $Company->Amphures;
-            $TambonID = $Company->Tambon;
-            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-            $Fax_number = '-';
-            $company_phone = phone_guest::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
-
-        }
-        $Checkin = $Quotation->checkin;
-        $Checkout = $Quotation->checkout;
-        if ($Checkin) {
-            $checkin = $Checkin;
-            $checkout = $Checkout;
-        }else{
-            $checkin = '-';
-            $checkout = '-';
-        }
-
-        $invoices =document_invoices::where('Quotation_ID',$QuotationID)->whereIn('document_status',[1,2])->latest()->first();
-        $settingCompany = Master_company::orderBy('id', 'desc')->first();
-        $totalreceiptre = 0;
-        $receipt = receive_payment::where('Quotation_ID', $QuotationID)->get();
-        foreach ($receipt as $item) {
-            $totalreceiptre +=  $item->Amount;
-        }
-        $totalreceipt = $Nettotal-$totalreceiptre;
-        if ($invoices) {
-            $deposit = $invoices->deposit;
-            $Deposit =$deposit+ 1;
-            $balance = $totalreceipt;
-            $parts = explode('-', $QuotationID);
-            $cleanedID = $parts[0] . '-' . $parts[1];
-            $Refler_ID = $cleanedID;
-        }else{
-
-            $parts = explode('-', $QuotationID);
-            $cleanedID = $parts[0] . '-' . $parts[1];
-            $invoices =document_invoices::where('Quotation_ID',$cleanedID)->where('document_status',1)->latest()->first();
-            $Deposit = 1;
-            $balance = 0;
-            $Refler_ID = $QuotationID;
-        }
-        return view('document_invoice.additional',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company','Address'
-        ,'Refler_ID','TambonID','company_phone','vat_type','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal','Additional'));
-    }
     public function Generate($id){
 
         $currentDate = Carbon::now();
@@ -1210,60 +1090,70 @@ class Document_invoice extends Controller
         $Nettotal = $Quotation->Nettotal;
         $vat_type = $Quotation->vat_type;
 
-        if ($Quotation->type_Proposal == 'Company') {
-            $CompanyID = $Quotation->Company_ID;
-            $Company = companys::where('Profile_ID',$CompanyID)->first();
-            $Company_typeID=$Company->Company_type;
-            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
-            if ($comtype->name_th =="บริษัทจำกัด") {
-                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด";
-            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
-            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
-            }else {
-                $comtypefullname = $Company->Company_Name;
-            }
-            $Address = $Company->Address;
-            $CityID=$Company->City;
-            $amphuresID = $Company->Amphures;
-            $TambonID = $Company->Tambon;
-            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-            $company_fax = company_fax::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
-            $company_phone = company_phone::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
-            $Contact_name = representative::where('Company_ID',$CompanyID)->where('status',1)->first();
-
-            $profilecontact = $Contact_name->Profile_ID;
-            $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
-        }else{
-            $CompanyID = $Quotation->Company_ID;
-            $Company = Guest::where('Profile_ID',$CompanyID)->first();
-            $prename = $Company->preface;
-            $First_name = $Company->First_name;
-            $Last_name = $Company->Last_name;
-            $Address = $Company->Address;
-            $Email = $Company->Email;
-            $Taxpayer_Identification = $Company->Identification_Number;
+        $Selectdata =  $Quotation->type_Proposal;
+        if ($Selectdata == 'Guest') {
+            $Data = Guest::where('Profile_ID',$Proposal->Company_ID)->first();
+            $prename = $Data->preface;
+            $First_name = $Data->First_name;
+            $Last_name = $Data->Last_name;
+            $Address = $Data->Address;
+            $Email = $Data->Email;
+            $Taxpayer_Identification = $Data->Identification_Number;
             $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
             $name = $prefix->name_th;
-            $comtypefullname = $name.' '.$First_name.' '.$Last_name;
-
-            $Contact_name =0;
-            $profilecontact = 0;
-            $Contact_phone=0;
-            $company_fax =0;
+            $fullName = $name.' '.$First_name.' '.$Last_name;
             //-------------ที่อยู่
-            $CityID=$Company->City;
-            $amphuresID = $Company->Amphures;
-            $TambonID = $Company->Tambon;
+            $CityID=$Data->City;
+            $amphuresID = $Data->Amphures;
+            $TambonID = $Data->Tambon;
             $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
             $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
             $Fax_number = '-';
-            $company_phone = phone_guest::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+            $phone = phone_guest::where('Profile_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
 
+            $Contact_Name = null;
+            $Contact_phone =null;
+            $Contact_Email = null;
+        }else{
+            $Company = companys::where('Profile_ID',$Proposal->Company_ID)->first();
+            $Company_type = $Company->Company_type;
+            $Compannyname = $Company->Company_Name;
+            $Address = $Company->Address;
+            $Email = $Company->Company_Email;
+            $Taxpayer_Identification = $Company->Taxpayer_Identification;
+            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+            if ($comtype) {
+                if ($comtype->name_th == "บริษัทจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }else{
+                    $fullName = $comtype->name_th . $Compannyname;
+                }
+            }
+            $representative = representative::where('Company_ID',$Proposal->Company_ID)->first();
+            $prename = $representative->prefix;
+            $Contact_Email = $representative->Email;
+            $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+            $name = $prefix->name_th;
+            $Contact_Name = 'คุณ '.$representative->First_name.' '.$representative->Last_name;
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $company_fax = company_fax::where('Profile_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
+            if ($company_fax) {
+                $Fax_number =  $company_fax->Fax_number;
+            }else{
+                $Fax_number = '-';
+            }
+            $phone = company_phone::where('Profile_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
+            $Contact_phone = representative_phone::where('Company_ID',$Proposal->Company_ID)->where('Sequence','main')->first();
         }
         $Checkin = $Quotation->checkin;
         $Checkout = $Quotation->checkout;
