@@ -41,6 +41,7 @@
                 } elseif ($filter_by == 'thisYear') {
                     $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-d')));
                 }
+
                 if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == $exp_date[1]) {
                     $pickup_time = date('d F Y', strtotime(Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0])));
                 }
@@ -76,11 +77,11 @@
                             </button>
                             <button class="ch-button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
                                 <span id="txt-daily">
-                                    @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
+                                    @if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y') && $exp_date[1] == date('d/m/Y') || $filter_by == 'today')
                                         Today
-                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'date' && date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
+                                    @elseif ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y', strtotime('-1 day')) && $exp_date[1] == date('d/m/Y', strtotime('-1 day')) || $filter_by == 'yesterday')
                                         Yesterday
-                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || isset($filter_by) && $filter_by == 'date' && date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
+                                    @elseif ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y', strtotime('+1 day')) && $exp_date[1] == date('d/m/Y', strtotime('+1 day')) || $filter_by == 'tomorrow')
                                         Tomorrow
                                     @elseif (isset($filter_by) && $filter_by == 'week')
                                         This Week
