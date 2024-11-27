@@ -51,14 +51,14 @@
                                     <div class="col-lg-10 col-md-10 col-sm-12">
                                         <input type="hidden" id="DATATYPE" value="{{$type_Proposal}}">
                                         <textarea id="summernote" name="detail">
-                                            Dear คุณ {{$name}} <br>
+                                            Dear คุณ {{$nameuser}} <br>
                                             {{$comtypefullname}} <br>
                                             Warmest Greeting from Together Resort Kaengkrachan. <br><br>
-                                            Please kindly see attached file Proforma Invoice letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
+                                            Please kindly see attached file Proposal letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
                                             Should there be any further or assisance you may need please don't be hesitate to contact me any time. <br><br>
                                             Best regards,<br>
-                                            อัครพล มโนโชคกวินสกุล (Tel : 081-410-8888) <br>
-                                            Adminstrator<br><br>
+                                            {{$nameuser}} (Tel : {{$teluser}}) <br>
+                                            Sale Executive<br><br>
                                             < Together Resort Kaengkrachan ><br>
                                             168 Moo 2 Kaengkrachan Phetchaburi 76170<br>
                                             Tel : 032-708-888, 098-393-9444<br>

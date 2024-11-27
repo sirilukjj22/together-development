@@ -203,7 +203,7 @@
 
                     <div style="padding: 4%">
 
-                        <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
+                        <b >Invoice ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
 
                         <b >Issue Date : </b><span >{{ $IssueDate }}</span><br>
 
@@ -224,9 +224,13 @@
                         <td style="text-align: center;width:10%">
                             <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                         <td style="text-align: center;">
-                            <img src="test.png" style="width: 40%;"/>
-                            <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
-                            <span style="display: block; text-align: center;">{{ $date }}</span>
+                            @if ($user->signature)
+                                <img src="upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                            @endif
+                            @if ($user->firstname)
+                                <span style="display: block; text-align: center;">{{$user->firstname}} {{$user->lastname}}</span>
+                            @endif
+                            <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                         </td>
                     </tr>
                 </table>
@@ -324,8 +328,8 @@
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
-                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ $payment }} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
-                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
@@ -349,7 +353,7 @@
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Net Total :</td>
-                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span> THB</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
                     </tbody>
                 </table>
@@ -414,7 +418,7 @@
 
                     <div style="padding: 4%">
 
-                        <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
+                        <b >Invoice ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
 
                         <b >Issue Date : </b><span >{{ $IssueDate }}</span><br>
 
@@ -435,9 +439,13 @@
                         <td style="text-align: center;width:10%">
                             <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                         <td style="text-align: center;">
-                            <img src="test.png" style="width: 40%;"/>
-                            <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
-                            <span style="display: block; text-align: center;">{{ $date }}</span>
+                            @if ($user->signature)
+                                <img src="upload/signature/{{$user->signature}}" style="width: 50%;"/>
+                            @endif
+                            @if ($user->firstname)
+                                <span style="display: block; text-align: center;">{{$user->firstname}} {{$user->lastname}}</span>
+                            @endif
+                            <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                         </td>
                     </tr>
                 </table>
@@ -533,8 +541,8 @@
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
-                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ $payment }} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
-                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
@@ -558,7 +566,7 @@
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Net Total :</td>
-                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span> THB</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
                     </tbody>
                 </table>

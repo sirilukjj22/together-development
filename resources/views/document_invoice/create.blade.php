@@ -156,9 +156,9 @@
         }
     }
     .pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .paginate-btn {
         border: 1px solid #2D7F7B;
@@ -223,24 +223,11 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Additional.</small>
-                    @if ($additional_type == 'H/G')
-                        <div class=""><span class="span1">Additional (H/G Online)</span></div>
-                    @else
-                        <div class=""><span class="span1">Additional (Cash + Complimentary)</span></div>
-                    @endif
+                    <small class="text-muted">Welcome to Generate Proforma Invoice.</small>
+                    <div class=""><span class="span1">Generate Proforma Invoice</span></div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                        Back
-                    </button>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
-                        <ul class="dropdown-menu border-0 shadow p-3">
-                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Appovel</a></li>
-                            <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
-                        </ul>
-                    </div>
+
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -265,408 +252,454 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <div class="container-xl">
-            <div class="row clearfix">
-                <div class="col-sm-12 col-12 pi">
-                    <div class="">
-                        <div class="card-body">
-                            <section class="card-container bg-card-container">
+        <form id="myForm" action="{{ route('invoice.save') }}" method="POST">
+        @csrf
+            <div class="container-xl">
+                <div class="row clearfix">
+                    <div class="col-sm-12 col-12 pi">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <section class="card-container bg-card-container">
+                                    <section class="card2 gradient-bg">
+                                        <div class="card-content bg-card-content-white" class="card-content">
+                                            <h5 class="card-title center">Client Details</h5>
+                                            <ul class="card-list-withColon">
+                                                <li>
+                                                <span>Guest Name</span>
+                                                @if ($Selectdata == 'Company')
+                                                    <span> - </span>
+                                                @else
+                                                    <span>{{$fullName}}</span>
+                                                @endif
+                                                </li>
+                                                <li>
+                                                <span>Company</span>
+                                                @if ($Selectdata == 'Company')
+                                                    <span>{{$fullName}}</span>
+                                                @else
+                                                    <span> - </span>
+                                                @endif
+                                                </li>
+                                                <li>
+                                                    <span>Tax ID/Gst Pass</span>
+                                                    <span>{{$Identification ?? '-'}}</span>
+                                                </li>
+                                                <li>
+                                                    <span>Address</span>
+                                                    <span>{{$address}}</span>
+                                                </li>
+                                                <li>
+                                                    <span>Check In Date</span>
+                                                    <span>{{$Quotation->checkin ?? 'No Check In Date'}}</span>
+                                                </li>
+                                                <li>
+                                                    <span>Check Out Date</span>
+                                                    <span>{{$Quotation->checkout ?? '-'}}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </section>
+                                    <section class="card2 card-circle">
+                                        <div class="tech-circle-container mx-4" style="background-color: #135d58;">
+                                            <div class="outer-glow-circle"></div>
+                                            <div class="circle-content">
+                                                <p class="circle-text">
+                                                <p class="f-w-bold fs-3">{{ number_format($Quotation->Nettotal + $Additional_Nettotal - $totalinvoice , 2, '.', ',') }}</p>
+                                                <span class="subtext fs-6" >Total Amount</span>
+                                                </p>
+                                            </div>
+                                            <div class="outer-ring">
+                                                <div class="rotating-dot"></div>
+                                            </div>
+                                        </div>
+                                    </section>
                                 <section class="card2 gradient-bg">
-                                    <div class="card-content bg-card-content-white" class="card-content">
-                                        <h5 class="card-title center">Client Details</h5>
-                                        <ul class="card-list-withColon">
-                                            <li>
-                                            <span>Guest Name</span>
-                                            @if ($firstPart == 'C')
-                                                <span> - </span>
-                                            @else
-                                                <span>{{$fullname}}</span>
-                                            @endif
-                                            </li>
-                                            <li>
-                                            <span>Company</span>
-                                            @if ($firstPart == 'C')
-                                                <span>{{$fullname}}</span>
-                                            @else
-                                                <span> - </span>
-                                            @endif
-                                            </li>
-                                            <li>
-                                                <span>Tax ID/Gst Pass</span>
-                                                <span>{{$Identification}}</span>
-                                            </li>
-                                            <li>
-                                                <span>Address</span>
-                                                <span>{{$address}}</span>
-                                            </li>
-                                            <li>
-                                                <span>Check In Date</span>
-                                                <span>{{$Proposal->checkin ?? 'No Check In Date'}}</span>
-                                            </li>
-                                            <li>
-                                                <span>Check Out Date</span>
-                                                <span>{{$Proposal->checkout ?? '-'}}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </section>
-                                <section class="card2 card-circle">
-                                    <div class="tech-circle-container mx-4" style="background-color: #135d58;">
-                                        <div class="outer-glow-circle"></div>
-                                        <div class="circle-content">
-                                            <p class="circle-text">
-                                            <p class="f-w-bold fs-3">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</p>
-                                            <span class="subtext fs-6" >Total Amount</span>
-                                            </p>
-                                        </div>
-                                        <div class="outer-ring">
-                                            <div class="rotating-dot"></div>
-                                        </div>
-                                    </div>
-                                </section>
-                            <section class="card2 gradient-bg">
-                            <div class="card-content3 bg-card-content-white">
-                                <div class="card-title center" style="position: relative;"><span>Folio </span></div>
-                                <ul class="card-list-between">
-                                    <span>
-                                        <li class="pr-3">
-                                            <span >Additional ({{$Additional_ID}})</span>
-                                            <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($AdditionaltotalReceipt, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
-                                        </li>
-                                        <li class="pr-3">
-                                            <span >Total</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
-                                        </li>
-                                    </span>
-                                    @if ($additional_type == 'H/G')
-                                        {{-- <span id="defaultContent">
-                                            <li class="pr-3 ">
-                                                <span>Additional</span>
-                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
-                                            </li>
-                                        </span> --}}
-                                    @else
-                                        <span id="defaultContent">
-                                            <li class="pr-3 ">
-                                                <span>Cash</span>
-                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt*0.37, 2, '.', ',') }}</span>
-                                            </li>
+                                <div class="card-content3 bg-card-content-white">
+                                    <div class="card-title center" style="position: relative;"><span>Folio </span></div>
+                                    <ul class="card-list-between">
+                                        <span>
                                             <li class="pr-3">
-                                                <span>Complimentary</span>
-                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt*0.37, 2, '.', ',') }}</span>
+                                                <span >Proposal ID ({{$QuotationID}})</span>
+                                                <span class=" hover-effect i  f-w-bold " style="color: #438985;" > {{ number_format($Quotation->Nettotal, 2, '.', ',') }}</span>
                                             </li>
+                                            @if ($Additional_ID)
+                                                <li class="pr-3">
+                                                    <span >Additional ID ({{$Additional_ID}})</span>
+                                                    <span class=" hover-effect i f-w-bold" style="color: #438985;">{{ number_format($Additional_Nettotal, 2, '.', ',') }}</span>
+                                                </li>
+                                            @endif
+                                            @if ($invoices)
+                                                @foreach ( $invoices as $item)
+                                                <li class="pr-3">
+                                                    <span >Invoice ID ({{$item->Invoice_ID}})</span>
+                                                    <span class=" text-danger i f-w-bold"> - {{ number_format($item->sumpayment, 2, '.', ',') }}</span>
+                                                </li>
+                                                @endforeach
+                                            @endif
                                         </span>
-                                    @endif
-                                </ul>
-                                <li class="outstanding-amount">
-                                    <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                    <span class="text-success f-w-bold"> {{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
-                                </li>
+                                    </ul>
+                                    <li class="outstanding-amount">
+                                        <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
+                                        <span class="text-success f-w-bold"> {{ number_format($Quotation->Nettotal + $Additional_Nettotal - $totalinvoice, 2, '.', ',') }}</span>
+                                        <input type="hidden" id="amount" name="amount" value="{{$Quotation->Nettotal + $Additional_Nettotal - $totalinvoice}}">
+                                    </li>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <b for="Payment">Payment by (%) Remaining 100%</b>
+                                        <div class="input-group">
+                                            <div class="input-group-text">
+                                                <input class="custom-radio mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
+                                            </div>
+                                            <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)">
+                                            <span class="input-group-text">%</span>
+                                            <input type="hidden" id="Amount">
+                                        </div>
+                                        <script>
+                                            function validateInput(input) {
+                                                var amount = document.getElementById('amount').value;
+                                                if (parseFloat(input.value) >= 100 ) {
+                                                    input.value = 100;
+                                                }
+                                                var vat_type = parseFloat(document.getElementById('vat_type').value);
+                                                let Subtotal =0;
+                                                let total =0;
+                                                let addtax = 0;
+                                                let before = 0;
+                                                let balance =0;
+                                                if (vat_type == 51) {
+                                                    Subtotal = (amount*input.value)/100;
+                                                    total = Subtotal;
+                                                    addtax = 0;
+                                                    before = Subtotal;
+                                                    balance = Subtotal;
+                                                }else{
+                                                    Subtotal = (amount*input.value)/100;
+                                                    total = Subtotal/1.07;
+                                                    addtax = Subtotal-total;
+                                                    before = Subtotal-addtax;
+                                                    balance = amount-Subtotal;
+                                                }
+
+                                                $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#balance').val(balance);
+                                                $('#sum').val(Subtotal);
+                                            }
+                                        </script>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <b for="Payment by (THB)">Payment by (THB)</b>
+                                        <div class="input-group">
+                                            <div class="input-group-text">
+                                                <input class="custom-radio mt-0" type="radio" value="1" id="radio1" name="paymentRadio"  onclick="togglePaymentFields()">
+                                            </div>
+                                            <input type="number" class="form-control" id="Payment1" name="Payment" disabled oninput="validateInput1(this)">
+                                            <input type="hidden" id="Amount1">
+                                        </div>
+                                        <script>
+                                            function validateInput1(input) {
+                                                var Nettotal = parseFloat(document.getElementById('amount').value.replace(/,/g, '')) || 0; // ดึง Nettotal และจัดการจุลภาค
+                                                if (parseFloat(input.value)) {
+                                                    if ( input.value  > Nettotal) {
+                                                        input.value = Nettotal; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+                                                    }
+                                                }
+                                                var vat_type = parseFloat(document.getElementById('vat_type').value);
+                                                let Subtotal =0;
+                                                let total =0;
+                                                let addtax = 0;
+                                                let before = 0;
+                                                let balance =0;
+                                                if (vat_type == 51) {
+                                                    Subtotal =  parseFloat(input.value);
+                                                    total = Subtotal;
+                                                    addtax = 0;
+                                                    before = Subtotal;
+                                                    balance = Nettotal-Subtotal;
+                                                }else{
+                                                    Subtotal =  parseFloat(input.value);
+                                                    total = Subtotal/1.07;
+                                                    addtax = Subtotal-total;
+                                                    before = Subtotal-addtax;
+                                                    balance = Nettotal-Subtotal;
+                                                }
+
+                                                $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#balance').val(balance);
+                                                $('#sum').val(Subtotal);
+                                            }
+                                        </script>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <b>Valid</b>
+                                        <input type="text" name="valid" id="valid" class="form-control "required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        {{-- <div class="container-xl">
-            <div class="row clearfix">
-                <div class="col-md-12 col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-7 col-md-12 col-sm-12 image-container">
-                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
-                                    <div class="info">
-                                        <p class="titleh1">{{$settingCompany->name}}</p>
-                                        <p>{{$settingCompany->address}}</p>
-                                        <p>Tel : {{$settingCompany->tel}}
-                                            @if ($settingCompany->fax)
-                                                Fax : {{$settingCompany->fax}}
-                                            @endif
-                                        </p>
-                                        <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
-                                        <p></p>
-                                    </div>
-                                </div>
-                                <div class="col-lg-5 col-md-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-lg-4"></div>
-                                        <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
-                                            <div class="row">
-                                                <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
-                                                <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
-                                            </div>
-                                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                            <input type="hidden" id="Additional_ID" name="Additional_ID" value="{{$Quotation_IDoverbill}}">
+                <div class="row clearfix">
+                    <div class="col-sm-12 col-12">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-7 col-md-12 col-sm-12 image-container">
+                                        <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                        <div class="info">
+                                            <p class="titleh1">{{$settingCompany->name}}</p>
+                                            <p>{{$settingCompany->address}}</p>
+                                            <p>Tel : {{$settingCompany->tel}}
+                                                @if ($settingCompany->fax)
+                                                    Fax : {{$settingCompany->fax}}
+                                                @endif
+                                            </p>
+                                            <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
+                                            <p></p>
                                         </div>
                                     </div>
-                                    <div class="row mt-2">
-                                        <div class="col-lg-4"></div>
-                                        <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
-                                            <div class="col-12 col-md-12 col-sm-12">
+                                    <div class="col-lg-5 col-md-12 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-lg-4"></div>
+                                            <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
                                                 <div class="row">
-                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                        <span>Issue Date:</span>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                        <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}"disabled>
+                                                    <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Profoma Invoice</b>
+                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$InvoiceID}}</b>
+                                                </div>
+                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$InvoiceID}}">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-lg-4"></div>
+                                            <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
+                                                <div class="col-12 col-md-12 col-sm-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                            <span>Issue Date:</span>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
+                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;"readonly>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                                <div class="row">
-                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                        <span>Expiration Date:</span>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"value="{{$Quotation->Expirationdate}}"disabled>
+                                                <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                            <span>Expiration Date:</span>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"readonly>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mt-2">
-                                @if ($Selectdata == 'Company')
-                                    <div class="proposal-cutomer-detail" >
-                                        <ul>
-                                        <b class="font-upper com">Company Information</b>
-                                        <li class="mt-3">
-                                            <b>Company Name</b>
-                                            <span id="Company_name">{{$fullname}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Company Address</b>
-                                            <span id="Address">{{$address}}</span>
-                                            <b></b>
-                                        </li>
-                                        <span class="wrap-full">
-                                            <li >
-                                                <b>Company Number</b>
-                                                <span id="Company_Number">{{$phone->Phone_number}}</span>
+                                <div class="row mt-3">
+                                    @if ($Selectdata == 'Company')
+                                        <div class="proposal-cutomer-detail" id="companyTable">
+                                            <ul>
+                                            <b class="font-upper com">Company Information</b>
+                                            <li class="mt-3">
+                                                <b>Company Name</b>
+                                                <span id="Company_name">{{$fullName}}</span>
                                             </li>
-                                            <li >
-                                                <b>Company Fax</b>
-                                                <span id="Company_Fax">{{$Fax_number}}</span>
+                                            <li>
+                                                <b>Company Address</b>
+                                                <span id="Address">{{$address}} </span>
+                                                <b></b>
                                             </li>
-                                        </span>
-                                        <li>
-                                            <b>Company Email</b>
-                                            <span id="Company_Email">{{$Email}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Taxpayer Identification</b>
-                                            <span id="Taxpayer" >{{$Taxpayer_Identification}}</span>
-                                        </li>
-                                        <li> </li>
-                                        <b class="font-upper com">Personal Information</b>
-                                        <li class="mt-3">
-                                            <b>Contact Name</b>
-                                            <span id="Company_contact">{{$Contact_Name}}</span>
-                                        </li>
-                                        <li >
-                                            <b>Contact Number</b>
-                                            <span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Contact Email</b>
-                                            <span id="Contact_Email" >{{$Quotation->checkin}}</span>
-                                        </li>
-                                        <li></li>
-                                        </ul>
-                                        <ul>
-                                        <li> </li>
-                                        <li></li>
-                                        <li> </li>
-                                        <li></li>
-                                        <li> </li>
-                                        <li></li>
-                                        <li>
-                                            <b>Check In</b>
-                                            <span id="checkinpo">{{$Quotation->checkin ? $Quotation->checkin : 'No Check In Date' }}</span>
-                                        </li>
-                                        <li>
-                                            <b>Check Out</b>
-                                            <span id="checkoutpo">{{$Quotation->checkout ? $Quotation->checkout : '-' }}</span>
-                                        </li>
-                                        <li>
-                                            <b>Length of Stay</b>
-                                            <span style="display: flex"><p id="daypo" class="m-0">{{($Quotation->day ?? '-') . ' วัน ';}} </p><p id="nightpo" class="m-0"> {{(' , '.$Quotation->night ?? '-').' คืน'}} </p></span>
-                                        </li>
-                                        <li>
-                                            <b>Number of Guests</b>
-                                            <span style="display: flex"><p id="Adultpo" class="m-0">{{($Quotation->adult ?? '-') . ' Adult ';}} </p><p id="Childrenpo" class="m-0"> {{(' , '.$Quotation->children ?? '-').' Children'}} </p></span>
-                                        </li>
-
-                                        </ul>
-
-                                    </div>
-                                @else
-                                    <div class="proposal-cutomer-detail" >
-                                        <ul>
-                                        <b class="font-upper com">Guest Information</b>
-                                        <li class="mt-3">
-                                            <b>Guest  Name</b>
-                                            <span id="guest_name">{{$fullname}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Guest  Address</b>
-                                            <span id="guestAddress">{{$address}}</span>
-                                            <b></b>
-                                        </li>
-
-                                        <li >
-                                            <b>Guest  Number</b>
-                                            <span id="guest_Number">{{$phone->Phone_number}}</span>
-                                        </li>
-
-                                        <li>
-                                            <b>Guest  Email</b>
-                                            <span id="guest_Email">{{$Email}}</span>
-                                        </li>
-                                        <li>
-                                            <b>Identification Number</b>
-                                            <span id="guestTaxpayer" >{{$Taxpayer_Identification}}</span>
-                                        </li>
-                                        <li> </li>
-                                        <li></li>
-                                        </ul>
-
-                                        <ul>
+                                            <span class="wrap-full">
+                                                <li >
+                                                    <b>Company Number</b>
+                                                    <span id="Company_Number">{{ $phone->Phone_number }}</span>
+                                                </li>
+                                                <li >
+                                                    <b>Company Fax</b>
+                                                    <span id="Company_Fax">
+                                                        <span id="Company_Fax">{{ $Fax_number }}</span>
+                                                    </span>
+                                                </li>
+                                            </span>
+                                            <li>
+                                                <b>Company Email</b>
+                                                <span id="Company_Email">{{$Email}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Taxpayer Identification</b>
+                                                <span id="Taxpayer" >{{$Identification}}</span>
+                                            </li>
+                                            <li> </li>
+                                            <b class="font-upper com">Personal Information</b>
+                                            <span class="wrap-full">
+                                                <li >
+                                                    <b>Contact Name</b>
+                                                    <span id="Company_contact">{{$Contact_name}}</span>
+                                                </li>
+                                                <li >
+                                                    <b>Contact Number</b>
+                                                    <span id="Contact_Phone">{{ $Contact_phone->Phone_number}}</span>
+                                                </li>
+                                            </span>
+                                            <li>
+                                                <b>Contact Email</b>
+                                                <span id="Contact_Email" >{{$Contact_Email}}</span>
+                                            </li>
+                                            <li></li>
+                                            </ul>
+                                            <ul>
                                             <li> </li>
                                             <li></li>
                                             <li> </li>
-                                        <li></li>
-                                        <li> </li>
-                                        <li></li>
-                                        <li>
-                                            <b>Check In</b>
-                                            <span id="checkinpoguest">{{$Quotation->checkin ? $Quotation->checkin : 'No Check In Date' }}</span>
-                                        </li>
-                                        <li>
-                                            <b>Check Out</b>
-                                            <span id="checkoutpoguest">{{$Quotation->checkout ? $Quotation->checkout : '-' }}</span>
-                                        </li>
-                                        <li>
-                                            <b>Length of Stay</b>
-                                            <span style="display: flex"><p id="daypoguest" class="m-0">{{($Quotation->day ?? '-') . ' วัน ';}} </p><p id="nightpoguest" class="m-0"> {{' , '.$Quotation->night .' คืน'}}</p></span>
-                                        </li>
-                                        <li>
-                                            <b>Number of Guests</b>
-                                            <span style="display: flex"><p id="Adultpoguest" class="m-0">{{($Quotation->adult ?? '-') . ' Adult ';}}  </p><p id="Childrenpoguest" class="m-0">{{(' , '.$Quotation->children ?? '-').' Children'}} </p></span>
-                                        </li>
+                                            <li></li>
+                                            <li> </li>
+                                            <li></li>
+                                            <li>
+                                                <b>Check In</b>
+                                                <span id="checkinpo">{{$Quotation->checkin ?? 'No Check In Date'}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Check Out</b>
+                                                <span id="checkoutpo">{{$Quotation->checkout ?? ' '}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Length of Stay</b>
+                                                <span style="display: flex"><p id="daypo" class="m-0">{{$Quotation->day}} วัน</p> <p id="nightpo" class="m-0"> {{' , '.$Quotation->night}} คืน </p></span>
+                                            </li>
+                                            <li>
+                                                <b>Number of Guests</b>
+                                                <span style="display: flex"><p id="Adultpo" class="m-0">{{$Quotation->adult}} Adult </p><p id="Childrenpo" class="m-0">{{' , '.$Quotation->children}}  Children</p></span>
+                                            </li>
+                                            </ul>
+                                        </div>
+                                    @else
+                                        <div class="proposal-cutomer-detail" id="guestTable" >
+                                            <ul>
+                                            <b class="font-upper com">Guest Information</b>
+                                            <li class="mt-3">
+                                                <b>Guest  Name</b>
+                                                <span id="guest_name">{{$fullName}}</span>
+                                            </li>
 
-                                        </ul>
 
-                                    </div>
-                                @endif
-                                <div class="styled-hr"></div>
-                            </div>
-                            <div class="row mt-2">
-                                <table id="main" class=" example2 ui striped table nowrap unstackable " style="width:100%">
-                                    <thead >
-                                        <tr>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%;text-align:center;"data-priority="1">Description</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="display-selected-items">
-                                        @if (!empty($selectproduct))
-                                            @foreach ($selectproduct as $key => $item)
-                                                @php
-                                                $var = $item->Code;
-                                                @endphp
-                                                <tr id="tr-select-main{{$item->Code}}">
-                                                    <input type="hidden" id="CheckProduct" name="CheckProduct[]" value="{{$item->Code}}">
-                                                    <td style="text-align:center;vertical-align: middle;"><input type="hidden" id="ProductID" name="Code[]" value="{{$item->Code}}">{{$key+1}}</td>
-                                                    <td style="text-align:left;vertical-align: middle;">{{$item->Detail}} </td>
-                                                    <td class="Quantity" data-value="{{$item->Amount}}" style="text-align:center;">
-                                                        <input type="text" id="quantity{{$var}}" name="Amount[]" rel="{{$var}}" style="text-align:center;vertical-align: middle;"class="quantity-input form-control" value="{{number_format($item->Amount)}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                                @if (@Auth::user()->roleMenuDiscount('Proposal',Auth::user()->id) == 1)
-                                    <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="1">
-                                @else
-                                    <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
-                                @endif
-                                <input type="hidden" id="paxold" name="paxold" value="{{$Quotation->TotalPax}}">
-                                <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
-                                <div class="wrap-b">
-                                    <div class="kw" >
-                                        <span >Notes or Special Comment</span>
-                                        <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                                    </div>
-                                    <div class="lek" >
-                                        @php
-                                            $total = $AdditionaltotalReceipt
+                                            <li>
+                                                <b>Guest  Address</b>
+                                                <span id="guestAddress">{{$address}}</span>
+                                                <b></b>
+                                            </li>
 
-                                        @endphp
-                                        @if ($Mvat == '50')
-                                            <div class="proposal-number-cutomer-detail">
-                                                <ul>
-                                                    <li class="mt-3">
-                                                        <b>Subtotal</b>
-                                                        <span id="total-amount">{{number_format($total, 2, '.', ',')}}</span>
-                                                    </li>
-                                                    <li class="mt-3">
-                                                        <b>Price Before Tax</b>
-                                                        <span id="Net-price">{{number_format($total/1.07, 2, '.', ',')}}</span>
-                                                    </li>
-                                                    <li class="mt-3">
-                                                        <b>Value Added Tax</b>
-                                                        <span id="total-Vat">{{number_format($total -$total/1.07, 2, '.', ',')}}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        @elseif ($Mvat == '51')
-                                            <div class="proposal-number-cutomer-detail">
-                                                <ul>
-                                                    <li class="mt-3">
-                                                        <b>Subtotal</b>
-                                                        <span id="total-amountEXCLUDE">{{number_format($total, 2, '.', ',')}}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        @else
-                                            <div class="proposal-number-cutomer-detail">
-                                                <ul>
-                                                    <li class="mt-3">
-                                                        <b>Subtotal</b>
-                                                        <span id="total-amountpus">{{number_format($total, 2, '.', ',')}}</span>
-                                                    </li>
-                                                    <li class="mt-3">
-                                                        <b>Value Added Tax</b>
-                                                        <span id="total-Vatpus">{{number_format($total -$total/1.07, 2, '.', ',')}}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        @endif
-                                    </div>
+                                            <li >
+                                                <b>Guest  Number</b>
+                                                <span id="guest_Number">{{ $phone->Phone_number}}</span>
+                                            </li>
+
+                                            <li>
+                                                <b>Guest  Email</b>
+                                                <span id="guest_Email">{{$Email}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Identification Number</b>
+                                                <span id="guestTaxpayer" >{{$Identification}}</span>
+                                            </li>
+                                            <li> </li>
+                                            <li></li>
+                                            </ul>
+
+                                            <ul>
+                                                <li> </li>
+                                                <li></li>
+                                                <li> </li>
+                                            <li></li>
+                                            <li> </li>
+                                            <li></li>
+                                            <li>
+                                                <b>Check In</b>
+                                                <span id="checkinpoguest">{{$Quotation->checkin ?? 'No Check In Date'}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Check Out</b>
+                                                <span id="checkoutpoguest">{{$Quotation->checkout ?? ' '}}</span>
+                                            </li>
+                                            <li>
+                                                <b>Length of Stay</b>
+                                                <span style="display: flex"><p id="daypoguest" class="m-0">{{$Quotation->day}} วัน </p><p id="nightpoguest" class="m-0"> {{' , '.$Quotation->night}} คืน  </p></span>
+                                            </li>
+                                            <li>
+                                                <b>Number of Guests</b>
+                                                <span style="display: flex"><p id="Adultpoguest" class="m-0"> {{$Quotation->adult}} Adult </p><p id="Childrenpoguest" class="m-0">{{' , '.$Quotation->children}}  Children </p></span>
+                                            </li>
+
+                                            </ul>
+
+                                        </div>
+                                    @endif
                                 </div>
-                                <div class="flex-end" >
-                                    <b class="text-center text-white p-2" style="font-size: 14px; background-color: #2D7F7B; border-radius: 5px; " ><p class="mr-2" style="width:260px;" >Net Total <span id="Net-Total">{{number_format($total, 2, '.', ',')}}</span></p></b>
+                                <div class="styled-hr"></div>
+                                <div class="row mt-4">
+                                    <table class=" table table-hover align-middle mb-0" style="width:100%">
+                                        <thead >
+                                            <tr>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;text-align:center">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display-selected-items">
+                                            <tr>
+                                                <td style="text-align:center">1</td>
+                                                <td style="text-align:left">
+                                                    Proposal ID : {{$QuotationID}} </span> กรุณาชำระมัดจำ งวดที่ {{$Deposit}}
+                                                </td>
+                                                <td style="text-align:right"><span id="Subtotal"></span> THB </td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Subtotal :</td>
+                                                <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Price Before Tax :</td>
+                                                <td style="text-align:right"><span id="Before"></span> THB</td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Value Added Tax :</td>
+                                                <td style="text-align:right"><span id="Added"></span> THB</td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Net Total :</td>
+                                                <td style="text-align:right"><span id="Total"></span> THB</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="col-12 mt-3">
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <strong class="com" style="font-size: 18px">Method of Payment</strong>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 my-1">
+                                        <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
                                     </div>
-                                    <span class="col-md-8 col-sm-12 mt-1">
-                                        <br>
-                                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                                    <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
+                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
                                         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
                                     </span>
                                     <div class="row">
                                         <div class="col-lg-8 col-md-6 col-sm-12">
-                                            <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
+                                            <div class="col-12  mt-2">
                                                 <div class="row">
-                                                    <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
+                                                    <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
                                                         <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
                                                     </div>
                                                     <div class="col-7 mt-2">
@@ -678,12 +711,13 @@
                                     </div>
                                 </div>
                                 <div class="styled-hr mt-3"></div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <strong class="titleh1">รับรอง</strong>
-                                    </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 my-2">
+                                <div class="col-12 mt-2">
+                                    <div class="col-12 my-4">
                                         <div class="row">
+                                            <div class="col-lg-2 centered-content"></div>
+                                            <div class="col-lg-2 centered-content"></div>
+                                            <div class="col-lg-2 centered-content"></div>
+                                            <div class="col-lg-2 centered-content"></div>
                                             <div class="col-lg-2 centered-content">
                                                 <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
                                                 @php
@@ -703,46 +737,37 @@
                                                 @endif
                                                 <span id="issue_date_document"></span>
                                             </div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                                <img src="/boss.png" style="width: 70%;"/>
-                                                <span>Sopida Thuphom</span>
-                                                <span id="issue_date_document1"></span>
-                                            </div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>ตราประทับ (ผู้ขาย)</span>
-                                                <img src="{{ asset('assets/images/' . $settingCompany->image) }}" style="width: 70%;">
-                                            </div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>ผู้รับเอกสาร (ลูกค้า)</span>
-                                                <br><br><br>
-                                                ______________________
-                                                <span>_____/__________/_____</span>
-                                            </div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span >ตราประทับ (ลูกค้า)</span>
-                                                <div class="centered-content4 mt-1">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-12 row mt-5">
+                                    <div class="col-4">
 
+                                        <input type="hidden" id="Deposit" name="Deposit" value="{{$Deposit}}">
+                                        <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
+                                        <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
+                                        <input type="hidden" name="sum"  id="sum">
+                                    </div>
+                                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                                            Cancel
+                                        </button>
+                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                            Preview
+                                        </button>
+                                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave()">save</button>
+                                    </div>
+                                    <div class="col-4"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </form>
+
     </div>
-    <form id="myFormApprove" action="{{route('ProposalReq.Approve')}}" method="POST">
-        @csrf
-        <input type="hidden" name="approved_id" id="approved_id" value="{{$Additional_ID}}">
-    </form>
-    <form id="myForm" action="{{route('ProposalReq.Reject')}}" method="POST">
-        @csrf
-        <input type="hidden" name="approved_id" id="approved_id" value="{{$Additional_ID}}">
-    </form>
+    <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -753,6 +778,58 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
+    <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+    <script type="text/javascript">
+
+        $(function() {
+            var start = moment();
+            var end = moment().add(7, 'days');
+            function cb(start, end) {
+                $('#datestart').val(start.format('DD/MM/Y'));
+                $('#dateex').val(end.format('DD/MM/Y'));
+                $('#issue_date_document').text(start.format('DD/MM/Y'));
+                $('#issue_date_document1').text(start.format('DD/MM/Y'));
+            }
+            $('#reportrange1').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    '3 Days': [moment(), moment().add(3, 'days')],
+                    '7 Days': [moment(), moment().add(7, 'days')],
+                    '15 Days': [moment(), moment().add(15, 'days')],
+                    '30 Days': [moment(), moment().add(30, 'days')],
+                }
+            },
+            cb);
+            cb(start, end);
+        });
+        $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            $('#valid').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#valid').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
+        });
+    </script>
     <script>
         const table_name = ['main'];
         $(document).ready(function() {
@@ -819,40 +896,75 @@
                 this.innerHTML = "&#8646;";
             }
         });
-        function Appovel(id) {
-            var Additional_ID = $('#Additional_ID').val();
+
+        function togglePaymentFields() {
+            var radio0 = document.getElementById('radio0');
+            var radio1 = document.getElementById('radio1');
+            var payment0 = document.getElementById('Payment0');
+            var payment1 = document.getElementById('Payment1');
+
+            // ตรวจสอบว่าทุกองค์ประกอบมีอยู่ใน DOM
+            if (!radio0 || !radio1 || !payment0 || !payment1) {
+                console.warn('Some elements are missing in the DOM.');
+                return;
+            }
+
+            if (radio0.checked) {
+                payment0.disabled = false;
+                payment1.disabled = true;
+                payment1.value = ""; // ล้างค่า
+            } else if (radio1.checked) {
+                payment0.disabled = true;
+                payment1.disabled = false;
+                payment0.value = ""; // ล้างค่า
+            }
+        }
+        function submitsave() {
+            console.log(1);
+            document.getElementById("myForm").removeAttribute('target');
+            // สร้าง input แบบ hidden ใหม่
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "save";
+            input.value = 1;
+
+            // เพิ่ม input ลงในฟอร์ม
+
+            document.getElementById("myForm").appendChild(input);
+            document.getElementById("myForm").submit();
+        }
+        function submitPreview() {
+            console.log(1);
+            document.getElementById("myForm").removeAttribute('target');
+            // สร้าง input แบบ hidden ใหม่
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "preview";
+            input.value = 1;
+
+            // เพิ่ม input ลงในฟอร์ม
+            document.getElementById("myForm").appendChild(input);
+            document.getElementById("myForm").setAttribute("target","_blank");
+            document.getElementById("myForm").submit();
+        }
+        function BACKtoEdit(){
+            event.preventDefault();
             Swal.fire({
-                title: `คุณต้องการ Approve รหัส ${Additional_ID} เอกสารใช่หรือไม่?`,
-                icon: "question",
+                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                icon: "info",
                 showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
+                confirmButtonText: "ตกลง",
                 cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2C7F7A",
+                confirmButtonColor: "#28a745",
                 dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('myFormApprove').submit();
+                    console.log(1);
+                    // If user confirms, submit the form
+                    window.location.href = "{{ route('invoice.index') }}";
                 }
             });
         }
-        function Reject(id) {
-            Swal.fire({
-                title: "คุณต้องการ Reject เอกสารใช่หรือไม่?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-
-                    document.getElementById('myForm').submit();
-                }
-            });
-        }
-
-
     </script>
 
 @endsection
