@@ -101,6 +101,17 @@ $(document).ready(function () {
     $("#year").text(year);
     $(".months-grid").empty();
 
+    // var filter_by = $('#filter-by').val();
+
+    // if (filter_by != "month" && filter_by != "year") {
+    //   localStorage.removeItem("selectedYear");
+    //   localStorage.removeItem("selectedMonthRange");
+    // }
+
+    // Get the current month and year
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
     // โหลดค่าที่เลือกไว้ก่อนหน้านี้จาก localStorage
     const savedMonthRange = JSON.parse(localStorage.getItem("selectedMonthRange")) || [];
     const savedYear = parseInt(localStorage.getItem("selectedYear"), 10) || year;
@@ -110,14 +121,11 @@ $(document).ready(function () {
 
     monthNames.forEach((month, index) => {
       let monthElement = $(`<div class="month no-select" data-month="${index}">${month}</div>`);
+      monthElement.removeClass("current-month");
 
       // ตรวจสอบและเพิ่มคลาส selected-range หากตรงกับค่าที่เลือกก่อนหน้านี้
-      if (
-        selectedMonthRange.length === 2 &&
-        selectedYear === year &&
-        index >= selectedMonthRange[0] &&
-        index <= selectedMonthRange[1]
-      ) {
+      if (selectedMonthRange.length === 2 && selectedYear === year && index >= selectedMonthRange[0] && index <= selectedMonthRange[1]) 
+      {
         monthElement.addClass("selected-range");
       } else if (
         selectedMonthRange.length === 1 &&
@@ -126,14 +134,18 @@ $(document).ready(function () {
       ) {
         monthElement.addClass("selected-range");
       }
-
+      
+      // Add the current-month class to the current month
+      if (selectedMonthRange.length == 0 && index === currentMonth && year === currentYear) {
+        monthElement.addClass("selected-range");
+      }
       $(".months-grid").append(monthElement);
 
       // ฟังก์ชันเริ่มต้นการลากเลือก
       function startSelection() {
         startMonth = index;
         endMonth = index;
-        $(".month").removeClass("selected-range");
+        $(".month").removeClass("current-month selected-range");
         monthElement.addClass("selected-range");
       }
 
@@ -145,13 +157,16 @@ $(document).ready(function () {
         } else if (event.type === "touchmove") {
           event.preventDefault();
           let touch = event.originalEvent.touches[0];
-          let targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+          let targetElement = document.elementFromPoint(
+            touch.clientX,
+            touch.clientY
+          );
           targetMonth = $(targetElement).data("month");
         }
 
         if (targetMonth !== undefined) {
           endMonth = targetMonth;
-          $(".month").removeClass("selected-range");
+          $(".month").removeClass("current-month selected-range");
           if (startMonth <= endMonth) {
             for (let i = startMonth; i <= endMonth; i++) {
               $(`.month[data-month=${i}]`).addClass("selected-range");
@@ -173,7 +188,10 @@ $(document).ready(function () {
         selectedYear = year;
 
         // บันทึกค่าลงใน localStorage
-        localStorage.setItem("selectedMonthRange", JSON.stringify(selectedMonthRange));
+        localStorage.setItem(
+          "selectedMonthRange",
+          JSON.stringify(selectedMonthRange)
+        );
         localStorage.setItem("selectedYear", selectedYear);
 
         updateSelectedMonthBox(); // อัปเดตกล่องแสดงค่าที่เลือก
@@ -220,33 +238,66 @@ $(document).ready(function () {
   }
 
   // ฟังก์ชันโหลดและคืนค่าจาก localStorage
-  $(function () {
-    const currentYear = new Date().getFullYear();
-    const savedYear = parseInt(localStorage.getItem("selectedYear"), 10) || currentYear;
 
-    generateMonthRangePicker(savedYear);
+  $(function () {
+    const currentYearStored =
+      parseInt(localStorage.getItem("selectedYear"), 10) ||
+      new Date().getFullYear();
+    currentYear = currentYearStored;
+    generateMonthRangePicker(currentYear);
   });
 
-  // ฟังก์ชันสำหรับสร้าง Year Picker
+  $("#prev-year").click(function () {
+    currentYear--; // ลดปีลง 1
+    localStorage.setItem("selectedYear", currentYear);
+    generateMonthRangePicker(currentYear);
+    $(".month").removeClass("selected-range");
+  });
+
+  $("#next-year").click(function () {
+    currentYear++; // เพิ่มปีขึ้น 1
+    localStorage.setItem("selectedYear", currentYear);
+    generateMonthRangePicker(currentYear);
+    $(".month").removeClass("selected-range");
+  });
+
   function generateYearPicker(startYear, endYear) {
     $(".years-grid").empty();
 
+    var filter_by = $('#filter-by').val();
+
+    if (filter_by != "year") {
+      localStorage.removeItem("selectedYear");
+    }
+
     // โหลดปีที่เลือกไว้ก่อนหน้านี้จาก localStorage
-    const savedYear = parseInt(localStorage.getItem("selectedYear"), 10);
+    const currentYear = new Date().getFullYear();
+    const savedYear = parseInt(localStorage.getItem("selectedYear"), 10) || currentYear;
 
     for (let year = startYear; year <= endYear; year++) {
       let yearElement = $(`<div class="year not-select">${year}</div>`);
 
-      // คืนค่าคลาส selected-range สำหรับปีที่เลือกก่อนหน้านี้
-      if (year === savedYear) {
+      // ถ้ามี savedYear
+      if (savedYear && year === savedYear) {
         yearElement.addClass("selected-range");
-        selectedYear = savedYear; // อัปเดตตัวแปร selectedYear
+        selectedYear = savedYear;
+
+        // ลบคลาส current-year จากปีปัจจุบัน
+        $(".year").removeClass("current-year");
+      }
+      // ถ้าไม่มี savedYear ให้เน้นปีปัจจุบัน
+      else if (!savedYear && year === currentYear) {
+        yearElement.addClass("current-year");
+        selectedYear = currentYear;
+
+        // ลบคลาส selected-range จากปีอื่นๆ
+        $(".year").removeClass("selected-range");
       }
 
       $(".years-grid").append(yearElement);
 
       yearElement.click(function () {
-        $(".year").removeClass("selected-range");
+        $(".year").removeClass("current-year selected-range");
         $(this).addClass("selected-range");
 
         selectedYear = year;
@@ -291,7 +342,7 @@ $(document).ready(function () {
   $("#filter-date").on("click", function () {
     $("#date-picker-wrapper").show();
     $("#month-picker-wrapper, #year-picker-wrapper").hide();
-    updateCombinedSelectedBox(null); // Reset to today's date
+    // updateCombinedSelectedBox(null); // Reset to today's date
   });
 
   $("#filter-month").on("click", function () {
@@ -303,6 +354,6 @@ $(document).ready(function () {
   $("#filter-year").on("click", function () {
     $("#year-picker-wrapper").show();
     $("#date-picker-wrapper, #month-picker-wrapper").hide();
-    updateSelectedYearBox(); // Update combined box with latest year selection
+    // updateSelectedYearBox(); // Update combined box with latest year selection
   });
 });

@@ -411,17 +411,36 @@
                     <div class="box-a-graph gy-5">
                         <!-- กราฟที่ 1 -->
                         <div class="box-graph">
-                            {{-- @if (isset($filter_by) && $filter_by == "month") --}}
                                 <div class="container-graph" id="graphChartByMonthOrYear" style="grid-column: 1/3;">
                                     <canvas id="revenueChartByMonthOrYear" style="max-height: 40vh;"></canvas>
-                                </div>
-                            {{-- @endif --}}
 
-                            {{-- @if (isset($filter_by) && $filter_by == "date" || !isset($filter_by)) --}}
+                                    @php
+                                        if ($filter_by == 'date' && count($exp_date) == 2) {
+                                            // ใช้ Carbon เพื่อแปลงวันที่
+                                            $start_date = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[0]); // แปลงวันที่เริ่มต้น
+                                            $end_date = Carbon\Carbon::createFromFormat('d/m/Y', $exp_date[1]);   // แปลงวันที่สิ้นสุด
+                                            
+                                            // คำนวณจำนวนวันระหว่างสองวันที่
+                                            $days_difference = $end_date->diffInDays($start_date); // คืนค่าจำนวนวัน
+
+                                            // เพิ่ม 1 วันถ้าต้องการนับรวมวันที่เริ่มต้น
+                                            $days_difference += 1;
+                                        } else {
+                                            $days_difference = 0;
+                                        }
+                                    @endphp
+
+                                    @if ($filter_by == 'date' && count($exp_date) == 2 && $days_difference > 31)
+                                        <a href="{{ route('sms-daterang-detail', [$start_date->format('Y-m-d'), $end_date->format('Y-m-d'), $into_account ?? 0, $status ?? 0]) }}" type="button" class="ac-style">More</a>
+                                    @endif
+
+                                </div>
+
                                 <div class="container-graph graph-date" hidden>
                                     <canvas id="revenueChart" hidden></canvas>
                                     <canvas id="revenueChartThisMonth" ></canvas>
                                     <canvas id="revenueChartCustom" hidden></canvas>
+                                    <canvas id="revenueChartDateRang" hidden></canvas>
                                     <div class="menu-graph">
                                         <button type="button" class="ac-style" id="button-graph-revenue" data-toggle="modal" data-target="#myModalGraph" style="min-width: 25%;cursor: pointer;"> 7 Days</button>
                                     </div>
@@ -1743,9 +1762,6 @@
                 var end_month = dateString.getMonth() + 1;
                 var year = dateString.getFullYear();
 
-                console.log(start_month, end_month, year);
-                
-
                 chartThisMonth2(start_month, end_month, year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
@@ -1778,11 +1794,42 @@
 
             // Calendar
             if (filter_by == "date" || filter_by == "today" || filter_by == "tomorrow" || filter_by == "yesterday") {
-                var dateString = $('#date').val();
-                var date = new Date(dateString);
-                var date_now = date.getDate() + ' ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
+                var dateString = $('#combined-selected-box').val();
+                var dateSplit = dateString.split(' - ');
 
-                document.getElementById("myDay").innerHTML = date_now;
+                if (dateSplit[0] != dateSplit[1]) {
+                    var start_date = moment(dateSplit[0], "DD/MM/YYYY").format('YYYY-MM-DD');
+                    var end_date = moment(dateSplit[1], "DD/MM/YYYY").format('YYYY-MM-DD');
+                    var interval_days = moment(start_date).daysInMonth(); // จำนวนวันที่ต้องการเช็ค
+                    var first_date = null; // เก็บวันที่แรกที่ครบ 30 วัน
+
+                    // เปลี่ยนวันที่เริ่มต้นให้อยู่ในรูปแบบ Moment.js
+                    var current_date = moment(start_date);
+
+                    // วนลูปเพื่อหา "วันที่แรกที่ครบ 31 วัน"
+                    while (current_date.isBefore(end_date)) {
+                        var next_date = current_date.clone().add(interval_days, 'days'); // บวก 30 วัน
+                        if (next_date.isSameOrBefore(end_date)) {
+                            first_date = next_date.subtract(1, 'days').format('YYYY-MM-DD'); // แปลงวันที่เป็นรูปแบบที่ต้องการ
+                            break; // หยุดลูปทันทีเมื่อเจอวันที่แรก
+                        }
+                        current_date = next_date; // อัปเดตวันที่ปัจจุบัน
+                    }
+
+                    if (first_date) { // มีค่าวันที่แรกที่ครบ 31 วัน
+                        end_date = first_date;
+                    }
+                    
+                    chartDateRang(start_date, end_date);
+                    $('.graph-date').prop('hidden', true);
+                    $('#graphChartByMonthOrYear').prop('hidden', false);
+                } else {
+                    var dateString = $('#date').val();
+                    var date = new Date(dateString);
+                    var date_now = date.getDate() + ' ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
+
+                    document.getElementById("myDay").innerHTML = date_now;
+                }
             }
         });
 

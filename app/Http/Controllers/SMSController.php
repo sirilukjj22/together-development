@@ -1266,6 +1266,45 @@ class SMSController extends Controller
         ]);
     }
 
+    public function graphDateRang($startdate, $enddate, $type, $account)
+    {
+
+        $amount = [];
+        $date = [];
+
+        for ($i = $startdate; $i <= $enddate; $i = date('Y-m-d', strtotime("+1 day", strtotime($i)))) {
+            $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($i)));
+            $to_end = date($i." 20:59:59");
+            $adate2 = Carbon::parse($to_end)->format('Y-m-d');
+
+            if (!empty($type)) {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                }
+            } else {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                }
+            }
+
+            $amount[] = number_format($sum_amount, 2, '.', '');
+            $date[] = Carbon::parse($to_end)->format('d/m');
+        }
+
+        return response()->json([
+            'amount' => $amount,
+            'date' => $date,
+        ]);
+    }
+
     public function graphThisMonthByDay($to_date, $type, $account)
     {
         $day = date('d', strtotime($to_date));
@@ -1537,6 +1576,11 @@ class SMSController extends Controller
             'today' => number_format($today, 2, '.', ''),
             'forcast' => number_format($forcast, 2, '.', ''),
         ]);
+    }
+
+    public function graphDateRangDetail($startdate, $enddate, $type, $account)
+    {
+        return view('sms-forward.graph_daterang_detail', compact('startdate', 'enddate', 'type', 'account'));
     }
 
     public function forward()

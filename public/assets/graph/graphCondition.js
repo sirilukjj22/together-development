@@ -150,6 +150,42 @@ function get_graphMonthRange($month, $to_month, $year) {
     return revenueDataByMonth;
 }
 
+function get_graphDateRang($startDate, $endDate, $amount) {
+
+    var dateString = new Date();
+    var date = dateString;
+    var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var type = $('#status').val();
+    var account = $('#into_account').val();
+
+    if (type == '') {
+        type = 0;
+    }
+
+    if (account == '') {
+        account = 0;
+    }
+
+    var revenueDataDateRang = "";
+
+    $.ajax({
+        type: "GET",
+        url: "sms-graph-daterang/"+$startDate+"/"+$endDate+"/"+type+"/"+account+"",
+        datatype: "JSON",
+        async: false,
+        success: function(response) {
+            // Sample data for watch revenue over 30 days
+            if ($amount == 1) {
+                revenueDataDateRang = response.amount;
+            } else {
+                revenueDataDateRang = response.date;
+            }
+        }
+    });
+    
+    return revenueDataDateRang;
+}
+
 Chart.defaults.font.family = "Sarabun";
 var revenueDataThisMonth = get_graphThisMonth(1);
 
@@ -567,6 +603,49 @@ function chartThisMonth2() {
             datasets: [{
                 label: "This Month",
                 data: revenueDataThisMonth,
+                backgroundColor: "#2C7F7A",
+                borderWidth: 0,
+                barPercentage: 0.7,
+            },],
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax_thisMonth,
+                    ticks: {
+                        stepSize: 20000,
+                        callback: function (value) {
+                            return formatNumberThisMonth(value);
+                        },
+                    },
+                },
+            },
+        },
+        plugins: [valueOnTopPluginThisMonth],
+    });
+}
+
+function chartDateRang(startDate, endDate) {
+
+    $('#revenueChart').prop('hidden', true);
+    $('#revenueChartThisMonth').prop('hidden', true);
+    $('#revenueChartCustom').prop('hidden', true);
+    $('#revenueChartDateRang').prop('hidden', false);
+    $('#btn-close-myModalGraph').click();
+
+    var revenueDataDateRang = get_graphDateRang(startDate, endDate, 1);
+    
+    var ctx_dateRange = document.getElementById("revenueChartByMonthOrYear").getContext("2d");
+    revenueChart_thisMonth.destroy(); // Destroy the current chart
+    revenueChart_thisMonth = new Chart(ctx_dateRange, {
+        type: "bar",
+        data: {
+            labels: get_graphDateRang(startDate, endDate, 0),
+            datasets: [{
+                label: moment(startDate).format('DD MMMM YYYY')+" - "+moment(endDate).format('DD MMMM YYYY'),
+                data: revenueDataDateRang,
                 backgroundColor: "#2C7F7A",
                 borderWidth: 0,
                 barPercentage: 0.7,
