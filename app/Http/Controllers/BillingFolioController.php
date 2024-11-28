@@ -255,9 +255,11 @@ class BillingFolioController extends Controller
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+        ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
+            'proposal_overbill.Nettotal as Adtotal',
             DB::raw('SUM(document_receive.Amount) as receive_amount'),
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
@@ -274,9 +276,11 @@ class BillingFolioController extends Controller
         if ($perPage == 10) {
             $data_query = Quotation::query()
                 ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
+                    'proposal_overbill.Nettotal as Adtotal',
                     DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_guest')
@@ -285,9 +289,11 @@ class BillingFolioController extends Controller
         } else {
             $data_query = Quotation::query()
                 ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
+                    'proposal_overbill.Nettotal as Adtotal',
                     DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_guest')
@@ -318,18 +324,19 @@ class BillingFolioController extends Controller
 
 
 
-                    $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id) . '" >
+                    $url = url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id);
+                    $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
                                     Select
-                                    </button>';
+                                </button>';
                     $data[] = [
                         'number' => $key +1,
                         'Proposal' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'Amount' => number_format($value->Nettotal),
+                        'ProposalAmount' => number_format($value->Nettotal),
+                        'AdditionalAmount' => number_format($value->Adtotal),
+                        'TotalAmount' => number_format($value->Nettotal + $value->Adtotal),
                         'Deposit' => number_format($value->receive_amount ?? 0, 2),
-                        'Approve' => empty($value->Confirm_by) ? 'Auto' : ($value->userConfirm->name ?? 'Auto'),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -351,9 +358,11 @@ class BillingFolioController extends Controller
         if ($search_value) {
             $data_query = Quotation::query()
                 ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
+                    'proposal_overbill.Nettotal as Adtotal',
                     DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
@@ -364,9 +373,11 @@ class BillingFolioController extends Controller
 
             $data_query = Quotation::query()
                 ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
+                    'proposal_overbill.Nettotal as Adtotal',
                     DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
@@ -388,18 +399,19 @@ class BillingFolioController extends Controller
 
                 $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
 
-                $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id) . '" >
-                                                Select
-                                            </button>';
+                $url = url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id);
+                $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                Select
+                            </button>';
                 $data[] = [
                     'number' => $key +1,
                     'Proposal' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'Amount' => number_format($value->Nettotal),
+                    'ProposalAmount' => number_format($value->Nettotal),
+                    'AdditionalAmount' => number_format($value->Adtotal),
+                    'TotalAmount' => number_format($value->Nettotal + $value->Adtotal),
                     'Deposit' => number_format($value->receive_amount ?? 0, 2),
-                    'Approve' => empty($value->Confirm_by) ? 'Auto' : ($value->userConfirm->name ?? 'Auto'),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -471,7 +483,7 @@ class BillingFolioController extends Controller
             $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
             $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+            $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }else{
             $guestdata =  Guest::where('Profile_ID',$nameid)->first();
             $fullname =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
@@ -483,9 +495,13 @@ class BillingFolioController extends Controller
             $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
             $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+            $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }
         $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('Paid',0)->get();
+        $totalinvoices = 0;
+        foreach ($invoices as $item) {
+            $totalinvoices +=  $item->sumpayment;
+        }
         if ($invoices->contains('Paid', 0)) {
             // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
             $status = 0;
@@ -521,6 +537,7 @@ class BillingFolioController extends Controller
             $totalentertainment +=  $item->netpriceproduct;
         }
         $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->first();
+        $additional_type = $Additional->additional_type;
         $Rm = []; // กำหนดตัวแปร $Rm เป็น array ว่าง
         $FB = [];
         $BQ = [];
@@ -531,6 +548,7 @@ class BillingFolioController extends Controller
         $BQCount = 0;
         $EMCount = 0;
         $ATCount = 0;
+        $Additionaltotal = $Additional->Nettotal;
         $AdditionaltotalReceipt = 0;
         $statusover = 1;
         $Receiptover = null;
@@ -605,8 +623,8 @@ class BillingFolioController extends Controller
 
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
                     'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
-                    ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt','Receiptover','statusover','Additional_ID',
-                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount'));
+                    ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt','Additionaltotal','Receiptover','statusover','Additional_ID',
+                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','additional_type','totalinvoices'));
     }
 
     public function PaidInvoice($id){
@@ -693,8 +711,11 @@ class BillingFolioController extends Controller
             $bank_cheque ="";
             $databankname = "";
         }
-
-        return view('billingfolio.invoicepaid',compact('invoices','address','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque'));
+        $Additional = proposal_overbill::where('Quotation_ID',$proposalid)->where('status_guest',0)->first();
+        $additional_type = $Additional->additional_type;
+        $additional_Nettotal = $Additional->Nettotal;
+        return view('billingfolio.invoicepaid',compact('invoices','address','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque','additional_type',
+                    'additional_Nettotal'));
     }
     public function EditPaidInvoice($id){
         $re = receive_payment::where('id',$id)->first();
@@ -969,6 +990,7 @@ class BillingFolioController extends Controller
     }
     public function savere(Request $request) {
         $data = $request->all();
+        dd($data);
         $guest = $request->Guest;
         $reservationNo = $request->reservationNo;
         $room = $request->roomNo;
@@ -999,6 +1021,13 @@ class BillingFolioController extends Controller
                 $databankname = $databank->name_en;
             }else{
                 $databankname = $chequeBank;
+            }
+        }
+        $Cash_Complimentary = $request->Cash_Complimentary;
+        $Complimentaryfree = $request->Complimentaryfree;
+        if ($Cash_Complimentary&&$Complimentaryfree != null) {
+            if ($paymentType == 'cheque') {
+                $additional = 'cheque';
             }
         }
 

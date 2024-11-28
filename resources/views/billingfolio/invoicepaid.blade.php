@@ -170,7 +170,7 @@
                                             <b >Receipt ID : {{$REID}}</b>
                                             <b >Proforma Invoice ID : {{$Invoice_ID}}</b>
                                         </div>
-                                        <h3>
+                                        <h3 >
                                             <span>Customer Details</span>
                                         </h3>
                                         <div >
@@ -245,7 +245,7 @@
                                             <input type="text" id="address" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
                                             <input type="text" id="address2" value="auto-select" class="form-control mt-3" disabled  style="background-color: #59a89e81;"/>
                                         </div>
-                                        <h3>
+                                        <h3 class="mt-2">
                                             <span>Stay Details</span>
                                         </h3>
                                         <div >
@@ -278,10 +278,178 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <h3>
+                                        <h3 class="mt-2">
                                             <span>Payment Details</span>
                                         </h3>
+
+                                        {{-- form-check-input --}}
                                         @if ($chequeRestatus == '0')
+                                            <div class="payment-container">
+                                                <label for="paymentType" class="star-red">Payment Type</label>
+                                                <input type="hidden" name="paymentTypecheque" value="cheque">
+                                                <select name="paymentType" id="paymentType" class="paymentType select2" disabled>
+                                                    <option value="cheque">Cheque</option>
+                                                </select>
+                                                <div class="chequeInput" style="display: block;">
+                                                    <label for="chequeBank" class="star-red">Bank</label>
+                                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2" disabled>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$databankname == $item->name_en ? 'selected' : ''}} >{{ $item->name_th }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
+                                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8" value="{{$chequeRe->cheque_number}}" @readonly(true) style="background-color: #59a89e81;">
+                                                    <label for="chequeAmount" class="star-red">Amount</label>
+                                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                                    <label for="chequeBank" class="star-red">Bank Received</label>
+                                                    <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
+                                                        @foreach ($data_bank as $item)
+                                                            <option value=""></option>
+                                                            <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            @if ($additional_type == 'Cash')
+                                                <div class="payment-container mt-2" style="padding-left:18px;">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckDefault" style="transform:translateY(-13%)">
+                                                        <label class="form-check-label" for="flexSwitchCheckDefault">Add Complimentary</label>
+                                                    </div>
+                                                </div>
+                                                <div id="complimentaryDiv" class="hidden">
+                                                    <div class="Complimentary mt-2" style="border: #135d58 solid 1px;padding:10px; border-radius:10px">
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Total Amount</span>
+                                                                </h6>
+                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($sumpayment-$additional_Nettotal, 2) }}</span>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Cash</span>
+                                                                </h6>
+                                                                <span type="text" class="form-control"  placeholder="Enter cash amount" disabled>{{ number_format($additional_Nettotal*0.37, 2, '.', ',') }}
+                                                                <input type="hidden" id="Cash_Complimentary" name="Cash_Complimentary" value="{{$additional_Nettotal*0.37}}">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Complimentary</span>
+                                                                </h6>
+                                                                <span type="text" class="form-control"  placeholder="Enter cash amount" disabled>{{ number_format($additional_Nettotal-$additional_Nettotal*0.37, 2, '.', ',') }}
+                                                                <input type="hidden" id="Complimentaryfree" name="Complimentaryfree" value="{{$additional_Nettotal-$additional_Nettotal*0.37}}">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Total Cash + Complimentary</span>
+                                                                </h6>
+                                                                <span type="text" class="form-control"  placeholder="Enter cash amount" disabled>{{ number_format($additional_Nettotal, 2, '.', ',') }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="Complimentary mt-2" style="border: #135d58 solid 1px;padding:10px; border-radius:10px">
+                                                        <div class="row">
+                                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Total Cash</span>
+                                                                </h6>
+                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($sumpayment-$additional_Nettotal+$additional_Nettotal*0.37, 2) }}</span>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Complimentary</span>
+                                                                </h6>
+                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($additional_Nettotal-$additional_Nettotal*0.37, 2) }}</span>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                                <h6 class="mt-2">
+                                                                    <span>Total</span>
+                                                                </h6>
+                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($sumpayment, 2) }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <script>
+                                                    const checkbox = document.getElementById('flexSwitchCheckDefault');
+                                                    const div = document.getElementById('complimentaryDiv');
+                                                    const inputs = div.querySelectorAll("input, select");
+                                                    checkbox.addEventListener('change', function() {
+                                                        if (this.checked) {
+                                                            div.classList.remove('hidden'); // แสดง div
+                                                            inputs.forEach(input => input.disabled = false);
+                                                        } else {
+                                                            div.classList.add('hidden'); // ซ่อน div
+                                                            inputs.forEach(input => input.disabled = true);
+                                                        }
+                                                    });
+                                                </script>
+                                            @endif
+                                        @else
+                                            @if ($additional_type == 'Cash')
+                                                <div class="payment-container" style="padding-left:18px;">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckDefault" style="transform:translateY(-13%)">
+                                                        <label class="form-check-label" for="flexSwitchCheckDefault">Add Complimentary</label>
+                                                    </div>
+                                                </div>
+                                                <div id="complimentaryDiv" class="hidden">
+                                                    <h6 class="mt-2">
+                                                        <span>Complimentary</span>
+                                                    </h6>
+                                                    <div class="Complimentary">
+                                                        <label for="paymentType" class="star-red">Payment Type</label>
+                                                        <select name="paymentType" id="paymentTypecomp" class="select2" >
+                                                            <option value="" disabled selected></option>
+                                                            <option value="cashcomp">Cash</option>
+                                                            <option value="bankTransfercomp">Bank Transfer</option>
+                                                            <option value="creditCardcomp">Credit Card</option>
+                                                        </select>
+                                                        <div id="cashInputCom" style="display: none;">
+                                                            <label for="cashAmount" class="star-red">Cash Amount</label>
+                                                            <input type="text" id="AmountCom"  name="AmountCom" class="form-control" placeholder="Enter cash amount">
+                                                        </div>
+                                                        <div id="bankTransferInputCom" style="display: none;">
+                                                            <label for="bankName" class="star-red">Bank</label>
+                                                                <select  id="bankCom" name="bankCom" class="select2">
+                                                                    @foreach ($data_bank as $item)
+                                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            <label for="bankTransferAmount" class="star-red">Amount</label>
+                                                            <input type="text" id="bankAmountCom"  name="bankAmount" class="form-control" placeholder="Enter cash amount">
+                                                        </div>
+                                                        <div id="creditCardInputCom" style="display: none;">
+                                                            <label for="creditCardNumber" class="star-red">Credit Card Number</label>
+                                                            <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                                            <label for="expiryDate" class="star-red">Expiry Date</label>
+                                                            <input type="text" name="CardExpiry" id="CardExpiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+                                                            <label for="creditCardAmount" class="star-red">Amount</label>
+                                                            <input type="text" id="CardAmount" name="CardAmount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                    const checkbox = document.getElementById('flexSwitchCheckDefault');
+                                                    const div = document.getElementById('complimentaryDiv');
+                                                    const inputs = div.querySelectorAll("input, select");
+                                                    checkbox.addEventListener('change', function() {
+                                                        if (this.checked) {
+                                                            div.classList.remove('hidden'); // แสดง div
+                                                            inputs.forEach(input => input.disabled = false);
+                                                        } else {
+                                                            div.classList.add('hidden'); // ซ่อน div
+                                                            inputs.forEach(input => input.disabled = true);
+                                                        }
+                                                    });
+                                                </script>
+                                            @endif
+                                        @endif
+
+                                        {{-- @if ($chequeRestatus == '0')
                                             <div class="payment-container">
                                                 <label for="paymentType" class="star-red">Payment Type</label>
                                                 <input type="hidden" name="paymentTypecheque" value="cheque">
@@ -343,7 +511,7 @@
                                                     <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
                                                 </div>
                                             </div>
-                                        @endif
+                                        @endif --}}
                                         <div class="d-grid" style="height: max-content;">
                                             <label class="star-red" for="paymentDate">Date</label>
                                             <div class="input-group">
@@ -746,31 +914,60 @@
                 }
             });
         }
-        $(document).ready(function() {
-            // Listen for change on all elements with class 'paymentType'
-            $('.paymentType').on('change', function() {
+        // $(document).ready(function() {
+        //     // Listen for change on all elements with class 'paymentType'
+        //     $('.paymentType').on('change', function() {
+        //         var selectedType = $(this).val();
+        //         var parentContainer = $(this).closest('.payment-container'); // Find the parent container
+        //         // Hide all payment method sections within this specific container
+        //         parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
+        //         // Show the relevant section based on the selected payment type
+        //         if (selectedType === 'cash') {
+        //             parentContainer.find('.cashInput').show();
+        //         } else if (selectedType === 'bankTransfer') {
+        //             parentContainer.find('.bankTransferInput').show();
+        //         } else if (selectedType === 'creditCard') {
+        //             parentContainer.find('.creditCardInput').show();
+        //         } else if (selectedType === 'cheque') {
+        //             parentContainer.find('.chequeInput').show();
+        //         }
+        //     });
+        //     // Format credit card number on input
+        //     $('.creditCardNumber').on('input', function() {
+        //         var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
+        //         input = input.substring(0, 16); // Limit input to 16 digits
+        //         // Format the input as xxxx-xxxx-xxxx-xxxx
+        //         var formattedInput = input.match(/.{1,4}/g)?.join('-') || input;
+        //         $(this).val(formattedInput);
+        //     });
+        // });
+        $(document).ready(function () {
+            $('#paymentTypecomp').on('change', function () {
                 var selectedType = $(this).val();
-                var parentContainer = $(this).closest('.payment-container'); // Find the parent container
-                // Hide all payment method sections within this specific container
-                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
-                // Show the relevant section based on the selected payment type
-                if (selectedType === 'cash') {
-                    parentContainer.find('.cashInput').show();
-                } else if (selectedType === 'bankTransfer') {
-                    parentContainer.find('.bankTransferInput').show();
-                } else if (selectedType === 'creditCard') {
-                    parentContainer.find('.creditCardInput').show();
-                } else if (selectedType === 'cheque') {
-                    parentContainer.find('.chequeInput').show();
+                var cashInputCom = document.getElementById("cashInputCom");
+                var bankTransferInputCom = document.getElementById("bankTransferInputCom");
+                var creditCardInputCom = document.getElementById("creditCardInputCom");
+                switch (selectedType) {
+                    case "cashcomp":
+                        cashInputCom.style.display = "Block";
+                        bankTransferInputCom.style.display = "none";
+                        creditCardInputCom.style.display = "none";
+                        break;
+                    case "bankTransfercomp":
+                        cashInputCom.style.display = "none";
+                        bankTransferInputCom.style.display = "Block";
+                        creditCardInputCom.style.display = "none";
+                        break;
+                    case "creditCardcomp":
+                        cashInputCom.style.display = "none";
+                        bankTransferInputCom.style.display = "none";
+                        creditCardInputCom.style.display = "Block";
+                        break;
+                    default:
+                        cashInputCom.style.display = "Block";
+                        bankTransferInputCom.style.display = "none";
+                        creditCardInputCom.style.display = "none";
                 }
-            });
-            // Format credit card number on input
-            $('.creditCardNumber').on('input', function() {
-                var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
-                input = input.substring(0, 16); // Limit input to 16 digits
-                // Format the input as xxxx-xxxx-xxxx-xxxx
-                var formattedInput = input.match(/.{1,4}/g)?.join('-') || input;
-                $(this).val(formattedInput);
             });
         });
     </script>

@@ -57,10 +57,10 @@
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th>Issue Date</th>
-                                            <th>Expiration Date</th>
-                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Proposal Amount</th>
+                                            <th class="text-center">Additional Amount</th>
+                                            <th class="text-center">Total Amount</th>
                                             <th class="text-center">Paid</th>
-                                            <th class="text-center">Approve By</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Action</th>
                                         </tr>
@@ -79,22 +79,20 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td>{{ $item->issue_date }}</td>
-                                                <td>{{ $item->Expirationdate }}</td>
                                                 <td style="text-align: center;">
                                                     {{ number_format($item->Nettotal) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->Adtotal) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->Nettotal + $item->Adtotal) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->receive_amount == 0 )
                                                         0
                                                     @else
                                                         {{ number_format($item->receive_amount) }}
-                                                    @endif
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    @if (@$item->userConfirm->name == null)
-                                                        Auto
-                                                    @else
-                                                        {{ @$item->userConfirm->name }}
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
@@ -243,10 +241,10 @@
                         { data: 'Proposal' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Amount' },
+                        { data: 'ProposalAmount' },
+                        { data: 'AdditionalAmount' },
+                        { data: 'TotalAmount' },
                         { data: 'Deposit' },
-                        { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],

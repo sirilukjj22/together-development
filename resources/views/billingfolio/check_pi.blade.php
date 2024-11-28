@@ -36,10 +36,12 @@
                     <div class=""><span class="span1">Billing Folio (ใบเรียกเก็บเงิน)</span></div>
                 </div>
                 <div class="col-auto">
-                    @if ($Nettotal-$totalReceipt !== 0)
-                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
-                            <i class="fa fa-plus"></i> Create Invoice
-                        </button>
+                    @if ($Nettotal-$totalReceipt !== 0 )
+                        @if ($Nettotal+$Additionaltotal-$totalinvoices !== 0 )
+                            <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
+                                <i class="fa fa-plus"></i> Create Invoice
+                            </button>
+                        @endif
                     @endif
                 </div>
             </div> <!-- .row end -->
@@ -115,7 +117,7 @@
                                         <div class="outer-glow-circle"></div>
                                         <div class="circle-content">
                                             <p class="circle-text">
-                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal-$totalReceipt, 2, '.', ',') }}</p>
+                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal+$Additionaltotal-$totalReceipt, 2, '.', ',') }}</p>
                                             <span class="subtext fs-6" >Total Amount</span>
                                             </p>
                                         </div>
@@ -135,11 +137,11 @@
                                         </li>
                                         <li class="pr-3">
                                             <span >Additional ({{$Additional_ID}})</span>
-                                            <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($AdditionaltotalReceipt, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
+                                            <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($Additionaltotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
                                         </li>
                                         <li class="pr-3">
                                             <span >Total</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($Nettotal+$AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                            <span class="text-danger f-w-bold">{{ number_format($Nettotal+$Additionaltotal, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
                                     <span id="defaultContent">
@@ -148,20 +150,30 @@
                                             <span class="text-danger f-w-bold">{{ number_format($totalReceipt, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
-                                    <span id="toggleContent" style="display: none;">
-                                        <li class="pr-3 ">
-                                            <span>Cash</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($Nettotal, 2, '.', ',') }}</span>
-                                        </li>
-                                        <li class="pr-3">
-                                            <span>Complimentary</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
-                                        </li>
-                                    </span>
+                                    @if ($additional_type == 'Cash')
+                                        <span id="toggleContent" style="display: none;">
+                                            <li class="pr-3 ">
+                                                <span>Cash</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($Additionaltotal*0.37, 2, '.', ',') }}</span>
+                                            </li>
+                                            <li class="pr-3">
+                                                <span>Complimentary</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($Additionaltotal-$Additionaltotal*0.37, 2, '.', ',') }}</span>
+                                            </li>
+                                        </span>
+                                    @else
+                                        <span id="toggleContent" style="display: none;">
+                                            <li class="pr-3 ">
+                                                <span>H/G Online</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($Additionaltotal, 2, '.', ',') }}</span>
+                                            </li>
+                                        </span>
+                                    @endif
+
                                 </ul>
                                 <li class="outstanding-amount">
                                     <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal-$totalReceipt, 2, '.', ',') }}</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal+$Additionaltotal-$totalReceipt, 2, '.', ',') }}</span>
                                 </li>
                             </div>
                         </div>
@@ -920,18 +932,18 @@
    </script>
    <script>
     document.getElementById("switchButton").addEventListener("click", function () {
-      const defaultContent = document.getElementById("defaultContent");
-      const toggleContent = document.getElementById("toggleContent");
+        const defaultContent = document.getElementById("defaultContent");
+        const toggleContent = document.getElementById("toggleContent");
 
-      if (defaultContent.style.display === "none") {
+        if (defaultContent.style.display === "none") {
         defaultContent.style.display = "block";
         toggleContent.style.display = "none";
         this.innerHTML = "&#8644;";
-      } else {
+        } else {
         defaultContent.style.display = "none";
         toggleContent.style.display = "block";
         this.innerHTML = "&#8646;";
-      }
+        }
     });
   </script>
 @endsection

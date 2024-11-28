@@ -261,10 +261,10 @@ function getPagePending(page, perPage, table_n)
                 { data: 'Proposal' },
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
-                { data: 'ExpirationDate' },
-                { data: 'Amount' },
+                { data: 'ProposalAmount' },
+                { data: 'AdditionalAmount' },
+                { data: 'TotalAmount' },
                 { data: 'Deposit' },
-                { data: 'Approve' },
                 { data: 'DocumentStatus' },
                 { data: 'btn_action' }
             ],

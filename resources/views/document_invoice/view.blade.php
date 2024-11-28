@@ -441,16 +441,14 @@
                                             </li>
                                             <li> </li>
                                             <b class="font-upper com">Personal Information</b>
-                                            <span class="wrap-full">
-                                                <li >
-                                                    <b>Contact Name</b>
-                                                    <span id="Company_contact">{{$Contact_name}}</span>
-                                                </li>
-                                                <li >
-                                                    <b>Contact Number</b>
-                                                    <span id="Contact_Phone">{{ $Contact_phone->Phone_number}}</span>
-                                                </li>
-                                            </span>
+                                            <li >
+                                                <b>Contact Name</b>
+                                                <span id="Company_contact">{{$Contact_Name}}</span>
+                                            </li>
+                                            <li >
+                                                <b>Contact Number</b>
+                                                <span id="Contact_Phone">{{ $Contact_phone->Phone_number}}</span>
+                                            </li>
                                             <li>
                                                 <b>Contact Email</b>
                                                 <span id="Contact_Email" >{{$Contact_Email}}</span>

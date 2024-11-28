@@ -1190,7 +1190,7 @@ class Document_invoice extends Controller
         }
         $user = Auth::user();
         return view('document_invoice.create',compact('InvoiceID','fullName','Identification','address','Quotation','Selectdata','QuotationID','Additional_ID','Additional_Nettotal','settingCompany','invoices','totalinvoice',
-                    'phone','Contact_phone','Fax_number','Email','Contact_Name','Deposit','vat_type','user'));
+                    'phone','Contact_phone','Fax_number','Email','Contact_Name','Deposit','vat_type','user','Contact_Email'));
     }
     public function save(Request $request){
         try {
@@ -1803,7 +1803,7 @@ class Document_invoice extends Controller
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         return view('document_invoice.view',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','Fax_number','Contact_Name','Contact_phone','Contact_Email'));
     }
     public function edit($id){
         $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
@@ -1903,7 +1903,7 @@ class Document_invoice extends Controller
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         return view('document_invoice.edit',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','Contact_Email','Contact_Name','Contact_phone','Fax_number'));
     }
 
     public function update(Request $request ,$id){
@@ -3296,7 +3296,7 @@ class Document_invoice extends Controller
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         return view('document_invoice.viewinvoice',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','id'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','id','Fax_number','Contact_Name','Contact_phone','Contact_Email'));
     }
     public function email($id){
         $quotation = document_invoices::where('id',$id)->first();

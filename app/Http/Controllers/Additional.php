@@ -1917,10 +1917,20 @@ class Additional extends Controller
         $data = [];
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
-            $data_query =  Quotation::query()->where('quotation.status_guest', 1)->limit($request->page.'0')
+            $data_query =  Quotation::query()
+            ->select('quotation.*')
+            ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+            ->where('quotation.status_guest', 1)
+            ->whereNull('proposal_overbill.Quotation_ID')
+            ->limit($request->page.'0')
             ->get();
         } else {
-            $data_query =  Quotation::query()->where('quotation.status_guest', 1)->paginate($perPage);
+            $data_query =  Quotation::query()
+            ->select('quotation.*')
+            ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+            ->where('quotation.status_guest', 1)
+            ->whereNull('proposal_overbill.Quotation_ID')
+            ->paginate($perPage);
         }
 
 
@@ -1947,20 +1957,22 @@ class Additional extends Controller
                     $CreateBy = Auth::user()->id;
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $isOperatedByCreator = $value->Operated_by == $CreateBy;
+                    $url = url('/Document/BillingFolio/Proposal/Over/' . $value->id);
+
                     if ($rolePermission == 1 || $rolePermission == 2) {
                         if ($isOperatedByCreator) {
-                            $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
-                                            Select
-                                            </button>';
+                            $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                    Select
+                                </button>';
                         }else{
                             $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" disabled>
                                             Select
                                             </button>';
                         }
                     }elseif ($rolePermission == 3) {
-                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
-                                            Select
-                                            </button>';
+                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                    Select
+                                </button>';
                     }
                     $data[] = [
                         'number' => ($key + 1) ,
@@ -1992,6 +2004,8 @@ class Additional extends Controller
 
         if ($search_value) {
             $data_query = Quotation::query()
+            ->select('quotation.*')
+            ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
             ->where('quotation.status_guest', 1)
             ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
             ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
@@ -1999,10 +2013,16 @@ class Additional extends Controller
             ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
             ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
             ->where('Company_ID',$guest_profile)
+            ->whereNull('proposal_overbill.Quotation_ID')
             ->paginate($perPage);
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query =  Quotation::query()->where('quotation.status_guest', 1)->paginate($perPageS);
+            $data_query =  Quotation::query()
+            ->select('quotation.*')
+            ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+            ->where('quotation.status_guest', 1)
+            ->whereNull('proposal_overbill.Quotation_ID')
+            ->paginate($perPageS);
         }
 
         $data = [];
@@ -2021,20 +2041,21 @@ class Additional extends Controller
                 $CreateBy = Auth::user()->id;
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
+                $url = url('/Document/BillingFolio/Proposal/Over/' . $value->id);
                 if ($rolePermission == 1 || $rolePermission == 2) {
                     if ($isOperatedByCreator) {
-                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
-                                        Select
-                                        </button>';
+                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                    Select
+                                </button>';
                     }else{
                         $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" disabled>
                                         Select
                                         </button>';
                     }
                 }elseif ($rolePermission == 3) {
-                    $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/Over/' . $value->id) . '" >
-                                        Select
-                                        </button>';
+                        $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                    Select
+                                </button>';
                 }
                 $data[] = [
                     'number' => ($key + 1) ,
