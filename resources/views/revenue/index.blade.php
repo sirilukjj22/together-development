@@ -2169,6 +2169,16 @@
     <script src="{{ asset('assets/js/calendar-draft-noDate.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 
+    <style>
+        .current-month,
+        .current-year {
+          /* background-color: rgba(16, 152, 100, 0.188) !important; */
+          color: #1d3d2e !important;
+          /* box-shadow: inset 0 0 0 1px #388e99; */
+          background-color: rgb(63, 2, 23) !important;
+        }
+      </style>
+
 <script type="text/javascript">
     const monthName = [
             "January",
@@ -2197,7 +2207,7 @@
         if (filter_by != "month" && filter_by != "year") {
             localStorage.removeItem("selectedYear");
             localStorage.removeItem("selectedMonthRange");
-            
+
             // สร้าง Litepicker
             picker = new Litepicker({
                 element: datepickerElement,
@@ -3374,5 +3384,5 @@
           toggleIcon.style.filter = 'drop-shadow(0 0 10px rgb(43, 240, 191))';
         }
     });
-  </script>
+</script>
 @endsection

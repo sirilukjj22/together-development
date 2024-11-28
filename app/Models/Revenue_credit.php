@@ -30,4 +30,22 @@ class Revenue_credit extends Model
         'remark',
         'status',
     ];
+
+    public static function getAgodaReceiveDate($smsID) 
+    {
+        $query = Revenue_credit::where('sms_revenue', $smsID)->where('status', 5)->where('receive_payment', 1)->select('id', 'date_receive')->first();
+
+        $result = !empty($query) ? $query->date_receive : 0;
+
+        return $result;
+    }
+
+    public static function getElexaReceiveDate($smsID) 
+    {
+        $query = Revenue_credit::where('sms_revenue', $smsID)->where('status', 8)->where('receive_payment', 1)->select('id', 'date_receive')->first();
+
+        $result = !empty($query) ? $query->date_receive : 0;
+
+        return $result;
+    }
 }
