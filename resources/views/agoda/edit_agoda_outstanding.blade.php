@@ -230,7 +230,7 @@
     <input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
     <input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
     <input type="hidden" name="" id="input-total-item" value="0">
-    <input type="text" name="" id="input-total-debit" value="0">
+    <input type="hidden" name="" id="input-total-debit" value="0">
 
     <form action="#" id="form-agoda">
         @csrf
@@ -281,7 +281,7 @@
             var rowId = $(this).closest('tr').attr('id'); // Assuming each row has a unique ID
             checkedRows[rowId] = $(this).prop('checked');
 
-            // Check if all checkboxes in the current page are selected
+            // Check if all checkboxes in the current page are selected 
             if ($('.checkbox-item:checked').length === $('.checkbox-item').length) {
                 $('#checkAll').prop('checked', true);
             } else {
@@ -383,13 +383,13 @@
                     var agoda_revenue_amount = Number($('#input-total-debit').val());
                     var agoda_num = Number($('#input-total-item').val());
 
-                        if ($('#checkbox-outstanding'+id).is(':checked')) {
-                            $('#txt-total-item').text(agoda_num += 1);
-                            $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount += agoda_revenue));
-                        } else {
-                            $('#txt-total-item').text(agoda_num -= 1);
-                            $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount -= agoda_revenue));
-                        }
+                        // if ($('#checkbox-outstanding'+id).is(':checked')) {
+                            // $('#txt-total-item').text(agoda_num += 1);
+                            // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount += agoda_revenue));
+                        // } else {
+                        //     // $('#txt-total-item').text(agoda_num -= 1);
+                        //     // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount -= agoda_revenue));
+                        // }
 
                     $('#input-total-item').val(agoda_num);
                     $('#input-total-debit').val(agoda_revenue_amount);
@@ -474,6 +474,23 @@
                     });
 
                 } else {
+
+                    // Update ยอดที่เลือก
+                    // var agoda_revenue = Number($('#agoda_revenue'+id).val());
+                    // var agoda_revenue_amount = Number($('#input-total-debit').val());
+                    // var agoda_num = Number($('#input-total-item').val());
+
+                    // $('#txt-total-item').text(agoda_num -= 1);
+                    // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount -= amount));
+
+                    // $('#input-total-item').val(agoda_num);
+                    // if (agoda_num == 0) {
+                    //     agoda_revenue_amount = 0;
+                    // }
+                    // $('#input-total-debit').val(agoda_revenue_amount);
+                    // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount));
+                    // END
+
                     $('#total_receive_payment').val(Number(total_receive_payment - amount).toFixed(2)); // ยอดที่รับชำระ
                     $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment - amount))); // ยอดที่รับชำระ แสดงแบบ Text
                     $('#txt_total_received').text(currencyFormat(Number(total_receive_payment - amount)));

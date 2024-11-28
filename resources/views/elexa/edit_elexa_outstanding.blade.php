@@ -623,13 +623,13 @@
                     var ev_revenue_amount = Number($('#input-total-debit').val());
                     var ev_num = Number($('#input-total-item').val());
 
-                        if ($('#checkbox-outstanding'+id).is(':checked')) {
-                            $('#txt-total-item').text(ev_num += 1);
-                            $('#txt-total-debit').text(currencyFormat(ev_revenue_amount += ev_revenue));
-                        } else {
-                            $('#txt-total-item').text(ev_num -= 1);
-                            $('#txt-total-debit').text(currencyFormat(ev_revenue_amount -= ev_revenue));
-                        }
+                        // if ($('#checkbox-outstanding'+id).is(':checked')) {
+                            // $('#txt-total-item').text(ev_num += 1);
+                            // $('#txt-total-debit').text(currencyFormat(ev_revenue_amount += ev_revenue));
+                        // } else {
+                        //     $('#txt-total-item').text(ev_num -= 1);
+                        //     $('#txt-total-debit').text(currencyFormat(ev_revenue_amount -= ev_revenue));
+                        // }
 
                     $('#input-total-item').val(ev_num);
                     $('#input-total-debit').val(ev_revenue_amount);
