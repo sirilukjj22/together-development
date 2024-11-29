@@ -355,9 +355,12 @@
                                     </ul>
                                 </li>
                             @endif
-                            <li><a class="m-link" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModalLogout"><i class="fa fa-lg fa-power-off"
-                                        style="font-weight: bold; color: white;"></i> <span>Logout</span></a></li>
+                            <li>
+                                <a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout">
+                                    <i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i> 
+                                    <span>Logout</span>
+                                </a>
+                            </li>
                         </ul>
 
                     </div>
