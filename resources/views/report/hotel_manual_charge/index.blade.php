@@ -175,10 +175,6 @@
                             </div>
 
                             <div class="col-md-12 d-flex flex-row gap-3 mt-4">
-                                {{-- <div class="form-check">
-                                    <input class="form-check-input status" type="checkbox" name="statusAll" id="statusAll" value="1" {{ isset($statusAll) && $statusAll == 1 ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="statusAll">All Revenue</label>
-                                </div> --}}
                                 <div class="form-check">
                                     <input class="form-check-input status" type="checkbox" name="statusHide" id="statusHide" value="1" {{ isset($statusHide) && $statusHide == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="statusHide">Hide No Revenue</label>
@@ -187,22 +183,6 @@
                                     <input class="form-check-input status" type="checkbox" name="statusNotComplete" id="statusNotComplete" value="1" {{ isset($statusNotComplete) && $statusNotComplete == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="statusNotComplete">Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
                                 </div>
-                                {{-- <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusAll" value="all" {{ isset($status) && $status == 'all' ? 'checked' : 'checked' }}>
-                                    <label class="form-check-label" for="statusAll">All Revenue</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusHide" value="hide_revenue" {{ isset($status) && $status == 'hide_revenue' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="statusHide">Hide No Revenue</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusNotComplete" value="not_complete" {{ isset($status) && $status == 'not_complete' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="statusNotComplete">Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusHideNotComplete" value="hide_not_complete" {{ isset($status) && $status == 'hide_not_complete' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="statusHideNotComplete">Hide No Revenue & Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
-                                </div> --}}
                             </div>
 
                             <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
