@@ -66,6 +66,11 @@ class ReportHotelManualChangeController extends Controller
             $search_date = $startDate;
         }
 
+        if ($status == "hide_revenue") {
+            $query->where('revenue.total_credit', '>', 0);
+            $query->where('revenue_credit.credit_amount', '>', 0);
+        }
+
         $query->select(
             'revenue.date',
             'revenue.total_credit',
@@ -79,7 +84,19 @@ class ReportHotelManualChangeController extends Controller
 
         } elseif ($request->method_name == "pdf") {
 
-            $sum_page = count($data_query) / 25;
+            $num = 0;
+            if (isset($status) && $status == 'not_complete') 
+            {
+                foreach ($data_query as $key => $item)
+                {
+                    if ($item->manual_charge == 0 || $item->total_credit == 0)
+                    {
+                        $num += 1;
+                    }
+                }
+            }
+
+            $sum_page = $num / 25;
             $page_item = 1;
             if ($sum_page > 1.2 && $sum_page < 2.5) {
                 $page_item += 1;
@@ -92,7 +109,7 @@ class ReportHotelManualChangeController extends Controller
 
         } elseif ($request->method_name == "excel") {
             // return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx');
-            return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+            return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date, $status), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
         }
     }
 }

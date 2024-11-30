@@ -198,8 +198,7 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" id="filter-by" name="filter_by"
-                                value="{{ isset($filter_by) ? $filter_by : 'month' }}">
+                            <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
                             <input type="hidden" value="search" id="method-name" name="method_name">
 
                             <div class="col-md-12 text-end">

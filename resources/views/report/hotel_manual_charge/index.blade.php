@@ -174,6 +174,21 @@
                                 </select>
                             </div>
 
+                            <div class="col-md-12 d-flex flex-row gap-3 mt-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusAll" value="all" {{ isset($status) && $status == 'all' ? 'checked' : 'checked' }}>
+                                    <label class="form-check-label" for="statusAll">All Revenue</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusHide" value="hide_revenue" {{ isset($status) && $status == 'hide_revenue' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusHide">Hide No Revenue</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusNotComplete" value="not_complete" {{ isset($status) && $status == 'not_complete' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusNotComplete">Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
+                                </div>
+                            </div>
+
                             <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
                             <input type="hidden" value="search" id="method-name" name="method_name">
             
@@ -203,7 +218,7 @@
                             <th>Date</th>
                             <th>Manual Charge</th>
                             <th>Fee</th>
-                            <th>SMS Revenue</th>
+                            <th>Hotel Bank Transfer</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -211,22 +226,44 @@
                             $total_manual = 0;
                             $total_fee = 0;
                             $total_sms = 0;
+                            $number = 0;
                         @endphp
-                        @foreach ($data_query as $key => $item)
-                            <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                <td>{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
-                                <td>{{ $item->fee == 0 ? "-" : number_format($item->fee, 2) }}</td>
-                                <td>{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
-                            </tr>
 
-                            @php
-                                $total_manual += $item->manual_charge;
-                                $total_fee += $item->fee;
-                                $total_sms += $item->total_credit;
-                            @endphp
-                        @endforeach
+                        @if (isset($status) && $status == 'not_complete')
+                            @foreach ($data_query as $key => $item)
+                                @if ($item->manual_charge == 0 || $item->total_credit == 0)
+                                    <tr>
+                                        <td>{{ $number += 1 }}</td>
+                                        <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                        <td>{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
+                                        <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? "-" : number_format($item->fee, 2) }}</td>
+                                        <td>{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
+                                    </tr>
+
+                                    @php
+                                        $total_manual += $item->manual_charge;
+                                        $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
+                                        $total_sms += $item->total_credit;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        @else
+                            @foreach ($data_query as $key => $item)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                    <td>{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
+                                    <td>{{ $item->fee == 0 ? "-" : number_format($item->fee, 2) }}</td>
+                                    <td>{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
+                                </tr>
+
+                                @php
+                                    $total_manual += $item->manual_charge;
+                                    $total_fee += $item->fee;
+                                    $total_sms += $item->total_credit;
+                                @endphp
+                            @endforeach
+                        @endif
                         <tr>
                             <td colspan="2" class="fw-bold text-end">Total</td>
                             <td class="fw-bold">{{ number_format($total_manual, 2) }}</td>

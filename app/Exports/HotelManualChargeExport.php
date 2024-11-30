@@ -17,12 +17,14 @@ class HotelManualChargeExport implements FromView, WithHeadings, ShouldAutoSize,
     protected $filter_by;
     protected $data_query;
     protected $search_date;
+    protected $status;
 
-    public function __construct($filter_by, $data_query, $search_date)
+    public function __construct($filter_by, $data_query, $search_date, $status)
     {
         $this->filter_by = $filter_by;
         $this->data_query = $data_query;
         $this->search_date = $search_date;
+        $this->status = $status;
     }
 
     public function view(): View
@@ -31,7 +33,8 @@ class HotelManualChargeExport implements FromView, WithHeadings, ShouldAutoSize,
         return view('pdf.hotel_manual_charge.export_excel', [
             'data_query' => $this->data_query,
             'search_date' => $this->search_date,
-            'filterBy' => $this->filter_by
+            'filterBy' => $this->filter_by,
+            'status' => $this->status
         ]);
     }
 

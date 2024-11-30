@@ -179,13 +179,35 @@
                             $total_manual = 0;
                             $total_fee = 0;
                             $total_sms = 0;
+                            $number = 0;
                         @endphp
+
+                    @if (isset($status) && $status == 'not_complete')
+                        @foreach ($data_query as $key => $item)
+                            @if (($number <= $num && $number > $num - 24) || $number <= $num && $i == 1)
+                                @if ($item->manual_charge == 0 || $item->total_credit == 0)
+                                    <tr>
+                                        <td>{{ $number += 1 }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                        <td>{{ $item->manual_charge == 0 ? '-' : number_format($item->manual_charge, 2) }}</td>
+                                        <td>{{ $item->fee == 0 ? '-' : number_format($item->fee, 2) }}</td>
+                                        <td>{{ $item->total_credit == 0 ? '-' : number_format($item->total_credit, 2) }}</td>
+                                    </tr>
+
+                                    @php
+                                        $total_manual += $item->manual_charge;
+                                        $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
+                                        $total_sms += $item->total_credit;
+                                    @endphp
+                                @endif
+                            @endif
+                        @endforeach
+                    @else
                         @foreach ($data_query as $key => $item)
                             @if (($key <= $num && $key > $num - 24) || $key <= $num && $i == 1)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}
-                                    </td>
+                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->manual_charge == 0 ? '-' : number_format($item->manual_charge, 2) }}</td>
                                     <td>{{ $item->fee == 0 ? '-' : number_format($item->fee, 2) }}</td>
                                     <td>{{ $item->total_credit == 0 ? '-' : number_format($item->total_credit, 2) }}</td>
@@ -198,6 +220,7 @@
                                 @endphp
                             @endif
                         @endforeach
+                    @endif
                         @if ($i == $page_item) 
                             <tr style="font-weight: bold;">
                                 <td colspan="2" class="text-end">Total</td>
