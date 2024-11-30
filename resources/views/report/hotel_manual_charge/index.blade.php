@@ -175,7 +175,19 @@
                             </div>
 
                             <div class="col-md-12 d-flex flex-row gap-3 mt-4">
+                                {{-- <div class="form-check">
+                                    <input class="form-check-input status" type="checkbox" name="statusAll" id="statusAll" value="1" {{ isset($statusAll) && $statusAll == 1 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusAll">All Revenue</label>
+                                </div> --}}
                                 <div class="form-check">
+                                    <input class="form-check-input status" type="checkbox" name="statusHide" id="statusHide" value="1" {{ isset($statusHide) && $statusHide == 1 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusHide">Hide No Revenue</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input status" type="checkbox" name="statusNotComplete" id="statusNotComplete" value="1" {{ isset($statusNotComplete) && $statusNotComplete == 1 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusNotComplete">Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
+                                </div>
+                                {{-- <div class="form-check">
                                     <input class="form-check-input" type="radio" name="status" id="statusAll" value="all" {{ isset($status) && $status == 'all' ? 'checked' : 'checked' }}>
                                     <label class="form-check-label" for="statusAll">All Revenue</label>
                                 </div>
@@ -187,6 +199,10 @@
                                     <input class="form-check-input" type="radio" name="status" id="statusNotComplete" value="not_complete" {{ isset($status) && $status == 'not_complete' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="statusNotComplete">Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusHideNotComplete" value="hide_not_complete" {{ isset($status) && $status == 'hide_not_complete' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusHideNotComplete">Hide No Revenue & Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
+                                </div> --}}
                             </div>
 
                             <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
@@ -229,9 +245,9 @@
                             $number = 0;
                         @endphp
 
-                        @if (isset($status) && $status == 'not_complete')
+                        @if (isset($statusNotComplete) && $statusNotComplete == 1)
                             @foreach ($data_query as $key => $item)
-                                @if ($item->manual_charge == 0 || $item->total_credit == 0)
+                                @if ($item->manual_charge == 0 && $item->total_credit > 0 || $item->manual_charge > 0 && $item->total_credit == 0 || $statusHide == 1 && $item->manual_charge > 0 && $item->total_credit > 0)
                                     <tr>
                                         <td>{{ $number += 1 }}</td>
                                         <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
@@ -253,13 +269,13 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
-                                    <td>{{ $item->fee == 0 ? "-" : number_format($item->fee, 2) }}</td>
+                                    <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? "-" : number_format($item->fee, 2) }}</td>
                                     <td>{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
                                 </tr>
 
                                 @php
                                     $total_manual += $item->manual_charge;
-                                    $total_fee += $item->fee;
+                                    $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
                                     $total_sms += $item->total_credit;
                                 @endphp
                             @endforeach
@@ -388,6 +404,17 @@
                     }
                 });
             });
+        });
+
+        $(document).on('click', '.status', function () {
+            var status = $(this).attr('id');
+
+            if (status == "statusAll") {
+                $('#statusHide').prop('checked', false);
+                $('#statusNotComplete').prop('checked', false);
+            } else {
+                $('#statusAll').prop('checked', false);
+            }
         });
 
         // Export

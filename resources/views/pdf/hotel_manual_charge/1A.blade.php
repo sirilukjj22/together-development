@@ -137,23 +137,39 @@
             text-align: center;
         }
 
+        .wrapper-page {
+            page-break-after: always;
+        }
+
+        .wrapper-page:last-child {
+            page-break-after: avoid;
+        }
+
     </style>
 </head>
 
 <body>
 @php
     $num = 0;
+    $total_manual = 0;
+    $total_fee = 0;
+    $total_sms = 0;
+    $number = 0;
+    $number_round = 0;
 @endphp
 @for ($i = 1; $i <= $page_item; $i++)
     @php
-        $num += 24;
+        $num += 23;
     @endphp
-    <div id="content-index" class="body d-flex py-lg-4 py-3">
+    <div class="wrapper-page">
+        <header class="clearfix" style="color: #020202;">
+            @if ($page_item > 1)
+                <span style="float: right; color: #777777; margin-right: 20px;">Page {{ $i }} / {{ $page_item }}</span>
+            @endif
+        </header>
         <div class="container-xl">
             <div id="content-to-export" class="table-2" style="overflow-x:auto;padding: 1em;">
-                @if ($page_item > 1)
-                    <span style="float: right; color: #777777">Page {{ $i }} / {{ $page_item }}</span>
-                @endif
+                
                 <div class="wrap-top">
                     <div class="top-img">
                       <img src="image/Logo-tg2.png" alt="logo of Together Resort" width="80"/>
@@ -175,22 +191,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $total_manual = 0;
-                            $total_fee = 0;
-                            $total_sms = 0;
-                            $number = 0;
-                        @endphp
-
-                    @if (isset($status) && $status == 'not_complete')
+                    @if (isset($statusNotComplete) && $statusNotComplete == 1)
                         @foreach ($data_query as $key => $item)
-                            @if (($number <= $num && $number > $num - 24) || $number <= $num && $i == 1)
-                                @if ($item->manual_charge == 0 || $item->total_credit == 0)
+                            @if (($number <= $num && $number > $num - 23 && $key > $number_round) || $number <= $num && $i == 1)
+                                @if ($item->manual_charge == 0 && $item->total_credit > 0 || $item->manual_charge > 0 && $item->total_credit == 0 || $statusHide == 1 && $item->manual_charge > 0 && $item->total_credit > 0)
                                     <tr>
                                         <td>{{ $number += 1 }}</td>
                                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                         <td>{{ $item->manual_charge == 0 ? '-' : number_format($item->manual_charge, 2) }}</td>
-                                        <td>{{ $item->fee == 0 ? '-' : number_format($item->fee, 2) }}</td>
+                                        <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? '-' : number_format($item->fee, 2) }}</td>
                                         <td>{{ $item->total_credit == 0 ? '-' : number_format($item->total_credit, 2) }}</td>
                                     </tr>
 
@@ -198,24 +207,25 @@
                                         $total_manual += $item->manual_charge;
                                         $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
                                         $total_sms += $item->total_credit;
+                                        $number_round = $key;
                                     @endphp
                                 @endif
                             @endif
                         @endforeach
                     @else
                         @foreach ($data_query as $key => $item)
-                            @if (($key <= $num && $key > $num - 24) || $key <= $num && $i == 1)
+                            @if (($key <= $num && $key > $num - 23) || $key <= $num && $i == 1)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->manual_charge == 0 ? '-' : number_format($item->manual_charge, 2) }}</td>
-                                    <td>{{ $item->fee == 0 ? '-' : number_format($item->fee, 2) }}</td>
+                                    <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? '-' : number_format($item->fee, 2) }}</td>
                                     <td>{{ $item->total_credit == 0 ? '-' : number_format($item->total_credit, 2) }}</td>
                                 </tr>
 
                                 @php
                                     $total_manual += $item->manual_charge;
-                                    $total_fee += $item->fee;
+                                    $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
                                     $total_sms += $item->total_credit;
                                 @endphp
                             @endif
@@ -224,7 +234,7 @@
                         @if ($i == $page_item) 
                             <tr style="font-weight: bold;">
                                 <td colspan="2" class="text-end">Total</td>
-                                <td>{{ number_format($total_manual, 2) }}</td>
+                                <td style="text-align: right;">{{ number_format($total_manual, 2) }}</td>
                                 <td>{{ number_format($total_fee, 2) }}</td>
                                 <td>{{ number_format($total_sms, 2) }}</td>
                             </tr>

@@ -104,7 +104,15 @@ class ReportHotelWaterparkRevenueController extends Controller
 
             } elseif ($request->method_name == "pdf") {
 
-                $pdf = FacadePdf::loadView('pdf.hotel_water_park_revenue.1A', compact('data_query', 'filter_by', 'search_date', 'startDate', 'status'));
+                $sum_page = count($data_query) / 10;
+                $page_item = 1;
+                if ($sum_page > 1 && $sum_page < 2) {
+                    $page_item += 1;
+                } elseif ($sum_page >= 2) {
+                    $page_item = 1 + $sum_page > 2 ? ceil($sum_page) : 1;
+                }
+
+                $pdf = FacadePdf::loadView('pdf.hotel_water_park_revenue.1A', compact('data_query', 'filter_by', 'search_date', 'startDate', 'status', 'page_item'));
                 return $pdf->stream();
 
             } elseif ($request->method_name == "excel") {
@@ -482,33 +490,69 @@ class ReportHotelWaterparkRevenueController extends Controller
         $search_date = $request->startDate;
         $status = $request->status;
 
-        return view('report.hotel_water_park_revenue.index', compact(
-            // 'agoda_outstanding_last_year',
-            // 'elexa_outstanding_last_year',
+        if ($request->method_name == "search") {
+            return view('report.hotel_water_park_revenue.index', compact(
+                // 'agoda_outstanding_last_year',
+                // 'elexa_outstanding_last_year',
+    
+                'total_credit',
+                'total_front',
+                'total_guest_deposit',
+                'total_fb',
+    
+                'front_charge',
+                'guest_deposit_charge',
+                'all_outlet_charge',
+                'sum_charge',
+    
+                'total_agoda',
+                'total_agoda_charge',
+    
+                'total_other',
+    
+                'total_wp',
+                'wp_charge',
+    
+                'total_ev',
+                'total_ev_charge',
+    
+                'filter_by', 'search_date', 'status'
+            ));
 
-            'total_credit',
-            'total_front',
-            'total_guest_deposit',
-            'total_fb',
+        } elseif ($request->method_name == "pdf") {
 
-            'front_charge',
-            'guest_deposit_charge',
-            'all_outlet_charge',
-            'sum_charge',
+            $pdf = FacadePdf::loadView('pdf.hotel_water_park_revenue.1C', compact(
+                // 'agoda_outstanding_last_year',
+                // 'elexa_outstanding_last_year',
+    
+                'total_credit',
+                'total_front',
+                'total_guest_deposit',
+                'total_fb',
+    
+                'front_charge',
+                'guest_deposit_charge',
+                'all_outlet_charge',
+                'sum_charge',
+    
+                'total_agoda',
+                'total_agoda_charge',
+    
+                'total_other',
+    
+                'total_wp',
+                'wp_charge',
+    
+                'total_ev',
+                'total_ev_charge',
+    
+                'filter_by', 'search_date', 'status'
+            ));
+            return $pdf->stream();
 
-            'total_agoda',
-            'total_agoda_charge',
-
-            'total_other',
-
-            'total_wp',
-            'wp_charge',
-
-            'total_ev',
-            'total_ev_charge',
-
-            'filter_by', 'search_date', 'status'
-        ));
+        } elseif ($request->method_name == "excel") {
+            // return Excel::download(new HotelWaterParkRevenueExport($filter_by, $data_query, $search_date, $startDate, $status), 'hotel_water_park_revenue.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        }
     }
 
     public function getManualCharge($FromDate, $ToDate, $FromMonth, $ToMonth, $FromYear, $ToYear, $type)
