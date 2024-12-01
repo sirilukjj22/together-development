@@ -791,6 +791,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','PaidInvoice')->name('BillingFolio.PaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/{id}','EditPaidInvoice')->name('BillingFolio.EditPaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}','PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
+        Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/cheque/{id}','cheque');
         Route::get('/Document/BillingFolio/Proposal/invoice/prewive/{id}/{ids}','PaidInvoiceDataprewive')->name('BillingFolio.PaidInvoiceDataprewive');
         Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('BillingFolio.CheckPI');
         // Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
@@ -902,7 +903,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/ReceiveCheque/edit/{id}', 'edit')->name('ReceiveCheque.edit');
         Route::get('/Document/ReceiveCheque/update', 'update')->name('ReceiveCheque.update');
         Route::get('/Document/ReceiveCheque/Approved/{id}', 'Approved')->name('ReceiveCheque.Approved');
-        Route::get('/Document/ReceiveCheque/Refer/{id}', 'amount');
 
         Route::post('cheque-search-table', 'search_table_cheque');
         Route::post('cheque-paginate-table', 'paginate_table_cheque');

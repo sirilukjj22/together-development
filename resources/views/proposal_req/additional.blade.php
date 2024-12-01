@@ -345,15 +345,30 @@
                                                 <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
                                             </li>
                                         </span> --}}
+                                    @elseif ($additional_type == 'Cash')
+                                        <span id="defaultContent">
+                                            <li class="pr-3 ">
+                                                <span>Partial payment and complimentary</span>
+                                                <span class="text-danger f-w-bold">{{ $complimentary->percent}}%</span>
+                                            </li>
+                                            <li class="pr-3 ">
+                                                <span>Cash</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt*$complimentary->percent/100, 2, '.', ',') }}</span>
+                                            </li>
+                                            <li class="pr-3">
+                                                <span>Complimentary</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt*$complimentary->percent/100, 2, '.', ',') }}</span>
+                                            </li>
+                                        </span>
                                     @else
                                         <span id="defaultContent">
                                             <li class="pr-3 ">
                                                 <span>Cash</span>
-                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt*0.37, 2, '.', ',') }}</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($complimentary->Cash, 2, '.', ',') }}</span>
                                             </li>
                                             <li class="pr-3">
                                                 <span>Complimentary</span>
-                                                <span class="text-danger f-w-bold">{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt*0.37, 2, '.', ',') }}</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($complimentary->Complimentary, 2, '.', ',') }}</span>
                                             </li>
                                         </span>
                                     @endif

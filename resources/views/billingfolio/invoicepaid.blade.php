@@ -25,6 +25,44 @@
     #arrival{
         z-index: 1000;
     }
+
+    .payment-details-3g {
+        display: grid;
+        border: #135d58 solid 2px;
+        border-radius: 5px;
+        padding: 0.5em 2em;
+        width: max-content;
+        margin-bottom: 0.5em;
+    }
+
+    .payment-details-3g li{
+        background-color: white;
+        color: rgb(5, 112, 112);
+        display: grid;
+        grid-template-columns: 120px 5px auto;
+    }
+    .payment-details-3g li span:nth-child(2) {
+        text-align: end
+    }
+
+    .d-grid-120px-230px {
+        display: grid;
+        grid-template-columns: 120px 230px;
+        border:red 1px solid;
+        gap: 10px;
+        padding: 5px;
+        border: 1px solid rgb(192, 190, 190);
+    }
+
+    .d-grid-120px-230px select {
+        border: none;
+        color: #676868;
+    }
+
+    .bg-paymentType {
+        background-color: rgb(200, 243, 234);
+        padding: 0.5em;
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -35,7 +73,7 @@
                     <div class=""><span class="span1">Billing Folio (ใบเรียกเก็บเงิน)</span></div>
                 </div>
                 <div class="col-auto">
-                    <button class="bt-tg mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
+                    <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
                         <span >Issue Bill</span>
                     </button>
                 </div>
@@ -165,371 +203,310 @@
                                 <form id="myForm" action="{{route('BillingFolio.savere')}} " method="POST">
                                     @csrf
                                     <input type="hidden" id="invoice" name="invoice" class="form-control" value="{{$Invoice_ID}}">
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="display: grid;gap:0.5em;">
                                         <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
                                             <b >Receipt ID : {{$REID}}</b>
                                             <b >Proforma Invoice ID : {{$Invoice_ID}}</b>
                                         </div>
-                                        <h3 >
-                                            <span>Customer Details</span>
-                                        </h3>
-                                        <div >
-                                            <label for="" class="star-red">Guest Name</label>
-                                            <select name="Guest" id="Guest" class="select2" onchange="data()" required>
-                                                <option value="{{$name_ID}}">{{$name}}</option>
-                                                @foreach($datasub as $item)
-                                                    @if ($type == 'Company')
-                                                        <option value="{{ $item->ComTax_ID }}">
-                                                            @php
-                                                                $comtype = DB::table('master_documents')
-                                                                    ->where('id', $item->Company_type)
-                                                                    ->first();
+                                        <div class="p-2" style="border: 1px solid rgb(121, 173, 175);background-color: rgb(227, 247, 240);">
+                                            <li>
+                                                @if ($type == 'Company')
+                                                    <b>Company :</b> {{$name}}
+                                                    <input type="hidden" class="form-control " id="company" name="company" value="{{$name}}" disabled  style="background-color: #59a89e81;"/>
+                                                @else
+                                                    <b>Company :</b> -
+                                                    <input type="hidden" class="form-control " id="company" disabled  style="background-color: #59a89e81;"/>
+                                                @endif
 
-                                                                if ($comtype) {
-                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
-                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด";
-                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
-                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
-                                                                    } else {
-                                                                        $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name));
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            {{ $name }}
-                                                        </option>
-                                                    @else
-                                                        <option value="{{ $item->GuestTax_ID }}">
-                                                            @php
-                                                                $comtype = DB::table('master_documents')
-                                                                    ->where('id', $item->Company_type)
-                                                                    ->first();
-
-                                                                if ($comtype) {
-                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
-                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด";
-                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
-                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
-                                                                    } else {
-                                                                        $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name));
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            {{ $name }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
+                                            </li>
+                                            <li>
+                                                <b>Tax ID/Gst Pass :</b><span id="taxIDspan"></span>
+                                                <input type="hidden" id="taxID" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
+                                            </li>
+                                            <li>
+                                                <b>Address :</b> <span id="addressspan"></span>
+                                                <input type="hidden" id="address" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
+                                                <input type="hidden" id="address2" value="auto-select" class="form-control mt-3" disabled  style="background-color: #59a89e81;"/>
+                                            </li>
                                         </div>
-                                        <div >
-                                            <label class="star-red" for="reservationNo">Reservation No </label>
-                                            <input type="text" class="form-control" name="reservationNo" id="reservationNo" required />
-                                        </div>
-                                        <div >
-                                            <label for="company">Company</label>
-                                            @if ($type == 'Company')
-                                                <input type="text" class="form-control " id="company" name="company" value="{{$name}}" disabled  style="background-color: #59a89e81;"/>
-                                            @else
-                                                <input type="text" class="form-control " id="company" disabled  style="background-color: #59a89e81;"/>
-                                            @endif
-                                        </div>
-                                        <div >
-                                            <label for="taxID">Tax ID/Gst Pass</label>
-                                            <input type="text" id="taxID" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
-                                        </div>
-                                        <div >
-                                            <label for="address">Address</label>
-                                            <input type="text" id="address" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
-                                            <input type="text" id="address2" value="auto-select" class="form-control mt-3" disabled  style="background-color: #59a89e81;"/>
-                                        </div>
-                                        <h3 class="mt-2">
-                                            <span>Stay Details</span>
-                                        </h3>
-                                        <div >
-                                            <label class="star-red" for="roomNo">Room No.</label>
-                                            <input type="text" id="roomNo" name="roomNo" class="form-control" required />
-                                        </div>
-                                        <div >
-                                            <label class="star-red" for="numberOfGuests">Number of Guests</label>
-                                            <input type="text" id="numberOfGuests" name="numberOfGuests" class="form-control" required />
-                                        </div>
-                                        <div >
-                                            <label for="arrival">Arrival</label>
-                                            <div class="input-group">
-                                                <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div >
-                                            <label for="departure">Departure</label>
-                                            <div class="input-group">
-                                                <input type="text" name="departure" id="departure" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <h3 class="mt-2">
-                                            <span>Payment Details</span>
-                                        </h3>
-
-                                        {{-- form-check-input --}}
-                                        @if ($chequeRestatus == '0')
-                                            <div class="payment-container">
-                                                <label for="paymentType" class="star-red">Payment Type</label>
-                                                <input type="hidden" name="paymentTypecheque" value="cheque">
-                                                <select name="paymentType" id="paymentType" class="paymentType select2" disabled>
-                                                    <option value="cheque">Cheque</option>
-                                                </select>
-                                                <div class="chequeInput" style="display: block;">
-                                                    <label for="chequeBank" class="star-red">Bank</label>
-                                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2" disabled>
-                                                        @foreach ($data_bank as $item)
-                                                            <option value="{{ $item->name_en }}"{{$databankname == $item->name_en ? 'selected' : ''}} >{{ $item->name_th }} </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
-                                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8" value="{{$chequeRe->cheque_number}}" @readonly(true) style="background-color: #59a89e81;">
-                                                    <label for="chequeAmount" class="star-red">Amount</label>
-                                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
-                                                    <label for="chequeBank" class="star-red">Bank Received</label>
-                                                    <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
-                                                        @foreach ($data_bank as $item)
-                                                            <option value=""></option>
-                                                            <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
-                                                        @endforeach
+                                        <div>
+                                            <h4 class="center p-1 mb-0" style="background-color: rgb(122, 216, 158);color:white">
+                                                <span>Customer Details</span>
+                                            </h4>
+                                            <section class="d-grid-2column p-2" style="background-color: rgb(238, 250, 240);">
+                                                <div>
+                                                    <label for="" class="star-red">Guest Name</label>
+                                                    <select name="Guest" id="Guest" class="select2" onchange="data()" required>
+                                                        <option value="{{$name_ID}}">{{$name}}</option> @foreach($datasub as $item) @if ($type == 'Company') <option value="{{ $item->ComTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name; } else { $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
+                                                        </option> @else <option value="{{ $item->GuestTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Company_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name; } else { $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
+                                                        </option> @endif @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
-                                            @if ($additional_type == 'Cash')
-                                                <div class="payment-container mt-2" style="padding-left:18px;">
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckDefault" style="transform:translateY(-13%)">
-                                                        <label class="form-check-label" for="flexSwitchCheckDefault">Add Complimentary</label>
-                                                    </div>
+                                                <div>
+                                                    <label class="star-red" for="reservationNo">Reservation No </label>
+                                                    <input type="text" class="form-control" name="reservationNo" id="reservationNo" required />
                                                 </div>
-                                                <div id="complimentaryDiv" class="hidden">
-                                                    <div class="Complimentary mt-2" style="border: #135d58 solid 1px;padding:10px; border-radius:10px">
-                                                        <div class="row">
-                                                            <div class="col-lg-12 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Total Amount</span>
-                                                                </h6>
-                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($sumpayment-$additional_Nettotal, 2) }}</span>
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Cash</span>
-                                                                </h6>
-                                                                <span type="text" class="form-control"  placeholder="Enter cash amount" disabled>{{ number_format($additional_Nettotal*0.37, 2, '.', ',') }}
-                                                                <input type="hidden" id="Cash_Complimentary" name="Cash_Complimentary" value="{{$additional_Nettotal*0.37}}">
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Complimentary</span>
-                                                                </h6>
-                                                                <span type="text" class="form-control"  placeholder="Enter cash amount" disabled>{{ number_format($additional_Nettotal-$additional_Nettotal*0.37, 2, '.', ',') }}
-                                                                <input type="hidden" id="Complimentaryfree" name="Complimentaryfree" value="{{$additional_Nettotal-$additional_Nettotal*0.37}}">
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Total Cash + Complimentary</span>
-                                                                </h6>
-                                                                <span type="text" class="form-control"  placeholder="Enter cash amount" disabled>{{ number_format($additional_Nettotal, 2, '.', ',') }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="Complimentary mt-2" style="border: #135d58 solid 1px;padding:10px; border-radius:10px">
-                                                        <div class="row">
-                                                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Total Cash</span>
-                                                                </h6>
-                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($sumpayment-$additional_Nettotal+$additional_Nettotal*0.37, 2) }}</span>
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Complimentary</span>
-                                                                </h6>
-                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($additional_Nettotal-$additional_Nettotal*0.37, 2) }}</span>
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                                                <h6 class="mt-2">
-                                                                    <span>Total</span>
-                                                                </h6>
-                                                                <span type="text"class="form-control" placeholder="Enter amount">{{ number_format($sumpayment, 2) }}</span>
-                                                            </div>
+                                                <div>
+                                                    <label class="star-red" for="roomNo">Room No.</label>
+                                                    <input type="text" id="roomNo" name="roomNo" class="form-control" required />
+                                                </div>
+                                                <div>
+                                                    <label class="star-red" for="numberOfGuests">Number of Guests</label>
+                                                    <input type="text" id="numberOfGuests" name="numberOfGuests" class="form-control" required />
+                                                </div>
+                                                <div>
+                                                    <label for="arrival">Arrival</label>
+                                                    <div class="input-group">
+                                                        <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                                <i class="fas fa-calendar-alt"></i>
+                                                                <!-- ไอคอนปฏิทิน -->
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
-
-
-                                                <script>
-                                                    const checkbox = document.getElementById('flexSwitchCheckDefault');
-                                                    const div = document.getElementById('complimentaryDiv');
-                                                    const inputs = div.querySelectorAll("input, select");
-                                                    checkbox.addEventListener('change', function() {
-                                                        if (this.checked) {
-                                                            div.classList.remove('hidden'); // แสดง div
-                                                            inputs.forEach(input => input.disabled = false);
-                                                        } else {
-                                                            div.classList.add('hidden'); // ซ่อน div
-                                                            inputs.forEach(input => input.disabled = true);
-                                                        }
-                                                    });
-                                                </script>
-                                            @endif
-                                        @else
-                                            @if ($additional_type == 'Cash')
-                                                <div class="payment-container" style="padding-left:18px;">
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckDefault" style="transform:translateY(-13%)">
-                                                        <label class="form-check-label" for="flexSwitchCheckDefault">Add Complimentary</label>
+                                                <div>
+                                                    <label for="departure">Departure</label>
+                                                    <div class="input-group">
+                                                        <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" required>
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                                <i class="fas fa-calendar-alt"></i>
+                                                                <!-- ไอคอนปฏิทิน -->
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div id="complimentaryDiv" class="hidden">
-                                                    <h6 class="mt-2">
-                                                        <span>Complimentary</span>
-                                                    </h6>
-                                                    <div class="Complimentary">
-                                                        <label for="paymentType" class="star-red">Payment Type</label>
-                                                        <select name="paymentType" id="paymentTypecomp" class="select2" >
-                                                            <option value="" disabled selected></option>
-                                                            <option value="cashcomp">Cash</option>
-                                                            <option value="bankTransfercomp">Bank Transfer</option>
-                                                            <option value="creditCardcomp">Credit Card</option>
+                                            </section>
+                                        </div>
+                                        <div class="flex-end">
+                                            <div class="payment-details-3g">
+                                                <li><span>Invoice</span>:<span>{{ number_format($amountproposal, 2, '.', ',') }}</span> </li>
+                                                <li><span>Proposal</span>:<span>{{ number_format($amountproposal-$additional_Nettotal, 2, '.', ',') }}</span> </li>
+                                                <li><span>additional</span>:<span>{{ number_format($additional_Nettotal, 2, '.', ',') }}</span> </li>
+                                                <div id="overbill" style="display: none">
+                                                    <li><span>Cash</span>:<span>{{ number_format($additional_Nettotal*0.37, 2, '.', ',') }}</span></li>
+                                                    <li><span>Complimentary </span>:<span>{{ number_format($additional_Nettotal-$additional_Nettotal*0.37, 2, '.', ',') }}</span></li>
+                                                </div>
+                                                <li><span>Total </span>:<span>{{ number_format($amountproposal, 2, '.', ',') }}</span></li>
+                                            </div>
+                                        </div>
+                                        <div >
+                                            @if ($additional_type == 'Cash')
+                                                <div class="form-check form-switch"  style="padding-left:35px">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked>
+                                                    <label class="form-check-label" for="flexSwitchCheckChecked">Add Complimentary</label>
+                                                </div>
+                                            @endif
+                                            <h4 class="p-1 mb-0 align-items-center" style="background-color: rgb(126, 185, 173);color:white;display:flex;">
+                                                <span class="flex-grow-1 text-center">Payment Details</span>
+                                                <div class="center sm mb-0" style="max-width: 35px;font-size:20px;background-color:rgb(55, 136, 125);border-radius:5px;" >+</div>
+                                            </h4>
+                                            <section style="border: 1px solid rgb(196, 230, 222);padding: 0.5em;background-color: rgb(241, 250, 248)">
+                                                <div class="d-grid-2column" style="height: max-content;">
+                                                    <div>
+                                                        <label class="star-red" for="paymentDate">Date</label>
+                                                        <div class="input-group">
+                                                            <input type="text" name="paymentDate" id="paymentDate" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                                    <i class="fas fa-calendar-alt"></i>
+                                                                    <!-- ไอคอนปฏิทิน -->
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label for="note">Note</label>
+                                                        <textarea id="note" name="note" style="height: 1px" placeholder="Enter details" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="payment-container mt-2">
+                                                    <div class="d-grid-120px-230px my-2" style="">
+                                                        <label for="paymentType " class="star-red center" style="vertical-align: middle;">Payment Type : </label>
+                                                        <select name="paymentType" id="paymentType" class="paymentType select2">
+                                                            <option value="" disabled selected>Select Payment Type</option>
+                                                            <option value="cash">Cash</option>
+                                                            <option value="bankTransfer">Bank Transfer</option>
+                                                            <option value="creditCard">Credit Card</option>
+                                                            <option value="cheque">Cheque</option>
                                                         </select>
-                                                        <div id="cashInputCom" style="display: none;">
-                                                            <label for="cashAmount" class="star-red">Cash Amount</label>
-                                                            <input type="text" id="AmountCom"  name="AmountCom" class="form-control" placeholder="Enter cash amount">
+                                                    </div>
+                                                    <!-- Cash Input -->
+                                                    <div class="cashInput" style="display: none;">
+                                                        <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
+                                                            <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
+                                                            <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount">
                                                         </div>
-                                                        <div id="bankTransferInputCom" style="display: none;">
-                                                            <label for="bankName" class="star-red">Bank</label>
-                                                                <select  id="bankCom" name="bankCom" class="select2">
-                                                                    @foreach ($data_bank as $item)
-                                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                                    </div>
+                                                    <!-- Bank Transfer Input -->
+                                                    <div class="bankTransferInput" style="display: none;">
+                                                        <div class=" d-grid-2column bg-paymentType">
+                                                            <div>
+                                                                <label for="bankName" class="star-red">Bank</label>
+                                                                <select id="bank" name="bank" class="bankName select2"> @foreach ($data_bank as $item) <option value="{{ $item->name_en }}" {{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option> @endforeach </select>
+                                                            </div>
+                                                            <div>
+                                                                <label for="bankTransferAmount" class="star-red">Amount</label>
+                                                                <input type="text" id="Amount" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Credit Card Input -->
+                                                    <div class="creditCardInput" style="display: none;">
+                                                        <div class="d-grid-2column bg-paymentType">
+                                                            <div>
+                                                                <label for="creditCardNumber" class="star-red">Credit Card Number</label>
+                                                                <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                                            </div>
+                                                            <div>
+                                                                <label for="expiryDate" class="star-red">Expiry Date</label>
+                                                                <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+                                                            </div>
+                                                            <div>
+                                                                <label for="creditCardAmount" class="star-red">Amount</label>
+                                                                <input type="text" id="Amount" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter amount">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Cheque Input -->
+                                                    <div id="chequeInput" class="chequeInput" style="display: none;">
+                                                        <div class="d-grid-2column bg-paymentType">
+                                                            <div>
+                                                                <label for="chequeNumber">Cheque Number</label>
+                                                                <select  id="cheque" name="cheque" class="select2" >
+                                                                    @foreach ($data_cheque as $item)
+                                                                        <option value="{{ $item->id }}">{{ $item->cheque_number }}</option>
                                                                     @endforeach
                                                                 </select>
-                                                            <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                            <input type="text" id="bankAmountCom"  name="bankAmount" class="form-control" placeholder="Enter cash amount">
-                                                        </div>
-                                                        <div id="creditCardInputCom" style="display: none;">
-                                                            <label for="creditCardNumber" class="star-red">Credit Card Number</label>
-                                                            <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
-                                                            <label for="expiryDate" class="star-red">Expiry Date</label>
-                                                            <input type="text" name="CardExpiry" id="CardExpiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
-                                                            <label for="creditCardAmount" class="star-red">Amount</label>
-                                                            <input type="text" id="CardAmount" name="CardAmount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                                            </div>
+                                                            <div>
+                                                                <label for="chequeNumber">Cheque Date</label>
+                                                                <input type="text" class="form-control cheque-number" id="chequedate" readonly />
+                                                            </div>
+                                                            <div>
+                                                                <label for="chequeNumber">Cheque Bank</label>
+                                                                <input type="text" class="form-control cheque-number" id="chequebank" readonly />
+                                                            </div>
+                                                            <div>
+                                                                <label for="chequeAmount">Amount</label>
+                                                                <input type="text" class="form-control cheque-amount" id="chequeamount" readonly />
+                                                            </div>
+                                                            <div>
+                                                                <label for="chequeBank">To Account</label>
+                                                                <select  id="chequebank" name="chequebank" class="select2">
+                                                                    @foreach ($data_bank as $item)
+                                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_th }} ({{ $item->name_en }})</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div>
+                                                                <label for="chequeNumber">Date</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" name="deposit_date" id="deposit_date" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                                            <i class="fas fa-calendar-alt"></i>
+                                                                            <!-- ไอคอนปฏิทิน -->
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
+
+                                                </div>
+                                            </section>
+                                            @if ($additional_type == 'Cash')
+                                                <div  id="complimentaryDiv" class="hidden">
+                                                    <h4 class="center p-1 mb-0" style="background-color: rgb(126, 185, 173);color:white">
+                                                        <span>Payment Complimentary</span>
+                                                    </h4>
+                                                    <section style="border: 1px solid rgb(196, 230, 222);padding: 0.5em;background-color: rgb(241, 250, 248)">
+                                                        <div class="d-grid-120px-230px my-2" style="">
+                                                            <label for="paymentType " class="star-red center" style="vertical-align: middle;">Payment Type : </label>
+                                                            <select name="paymentTypecomp" id="paymentTypecomp" class="paymentType select2" >
+                                                                <option value="" disabled selected>Select Payment Type</option>
+                                                                <option value="cashcomp">Cash</option>
+                                                                <option value="bankTransfercomp">Bank Transfer</option>
+                                                                <option value="creditCardcomp">Credit Card</option>
+
+                                                            </select>
+                                                        </div>
+                                                        <div id="cashInputCom" class="cashInputCom" style="display: none;">
+                                                            <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
+                                                                <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
+                                                                <input type="text" id="AmountCom" name="AmountCom" class="form-control" placeholder="Enter cash amount">
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Bank Transfer Input -->
+                                                        <div id="bankTransferInputCom" class="bankTransferInputCom" style="display: none;">
+                                                            <div class=" d-grid-2column bg-paymentType">
+                                                                <div>
+                                                                    <label for="bankName" class="star-red">Bank</label>
+                                                                    <select  id="bankCom" name="bankCom" class="select2">
+                                                                        @foreach ($data_bank as $item)
+                                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div>
+                                                                    <label for="bankTransferAmount" class="star-red">Amount</label>
+                                                                    <input type="text" id="bankAmountCom" name="bankAmountCom" class="form-control" placeholder="Enter transfer amount">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Credit Card Input -->
+                                                        <div id="creditCardInputCom" class="creditCardInputCom" style="display: none;">
+                                                            <div class="d-grid-2column bg-paymentType">
+                                                                <div>
+                                                                    <label for="creditCardNumber" class="star-red">Credit Card Number</label>
+                                                                    <input type="text" id="CardNumber" name="CardNumberCom" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                                                </div>
+                                                                <div>
+                                                                    <label for="expiryDate" class="star-red">Expiry Date</label>
+                                                                    <input type="text" name="CardExpiry" id="CardExpiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+                                                                </div>
+                                                                <div>
+                                                                    <label for="creditCardAmount" class="star-red">Amount</label>
+                                                                    <input type="text" id="CardAmount" name="CardAmountCom" class="creditCardAmount form-control" placeholder="Enter amount">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Cheque Input -->
+
+                                                    </section>
                                                 </div>
                                                 <script>
-                                                    const checkbox = document.getElementById('flexSwitchCheckDefault');
-                                                    const div = document.getElementById('complimentaryDiv');
-                                                    const inputs = div.querySelectorAll("input, select");
-                                                    checkbox.addEventListener('change', function() {
-                                                        if (this.checked) {
-                                                            div.classList.remove('hidden'); // แสดง div
-                                                            inputs.forEach(input => input.disabled = false);
-                                                        } else {
-                                                            div.classList.add('hidden'); // ซ่อน div
-                                                            inputs.forEach(input => input.disabled = true);
-                                                        }
+                                                    $(document).ready(function() {
+                                                        const checkbox = document.getElementById('flexSwitchCheckChecked');
+                                                        const div = document.getElementById('complimentaryDiv');
+                                                        const inputs = div.querySelectorAll("input, select");
+                                                        const overbill = document.getElementById('overbill');
+                                                        // ค่าเริ่มต้นให้ div แสดงและ inputs เปิดใช้งาน
+                                                        div.classList.remove('hidden');
+                                                        inputs.forEach(input => input.disabled = false);
+                                                        overbill.style.display = 'grid';
+                                                        // Event listener สำหรับการเปลี่ยนสถานะ checkbox
+                                                        checkbox.addEventListener('change', function() {
+                                                            if (this.checked) {
+                                                                div.classList.remove('hidden'); // แสดง div
+                                                                overbill.style.display = 'grid';
+                                                                inputs.forEach(input => input.disabled = false); // เปิดการใช้งานฟิลด์ใน div
+                                                            } else {
+                                                                div.classList.add('hidden'); // ซ่อน div
+                                                                overbill.style.display = 'none';
+                                                                inputs.forEach(input => input.disabled = true); // ปิดการใช้งานฟิลด์ใน div
+                                                            }
+                                                        });
                                                     });
                                                 </script>
                                             @endif
-                                        @endif
 
-                                        {{-- @if ($chequeRestatus == '0')
-                                            <div class="payment-container">
-                                                <label for="paymentType" class="star-red">Payment Type</label>
-                                                <input type="hidden" name="paymentTypecheque" value="cheque">
-                                                <select name="paymentType" id="paymentType" class="paymentType select2" disabled>
-                                                    <option value="cheque">Cheque</option>
-                                                </select>
-                                                <div class="chequeInput" style="display: block;">
-                                                    <label for="chequeBank" class="star-red">Bank</label>
-                                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2" disabled>
-                                                        @foreach ($data_bank as $item)
-                                                            <option value="{{ $item->name_en }}"{{$databankname == $item->name_en ? 'selected' : ''}} >{{ $item->name_th }} </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
-                                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8" value="{{$chequeRe->cheque_number}}" @readonly(true) style="background-color: #59a89e81;">
-                                                    <label for="chequeAmount" class="star-red">Amount</label>
-                                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
-                                                    <label for="chequeBank" class="star-red">Bank Received</label>
-                                                    <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
-                                                        @foreach ($data_bank as $item)
-                                                            <option value=""></option>
-                                                            <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="payment-container">
-                                                <label for="paymentType" class="star-red">Payment Type</label>
-                                                <select name="paymentType" id="paymentType" class="paymentType select2">
-                                                    <option value="" disabled selected>Select Payment Type</option>
-                                                    <option value="cash">Cash</option>
-                                                    <option value="bankTransfer">Bank Transfer</option>
-                                                    <option value="creditCard">Credit Card</option>
-                                                </select>
-                                                <!-- Cash Input -->
-                                                <div class="cashInput" style="display: none;">
-                                                    <label for="cashAmount" class="star-red">Cash Amount</label>
-                                                    <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
-                                                </div>
-                                                <!-- Bank Transfer Input -->
-                                                <div class="bankTransferInput" style="display: none;">
-                                                    <label for="bankName" class="star-red">Bank</label>
-                                                        <select  id="bank" name="bank" class="bankName select2">
-                                                            @foreach ($data_bank as $item)
-                                                                <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
-                                                            @endforeach
-                                                        </select>
-                                                    <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="bankTransferAmount form-control"  placeholder="Enter transfer amount"disabled  style="background-color: #59a89e81;">
-                                                </div>
-                                                <!-- Credit Card Input -->
-                                                <div class="creditCardInput" style="display: none;">
-                                                    <label for="creditCardNumber" class="star-red">Credit Card Number</label>
-                                                    <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
-                                                    <label for="expiryDate" class="star-red">Expiry Date</label>
-                                                    <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
-                                                    <label for="creditCardAmount" class="star-red">Amount</label>
-                                                    <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
-                                                </div>
-                                            </div>
-                                        @endif --}}
-                                        <div class="d-grid" style="height: max-content;">
-                                            <label class="star-red" for="paymentDate">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="paymentDate" id="paymentDate" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label for="note">Note</label>
-                                                <textarea id="note" name="note" style="height: 1px" placeholder="Enter details" class="form-control"></textarea>
-                                            </div>
-                                            <div>
-                                                <label for="reference">Reference</label>
-                                                <input readonly type="text" id="reference" class="form-control" style="background-color: #59a89e81;"/>
-                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -699,7 +676,7 @@
                             </section>
                             <div class="bottom">
                                 <div class="flex-end pr-3">
-                                    <button id="nextSteptoSave" class="bt-tg green md float-right" onclick="submit()"> Next </button>
+                                    <button id="nextSteptoSave" class="bt-tg-normal md float-right" onclick="submit()"> Next </button>
                                 </div>
                             </div>
                         </div>
@@ -748,7 +725,33 @@
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
+            $('.select2Com').select2({
+                placeholder: "Please select an option"
+            });
             data();
+        });
+        $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            $('#deposit_date').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                drops: 'up',
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#deposit_date').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -780,6 +783,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -803,6 +807,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -887,6 +892,29 @@
                 });
             }
         }
+
+        function cheque() {
+            var id = $('#cheque').val();
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/cheque/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    var amount = parseFloat(response.amount || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    var issue_date = response.issue_date;
+                    var bank = response.data_bank.name_th+ ' ('+response.data_bank.name_en+')';
+
+                    $('#chequedate').val(issue_date);
+                    $('#chequebank').val(bank);
+                    $('#chequeamount').val(amount);
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX request failed: ", status, error);
+                }
+            });
+
+        }
         function data() {
             var idcheck = $('#Guest').val();
             var nameID = document.getElementById('idfirst').value;
@@ -905,42 +933,48 @@
                     var Address = response.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
                     var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
                     var TaxpayerIdentification = response.Identification;
+                    console.log(fullname);
+
                     $('#taxID').val(TaxpayerIdentification);
+                    $('#taxIDspan').text(TaxpayerIdentification);
                     $('#address').val(Address);
                     $('#address2').val(Address2);
+                    $('#addressspan').text(Address +' '+Address2);
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX request failed: ", status, error);
                 }
             });
         }
-        // $(document).ready(function() {
-        //     // Listen for change on all elements with class 'paymentType'
-        //     $('.paymentType').on('change', function() {
-        //         var selectedType = $(this).val();
-        //         var parentContainer = $(this).closest('.payment-container'); // Find the parent container
-        //         // Hide all payment method sections within this specific container
-        //         parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
-        //         // Show the relevant section based on the selected payment type
-        //         if (selectedType === 'cash') {
-        //             parentContainer.find('.cashInput').show();
-        //         } else if (selectedType === 'bankTransfer') {
-        //             parentContainer.find('.bankTransferInput').show();
-        //         } else if (selectedType === 'creditCard') {
-        //             parentContainer.find('.creditCardInput').show();
-        //         } else if (selectedType === 'cheque') {
-        //             parentContainer.find('.chequeInput').show();
-        //         }
-        //     });
-        //     // Format credit card number on input
-        //     $('.creditCardNumber').on('input', function() {
-        //         var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
-        //         input = input.substring(0, 16); // Limit input to 16 digits
-        //         // Format the input as xxxx-xxxx-xxxx-xxxx
-        //         var formattedInput = input.match(/.{1,4}/g)?.join('-') || input;
-        //         $(this).val(formattedInput);
-        //     });
-        // });
+        $(document).ready(function() {
+            // Listen for change on all elements with class 'paymentType'
+            $('.paymentType').on('change', function() {
+                var selectedType = $(this).val();
+                var parentContainer = $(this).closest('.payment-container'); // Find the parent container
+                // Hide all payment method sections within this specific container
+                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
+                // Show the relevant section based on the selected payment type
+                if (selectedType === 'cash') {
+                    parentContainer.find('.cashInput').show();
+                } else if (selectedType === 'bankTransfer') {
+                    parentContainer.find('.bankTransferInput').show();
+                } else if (selectedType === 'creditCard') {
+                    parentContainer.find('.creditCardInput').show();
+                } else if (selectedType === 'cheque') {
+                    parentContainer.find('.chequeInput').show();
+                    cheque();
+                }
+
+            });
+            // Format credit card number on input
+            $('.creditCardNumber').on('input', function() {
+                var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
+                input = input.substring(0, 16); // Limit input to 16 digits
+                // Format the input as xxxx-xxxx-xxxx-xxxx
+                var formattedInput = input.match(/.{1,4}/g)?.join('-') || input;
+                $(this).val(formattedInput);
+            });
+        });
         $(document).ready(function () {
             $('#paymentTypecomp').on('change', function () {
                 var selectedType = $(this).val();
@@ -952,21 +986,25 @@
                         cashInputCom.style.display = "Block";
                         bankTransferInputCom.style.display = "none";
                         creditCardInputCom.style.display = "none";
+                        chequeInputCom.style.display = "none";
                         break;
                     case "bankTransfercomp":
                         cashInputCom.style.display = "none";
                         bankTransferInputCom.style.display = "Block";
                         creditCardInputCom.style.display = "none";
+                        chequeInputCom.style.display = "none";
                         break;
                     case "creditCardcomp":
                         cashInputCom.style.display = "none";
                         bankTransferInputCom.style.display = "none";
                         creditCardInputCom.style.display = "Block";
+                        chequeInputCom.style.display = "none";
                         break;
                     default:
                         cashInputCom.style.display = "Block";
                         bankTransferInputCom.style.display = "none";
                         creditCardInputCom.style.display = "none";
+                        chequeInputCom.style.display = "none";
                 }
             });
         });
@@ -1005,7 +1043,31 @@
                 var id = idcheck ? idcheck : nameID;
                 var ids = InvoiceID;
                 console.log(id);
+                let allPayments = [];
 
+                // Loop ผ่านแต่ละ payment-container
+                $('.payment-container').each(function () {
+                    let paymentType = $(this).find('.paymentType').val(); // ดึงค่าจาก Payment Type
+                    let paymentData = { type: paymentType }; // เก็บข้อมูลในรูปแบบ Object
+
+                    // ตรวจสอบประเภทของ Payment และดึงค่าที่เกี่ยวข้อง
+                    if (paymentType === 'cash') {
+                        paymentData.amount = $(this).find('.cashAmount').val(); // ดึงค่าจาก Cash Amount
+                    } else if (paymentType === 'bankTransfer') {
+                        paymentData.bank = $(this).find('.bankName').val(); // ดึงค่าจาก Bank Name
+                        paymentData.amount = $(this).find('.bankTransferAmount').val(); // ดึงค่าจาก Transfer Amount
+                    } else if (paymentType === 'creditCard') {
+                        paymentData.cardNumber = $(this).find('.creditCardNumber').val(); // ดึงค่าจาก Card Number
+                        paymentData.expiry = $(this).find('.expiryDate').val(); // ดึงค่าจาก Expiry Date
+                        paymentData.amount = $(this).find('.creditCardAmount').val(); // ดึงค่าจาก Credit Card Amount
+                    }
+
+                    // เพิ่มข้อมูลลงใน Array
+                    allPayments.push(paymentData);
+                });
+
+                // แสดงข้อมูลใน console (หรือใช้ส่งต่อไปยัง backend)
+                console.log(allPayments);
                 // AJAX เรียกข้อมูลจากเซิร์ฟเวอร์
                 jQuery.ajax({
                     type: "GET",

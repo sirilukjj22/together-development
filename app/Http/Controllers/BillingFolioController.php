@@ -43,6 +43,7 @@ use App\Models\Master_company;
 use App\Models\phone_guest;
 use App\Models\Guest;
 use App\Models\receive_cheque;
+use App\Models\master_payment_and_complimentary;
 class BillingFolioController extends Controller
 {
     public function index()
@@ -537,7 +538,12 @@ class BillingFolioController extends Controller
             $totalentertainment +=  $item->netpriceproduct;
         }
         $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->first();
-        $additional_type = $Additional->additional_type;
+        $additional_type= "";
+        $Additionaltotal= 0;
+        if ($Additional) {
+            $additional_type = $Additional->additional_type;
+            $Additionaltotal = $Additional->Nettotal;
+        }
         $Rm = []; // กำหนดตัวแปร $Rm เป็น array ว่าง
         $FB = [];
         $BQ = [];
@@ -548,7 +554,7 @@ class BillingFolioController extends Controller
         $BQCount = 0;
         $EMCount = 0;
         $ATCount = 0;
-        $Additionaltotal = $Additional->Nettotal;
+
         $AdditionaltotalReceipt = 0;
         $statusover = 1;
         $Receiptover = null;
@@ -632,9 +638,11 @@ class BillingFolioController extends Controller
         $proposalid = $invoices->Quotation_ID;
         $Invoice_ID = $invoices->Invoice_ID;
         $sumpayment = $invoices->sumpayment;
+        $amountproposal = $invoices->sumpayment;
         $valid = $invoices->valid;
         $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
         $guest = $Proposal->Company_ID;
+
         $type = $Proposal->type_Proposal;
         $Percent = $invoices->paymentPercent;
         if ($type == 'Company') {
@@ -695,11 +703,8 @@ class BillingFolioController extends Controller
         $REID = $ID.$year.$month.$newRunNumber;
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
-        $chequeRe =receive_cheque::where('refer_proposal',$proposalid)->where('refer_invoice',$Invoice_ID)->first();
+        $chequeRe =receive_cheque::where('refer_proposal',$proposalid)->first();
         if ($chequeRe) {
-            $bank_cheque = $chequeRe->bank_cheque;
-            $databank= Masters::where('id', $bank_cheque)->first();
-            $databankname = $databank->name_en;
             if ($chequeRe->status == '1') {
                 // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
                 $chequeRestatus = 0;
@@ -708,14 +713,18 @@ class BillingFolioController extends Controller
             }
         }else{
             $chequeRestatus = 1;
-            $bank_cheque ="";
-            $databankname = "";
         }
+        $data_cheque =receive_cheque::where('refer_proposal',$proposalid)->get();
         $Additional = proposal_overbill::where('Quotation_ID',$proposalid)->where('status_guest',0)->first();
-        $additional_type = $Additional->additional_type;
-        $additional_Nettotal = $Additional->Nettotal;
-        return view('billingfolio.invoicepaid',compact('invoices','address','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque','additional_type',
-                    'additional_Nettotal'));
+        $additional_type= "";
+        $additional_Nettotal= 0;
+        if ($Additional) {
+            $additional_type = $Additional->additional_type;
+            $additional_Nettotal = $Additional->Nettotal;
+        }
+
+        return view('billingfolio.invoicepaid',compact('invoices','address','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','data_bank','sumpayment','chequeRe','chequeRestatus','additional_type',
+                    'additional_Nettotal','data_cheque','amountproposal'));
     }
     public function EditPaidInvoice($id){
         $re = receive_payment::where('id',$id)->first();
@@ -986,6 +995,19 @@ class BillingFolioController extends Controller
             'province'=>$provinceNames,
             'amphures'=>$amphuresID,
             'Tambon'=>$TambonID,
+        ]);
+    }
+    public function cheque ($id)
+    {
+        $chequeRe =receive_cheque::where('id',$id)->first();
+        $bank = $chequeRe->bank_cheque;
+        $amount= $chequeRe->amount;
+        $issue_date= $chequeRe->issue_date;
+        $data_bank = Masters::where('id',$bank)->where('category', "bank")->first();
+        return response()->json([
+            'amount'=>$amount,
+            'issue_date'=>$issue_date,
+            'data_bank'=>$data_bank,
         ]);
     }
     public function savere(Request $request) {

@@ -43,7 +43,7 @@ class ReceiveChequeController extends Controller
     public function index()
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $invoice = document_invoices::query()->select('id','Invoice_ID','Quotation_ID')->where('Paid',0)->get();
+        $invoice = Quotation::query()->select('id','Quotation_ID')->where('status_guest', 1)->get();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $cheque = receive_cheque::query()->orderBy('created_at', 'desc')->paginate($perPage);
         return view('recevie_cheque.index',compact('invoice','data_bank','cheque'));
@@ -51,6 +51,7 @@ class ReceiveChequeController extends Controller
     public function save(Request $request)
     {
         $data = $request->all();
+
         try {
             $refer = 'อ้างอิงจาก : '.$request->Refer;
             $data_bank = Masters::where('id',$request->bank)->first();
@@ -94,12 +95,8 @@ class ReceiveChequeController extends Controller
         }
         try {
             $userid = Auth::user()->id;
-            $invoice = $request->Refer;
-            $proposal = document_invoices::where('Invoice_ID',$invoice)->first();
-            $Quotation_ID = $proposal->Quotation_ID;
             $save = new receive_cheque();
-            $save->refer_invoice = $invoice;
-            $save->refer_proposal = $Quotation_ID;
+            $save->refer_proposal = $request->Refer;
             $save->bank_cheque = $request->bank;
             $save->bank_received = $request->received;
             $save->cheque_number = $request->chequeNumber;
@@ -145,7 +142,7 @@ class ReceiveChequeController extends Controller
     }
     public function edit($id){
         $view = receive_cheque::where('id',$id)->first();
-        $invoice = $view->refer_invoice;
+
         $proposal = $view->refer_proposal;
         $bank_cheque = $view->bank_cheque;
         $bank_receiveds = $view->bank_received;
@@ -155,7 +152,6 @@ class ReceiveChequeController extends Controller
         $issue_date = $view->issue_date;
 
         return response()->json([
-            'invoice'=>$invoice,
             'proposal'=>$proposal,
             'bank_cheque'=>$bank_cheque,
             'bank_received'=>$bank_receiveds,
@@ -176,9 +172,9 @@ class ReceiveChequeController extends Controller
         $data = $request->all();
 
 
-        $datacheque = receive_cheque::where('refer_invoice',$request->Refer)->first();
+        $datacheque = receive_cheque::where('refer_proposal',$request->Refer)->first();
         $dataArray = [
-            'Refer' => $datacheque['refer_invoice'] ?? null,
+            'Refer' => $datacheque['refer_proposal'] ?? null,
             'bank'=>$datacheque['bank_cheque'] ?? null,
             'chequeNumber'=>$datacheque['cheque_number'] ?? null,
             'Amount'=>$datacheque['amount'] ?? null,
@@ -289,12 +285,8 @@ class ReceiveChequeController extends Controller
             return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
         try {
-            $invoice = $request->Refer;
-            $proposal = document_invoices::where('Invoice_ID',$invoice)->first();
-            $Quotation_ID = $proposal->Quotation_ID;
             $save = receive_cheque::find($request->ids);
-            $save->refer_invoice = $invoice;
-            $save->refer_proposal = $Quotation_ID;
+            $save->refer_proposal = $request->Refer;
             $save->bank_cheque = $request->bank;
             $save->bank_received = $request->received;
             $save->cheque_number = $request->chequeNumber;

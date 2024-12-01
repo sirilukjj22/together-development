@@ -42,6 +42,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\document_proposal_overbill;
 use App\Models\Master_additional;
 use App\Models\proposal_overbill;
+use App\Models\master_payment_and_complimentary;
 class proposal_request extends Controller
 {
     public function index()
@@ -1110,6 +1111,8 @@ class proposal_request extends Controller
         $Quotation_IDoverbill = $Quotation->Additional_ID;
         $Operated_by= $Quotation->Operated_by;
         $additional_type= $Quotation->additional_type;
+        $type = $Quotation->type;
+        $complimentary = master_payment_and_complimentary::where('id',$type)->first();
         $Mvat= $Quotation->vat_type;
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
@@ -1333,7 +1336,7 @@ class proposal_request extends Controller
                     'Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','Proposal','ProposalID','additional_type',
                     'fullname','firstPart','Identification','address','vat','Additional','AdditionaltotalReceipt','Receiptover','statusover','Additional_ID',
                     'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone'
-                    ,'Selectdata'));
+                    ,'Selectdata','complimentary'));
     }
     public function Additional_Approve(Request $request){
         try {

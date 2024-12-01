@@ -48,12 +48,12 @@
                                                 <form action="{{route('ReceiveCheque.save')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                     @csrf
                                                     <div class="col-sm-12 col-12">
-                                                        <label for="Status">Refer Invoice</label>
-                                                        <select name="Refer" id="Refer" class="select2"  onchange="data()">
+                                                        <label for="Status">Refer Proposal</label>
+                                                        <select name="Refer" id="Refer" class="select2">
                                                             @foreach($invoice as $item)
                                                                 <option value=""></option>
-                                                                <option value="{{ $item->Invoice_ID }}">
-                                                                    {{ $item->Invoice_ID }} Refer Proposal : {{$item->Quotation_ID}}
+                                                                <option value="{{ $item->Quotation_ID }}">
+                                                                    Proposal : {{$item->Quotation_ID}}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -78,8 +78,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
-                                                        <input type="text" class="form-control" id="Amount" name="Amount" readonly>
-
+                                                        <input type="text" class="form-control" id="Amount" name="Amount">
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="receive">Receive Date</label>
@@ -129,7 +128,7 @@
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-sm-12 col-12">
-                                                        <label for="Status">Refer Invoice</label>
+                                                        <label for="Status">Refer Proposal</label>
                                                         <input type="text" class="form-control" id="Referview" name="received" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
@@ -196,11 +195,11 @@
                                                 <form action="{{route('ReceiveCheque.update')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                     @csrf
                                                     <div class="col-sm-12 col-12">
-                                                        <label for="Status">Refer Invoice</label>
+                                                        <label for="Status">Refer Proposal</label>
                                                         <select name="Refer" id="Referedit" class="select2" >
                                                             @foreach($invoice as $item)
-                                                                <option value="{{ $item->Invoice_ID }}">
-                                                                    {{ $item->Invoice_ID }} Refer Proposal : {{$item->Quotation_ID}}
+                                                                <option value="{{ $item->Quotation_ID }}">
+                                                                    Refer Proposal : {{$item->Quotation_ID}}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -405,6 +404,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -421,6 +421,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -430,23 +431,7 @@
 
             });
         });
-        function data() {
-            var Refer = $('#Refer').val();
-            var id = Refer;
-            jQuery.ajax({
-                type: "GET",
-                url: `/Document/ReceiveCheque/Refer/${id}`,  // ใช้ template literal สร้าง URL
-                datatype: "JSON",
-                async: false,
-                success: function(response) {
-                    var Amount = response.Amount;
-                    $('#Amount').val(Amount);
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX request failed: ", status, error);
-                }
-            });
-        }
+
         function view(id) {
             var id = id;
             jQuery.ajax({
@@ -464,7 +449,7 @@
                     var receive_date = response.receive_date;
                     var issue_date = response.issue_date;
 
-                    var refer = 'อ้างอิงจาก Proforma Invoice ' + invoice + ' Proposol ' + proposal;
+                    var refer = 'อ้างอิงจาก Proposol : ' + proposal;
                     $('#Referview').val(refer);
                     $('#BankChequeview').val(bank_cheque);
                     $('#Bankreceivedview').val(bank_received);
@@ -489,7 +474,6 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    var invoice = response.invoice;
                     var proposal = response.proposal;
                     var bank_cheque = response.bank_cheque;
                     var bank_received = response.bank_received;
@@ -498,10 +482,10 @@
                     var receive_date = response.receive_date;
                     var issue_date = response.issue_date;
 
-                    console.log(bank_cheque);
+                    console.log(proposal);
 
                     $('#ids').val(id);
-                    $('#Referedit').val(invoice).trigger('change');
+                    $('#Referedit').val(proposal).trigger('change');
                     $('#bankedit').val(bank_cheque).trigger('change');
                     // $('#Bankreceivedview').val(bank_received);
                     $('#chequeNumberedit').val(cheque_number);

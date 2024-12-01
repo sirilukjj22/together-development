@@ -45,6 +45,7 @@ use App\Mail\QuotationEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\master_document_email;
 use App\Models\log_company;
+use App\Models\master_payment_and_complimentary;
 class Additional extends Controller
 {
     public function index(){
@@ -164,8 +165,10 @@ class Additional extends Controller
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
+        $complimentary = master_payment_and_complimentary::where('status',1)->get();
+
         return view('additional_charge.create',compact('Address','fullName','settingCompany','Quotation','Quotation_ID','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill',
-                    'provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone','Selectdata'       ));
+                    'provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone','Selectdata','complimentary'      ));
     }
     public function save(Request $request ,$id){
         $Quotation = Quotation::where('id', $id)->first();
@@ -732,6 +735,9 @@ class Additional extends Controller
                 $save->comment = $request->comment;
                 $save->Date_type = $Quotation->Date_type;
                 $save->additional_type = $request->additional_type;
+                $save->type = $request->typePayment;
+                $save->Cash = $request->Cash;
+                $save->Complimentary = $request->Complimentary;
                 $save->save();
                 if ($productDataSave !== null) {
                     foreach ($productDataSave as $product) {
