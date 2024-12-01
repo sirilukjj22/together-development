@@ -283,12 +283,52 @@
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Report">
-                                        @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1)
-                                            <li><a class="ms-link" href="{{ route('report-hotel-water-park-revenue') }}">Hotel & Water Park Revenue</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1)
-                                            <li><a class="ms-link" href="{{ route('report-hotel-manual-charge') }}">Hotel Manual Charge</a></li>
-                                        @endif
+                                        <li class="collapsed">
+                                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-report-gl-level-2" href="#"><span>General Ledger</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
+
+                                            <!-- Menu: Sub menu level 3 -->
+                                            <ul class="sub-menu collapse" id="menu-report-gl-level-2">
+                                                @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-hotel-water-park-revenue') }}">Hotel & Water Park Revenue Report</a></li>
+                                                @endif
+                                                @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-hotel-manual-charge') }}">Hotel Manual Charge Report</a></li>
+                                                @endif
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="sub-menu collapse" id="menu-Report">
+                                        <li class="collapsed">
+                                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-report-debtor-level-2" href="#"><span>Debtor</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
+
+                                            <!-- Menu: Sub menu level 3 -->
+                                            <ul class="sub-menu collapse" id="menu-report-debtor-level-2">
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
+                                                    <li><a class="ms-link" href="{{ route('report-agoda-revenue') }}">Agoda Revenue Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                    <li><a class="ms-link" href="#">Agoda Outstanding Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                <li><a class="ms-link" href="#">A/P Agoda Account Receivable Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                <li><a class="ms-link" href="#">Agoda Paid Revenue Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
+                                                <li><a class="ms-link" href="#">Elexa EGAT Revenue Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                    <li><a class="ms-link" href="#">Elexa EGAT Outstanding Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                <li><a class="ms-link" href="#">A/P Elexa EGAT Account Receivable Report</a></li>
+                                                {{-- @endif --}}
+                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                <li><a class="ms-link" href="#">Elexa EGAT Paid Revenue Report</a></li>
+                                                {{-- @endif --}}
+                                            </ul>
+                                        </li>
                                     </ul>
                                 </li>
                             @endif

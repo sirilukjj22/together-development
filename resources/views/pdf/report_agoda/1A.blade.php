@@ -12,6 +12,11 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        @page {
+            margin: 0.2cm 1.0cm 0.5cm 1.0cm;
+            size: A4 landscape; /* กำหนดขนาดเป็น A4 และแนวนอน */
+        }
     
         body {
             font-size: 18px;
@@ -159,7 +164,7 @@
 @endphp
 @for ($i = 1; $i <= $page_item; $i++)
     @php
-        $num += 23;
+        $num += 11;
     @endphp
     <div class="wrapper-page">
         <header class="clearfix" style="color: #020202;">
@@ -185,58 +190,54 @@
                         <tr class="table-row-bg1 text-capitalize">
                             <th>#</th>
                             <th>Date</th>
-                            <th>Manual Charge</th>
-                            <th>Fee</th>
-                            <th>SMS Revenue</th>
+                            <th>Time</th>
+                            <th>Bank</th>
+                            <th>Bank Account</th>
+                            <th>Amount</th>
+                            <th>Creatd By</th>
+                            <th>Income Type</th>
+                            <th>Transfer Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @if (isset($statusNotComplete) && $statusNotComplete == 1)
                         @foreach ($data_query as $key => $item)
-                            @if (($number <= $num && $number > $num - 23 && $key > $number_round) || $number <= $num && $i == 1)
-                                @if ($item->manual_charge == 0 && $item->total_credit > 0 || $item->manual_charge > 0 && $item->total_credit == 0 || $statusHide == 1 && $item->manual_charge > 0 && $item->total_credit > 0)
-                                    <tr>
-                                        <td>{{ $number += 1 }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                        <td>{{ $item->manual_charge == 0 ? '-' : number_format($item->manual_charge, 2) }}</td>
-                                        <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? '-' : number_format($item->fee, 2) }}</td>
-                                        <td>{{ $item->total_credit == 0 ? '-' : number_format($item->total_credit, 2) }}</td>
-                                    </tr>
-
-                                    @php
-                                        $total_manual += $item->manual_charge;
-                                        $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
-                                        $total_sms += $item->total_credit;
-                                        $number_round = $key;
-                                    @endphp
-                                @endif
-                            @endif
-                        @endforeach
-                    @else
-                        @foreach ($data_query as $key => $item)
-                            @if (($key <= $num && $key > $num - 23) || $key <= $num && $i == 1)
-                                <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                    <td>{{ $item->manual_charge == 0 ? '-' : number_format($item->manual_charge, 2) }}</td>
-                                    <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? '-' : number_format($item->fee, 2) }}</td>
-                                    <td>{{ $item->total_credit == 0 ? '-' : number_format($item->total_credit, 2) }}</td>
+                            @if (($key <= $num && $key > $num - 11) || $key <= $num && $i == 1)
+                                <tr style="vertical-align: middle;">
+                                    <td class="td-content-center;">{{ $key + 1 }}</td>
+                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                    <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                    <td style="text-align: left; align-items: center;">
+                                        <?php
+                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                        ?>
+                                            @if (file_exists($filename))
+                                                <img class="img-bank" src="image/bank/{{ @$item->transfer_bank->name_en }}.jpg" width="30" style="padding-top: 15px;">
+                                            @elseif (file_exists($filename2))
+                                                <img class="img-bank" src="image/bank/{{ @$item->transfer_bank->name_en }}.png" width="30">
+                                            @endif
+                                            <span style="vertical-align: middle;">{{ @$item->transfer_bank->name_en }}</span>
+                                    </td>
+                                    <td style="text-align: left; align-items: center;">
+                                        <img class="img-bank" src="image/bank/SCB.jpg" width="30" style="padding-top: 15px;"> 
+                                        <span style="vertical-align: middle;">{{ 'SCB ' . $item->into_account }}</span>
+                                    </td>
+                                    <td>
+                                        {{ number_format($item->amount, 2) }}
+                                    </td>
+                                    <td style="text-align: center;">{{ $item->remark ?? 'Auto' }}</td>
+                                    <td style="text-align: left;">Agoda Bank Transfer Revenue</td>
+                                    <td style="text-align: center;">
+                                        {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                    </td>
                                 </tr>
-
-                                @php
-                                    $total_manual += $item->manual_charge;
-                                    $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
-                                    $total_sms += $item->total_credit;
-                                @endphp
                             @endif
                         @endforeach
-                    @endif
                         @if ($i == $page_item) 
                             <tr style="font-weight: bold;">
-                                <td colspan="2" class="text-end">Total</td>
-                                <td style="text-align: right;">{{ number_format($total_manual, 2) }}</td>
-                                <td>{{ number_format($total_fee, 2) }}</td>
-                                <td>{{ number_format($total_sms, 2) }}</td>
+                                <td colspan="5">Total</td>
+                                <td style="text-align: right;">{{ number_format($total_sms_amount, 2) }}</td>
+                                <td colspan="3"></td>
                             </tr>
                         @endif
                     </tbody>

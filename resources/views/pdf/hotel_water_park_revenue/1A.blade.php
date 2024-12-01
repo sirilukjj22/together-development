@@ -437,995 +437,1549 @@
 
     // Revenue Outstanding
     $sum_total_outstanding = 0;
+
+    $round_number = 10;
+    $start_round = 1;
+    $page_all = ($page_item * 4) + 4;
+    $page_next = 0;
 @endphp
 
-    <div class="wrapper-page">
-        <header class="clearfix" style="color: #020202;">
-            <div class="logo">
-                <img src="logo/logo_crop.png">
-            </div>
-            <div class="logo">
-                <div class="add-text" style="line-height:14px;">
-                    <b style="font-size:30px;">Together Resort Limited Partnership</b>
+@for ($i = 1; $i <= $page_item; $i++)
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
                     <br>
-                    <b>
-                        168 Moo 2 Kaengkrachan Phetchaburi 76170
-                        <br>
-                        Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
-                        <br>
-                        Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
-                    </b>
-                </div>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
             </div>
-        </header>
-        <hr>
-        <main>
-            <div class="clearfix" style="color: #020202;">
-                <table id="topic" cellpadding="2" style="margin-bottom:0px;">
-                    <tr>
-                        <td width="10%" align="left"><b>Date : </b></td>
-                        <td width="45%" align="left">{{ $search_date }}</td>
-                        <td width="30%"></td>
-                        <td><i>Page 1/4</i></td>
-                    </tr>
-                </table>
-            </div>
-            <table id="detail" cellpadding="5" style="line-height: 12px;">
-                <thead>
-                    <tr style="background-color: rgba(7, 45, 41, 0.734);">
-                        <th>Description</th>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">
+                        {{ date('d/m/Y', strtotime($data_query[($start_round - 1)]['date'])) }} - {{ date('d/m/Y', strtotime(isset($data_query[($round_number - 1)]['date']) ? $data_query[($round_number - 1)]['date'] : $data_query[count($data_query) - 1]['date'])) }}
+                    </td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr style="background-color: rgba(7, 45, 41, 0.734);">
+                    <th>Description</th>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <th>{{ date('d/m/y', strtotime($item->date)) }}</th>
-                            @endforeach
-                            <th>Total</th>
-                        @else
-                            <th>Today</th>
-                            <th>M-T-D</th>
-                            <th>Y-T-D</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Front Desk Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>Cash</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <th>Total</th> --}}
+                    @else
+                        <th>Today</th>
+                        <th>M-T-D</th>
+                        <th>Y-T-D</th>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Front Desk Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->front_cash, 2) }}</td>
                                 @php
                                     $sum_front_cash += $item->front_cash;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_front_cash, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_front_cash, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->front_transfer, 2) }}</td>
                                 @php
                                     $sum_front_transfer += $item->front_transfer;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_front_transfer, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Guest Deposit Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>Cash</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_front_transfer, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Guest Deposit Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->room_cash, 2) }}</td>
                                 @php
                                     $sum_guest_cash += $item->room_cash;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_guest_cash, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_guest_cash, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->room_transfer, 2) }}</td>
                                 @php
                                     $sum_guest_transfer += $item->room_transfer;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_guest_transfer, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>All Outlet Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>Cash</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_guest_transfer, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>All Outlet Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->fb_cash, 2) }}</td>
                                 @php
                                     $sum_all_outlet_cash += $item->fb_cash;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_outlet_cash, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_outlet_cash, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->fb_transfer, 2) }}</td>
                                 @php
                                     $sum_all_outlet_transfer += $item->fb_transfer;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_outlet_transfer, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Hotel Credit Card Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>credit card front desk charge</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_outlet_transfer, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Hotel Credit Card Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>credit card front desk charge</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->front_charge, 2) }}</td>
                                 @php
                                     $sum_credit_front += $item->front_charge
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_credit_front, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>credit card guest deposit charge</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_credit_front, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>credit card guest deposit charge</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->guest_charge, 2) }}</td>
                                 @php
                                     $sum_credit_guest += $item->guest_charge
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_credit_guest, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>credit card all outlet charge</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_credit_guest, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>credit card all outlet charge</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->outlet_charge, 2) }}</td>
                                 @php
                                     $sum_credit_all_outlet += $item->outlet_charge
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_credit_all_outlet, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>credit card fee</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_credit_all_outlet, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>credit card fee</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->fee, 2) }}</td>
                                 @php
                                     $sum_credit_fee += $item->fee
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_credit_fee, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>credit card revenue (bank transfer)</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_credit_fee, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>credit card revenue (bank transfer)</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->total_credit, 2) }}</td>
                                 @php
                                     $sum_credit_revenue += $item->total_credit
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_credit_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                </tbody>
-            </table>
-        </main>
-        <footer>
-            <hr>
-            <h4>Together Resort Limited Partnership</h4>
-        </footer>
-    </div>
-
-    {{-- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// --}}
-
-    <div class="wrapper-page">
-        <header class="clearfix" style="color: #020202;">
-            <div class="logo">
-                <img src="logo/logo_crop.png">
-            </div>
-            <div class="logo">
-                <div class="add-text" style="line-height:14px;">
-                    <b style="font-size:30px;">Together Resort Limited Partnership</b>
-                    <br>
-                    <b>
-                        168 Moo 2 Kaengkrachan Phetchaburi 76170
-                        <br>
-                        Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
-                        <br>
-                        Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
-                    </b>
-                </div>
-            </div>
-        </header>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_credit_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
         <hr>
-        <main>
-            <div class="clearfix" style="color: #020202;">
-                <table id="topic" cellpadding="2" style="margin-bottom:0px;">
-                    <tr>
-                        <td width="10%" align="left"><b>Date : </b></td>
-                        <td width="45%" align="left">{{ $search_date }}</td>
-                        <td width="30%"></td>
-                        <td><i>Page 2/4</i></td>
-                    </tr>
-                </table>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+{{-- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// --}}
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
             </div>
-            <table id="detail" cellpadding="5" style="line-height: 12px;">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">
+                        {{ date('d/m/Y', strtotime($data_query[($start_round - 1)]['date'])) }} - {{ date('d/m/Y', strtotime(isset($data_query[($round_number - 1)]['date']) ? $data_query[($round_number - 1)]['date'] : $data_query[count($data_query) - 1]['date'])) }}
+                    </td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <th>{{ date('d/m/y', strtotime($item->date)) }}</th>
-                            @endforeach
-                            <th>Total</th>
-                        @else
-                            <th>Today</th>
-                            <th>M-T-D</th>
-                            <th>Y-T-D</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Agoda Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>Agoda Charge</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <th>Total</th> --}}
+                    @else
+                        <th>Today</th>
+                        <th>M-T-D</th>
+                        <th>Y-T-D</th>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Agoda Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Agoda Charge</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_charge, 2) }}</td>
                                 @php
                                     $sum_agoda_charge += $item->agoda_charge
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_agoda_charge, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Agoda Fee </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_agoda_charge, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Agoda Fee </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_fee, 2) }}</td>
                                 @php
                                     $sum_agoda_fee += $item->agoda_fee
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_agoda_fee, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Agoda Revenue</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_agoda_fee, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Agoda Revenue</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_revenue, 2) }}</td>
                                 @php
                                     $sum_agoda_revenue += $item->agoda_revenue
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_agoda_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Agoda Paid (bank transfer)</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_agoda_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Agoda Paid (bank transfer)</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->total_credit_agoda, 2) }}</td>
                                 @php
                                     $sum_agoda_paid += $item->total_credit_agoda
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_agoda_paid, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Agoda Revenue Outstanding </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_agoda_paid, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Agoda Revenue Outstanding </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_revenue, 2) }}</td>
                                 @php
                                     $sum_agoda_outstanding += $item->agoda_revenue
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_agoda_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Other Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_agoda_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Other Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->other_revenue, 2) }}</td>
                                 @php
                                     $sum_other_revenue += $item->other_revenue
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_other_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_other_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
 
-                    <tr>
-                        <td colspan="100%" class="bdl bdr"></td>
-                    </tr>
+                <tr>
+                    <td colspan="100%" class="bdl bdr"></td>
+                </tr>
 
-                    <tr style="text-align: left; background-color: rgb(187, 226, 226);">
-                        <td>Summary Hotel Revenue</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td><b>Summary Hotel Revenue</b></td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->cash + $item->bank_transfer + $item->agoda_outstanding, 2) }}</td>
                                 @php
                                     $sum_all_hotel_agoda += ($item->cash + $item->bank_transfer + $item->agoda_outstanding)
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_hotel_agoda, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Cash</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_hotel_agoda, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->cash, 2) }}</td>
                                 @php
                                     $sum_all_cash += $item->cash
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_cash, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_cash, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->bank_transfer, 2) }}</td>
                                 @php
                                     $sum_all_transfer += $item->bank_transfer
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_transfer, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Agoda Revenue Outstanding Balance</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_transfer, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Agoda Revenue Outstanding Balance</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_outstanding, 2) }}</td>
                                 @php
                                     $sum_all_agoda_outstanding += $item->agoda_outstanding
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_agoda_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_agoda_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
 
-                    <tr>
-                        <td colspan="100%" class="bdl bdr"></td>
-                    </tr>
+                <tr>
+                    <td colspan="100%" class="bdl bdr"></td>
+                </tr>
 
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Water Park Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td>Cash</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Water Park Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->wp_cash, 2) }}</td>
                                 @php
                                     $sum_water_cash += $item->wp_cash
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_water_cash, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_water_cash, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->wp_transfer, 2) }}</td>
                                 @php
                                     $sum_water_transfer += $item->wp_transfer
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_water_transfer, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                </tbody>
-            </table>
-        </main>
-        <footer>
-            <hr>
-            <h4>Together Resort Limited Partnership</h4>
-        </footer>
-    </div>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <div class="wrapper-page">
-        <header class="clearfix" style="color: #020202;">
-            <div class="logo">
-                <img src="logo/logo_crop.png">
-            </div>
-            <div class="logo">
-                <div class="add-text" style="line-height:14px;">
-                    <b style="font-size:30px;">Together Resort Limited Partnership</b>
-                    <br>
-                    <b>
-                        168 Moo 2 Kaengkrachan Phetchaburi 76170
-                        <br>
-                        Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
-                        <br>
-                        Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
-                    </b>
-                </div>
-            </div>
-        </header>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_water_transfer, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
         <hr>
-        <main>
-            <div class="clearfix" style="color: #020202;">
-                <table id="topic" cellpadding="2" style="margin-bottom:0px;">
-                    <tr>
-                        <td width="10%" align="left"><b>Date : </b></td>
-                        <td width="45%" align="left">{{ $search_date }}</td>
-                        <td width="30%"></td>
-                        <td><i>Page 3/4</i></td>
-                    </tr>
-                </table>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
             </div>
-            <table id="detail" cellpadding="5" style="line-height: 12px;">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">
+                        {{ date('d/m/Y', strtotime($data_query[($start_round - 1)]['date'])) }} - {{ date('d/m/Y', strtotime(isset($data_query[($round_number - 1)]['date']) ? $data_query[($round_number - 1)]['date'] : $data_query[count($data_query) - 1]['date'])) }}
+                    </td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <th>{{ date('d/m/y', strtotime($item->date)) }}</th>
-                            @endforeach
-                            <th>Total</th>
-                        @else
-                            <th>Today</th>
-                            <th>M-T-D</th>
-                            <th>Y-T-D</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Water Park Credit Card Revenue</b></td>
-                    </tr>
-                    <tr>
-                        <td> Credit Card Water Park Charge </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <th>Total</th> --}}
+                    @else
+                        <th>Today</th>
+                        <th>M-T-D</th>
+                        <th>Y-T-D</th>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Water Park Credit Card Revenue</b></td>
+                </tr>
+                <tr>
+                    <td> Credit Card Water Park Charge </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->wp_charge, 2) }}</td>
                                 @php
                                     $sum_water_credit_charge += $item->wp_charge
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_water_credit_charge, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Credit Card Fee</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_water_credit_charge, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Credit Card Fee</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->wp_fee, 2) }}</td>
                                 @php
                                     $sum_water_credit_fee += $item->wp_fee
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_water_credit_fee, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Credit Card Water Park Revenue (Bank Transfer)</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_water_credit_fee, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Credit Card Water Park Revenue (Bank Transfer)</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->wp_credit, 2) }}</td>
                                 @php
                                     $sum_water_credit_revenue += $item->wp_credit
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_water_credit_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr style="text-align: left; background-color: rgb(187, 226, 226);">
-                        <td>Summary Water Park Revenue</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_water_credit_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td>Summary Water Park Revenue</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->wp_cash + $item->wp_transfer, 2) }}</td>
                                 @php
                                     $sum_all_water += $item->wp_transfer
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_water, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="100%" class="bdl bdr"></td>
-                    </tr>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_water, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                
+                <tr>
+                    <td colspan="100%" class="bdl bdr"></td>
+                </tr>
 
-                    <tr>
-                        <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);">Elexa EGAT Revenue</td>
-                    </tr>
-                    <tr>
-                        <td>EV Charging Charge</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                <tr>
+                    <td colspan="100%" style="text-align: left; background-color: rgb(187, 226, 226);">Elexa EGAT Revenue</td>
+                </tr>
+                <tr>
+                    <td>EV Charging Charge</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_charge, 2) }}</td>
                                 @php
                                     $sum_ev_charge += $item->ev_charge
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_ev_charge, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Elexa Fee</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_charge, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>Elexa Fee</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_fee, 2) }}</td>
                                 @php
                                     $sum_ev_fee += $item->ev_fee
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_ev_fee, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td> Elexa EGAT revenue</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_fee, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td> Elexa EGAT revenue</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                 @php
                                     $sum_ev_revenue += $item->ev_revenue
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_ev_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td> Elexa EGAT Paid (Bank Transfer)</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td> Elexa EGAT Paid (Bank Transfer)</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->total_elexa, 2) }}</td>
                                 @php
                                     $sum_ev_paid += $item->total_elexa
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_ev_paid, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td> Elexa EGAT Outstanding Balance</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_paid, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td> Elexa EGAT Outstanding Balance</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                 @php
                                     $sum_ev_outstanding += $item->ev_revenue
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr style="text-align: left; background-color: rgb(187, 226, 226);">
-                        <td>Summary Elexa EGAT Revenue</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td>Summary Elexa EGAT Revenue</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_revenue, 2) }}</td>
-                            @endforeach
-                            <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi"> Bank Transfer</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Bank Transfer</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->total_elexa, 2) }}</td>
-                            @endforeach
-                            <td>{{ number_format($sum_ev_paid, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi"> Elexa EGAT Outstanding Balance</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_paid, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Elexa EGAT Outstanding Balance</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_revenue, 2) }}</td>
-                            @endforeach
-                            <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                </tbody>
-            </table>
-        </main>
-        <footer>
-            <hr>
-            <h4>Together Resort Limited Partnership</h4>
-        </footer>
-    </div>
-
-    <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-    <div class="wrapper-page">
-        <header class="clearfix" style="color: #020202;">
-            <div class="logo">
-                <img src="logo/logo_crop.png">
-            </div>
-            <div class="logo">
-                <div class="add-text" style="line-height:14px;">
-                    <b style="font-size:30px;">Together Resort Limited Partnership</b>
-                    <br>
-                    <b>
-                        168 Moo 2 Kaengkrachan Phetchaburi 76170
-                        <br>
-                        Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
-                        <br>
-                        Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
-                    </b>
-                </div>
-            </div>
-        </header>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
         <hr>
-        <main>
-            <div class="clearfix" style="color: #020202;">
-                <table id="topic" cellpadding="2" style="margin-bottom:0px;">
-                    <tr>
-                        <td width="10%" align="left"><b>Date : </b></td>
-                        <td width="45%" align="left">{{ $search_date }}</td>
-                        <td width="30%"></td>
-                        <td><i>Page 4/4</i></td>
-                    </tr>
-                </table>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
             </div>
-            <table id="detail" cellpadding="5" style="line-height: 12px;">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">
+                        {{ date('d/m/Y', strtotime($data_query[($start_round - 1)]['date'])) }} - {{ date('d/m/Y', strtotime(isset($data_query[($round_number - 1)]['date']) ? $data_query[($round_number - 1)]['date'] : $data_query[count($data_query) - 1]['date'])) }}
+                    </td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <th>{{ date('d/m/y', strtotime($item->date)) }}</th>
-                            @endforeach
-                            <th>Total</th>
-                        @else
-                            <th>Today</th>
-                            <th>M-T-D</th>
-                            <th>Y-T-D</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="text-align: left; background-color: rgb(187, 226, 226);">
-                        <td colspan="100%">Summary Revenue</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi"> All Revenue </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <th>Total</th> --}}
+                    @else
+                        <th>Today</th>
+                        <th>M-T-D</th>
+                        <th>Y-T-D</th>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td colspan="100%">Summary Revenue</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> All Revenue </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format(($item->cash + $item->bank_transfer + $item->agoda_outstanding) + ($item->wp_cash + $item->wp_transfer) + $item->ev_revenue, 2) }}</td>
                                 @php
                                     $sum_all_revenue += ($item->cash + $item->bank_transfer + $item->agoda_outstanding) + ($item->wp_cash + $item->wp_transfer) + $item->ev_revenue;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_all_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi"> Outstanding Balance From Last Year</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Outstanding Balance From Last Year</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>0.00</td>
-                            @endforeach
-                            <td>{{ number_format(0, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format(0, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format(($item->cash + $item->bank_transfer + $item->agoda_outstanding) + ($item->wp_cash + $item->wp_transfer) + $item->ev_revenue, 2) }}</td>
-                            @endforeach
-                            <td>{{ number_format($sum_all_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr style="text-align: left; background-color: rgb(187, 226, 226);">
-                        <td colspan="100%"> Payment Summary Details Report</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Hotel Revenue </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td colspan="100%"> Payment Summary Details Report</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Hotel Revenue </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format(($item->cash + $item->bank_transfer), 2) }}</td>
                                 @php
                                     $sum_hotel += ($item->cash + $item->bank_transfer);
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_hotel, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi"> Water Park Revenue </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_hotel, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Water Park Revenue </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format(($item->wp_cash + $item->wp_transfer), 2) }}</td>
                                 @php
                                     $sum_water_park += ($item->wp_cash + $item->wp_transfer);
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_water_park, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Elexa EGAT revenue </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_water_park, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Elexa EGAT revenue </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                 @php
                                     $sum_exlexa += $item->ev_revenue;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_exlexa, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Total Revenue</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_exlexa, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Total Revenue</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format(($item->cash + $item->bank_transfer) + ($item->wp_cash + $item->wp_transfer) + $item->ev_revenue, 2) }}</td>
                                 @php
                                     $sum_total_revenue += ($item->cash + $item->bank_transfer) + ($item->wp_cash + $item->wp_transfer) + $item->ev_revenue;
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_total_revenue, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="100%" class="bdl bdr"></td>
-                    </tr>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_total_revenue, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                
+                <tr>
+                    <td colspan="100%" class="bdl bdr"></td>
+                </tr>
 
-                    <tr style="text-align: left; background-color: rgb(187, 226, 226);">
-                        <td class="f-semi" colspan="100%">Revenue Outstanding Report</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Agoda Outstanding Balance </td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td class="f-semi" colspan="100%">Revenue Outstanding Report</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Agoda Outstanding Balance </td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_revenue, 2) }}</td>
-                            @endforeach
-                            <td>{{ number_format($sum_all_agoda_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Elexa EGAT Outstanding Balance</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_all_agoda_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Elexa EGAT Outstanding Balance</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->ev_revenue, 2) }}</td>
-                            @endforeach
-                            <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td class="text-end f-semi">Total Outstanding Balance</td>
-                        @if ($filter_by == "date" && $status == "detail")
-                            @foreach ($data_query as $item)
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_ev_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Total Outstanding Balance</td>
+                    @if ($filter_by == "date" && $status == "detail")
+                        @foreach ($data_query as $key => $item)
+                            @if (($key + 1) >= $start_round && ($key + 1) <= $round_number)
                                 <td>{{ number_format($item->agoda_revenue + $item->ev_revenue, 2) }}</td>
                                 @php
                                     $sum_total_outstanding += ($item->agoda_revenue + $item->ev_revenue);
                                 @endphp
-                            @endforeach
-                            <td>{{ number_format($sum_total_outstanding, 2) }}</td>
-                        @else
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                            <td class="td-default"></td>
-                        @endif
-                    </tr>
-                </tbody>
+                            @endif
+                        @endforeach
+                        {{-- <td>{{ number_format($sum_total_outstanding, 2) }}</td> --}}
+                    @else
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                        <td class="td-default"></td>
+                    @endif
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <hr>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+    @php
+        $round_number += 10;
+        $start_round += 10;
+    @endphp
+@endfor
+
+<!-- ////////////////////////////////////////////// Total //////////////////////////////////////////////////////// -->
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
+            </div>
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">{{ $search_date }}</td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
             </table>
-        </main>
-        <footer>
-            <hr>
-            <h4>Together Resort Limited Partnership</h4>
-        </footer>
-    </div>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Front Desk Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>{{ number_format($sum_front_cash, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    <td>{{ number_format($sum_front_transfer, 2) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Guest Deposit Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>{{ number_format($sum_guest_cash, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    <td>{{ number_format($sum_guest_transfer, 2) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>All Outlet Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>{{ number_format($sum_all_outlet_cash, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    <td>{{ number_format($sum_all_outlet_transfer, 2) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Hotel Credit Card Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>credit card front desk charge</td>
+                    <td>{{ number_format($sum_credit_front, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>credit card guest deposit charge</td>
+                    <td>{{ number_format($sum_credit_guest, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>credit card all outlet charge</td>
+                    <td>{{ number_format($sum_credit_all_outlet, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>credit card fee</td>
+                    <td>{{ number_format($sum_credit_fee, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>credit card revenue (bank transfer)</td>
+                    <td>{{ number_format($sum_credit_revenue, 2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <hr>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
+            </div>
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">{{ $search_date }}</td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Agoda Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Agoda Charge</td>
+                    <td>{{ number_format($sum_agoda_charge, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Agoda Fee </td>
+                    <td>{{ number_format($sum_agoda_fee, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Agoda Revenue</td>
+                    <td>{{ number_format($sum_agoda_revenue, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Agoda Paid (bank transfer)</td>
+                    <td>{{ number_format($sum_agoda_paid, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Agoda Revenue Outstanding </td>
+                    <td>{{ number_format($sum_agoda_outstanding, 2) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Other Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    <td>{{ number_format($sum_other_revenue, 2) }}</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class="bdl bdr"></td>
+                </tr>
+
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td><b>Summary Hotel Revenue</b></td>
+                    <td>{{ number_format($sum_all_hotel_agoda, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>{{ number_format($sum_all_cash, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    <td>{{ number_format($sum_all_transfer, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Agoda Revenue Outstanding Balance</td>
+                    <td>{{ number_format($sum_all_agoda_outstanding, 2) }}</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class="bdl bdr"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Water Park Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>{{ number_format($sum_water_cash, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Bank Transfer</td>
+                    <td>{{ number_format($sum_water_transfer, 2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <hr>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
+            </div>
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">{{ $search_date }}</td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Water Park Credit Card Revenue</b></td>
+                </tr>
+                <tr>
+                    <td> Credit Card Water Park Charge </td>
+                    <td>{{ number_format($sum_water_credit_charge, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Credit Card Fee</td>
+                    <td>{{ number_format($sum_water_credit_fee, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Credit Card Water Park Revenue (Bank Transfer)</td>
+                    <td>{{ number_format($sum_water_credit_revenue, 2) }}</td>
+                </tr>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td><b>Summary Water Park Revenue</b></td>
+                    <td>{{ number_format($sum_all_water, 2) }}</td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2" class="bdl bdr"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: left; background-color: rgb(187, 226, 226);"><b>Elexa EGAT Revenue</b></td>
+                </tr>
+                <tr>
+                    <td>EV Charging Charge</td>
+                    <td>{{ number_format($sum_ev_charge, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Elexa Fee</td>
+                    <td>{{ number_format($sum_ev_fee, 2) }}</td>
+                </tr>
+                <tr>
+                    <td> Elexa EGAT revenue</td>
+                    <td>{{ number_format($sum_ev_revenue, 2) }}</td>
+                </tr>
+                <tr>
+                    <td> Elexa EGAT Paid (Bank Transfer)</td>
+                    <td>{{ number_format($sum_ev_paid, 2) }}</td>
+                </tr>
+                <tr>
+                    <td> Elexa EGAT Outstanding Balance</td>
+                    <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
+                </tr>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td><b>Summary Elexa EGAT Revenue</b></td>
+                    <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Bank Transfer</td>
+                    <td>{{ number_format($sum_ev_paid, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Elexa EGAT Outstanding Balance</td>
+                    <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <hr>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
+
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+
+<div class="wrapper-page">
+    <header class="clearfix" style="color: #020202;">
+        <div class="logo">
+            <img src="logo/logo_crop.png">
+        </div>
+        <div class="logo">
+            <div class="add-text" style="line-height:14px;">
+                <b style="font-size:30px;">Together Resort Limited Partnership</b>
+                <br>
+                <b>
+                    168 Moo 2 Kaengkrachan Phetchaburi 76170
+                    <br>
+                    Tel: +66 (0) 32 708 888 | Fax: +66 (0) 32 708 888
+                    <br>
+                    Hotel Tax ID 0763559000169 | Email: reservation@together-resort.com
+                </b>
+            </div>
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div class="clearfix" style="color: #020202;">
+            <table id="topic" cellpadding="2" style="margin-bottom:0px;">
+                <tr>
+                    <td width="10%" align="left"><b>Date : </b></td>
+                    <td width="45%" align="left">{{ $search_date }}</td>
+                    <td width="30%"></td>
+                    <td><i>Page {{ $page_next += 1 }}/{{ $page_all }}</i></td>
+                </tr>
+            </table>
+        </div>
+        <table id="detail" cellpadding="5" style="line-height: 12px;">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td colspan="2"><b>Summary Revenue</b></td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> All Revenue </td>
+                    <td>{{ number_format($sum_all_revenue, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Outstanding Balance From Last Year</td>
+                    <td>{{ number_format(0, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
+                    <td>{{ number_format($sum_all_revenue, 2) }}</td>
+                </tr>
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td colspan="2"><b>Payment Summary Details Report</b></td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Hotel Revenue </td>
+                    <td>{{ number_format($sum_hotel, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi"> Water Park Revenue </td>
+                    <td>{{ number_format($sum_water_park, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Elexa EGAT revenue </td>
+                    <td>{{ number_format($sum_exlexa, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Total Revenue</td>
+                    <td>{{ number_format($sum_total_revenue, 2) }}</td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2" class="bdl bdr"></td>
+                </tr>
+
+                <tr style="text-align: left; background-color: rgb(187, 226, 226);">
+                    <td class="f-semi" colspan="2"><b>Revenue Outstanding Report</b></td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Agoda Outstanding Balance </td>
+                    <td>{{ number_format($sum_all_agoda_outstanding, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Elexa EGAT Outstanding Balance</td>
+                    <td>{{ number_format($sum_ev_outstanding, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-end f-semi">Total Outstanding Balance</td>
+                    <td>{{ number_format($sum_total_outstanding, 2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <hr>
+        <h4>Together Resort Limited Partnership</h4>
+    </footer>
+</div>
 </body>
 </html>

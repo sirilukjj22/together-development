@@ -40,7 +40,9 @@ class ReportHotelManualChangeController extends Controller
     public function search(Request $request)
     {
         $filter_by = $request->filter_by;
-        $status = $request->status;
+        $statusAll = $request->statusAll ?? 0;
+        $statusHide = $request->statusHide ?? 0;
+        $statusNotComplete = $request->statusNotComplete ?? 0;
         $endDate = '';
 
         $query = Revenues::query()->leftJoin('revenue_credit', 'revenue.id', '=', 'revenue_credit.revenue_id');
@@ -66,7 +68,7 @@ class ReportHotelManualChangeController extends Controller
             $search_date = $startDate;
         }
 
-        if ($status == "hide_revenue") {
+        if ($statusHide == 1 && $statusNotComplete == 0) {
             $query->where('revenue.total_credit', '>', 0);
             $query->where('revenue_credit.credit_amount', '>', 0);
         }
@@ -80,36 +82,36 @@ class ReportHotelManualChangeController extends Controller
         $data_query = $query->groupBy('revenue.date', 'revenue.total_credit')->orderBy('revenue.date', 'asc')->get();
 
         if ($request->method_name == "search") {
-            return view('report.hotel_manual_charge.index', compact('data_query', 'filter_by', 'search_date', 'startDate', 'status'));
+            return view('report.hotel_manual_charge.index', compact('data_query', 'filter_by', 'search_date', 'startDate', 'statusHide', 'statusNotComplete'));
 
         } elseif ($request->method_name == "pdf") {
 
             $num = 0;
-            if (isset($status) && $status == 'not_complete') 
-            {
                 foreach ($data_query as $key => $item)
                 {
-                    if ($item->manual_charge == 0 || $item->total_credit == 0)
-                    {
+                    if (isset($statusNotComplete) && $statusNotComplete == 1 || isset($statusHide) && $statusHide == 1) {
+                        if ($item->manual_charge == 0 && $item->total_credit > 0 || $item->manual_charge > 0 && $item->total_credit == 0 || $statusHide == 1 && $item->manual_charge > 0 && $item->total_credit > 0)
+                        {
+                            $num += 1;
+                        }
+                    } else {
                         $num += 1;
                     }
                 }
-            }
 
-            $sum_page = $num / 25;
+            $sum_page = $num / 23;
             $page_item = 1;
-            if ($sum_page > 1.2 && $sum_page < 2.5) {
+            if ($sum_page > 1 && $sum_page < 2) {
                 $page_item += 1;
-            } elseif ($sum_page >= 2.5) {
-                $page_item = 1 + $sum_page > 2.5 ? ceil($sum_page) : 1;
+            } elseif ($sum_page >= 2.1) {
+                $page_item = 1 + $sum_page > 2.1 ? ceil($sum_page) : 1;
             }
 
-            $pdf = FacadePdf::loadView('pdf.hotel_manual_charge.1A', compact('data_query', 'filter_by', 'search_date', 'startDate', 'status', 'page_item'));
+            $pdf = FacadePdf::loadView('pdf.hotel_manual_charge.1A', compact('data_query', 'filter_by', 'search_date', 'startDate', 'statusHide', 'statusNotComplete', 'page_item'));
             return $pdf->stream();
 
         } elseif ($request->method_name == "excel") {
-            // return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx');
-            return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date, $status), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+            return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date, $statusHide, $statusNotComplete), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
         }
     }
 }

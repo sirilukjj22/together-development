@@ -129,7 +129,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Hotel Manual Charge</div>
+                    <div class="span3">Agoda Revenue Report</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
@@ -144,7 +144,7 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                     <!-- Form Container -->
                     <div class="form-container mb-3 mb-md-0">
-                        <form action="{{ route('report-hotel-manual-charge-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
+                        <form action="{{ route('report-agoda-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                             @csrf
                             <div class="col-md-12">
                                 <h3>Search</h3>
@@ -174,17 +174,6 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-12 d-flex flex-row gap-3 mt-4">
-                                <div class="form-check">
-                                    <input class="form-check-input status" type="checkbox" name="statusHide" id="statusHide" value="1" {{ isset($statusHide) && $statusHide == 1 ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="statusHide">Hide No Revenue</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input status" type="checkbox" name="statusNotComplete" id="statusNotComplete" value="1" {{ isset($statusNotComplete) && $statusNotComplete == 1 ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="statusNotComplete">Not Complete <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="Manual Charge, Fee, Hotel Bank Transfer"></span</label>
-                                </div>
-                            </div>
-
                             <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
                             <input type="hidden" value="search" id="method-name" name="method_name">
             
@@ -207,70 +196,97 @@
                         <span>Date On : {{ $search_date }}</span>
                     </div>
                 </div>
-                <table id="table-data" class="table-report-manual-charge">
-                    <thead>
-                        <tr class="table-row-bg1 text-capitalize">
-                            <th>#</th>
-                            <th>Date</th>
-                            <th>Manual Charge</th>
-                            <th>Fee</th>
-                            <th>Hotel Bank Transfer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $total_manual = 0;
-                            $total_fee = 0;
-                            $total_sms = 0;
-                            $number = 0;
-                        @endphp
-
-                        @if (isset($statusNotComplete) && $statusNotComplete == 1)
-                            @foreach ($data_query as $key => $item)
-                                @if ($item->manual_charge == 0 && $item->total_credit > 0 || $item->manual_charge > 0 && $item->total_credit == 0 || $statusHide == 1 && $item->manual_charge > 0 && $item->total_credit > 0)
-                                    <tr>
-                                        <td>{{ $number += 1 }}</td>
-                                        <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                        <td>{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
-                                        <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? "-" : number_format($item->fee, 2) }}</td>
-                                        <td>{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
-                                    </tr>
-
-                                    @php
-                                        $total_manual += $item->manual_charge;
-                                        $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
-                                        $total_sms += $item->total_credit;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        @else
-                            @foreach ($data_query as $key => $item)
+                <div class="p-4 mb-4">
+                    <caption class="caption-top">
+                        <div class="flex-end-g2">
+                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
+                            <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                            </select>
+                            <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
+                        </div>
+                    </caption>
+                    <style>
+                        .example td:nth-child(4) {
+                            text-align: left !important;
+                            vertical-align: center !important;
+                        }
+                        </style>
+                    <div style="min-height: 70vh;">
+                        <table id="smsAgodaTable" class="example ui striped table nowrap unstackable hover" >
+                            <thead>
                                 <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                    <td>{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
-                                    <td>{{ $item->fee == 0 || $item->manual_charge == 0 ? "-" : number_format($item->fee, 2) }}</td>
-                                    <td>{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
+                                    <th style="text-align: center;" data-priority="1">#</th>
+                                    <th style="text-align: center;" data-priority="1">Date</th>
+                                    <th style="text-align: center;">Time</th>
+                                    <th style="text-align: center;">Bank</th>
+                                    <th style="text-align: center;">Bank Account</th>
+                                    <th style="text-align: center;" data-priority="1">Amount</th>
+                                    <th style="text-align: center;">Creatd By</th>
+                                    <th style="text-align: center;">Income Type</th>
+                                    <th style="text-align: center;">Transfer Date</th>
                                 </tr>
-
-                                @php
-                                    $total_manual += $item->manual_charge;
-                                    $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
-                                    $total_sms += $item->total_credit;
-                                @endphp
-                            @endforeach
-                        @endif
-                        <tr>
-                            <td colspan="2" class="fw-bold text-end">Total</td>
-                            <td class="fw-bold">{{ number_format($total_manual, 2) }}</td>
-                            <td class="fw-bold">{{ number_format($total_fee, 2) }}</td>
-                            <td class="fw-bold">{{ number_format($total_sms, 2) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($data_query as $key => $item)
+                                <tr>
+                                    <td class="td-content-center">{{ $key + 1 }}</td>
+                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                    <td class="td-content-center">
+                                        <?php
+                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                        ?>
+                                        <div>
+                                            @if (file_exists($filename))
+                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
+                                            @elseif (file_exists($filename2))
+                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                            @endif
+                                            {{ @$item->transfer_bank->name_en }}
+                                        </div>
+                                    </td>
+                                    <td class="td-content-center">
+                                        <div class="flex-jc p-left-4 center">
+                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                        </div>
+                                    </td>
+                                    <td class="td-content-center">
+                                        {{ number_format($item->amount, 2) }}
+                                    </td>
+                                    <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                    <td class="td-content-center">Agoda Bank Transfer Revenue</td>
+                                    <td class="td-content-center">
+                                        {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <caption class="caption-bottom">
+                        <div class="md-flex-bt-i-c">
+                            <div class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_query, 'smsAgoda') }}</div>
+                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms_amount, 2) }} บาท</div>
+                                <div id="smsAgoda-paginate">
+                                    {!! paginateTable($data_query, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                </div>
+                        </div>
+                    </caption>
+                </div>
             </div>
         </div>
     </div>
+
+    <input type="hidden" id="filter-by-old" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
+    <input type="hidden" id="date-old" value="{{ isset($search_date) ? $search_date : date('Y-m') }}">
+    <input type="hidden" id="status-revenue" value="5">
+    <input type="hidden" id="get-total-smsAgoda" value="{{ $data_query->total() }}">
+    <input type="hidden" id="currentPage-smsAgoda" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         {{-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script> --}}
@@ -285,6 +301,9 @@
     <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+
+    <!-- สำหรับค้นหาในส่วนของตาราง -->
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableReportAgoda.js')}}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -324,6 +343,24 @@
             $('input[name="startDate"]').daterangepicker({
                 locale: {
                     format: 'DD/MM/YYYY'  // กำหนดรูปแบบวันที่เป็น 'ปี-เดือน-วัน'
+                }
+            });
+
+            new DataTable('.example', {
+                searching: false,
+                paging: false,
+                info: false,
+                columnDefs: [{
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null,
+                }],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
                 }
             });
         });
@@ -386,15 +423,83 @@
             });
         });
 
-        $(document).on('click', '.status', function () {
-            var status = $(this).attr('id');
+        // Search 
+        $(document).on('keyup', '.search-data', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var total = parseInt($('#get-total-'+id).val());
+            var table_name = id+'Table';
 
-            if (status == "statusAll") {
-                $('#statusHide').prop('checked', false);
-                $('#statusNotComplete').prop('checked', false);
-            } else {
-                $('#statusAll').prop('checked', false);
-            }
+            var filter_by = $('#filter-by-old').val();
+            var dateString = $('#date-old').val();
+            var type = $('#status-revenue').val();
+            var count_total = 0;
+            var getUrl = window.location.pathname;
+
+            $('#'+table_name).DataTable().destroy();
+            var table = $('#'+table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                ajax: {
+                    url: 'report-agoda-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        date: dateString,
+                        status: type,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings, json) {
+
+                    if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    } else {
+                        var count = 0;
+                        $('.dataTables_empty').addClass('dt-center');
+                    }
+
+                    if (search_value == '') {
+                        count_total = total;
+                    } else {
+                        count_total = count;
+                    }
+                    
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                },
+                columnDefs: [
+                            { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                    { data: 'date' },
+                    { data: 'time' },
+                    { data: 'transfer_bank' },
+                    { data: 'into_account' },
+                    { data: 'amount' },
+                    { data: 'remark' },
+                    { data: 'revenue_name' },
+                    { data: 'date_into' },
+                ],
+                    
+            });  
+
+            document.getElementById(id).focus();
         });
 
         // Export

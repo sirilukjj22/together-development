@@ -26,9 +26,9 @@
             $total_sms = 0;
         @endphp
 
-        @if (isset($status) && $status == 'not_complete')
+        @if (isset($statusNotComplete) && $statusNotComplete == 1)
             @foreach ($data_query as $key => $item)
-                @if ($item->manual_charge == 0 || $item->total_credit == 0)
+                @if ($item->manual_charge == 0 && $item->total_credit > 0 || $item->manual_charge > 0 && $item->total_credit == 0 || $statusHide == 1 && $item->manual_charge > 0 && $item->total_credit > 0)
                     <tr>
                         <td style="text-align: center;">{{ $key + 1 }}</td>
                         <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
@@ -50,13 +50,13 @@
                     <td style="text-align: center;">{{ $key + 1 }}</td>
                     <td style="text-align: left;">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                     <td style="text-align: right;">{{ $item->manual_charge == 0 ? "-" : number_format($item->manual_charge, 2) }}</td>
-                    <td style="text-align: right;">{{ $item->fee == 0 ? "-" : number_format($item->fee, 2) }}</td>
+                    <td style="text-align: right;">{{ $item->fee == 0 || $item->manual_charge == 0 ? "-" : number_format($item->fee, 2) }}</td>
                     <td style="text-align: right;">{{ $item->total_credit == 0 ? "-" : number_format($item->total_credit, 2) }}</td>
                 </tr>
 
                 @php
                     $total_manual += $item->manual_charge;
-                    $total_fee += $item->fee;
+                    $total_fee += $item->fee == 0 || $item->manual_charge == 0 ? 0 : $item->fee;
                     $total_sms += $item->total_credit;
                 @endphp
             @endforeach

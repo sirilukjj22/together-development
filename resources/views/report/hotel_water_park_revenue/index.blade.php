@@ -180,9 +180,7 @@
                                 <label for="startYear" class="form-label label-startYear">Year</label>
                                 <select class="form-select" name="startDate" id="startYear">
                                     @for ($i = 2024; $i <= date('Y', strtotime('+1 year')); $i++)
-                                        <option value="{{ $i }}"
-                                            {{ isset($filter_by) && $filter_by == 'year' && $i == $search_date ? 'selected' : '' }}>
-                                            {{ $i }}</option>
+                                        <option value="{{ $i }}" {{ isset($filter_by) && $filter_by == 'year' && $i == $search_date ? 'selected' : '' }}>{{ $i }}</option>
                                     @endfor
                                 </select>
                             </div>
@@ -306,9 +304,9 @@
                 locale: {
                     format: 'DD/MM/YYYY' // กำหนดรูปแบบวันที่เป็น 'ปี-เดือน-วัน'
                 },
-                maxSpan: {
-                    days: 10 // กำหนดช่วงเวลาไม่เกิน 10 วัน
-                }
+                // maxSpan: {
+                //     days: 10 // กำหนดช่วงเวลาไม่เกิน 10 วัน
+                // }
             });
         });
 
