@@ -304,7 +304,7 @@
                                             <!-- Menu: Sub menu level 3 -->
                                             <ul class="sub-menu collapse" id="menu-report-debtor-level-2">
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
-                                                    <li><a class="ms-link" href="#">Agoda Revenue Report</a></li>
+                                                    <li><a class="ms-link" href="{{ route('report-agoda-revenue') }}">Agoda Revenue Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
                                                     <li><a class="ms-link" href="#">Agoda Outstanding Report</a></li>

@@ -82,7 +82,7 @@ class ReportHotelManualChangeController extends Controller
         $data_query = $query->groupBy('revenue.date', 'revenue.total_credit')->orderBy('revenue.date', 'asc')->get();
 
         if ($request->method_name == "search") {
-            return view('report.hotel_manual_charge.index', compact('data_query', 'filter_by', 'search_date', 'startDate', 'statusHide', 'statusNotComplete',));
+            return view('report.hotel_manual_charge.index', compact('data_query', 'filter_by', 'search_date', 'startDate', 'statusHide', 'statusNotComplete'));
 
         } elseif ($request->method_name == "pdf") {
 
@@ -111,7 +111,6 @@ class ReportHotelManualChangeController extends Controller
             return $pdf->stream();
 
         } elseif ($request->method_name == "excel") {
-            // return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date), 'hotel_manual_charge.xlsx');
             return Excel::download(new HotelManualChargeExport($filter_by, $data_query, $search_date, $statusHide, $statusNotComplete), 'hotel_manual_charge.xlsx', \Maatwebsite\Excel\Excel::XLSX);
         }
     }
