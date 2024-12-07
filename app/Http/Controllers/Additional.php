@@ -1967,7 +1967,7 @@ class Additional extends Controller
 
                     if ($rolePermission == 1 || $rolePermission == 2) {
                         if ($isOperatedByCreator) {
-                            $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                            $btn_action = '<button type="button" class="btn color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
                                     Select
                                 </button>';
                         }else{

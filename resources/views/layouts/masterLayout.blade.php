@@ -13,11 +13,10 @@
     <title>TOGETHER DEVELOPMENT</title>
     <link rel="icon" href="../../../image/Logo1-01.png" type="image/x-icon" />
     <!-- Favicon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.semanticui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.semanticui.css">
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css"> --}} 
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.semanticui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.semanticui.css"> --}}
 
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}?v={{ time() }}">
     <!-- Plugin Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}?v={{ time() }}">
     <!-- project css file  -->
@@ -26,11 +25,14 @@
     <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}?v={{ time() }}">
 
     <!-- table design css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css')}}?v={{ time() }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}?v={{ time() }}">
-    <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+    @if(!isset($excludeDatatable))
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css')}}?v={{ time() }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}?v={{ time() }}">
+        <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+    @endif
 
     <!-- ลิงค์ใส่ใหม่ -->
     <!-- Bootstrap link -->
@@ -422,8 +424,8 @@
                 @yield('content')
 
             <!-- Body: Footer -->
-            <div class="body-footer" style="margin: 0 8px;">
-                <div class="container-xl">
+            <div class="body-footer">
+                <div class="container-xl p-0">
                     <div class="row">
                         <div class="col-12">
                             <div class="card p-3 mb-3">
@@ -468,16 +470,24 @@
     <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 
     <!-- Plugin Js -->
-    <script src="{{ asset('assets/bundles/dataTables.bundle.js') }}"></script>
+    @if(!isset($excludeDatatable))
+        <script src="{{ asset('assets/bundles/dataTables.bundle.js') }}"></script>
+    @endif
     <script src="{{ asset('assets/bundles/select2.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugin/select2-searchInputPlaceholder.js') }}"></script>
     <script src="{{ asset('assets/bundles/bootstraptagsinput.bundle.js') }}"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
+
+    @if(isset($excludeDatatable) && !$excludeDatatable) <!-- ถ้า $excludeDatatable และเท่ากับค่า false -->
+        <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
+    @endif
 
     <!-- Jquery Page Js -->
     <script src="{{ asset('assets/js/template.js') }}"></script>
 
-    <script>
+    {{-- <script>
         $(document).ready(function() {
 
             $('#myTable').addClass('nowrap').dataTable({
@@ -609,7 +619,7 @@
         // Select2
 
         $(".country, .language").select2({});
-    </script>
+    </script> --}}
 
 </body>
 

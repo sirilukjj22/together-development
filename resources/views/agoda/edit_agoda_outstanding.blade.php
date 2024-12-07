@@ -1,860 +1,833 @@
-{{-- <META HTTP-EQUIV="Refresh"  CONTENT="300"> --}}
-
 @extends('layouts.masterLayout')
 
-@section('pretitle')
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col">
-                <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
-                    <li class="breadcrumb-item"><a href="{{ route('debit-agoda') }}">Agoda Revenue</a></li>
-                    <li class="breadcrumb-item active">Debit Agoda Revenue</li>
-                </ol>
-                <h1 class="h4 mt-1">{{ $title ?? '' }}</h1>
-            </div>
-            <div class="col-auto">
-                <a href="{{ route('debit-agoda-revenue', [$month, $year]) }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
-                    ย้อนกลับ
-                </a>
-                <a href="#" title="พิมพ์เอกสาร" class="btn btn-outline-dark lift">
-                    <i class="fa fa-print"></i>
-                    พิมพ์เอกสาร
-                </a>
-            </div>
-        </div>
-    </div>
-@endsection
+@php
+    $excludeDatatable = false;
+@endphp
 
 @section('content')
-    <div class="container">
-        <div class="row clearfix">
-            <div class="row g-2 mb-5">
-                <div class="col-md-3 col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card-body">
-                                        <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-info"></i>Agoda Revenue</div>
-                                        <div class="mt-1">
-                                            <span class="fw-bold h4 mb-0" id="">{{ number_format(isset($agoda_revenue) ? $agoda_revenue->amount : 0, 2) }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-12"></div>
-                    <div class="col-md-3 col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="card-body">
-                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-primary"></i>Number of items</div>
-                                            <div class="mt-1">
-                                                <span class="fw-bold h4 mb-0" id="txt-total-item">{{ number_format(0) }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="card-body">
-                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-danger"></i>Outstanding Revenue</div>
-                                            <div class="mt-1">
-                                                <span class="fw-bold h4 mb-0" id="txt-total-debit">{{ number_format(0, 2) }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div id="content-index" class="body-header border-bottom d-flex py-3">
+    <div class="container-xl">
+        <div class="row align-items-center">
+            <div class="col sms-header">
+                <div class=""><span class="span2">Agoda</span><span class="span2"> / Agoda Revenue / {{ $title }}</span></div>
+                <div class="span3">{{ $title }}</div>
             </div>
-            <div class="col-md-6 col-12">
-                <div class="card p-4 mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
-                        <h6 class="fw-bold m-0"><i class="fa fa-circle me-2 text-success"></i> Debit Agoda Outstanding</h6>
-                        <div>
-                            <button type="button" id="btn-receive-multi" class="btn btn-danger rounded-pill text-white lift" onclick="select_receive_payment_multi('delete')">ยกเลิกหลายรายการ</button>
-                        </div>
-                    </div>
-                    <table id="myDataTableDebit" class="exampleTable table display dataTable table-hover fw-bold">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="checkDebitAll" name="checkbox-debit-all">
-                                        <label class="form-check-label" for="checkDebitAll">All</label>
-                                    </div>
-                                </th>
-                                <th>Booking Number</th>
-                                <th>วันที่ Check in</th>
-                                <th>วันที่ Check out</th>
-                                <th>จำนวนเงิน</th>
-                                <th>คำสั่ง</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                                $total_debit = 0;
-                                $outstanding_amount = 0;
-                                $debit_amount = 0;
-                                $key_num = 0;
-                            ?>
-                            @foreach ($agoda_outstanding as $key => $item)
-                                @if ($item->receive_payment == 1 && $item->sms_revenue == $agoda_revenue->id)
-                                <tr id="tr_row_{{ $item->id }}" class="checkbox-debit-outstanding{{ $key_num += 1 }}">
-                                    <td>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding{{ $key_num }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
-                                            <label class="form-check-label"></label>
-                                        </div>
-                                    </td>
-                                    <td>{{ $item->batch }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
-                                    <td>{{ number_format($item->agoda_outstanding, 2) }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-{{ $item->id}}" value="1"
-                                        onclick="select_receive_payment(this, {{ $item->id}}, {{ $item->agoda_outstanding }})">ยกเลิก</button>
-                                    </td>
-                                </tr>
-                                <?php 
-                                    $total_debit += $item->agoda_outstanding; 
-                                    $debit_amount += 1;
-                                ?>
-                                @endif
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr style="font-weight: bold;">
-                                <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด</td>
-                                <td>
-                                    <span id="txt_total_received">{{ number_format($total_debit, 2) }}</span>
-                                    <input type="hidden" id="total_received" value="{{ $total_debit }}">
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <div id="btn-save-hidden2">
-                        <button type="button" id="btn-save" class="btn btn-primary mt-3">บันทึก</button>
-                    </div>
-                </div> <!-- .card end -->
-            </div>
-            <div class="col-md-6 col-12">
-                <div class="card p-4 mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
-                        <h6 class="fw-bold m-0"><i class="fa fa-circle me-2 text-danger"></i> Agoda Outstanding Revenue</h6>
-                        <div>
-                            <button type="button" id="btn-receive-multi" class="btn btn-color-green rounded-pill text-white lift" onclick="select_receive_payment_multi('receive')">รับชำระหลายรายการ</button>
-                        </div>
-                    </div>
-                    <table id="myDataTableOutstanding" class="exampleTable table display dataTable table-hover fw-bold">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-item-all" type="checkbox" id="checkAll" name="checkbox-all">
-                                        <label class="form-check-label" for="checkAll">All</label>
-                                    </div>
-                                </th>
-                                <th>Booking Number</th>
-                                <th>วันที่ Check in</th>
-                                <th>วันที่ Check out</th>
-                                <th>จำนวนเงิน</th>
-                                <th>คำสั่ง</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                                $total = 0; 
-                                $outstanding_amount = 0;
-                            ?>
-                            @foreach ($agoda_outstanding as $key => $item)
-                                @if ($item->receive_payment == 0)
-                                <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $outstanding_amount += 1 }}">
-                                    <td>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input checkbox-item" id="checkbox-outstanding{{ $outstanding_amount }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
-                                            <label class="form-check-label"></label>
-                                        </div>
-                                    </td>
-                                    <td>{{ $item->batch }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
-                                    <td>{{ number_format($item->agoda_outstanding, 2) }}</td>
-                                    <td>
-                                        @if ($item->receive_payment == 0)
-                                            <button type="button" class="btn btn-primary rounded-pill btn-receive-pay" id="btn-receive-{{ $item->id }}" value="0"
-                                            onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->agoda_outstanding }})">รับชำระ</button>
-                                        @else
-                                            <button type="button" class="btn btn-secondary rounded-pill btn-receive-pay" id="btn-receive-{{ $item->id }}" value="0"
-                                            onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->agoda_outstanding }})" disabled>รับชำระ</button>
-                                        @endif
-                                    </td>
-                                    <input type="hidden" name="" id="agoda_revenue{{ $item->id }}" value="{{ $item->agoda_outstanding }}">
-                                </tr>
-                                
-                                <?php $total += $item->agoda_outstanding; ?>
-                                @endif
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr style="font-weight: bold;">
-                                <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด</td>
-                                <td>
-                                    <span id="txt_total_outstanding">{{ number_format($total, 2) }}</span>
-                                    <input type="hidden" id="total_outstanding" value="{{ $total }}">
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div> <!-- .card end -->
+            <div class="col-auto">
+                <a href="{{ route('debit-agoda-revenue') }}" class="bt-tg-normal">Back</a>
             </div>
         </div> <!-- .row end -->
     </div>
+</div>
 
-    <input type="hidden" id="total_receive_payment" value="{{ $total_debit }}">
-    <input type="hidden" id="total_revenue_amount" value="{{ isset($agoda_revenue) ? $agoda_revenue->amount : 0 }}">
-    <input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
-    <input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
-    <input type="hidden" name="" id="input-total-item" value="0">
-    <input type="hidden" name="" id="input-total-debit" value="0">
+<div>
+    <section class="doc my-4">
+        <div class="wrapTopAgodaDetails">
+            <div class="wrapAdressTogether">
+                <div class="top-img">
+                    <img src="/image/logo.jpg" alt="logo of Together Resort" width="120" />
+                </div>
+                <div class="top-dt">
+                    <b>Together Resort Limited Partnership</b>
+                    <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
+                    <p>Tel : 032-708-888, 098-393-944-4</p>
+                    <p> Email : reservation@together-resort.com &nbsp; Website : www.together-resort.com</p>
+                </div>
+            </div>
+            <div class="">
+                <div class="codeDoc">
+                    <p>Document No</p>
+                    <p>{{ $document_no ?? '' }}</p>
+                </div>
+                <div class="center" style="border: #1c504c 1px solid; border-radius: 7px">
+                    <li>Issue Date : {{ date('d/m/Y') }}</li>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="wrapAdressAgoda">
+            <div>
+                <img src="/image/front/agoda.jpg" alt="" width="80" height="75" />
+                <b>Agoda Services Co., Ltd.</b>
+            </div>
+            <p> 999/9 อาคารดิออฟฟิศเซส แอท เซ็นทรัลเวิลด์ ถนนพระราม 1</p>
+            <p>แขวงปทุมวัน เขตปทุมวัน กรุงเทพมหานคร 10330</p>
+            <p>
+                <b>Tel :</b> 0-2625-9200
+            </p>
+        </div>
+        <div class="text-center my-3">
+            <b class="title-top-table">Debit Agoda Revenue</b>
+        </div>
+        <div class="wrap-detailPaid">
+            <div class="detailPaid">
+                <div>
+                    <b>Date :</b> {{ date('d/m/Y', strtotime($agoda_revenue->sms_date)) }}
+                </div>
+                <div>
+                    <b>Bank :</b>
+                    <span>
+                        <img src="/image/bank/SCB.jpg" alt="" width="30" style="margin: 5px; border-radius: 50px" /> Siam Commercial Bank PCL. </span>
+                </div>
+                <div>
+                    <b>Bank Account :</b>
+                    <span> 456-7657-09000</span>
+                </div>
+                <div>
+                    <b>Amount : </b> {{ number_format($agoda_revenue->amount ?? 0, 2) }}
+                </div>
+            </div>
+            <div class="flex-end">
+                <button type="button" class="bt-tg-normal" data-bs-toggle="modal" data-bs-target="#AgodaRevenueList">Add </button>
+            </div>
+        </div>
 
-    <form action="#" id="form-agoda">
-        @csrf
-        <input type="hidden" id="revenue_id" name="revenue_id" value="{{ isset($agoda_revenue) ? $agoda_revenue->id : 0 }}"> <!-- ID รายได้ที่มาจาก SMS -->
+        <div class="wrap-table-together mt-3">
+            <table id="myDataTableDebit" class="table-together table-style">
+                <thead>
+                    <tr class="text-capitalize">
+                        <th data-priority="1">booking number</th>
+                        <th data-priority="3">date check in</th>
+                        <th data-priority="3">date check oun</th>
+                        <th data-priority="1">amount</th>
+                        <th data-priority="3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                        $total_debit = 0;
+                        $outstanding_amount = 0;
+                        $debit_amount = 0;
+                        $key_num = 0;
+                    ?>
+                    @foreach ($agoda_debit_revenue as $key => $item)
+                        <tr id="tr_row_{{ $item->id }}" class="checkbox-debit-outstanding{{ $key_num += 1 }}">
+                            <td>{{ $item->batch }}</td>
+                            <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
+                            <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
+                            <td class="text-end target-class">{{ $item->agoda_outstanding }}</td>
+                            <td>
+                                <a href="#" onclick="delete_receive_payment(this, {{ $item->id}}, {{ $item->agoda_outstanding }})">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php 
+                            $total_debit += $item->agoda_outstanding; 
+                            $debit_amount += 1;
+                        ?>
+                    @endforeach
+                </tbody>
+                <tfoot style="background-color: #d7ebe1; font-weight: bold">
+                    <tr>
+                        <td class="text-center" style="padding: 10px">Total</td>
+                        <td colspan="2"></td>
+                        <td class="text-end" id="tfoot-total-debit">{{ number_format($total_debit, 2) }}</span></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="flex-end mt-5">
+            <div style="text-align: center">
+                <p>ผู้ออกเอกสาร (ผู้ขาย)</p>
+                <p style="border-bottom: 1px solid grey; height: 5em; width: 170px;"></p>
+            </div>
+        </div>
+        <hr />
+        <div class="text-center" id="btn-save-hidden2">
+            {{-- <button type="button" class="btn bt-tg-normal mr-1">Back</button> --}}
+            <button type="button" class="btn bt-tg-normal" id="btn-save">Save</button>
+        </div>
+    </section>
+</div>
 
-        @foreach ($agoda_outstanding as $key => $item)
-            @if ($item->receive_payment == 1 && $item->sms_revenue == $agoda_revenue->id)
-                <input type="hidden" id="receive_id_{{ $item->id }}" name="receive_id[]" value="{{ $item->id }}">
-            @endif
-        @endforeach
+<!-- Modal -->
+<div class="modal fade" id="AgodaRevenueList" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="formModalLabel">Agoda Outstanding Revenue</h5>
+            <button type="button" style="border: 1px solid rgb(196, 194, 194);border-radius: 5px; width: 35px;" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true" style="font-size: 24px;">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <div class="mt-2 top-3-card">
+                <div>
+                    <span>Total Selected </span>
+                    <br />
+                    <b><span id="txt-total-selected">0</span></b>
+                </div>
+                <div>
+                    <span>Total Selected Amount</span>
+                    <br />
+                    <b id="txt-total-selected-amount">0.00</b>
+                </div>
+                <div>
+                    <span>Outstanding </span>
+                    <br />
+                    <b id="txt-total-selected-outstanding">{{ number_format($total_agoda_outstanding_revenue, 2) }}</b>
+                </div>
+            </div>
+            <div class="wrap-table-together mt-3">
+                <table id="myDataTableOutstandingSelect" class="table-style table-together" style="width: 100%;">
+                    <thead>
+                        <tr class="text-capitalize">
+                            <th data-priority="2">booking number</th>
+                            <th data-priority="3">date check in</th>
+                            <th data-priority="4">date check out</th>
+                            <th data-priority="1">amount</th>
+                            <th data-priority="5">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-    </form>
+                    </tbody>
+                </table>
+            </div>
+            <div class="wrap-table-together">
+                <table id="myDataTableOutstanding" class="table-style table-together" style="width: 100%;">
+                    <thead>
+                        <tr class="text-capitalize">
+                            <th data-priority="2">booking number</th>
+                            <th data-priority="3">date check in</th>
+                            <th data-priority="4">date check out</th>
+                            <th data-priority="1">amount</th>
+                            <th data-priority="5">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            $total_outstanding_amount = 0; 
+                            $outstanding_amount = 0;
+                        ?>
+                        @foreach ($agoda_outstanding as $key => $item)
+                            <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $outstanding_amount += 1 }}">
+                                <td>{{ $item->batch }}</td>
+                                <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
+                                <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
+                                <td class="target-class">{{ $item->agoda_outstanding }}</td>
+                                <td>
+                                    @if ($item->receive_payment == 0)
+                                        <button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-{{ $item->id }}" value="0"
+                                        onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->agoda_outstanding }})">รับชำระ</button>
+                                    @else
+                                        <button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-{{ $item->id }}" value="0"
+                                        onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->agoda_outstanding }})" disabled>รับชำระ</button>
+                                    @endif
+                                </td>
+                                <input type="hidden" name="" id="agoda_revenue{{ $item->id }}" value="{{ $item->agoda_outstanding }}">
+                            </tr>
+                            
+                            <?php $total_outstanding_amount += $item->agoda_outstanding; ?>
+                        @endforeach
+                    </tbody>
+                    <tfoot style="background-color: #d7ebe1; font-weight: bold">
+                        <tr>
+                            <td colspan="2"></td>
+                            <td style="padding: 10px">Total</td>
+                            <td><span id="tfoot-total-outstanding">{{ $total_outstanding_amount }}</span></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="bt-tg-normal bt-grey sm mx-2" data-bs-dismiss="modal"> Close </button>
+                <button type="button" class="bt-tg-normal sm" onclick="btnConfirm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<input type="hidden" id="total_receive_payment" value="{{ $total_debit }}"> <!-- ยอดรายการที่เลือกทั้งหมด -->
+<input type="hidden" id="total_revenue_amount" value="{{ isset($agoda_revenue) ? $agoda_revenue->amount : 0 }}"> <!-- ยอดจาก SMS -->
+<input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
+<input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
 
+<!-- Total Selected, Total Selected Amount, Outstanding -->
+<input type="hidden" id="input-outstanding-amount" value="{{ $total_outstanding_amount }}">
+<input type="hidden" id="input-selected-amount" value="0">
+<input type="hidden" id="input-selected-item" value="0">
 
-    @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
-        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-        {{-- <script src="../assets/bundles/jquerycounterup.bundle.js"></script> --}}
-        <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
-    @else
-        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-        <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
-    @endif
+<form action="#" id="form-agoda">
+    @csrf
+    <input type="hidden" name="doc_no" value="{{ $document_no ?? '' }}">
+    <input type="hidden" name="issue_date" value="{{ date('Y-m-d') }}">
+    <input type="hidden" id="revenue_id" name="sms_id" value="{{ isset($agoda_revenue) ? $agoda_revenue->id : 0 }}"> <!-- ID รายได้ที่มาจาก SMS -->
 
+    @foreach ($agoda_all as $key => $item)
+        @if ($item->receive_payment == 1 && $item->sms_revenue == $agoda_revenue->id)
+            <input type="hidden" id="receive-id-{{ $item->id }}" name="receive_id[]" value="{{ $item->id }}">
+        @endif
+    @endforeach
+</form>
 
-    <script>
+<form action="#" id="form-agoda-select">
+    @csrf
+</form>
 
-    $(document).ready(function() {
-        // Initialize DataTable
-        var table = $('#myDataTableOutstanding').DataTable();
+<style>
+    .table-together tr th{
+        text-align: center !important;
+    }
+</style>
 
-        // Object to hold the checkbox states
-        var checkedRows = {};
+<link rel="stylesheet" href="{{ asset('assets/src/revenueAgoda.css') }}" />
 
-        // Handle 'check all' for all pages
-        $('#checkAll').on('click', function() {
-            var isChecked = this.checked;
-            // Loop through all rows in the table, including those not currently visible
-            table.rows().every(function() {
-                var rowId = this.node().id; // Assuming row ID is set in each <tr> (you can adjust if needed)
-                $('input[type="checkbox"].checkbox-item', this.node()).prop('checked', isChecked);
-                checkedRows[rowId] = isChecked;
-            });
-        });
+<!-- เพิ่ม SweetAlert2 CSS และ JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.min.js"></script>
 
-        // Handle individual checkbox click for visible rows
-        $('#myDataTableOutstanding tbody').on('click', '.checkbox-item', function() {
-            var rowId = $(this).closest('tr').attr('id'); // Assuming each row has a unique ID
-            checkedRows[rowId] = $(this).prop('checked');
+<!-- Moment Date -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-            // Check if all checkboxes in the current page are selected 
-            if ($('.checkbox-item:checked').length === $('.checkbox-item').length) {
-                $('#checkAll').prop('checked', true);
-            } else {
-                $('#checkAll').prop('checked', false);
-            }
-        });
+<!-- Custom Scripts -->
+<script src="{{ asset('assets/js/table-together.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/helper/searchTableDebtorAgoda.js')}}"></script>
 
-        // When the table is redrawn (e.g. when switching pages), restore checkbox states
-        table.on('draw', function() {
-            var allChecked = true;
-            // Loop through visible rows and set the checkbox state
-            table.rows({ page: 'current' }).every(function() {
-                var rowId = this.node().id; // Assuming each row has a unique ID
-                if (checkedRows[rowId]) {
-                    $('input[type="checkbox"].checkbox-item', this.node()).prop('checked', true);
-                } else {
-                    $('input[type="checkbox"].checkbox-item', this.node()).prop('checked', false);
-                    allChecked = false;
-                }
-            });
-            // Set the 'check all' checkbox state based on current page
-            $('#checkAll').prop('checked', allChecked);
-        });
+<script>
+
+    $("#AgodaRevenueList").on("shown.bs.modal", function () {
+        var table = $(".table-together").DataTable();
+        table.columns.adjust().responsive.recalc();
     });
 
-    $('#checkDebitAll').on('click', function() {
-        for (let index = 1; index <= 50; index++) {
-            if ($('#checkbox-debit-outstanding'+index).is(':checked')) {
-                $('#checkbox-debit-outstanding'+index).prop('checked', false);
-            } else {
-                $('#checkbox-debit-outstanding'+index).prop('checked', true);
-            }
-        }
-    });
+    // Number Format
+    function currencyFormat(num) {
+        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    }
+
+    // Function to adjust DataTable
+    function adjustDataTable() {
+        $.fn.dataTable
+        .tables({
+            visible: true,
+            api: true,
+        })
+        .columns.adjust()
+        .responsive.recalc();
+    }
+
+    function select_receive_payment(ele, id, amount) {
+        var revenueID = $('#revenue_id').val();
+        var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
+        var total = Number($('#total_outstanding').val());
+        var total_receive_payment = Number($('#total_receive_payment').val());
+        var debit_amount = Number($('#debit_amount').val()) + 1;
+        $('#debit_amount').val(debit_amount);
+
+        if (revenueID != "") {
+
+            if ($('#btn-receive-' + id).val() == 0) {
+                // Update ยอดที่เลือก
+                // var agoda_revenue = Number($('#agoda_revenue'+id).val());
+                var agoda_revenue_outstanding = Number($('#input-outstanding-amount').val());
+                var agoda_num = Number($('#input-selected-item').val());
+                var agoda_revenue_amount = Number($('#input-selected-amount').val());
+
+                $('#input-selected-item').val(agoda_num + 1);
+                $('#input-selected-amount').val(agoda_revenue_amount + amount);
+                $('#input-outstanding-amount').val(agoda_revenue_outstanding - amount);
+
+                $('#txt-total-selected').text(agoda_num + 1);
+                $('#txt-total-selected-amount').text(currencyFormat(agoda_revenue_amount + amount));
+                $('#txt-total-selected-outstanding').text(currencyFormat(agoda_revenue_outstanding - amount));
+                $('#tfoot-total-outstanding').text(currencyFormat(agoda_revenue_outstanding - amount));
+                // END
+
+                $('#total_receive_payment').val(Number(total_receive_payment + amount).toFixed(2));
+                $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment + amount)));
+                $('#btn-receive-' + id).val(1);
+
+                $('#txt_total_received').text(currencyFormat(Number(total_receive_payment + amount)));
+
+                $('#total_outstanding').val(total - amount);
+                $('#txt_total_outstanding').text(currencyFormat(Number(total - amount)));
+
+                $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment').val()))); // ยอดคงเหลือ Dashboard
+
+                $('#form-agoda-select').append('<input type="hidden" id="receive-select-id-' + id + '" name="receive_select_id[]" value="' + id + '">');
+                // $('#form-agoda').append('<input type="hidden" id="receive-id-' + id + '" name="receive_id[]" value="' + id + '">');
+
+                $('#tr_row_' + id).remove();
+                var tb_select = new DataTable('#myDataTableOutstanding');
+                var removingRow = $(ele).closest('tr');
+                tb_select.row(removingRow).remove().draw();
 
-    $('#checkAll').on('click', function() {
-        for (let index = 1; index <= 50; index++) {
-            if ($('#checkbox-outstanding'+index).is(':checked')) {
-                $('#checkbox-outstanding'+index).prop('checked', false);
-            } else {
-                $('#checkbox-outstanding'+index).prop('checked', true);
-            }
-        }
-    });
-
-        $(document).ready(function() {
-            $('#myDataTableOutstanding').DataTable().destroy();
-
-            $('#myDataTableOutstanding').dataTable({
-                responsive: false,
-                searching: true,
-                paging: true,
-                ordering: false,
-                info: true,
-                scrollX: true,
-                columnDefs: [
-                    { 
-                        "order": [[0, "asc"]], 
-                        "orderable": true, "targets": [0] 
-                    }
-                ]
-            });
-
-            $('#myDataTableDebit').dataTable({
-                responsive: false,
-                searching: true,
-                paging: true,
-                ordering: false,
-                info: true,
-                scrollX: true,
-                columnDefs: [
-                    { 
-                        "order": [[0, "asc"]], 
-                        "orderable": true, "targets": [0] 
-                    }
-                ]
-            });
-        });
-        
-        // Number Format
-        function currencyFormat(num) {
-            return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-        }
-
-        function select_receive_payment(ele, id, amount) {
-            var revenueID = $('#revenue_id').val();
-            var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
-            var total = Number($('#total_outstanding').val());
-            var total_receive_payment = Number($('#total_receive_payment').val());
-            var debit_amount = Number($('#debit_amount').val()) + 1;
-            $('#debit_amount').val(debit_amount);
-
-            if (revenueID != "") {
-
-                if ($('#btn-receive-' + id).val() == 0) {
-
-                    // Update ยอดที่เลือก
-                    var agoda_revenue = Number($('#agoda_revenue'+id).val());
-                    var agoda_revenue_amount = Number($('#input-total-debit').val());
-                    var agoda_num = Number($('#input-total-item').val());
-
-                        // if ($('#checkbox-outstanding'+id).is(':checked')) {
-                            // $('#txt-total-item').text(agoda_num += 1);
-                            // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount += agoda_revenue));
-                        // } else {
-                        //     // $('#txt-total-item').text(agoda_num -= 1);
-                        //     // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount -= agoda_revenue));
-                        // }
-
-                    $('#input-total-item').val(agoda_num);
-                    $('#input-total-debit').val(agoda_revenue_amount);
-                    // END
-
-                    $('#total_receive_payment').val(Number(total_receive_payment + amount).toFixed(2));
-                    $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment + amount)));
-                    $('#btn-receive-' + id).val(1);
-
-                    $('#txt_total_received').text(currencyFormat(Number(total_receive_payment + amount)));
-
-                    $('#total_outstanding').val(total - amount);
-                    $('#txt_total_outstanding').text(currencyFormat(Number(total - amount)));
-
-                    $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment').val()))); // ยอดคงเหลือ Dashboard
-
-                    $('#form-agoda').append('<input type="hidden" id="receive_id_' + id + '" name="receive_id[]" value="' + id + '">');
-
-                    $('#tr_row_' + id).remove();
-                    var tb_select = new DataTable('#myDataTableOutstanding');
-                    var removingRow = $(ele).closest('tr');
-                    tb_select.row(removingRow).remove().draw();
-
-                    jQuery.ajax({
-                        type: "GET",
-                        url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
-                        datatype: "JSON",
-                        async: false,
-                        success: function(response) {
-                            if (response.data) {
-                                var status = "";
-                                $('#myDataTableDebit').DataTable().destroy();
-                                var table = $('#myDataTableDebit').DataTable(
-                                        {
-                                            responsive: false,
-                                            searching: true,
-                                            paging: true,
-                                            ordering: false,
-                                            info: true,
-                                            scrollX: true,
-                                            columnDefs: [
-                                                { 
-                                                    "order": [[0, "asc"]], 
-                                                    "orderable": true, "targets": [0] 
-                                                }
-                                            ]
-                                        }
-                                    );
-
-                                if (response.data.agoda_check_in) {
-                                    var exp = response.data.agoda_check_in.split('-');
-                                    var check_in = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_in = "-";
-                                }
-
-                                if (response.data.agoda_check_out) {
-                                    var exp = response.data.agoda_check_out.split('-');
-                                    var check_out = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_out = "-";
-                                }
-                                table.rows.add(
-                                    [
-                                        [
-                                            '<div class="form-check form-check-inline">'+
-                                                '<input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding'+ debit_amount +'" type="checkbox" name="checkbox" value="'+ id +'">'+
-                                                '<label class="form-check-label"></label>'+
-                                            '</div>',
-                                            response.data.batch,
-                                            check_in,
-                                            check_out,
-                                            currencyFormat(response.data.agoda_outstanding),
-                                            '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' + id + '" value="1"' +
-                                            'onclick="select_receive_payment(this, ' + id + ', ' + response.data.agoda_outstanding + ')">ยกเลิก</button>'
-                                        ]
-                                    ]
-                                ).draw();
-                            }
-
-                        }
-                    });
-
-                } else {
-
-                    // Update ยอดที่เลือก
-                    // var agoda_revenue = Number($('#agoda_revenue'+id).val());
-                    // var agoda_revenue_amount = Number($('#input-total-debit').val());
-                    // var agoda_num = Number($('#input-total-item').val());
-
-                    // $('#txt-total-item').text(agoda_num -= 1);
-                    // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount -= amount));
-
-                    // $('#input-total-item').val(agoda_num);
-                    // if (agoda_num == 0) {
-                    //     agoda_revenue_amount = 0;
-                    // }
-                    // $('#input-total-debit').val(agoda_revenue_amount);
-                    // $('#txt-total-debit').text(currencyFormat(agoda_revenue_amount));
-                    // END
-
-                    $('#total_receive_payment').val(Number(total_receive_payment - amount).toFixed(2)); // ยอดที่รับชำระ
-                    $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment - amount))); // ยอดที่รับชำระ แสดงแบบ Text
-                    $('#txt_total_received').text(currencyFormat(Number(total_receive_payment - amount)));
-
-                    // console.log(Number(total_receive_payment).toFixed(2) - Number(amount).toFixed(2));
-                    $('#total_outstanding').val(total + amount);
-                    $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
-
-                    $('#balance').text(currencyFormat(Number(total_revenue_amount - (total_receive_payment - amount)))); // ยอดคงเหลือ Dashboard
-
-                    $('#receive_id_' + id).remove();
-
-                    var tb_select = new DataTable('#myDataTableDebit');
-                    var removingRow = $(ele).closest('tr');
-                    tb_select.row(removingRow).remove().draw();
-
-                    jQuery.ajax({
-                        type: "GET",
-                        url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
-                        datatype: "JSON",
-                        async: false,
-                        success: function(response) {
-                            if (response.data) {
-                                var status = "";
-                                $('#myDataTableOutstanding').DataTable().destroy();
-                                var table = $('#myDataTableOutstanding').DataTable(
-                                        {
-                                            responsive: false,
-                                            searching: true,
-                                            paging: true,
-                                            ordering: false,
-                                            info: true,
-                                            scrollX: true,
-                                            columnDefs: [
-                                                { 
-                                                    "order": [[0, "asc"]], 
-                                                    "orderable": true, "targets": [0] 
-                                                }
-                                            ]
-                                        }
-                                    );
-
-                                if (response.data.agoda_check_in) {
-                                    var exp = response.data.agoda_check_in.split('-');
-                                    var check_in = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_in = "-";
-                                }
-
-                                if (response.data.agoda_check_out) {
-                                    var exp = response.data.agoda_check_out.split('-');
-                                    var check_out = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_out = "-";
-                                }
-
-                                table.rows.add(
-                                    [
-                                        [
-                                            '<div class="form-check form-check-inline">'+
-                                                '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ index +'" type="checkbox" name="checkbox" value="'+ id +'">'+
-                                                '<label class="form-check-label"></label>'+
-                                            '</div>',
-                                            response.data.batch,
-                                            check_in,
-                                            check_out,
-                                            currencyFormat(response.data.agoda_outstanding),
-                                            '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + id + '" value="0"' +
-                                            'onclick="select_receive_payment(this, ' + id + ', ' + response.data.agoda_outstanding + ')">รับชำระ</button>'
-                                        ]
-                                    ]
-                                ).draw();
-                            }
-
-                            $('#btn-receive-' + id).val(0);
-
-
-                        }
-                    });
-
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาเลือกยอด Agoda Revenue ที่ต้องการชำระก่อน!',
-                });
-            }
-
-        }
-
-        function select_receive_payment_multi(type_action) {
-            var revenueID = $('#revenue_id').val();
-            var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
-            var total_receive_payment = Number($('#total_receive_payment').val());
-            var SumTotalDebit = total_receive_payment;
-
-            // เคลียร์ให้เป็นค่าว่าง
-            $('#txt-total-item').text("0");
-            $('#txt-total-debit').text("0.00");
-            $('#input-total-item').val(0);
-            $('#input-total-debit').val(0);
-
-            if (revenueID != "") {
-
-                for (let index = 1; index <= 100; index++) {
-                    var total = Number($('#total_outstanding').val());
-
-                    if ($('#checkbox-outstanding'+index).is(':checked') || $('#checkbox-debit-outstanding'+index).is(':checked')) {
-                        var itemID = $('#checkbox-outstanding'+index).val();
-
-                        if (type_action == 'receive' && $('#btn-receive-' + itemID).val() == 0) {
-
-                            var amount = Number($('#agoda_revenue'+itemID).val());
-                            SumTotalDebit += amount; 
-
-                            $('#total_receive_payment').val(Number(SumTotalDebit).toFixed(2));
-                            $('#txt_total_receive_payment').text(currencyFormat(Number(SumTotalDebit)));
-                            $('#btn-receive-' + itemID).val(1);
-
-                            $('#txt_total_received').text(currencyFormat(Number(SumTotalDebit)));
-
-                            $('#total_outstanding').val(total - amount);
-                            $('#txt_total_outstanding').text(currencyFormat(Number(total - amount)));
-
-                            $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment').val()))); // ยอดคงเหลือ Dashboard
-
-                            $('#form-agoda').append('<input type="hidden" id="receive_id_' + itemID + '" name="receive_id[]" value="' + itemID + '">');
-
-                            $('#tr_row_' + itemID).remove();
-                            var tb_select = new DataTable('#myDataTableOutstanding');
-                            tb_select.row().remove().draw();
-
-                            jQuery.ajax({
-                                type: "GET",
-                                url: "{!! url('debit-select-agoda-outstanding/"+itemID+"') !!}",
-                                datatype: "JSON",
-                                async: false,
-                                success: function(response) {
-                                    if (response.data) {
-                                        var status = "";
-                                        $('#myDataTableDebit').DataTable().destroy();
-                                        var table = $('#myDataTableDebit').DataTable(
-                                                {
-                                                    responsive: false,
-                                                    searching: true,
-                                                    paging: true,
-                                                    ordering: false,
-                                                    info: true,
-                                                    scrollX: true,
-                                                    columnDefs: [
-                                                        { 
-                                                            "order": [[0, "asc"]], 
-                                                            "orderable": true, "targets": [0] 
-                                                        }
-                                                    ]
-                                                }
-                                            );
-
-                                        if (response.data.agoda_check_in) {
-                                            var exp = response.data.agoda_check_in.split('-');
-                                            var check_in = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                        } else {
-                                            var check_in = "-";
-                                        }
-
-                                        if (response.data.agoda_check_out) {
-                                            var exp = response.data.agoda_check_out.split('-');
-                                            var check_out = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                        } else {
-                                            var check_out = "-";
-                                        }
-                                        table.rows.add(
-                                            [
-                                                [
-                                                    '<div class="form-check form-check-inline">'+
-                                                        '<input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding'+ debit_amount +'" type="checkbox" name="checkbox" value="'+ itemID +'">'+
-                                                        '<label class="form-check-label"></label>'+
-                                                    '</div>',
-                                                    response.data.batch,
-                                                    check_in,
-                                                    check_out,
-                                                    currencyFormat(response.data.agoda_outstanding),
-                                                    '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' + itemID + '" value="1"' +
-                                                    'onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.agoda_outstanding + ')">ยกเลิก</button>'
-                                                ]
-                                            ]
-                                        ).draw();
-                                    }
-
-                                }
-                            });
-
-                        } else {
-                            var itemID = $('#checkbox-debit-outstanding'+index).val();
-                            var amount = Number($('#agoda_revenue'+itemID).val());
-                            SumTotalDebit -= amount; 
-
-                            $('#total_receive_payment').val(Number(SumTotalDebit).toFixed(2)); // ยอดที่รับชำระ
-                            $('#txt_total_receive_payment').text(currencyFormat(Number(SumTotalDebit))); // ยอดที่รับชำระ แสดงแบบ Text
-                            $('#txt_total_received').text(currencyFormat(Number(SumTotalDebit)));
-
-                            $('#total_outstanding').val(total + amount);
-                            $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
-
-                            $('#balance').text(currencyFormat(Number(total_revenue_amount - (SumTotalDebit)))); // ยอดคงเหลือ Dashboard
-
-                            $('#receive_id_' + id).remove();
-
-                            $('tr #tr_row_' + itemID).remove();
-                            var tb_select = new DataTable('#myDataTableDebit');
-                            // var removingRow = $(ele).closest('tr');
-                            tb_select.row().remove().draw();
-
-                            jQuery.ajax({
-                                type: "GET",
-                                url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
-                                datatype: "JSON",
-                                async: false,
-                                success: function(response) {
-                                    if (response.data) {
-                                        var status = "";
-                                        $('#myDataTableOutstanding').DataTable().destroy();
-                                        var table = $('#myDataTableOutstanding').DataTable(
-                                                {
-                                                    responsive: false,
-                                                    searching: true,
-                                                    paging: true,
-                                                    ordering: false,
-                                                    info: true,
-                                                    scrollX: true,
-                                                    columnDefs: [
-                                                        { 
-                                                            "order": [[0, "asc"]], 
-                                                            "orderable": true, "targets": [0] 
-                                                        }
-                                                    ]
-                                                }
-                                            );
-
-                                        if (response.data.agoda_check_in) {
-                                            var exp = response.data.agoda_check_in.split('-');
-                                            var check_in = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                        } else {
-                                            var check_in = "-";
-                                        }
-
-                                        if (response.data.agoda_check_out) {
-                                            var exp = response.data.agoda_check_out.split('-');
-                                            var check_out = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                        } else {
-                                            var check_out = "-";
-                                        }
-
-                                        table.rows.add(
-                                            [
-                                                [
-                                                    '<div class="form-check form-check-inline">'+
-                                                        '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ index +'" type="checkbox" name="checkbox" value="'+ itemID +'">'+
-                                                        '<label class="form-check-label"></label>'+
-                                                    '</div>',
-                                                    response.data.batch,
-                                                    check_in,
-                                                    check_out,
-                                                    currencyFormat(response.data.agoda_outstanding),
-                                                    '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + itemID + '" value="0"' +
-                                                    'onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.agoda_outstanding + ')">รับชำระ</button>'
-                                                ]
-                                            ]
-                                        ).draw();
-                                    }
-                                    $('#btn-receive-' + itemID).val(0);
-                                }
-                            });
-
-                        }
-                    }
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาเลือกยอด Agoda Revenue ที่ต้องการชำระก่อน!',
-                });
-            }
-
-        }
-
-        document.querySelector("#btn-save").addEventListener('click', function() {
-            var total_receive_payment = Number($('#total_receive_payment').val()).toFixed(2);
-            var total_revenue_amount = Number($('#total_revenue_amount').val()).toFixed(2);
-
-            if (total_revenue_amount > total_receive_payment) {
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'ยอด Agoda Outstanding ที่เลือกมียอดน้อยกว่า Agoda Revenue!',
-                });
-            }
-
-            if (total_revenue_amount < total_receive_payment) {
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'ยอด Agoda Outstanding ที่เลือกมียอดมากกว่า Agoda Revenue!',
-                });
-            }
-
-            if (total_revenue_amount == total_receive_payment) {
                 jQuery.ajax({
-                    type: "POST",
-                    url: "{!! route('debit-agoda-store') !!}",
+                    type: "GET",
+                    url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
                     datatype: "JSON",
-                    data: $('#form-agoda').serialize(),
                     async: false,
-                    success: function(result) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    },
+                    success: function(response) {
+                        if (response.data) {
+                            var status = "";
+                            $('#myDataTableOutstandingSelect').DataTable().destroy();
+                            var table = $('#myDataTableOutstandingSelect').DataTable(
+                                    {
+                                        searching: true,
+                                        paging: true,
+                                        info: true,
+                                        order: true,
+                                        serverSide: false,
+                                        responsive: {
+                                        details: {
+                                                type: "column",
+                                                target: "tr",
+                                            },
+                                        },
+                                        initComplete: function () {
+                                            $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+                                        },
+                                        columnDefs: [
+                                            {
+                                                targets: [4], className: 'dt-center text-center',
+                                            },
+                                            {
+                                                targets: [3], className: 'text-end',
+                                            },
+                                            {
+                                                targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                                createdCell: function (td, cellData, rowData, row, col) {
+                                                    // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                                    if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                        $(td).text(
+                                                        parseFloat(cellData).toLocaleString("en-US", {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })
+                                                        );
+                                                    }
+                                                },
+                                            },
+                                        ],
+                                    }
+                                );
+
+                            $(window).on("resize", adjustDataTable);
+
+                            $('input[type="search"]').attr("placeholder", "Type to search...");
+                            $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+
+                            table.rows.add(
+                                [
+                                    [
+                                        response.data.batch,
+                                        moment(response.data.agoda_check_in).format('DD/MM/YYYY'),
+                                        moment(response.data.agoda_check_out).format('DD/MM/YYYY'),
+                                        currencyFormat(response.data.agoda_outstanding),
+                                        '<button type="button" class="btn" id="btn-receive-' + id + '" value="1"' +
+                                        'onclick="select_receive_payment(this, ' + id + ', ' + response.data.agoda_outstanding + ')"><i class="fa fa-trash-o"></i></button>'
+                                    ]
+                                ]
+                            ).draw();
+                        }
+                    }
+                });
+
+            } else {
+
+                // Update ยอดที่เลือก
+                // var agoda_revenue = Number($('#agoda_revenue'+id).val());
+                var agoda_revenue_outstanding = Number($('#input-outstanding-amount').val());
+                var agoda_num = Number($('#input-selected-item').val());
+                var agoda_revenue_amount = Number($('#input-selected-amount').val());
+
+                $('#input-selected-item').val(agoda_num - 1);
+                $('#input-selected-amount').val(agoda_revenue_amount - amount);
+                $('#input-outstanding-amount').val(agoda_revenue_outstanding + amount);
+
+                $('#txt-total-selected').text(agoda_num - 1);
+                $('#txt-total-selected-amount').text(currencyFormat(agoda_revenue_amount - amount));
+                $('#txt-total-selected-outstanding').text(currencyFormat(agoda_revenue_outstanding + amount));
+                $('#tfoot-total-outstanding').text(currencyFormat(agoda_revenue_outstanding + amount));
+                // END
+
+                $('#total_receive_payment').val(Number(total_receive_payment - amount).toFixed(2)); // ยอดที่รับชำระ
+                $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment - amount))); // ยอดที่รับชำระ แสดงแบบ Text
+                $('#txt_total_received').text(currencyFormat(Number(total_receive_payment - amount)));
+
+                // console.log(Number(total_receive_payment).toFixed(2) - Number(amount).toFixed(2));
+                $('#total_outstanding').val(total + amount);
+                $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
+
+                $('#balance').text(currencyFormat(Number(total_revenue_amount - (total_receive_payment - amount)))); // ยอดคงเหลือ Dashboard
+
+                $('#receive-select-id-' + id).remove();
+                // $('#receive-id-' + id).remove();
+
+                var tb_select = new DataTable('#myDataTableOutstandingSelect');
+                var removingRow = $(ele).closest('tr');
+                tb_select.row(removingRow).remove().draw();
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(response) {
+                        if (response.data) {
+                            var status = "";
+                            $('#myDataTableOutstanding').DataTable().destroy();
+                            var table = $('#myDataTableOutstanding').DataTable(
+                                    {
+                                        searching: true,
+                                        paging: true,
+                                        info: true,
+                                        order: true,
+                                        serverSide: false,
+                                        responsive: {
+                                        details: {
+                                                type: "column",
+                                                target: "tr",
+                                            },
+                                        },
+                                        initComplete: function () {
+                                            $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+                                        },
+                                        columnDefs: [
+                                            {
+                                                targets: [4], className: 'dt-center text-center',
+                                            },
+                                            {
+                                                targets: [3], className: 'text-end',
+                                            },
+                                            {
+                                                targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                                createdCell: function (td, cellData, rowData, row, col) {
+                                                    // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                                    if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                        $(td).text(
+                                                        parseFloat(cellData).toLocaleString("en-US", {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })
+                                                        );
+                                                    }
+                                                },
+                                            },
+                                        ],
+                                        order: [2, 'asc'],
+                                    }
+                                );
+
+                            $(window).on("resize", adjustDataTable);
+
+                            $('input[type="search"]').attr("placeholder", "Type to search...");
+                            $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+
+                            table.rows.add(
+                                [
+                                    [
+                                        response.data.batch,
+                                        moment(response.data.agoda_check_in).format('DD/MM/YYYY'),
+                                        moment(response.data.agoda_check_out).format('DD/MM/YYYY'),
+                                        currencyFormat(response.data.agoda_outstanding),
+                                        '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-' + id + '" value="0"' +
+                                        'onclick="select_receive_payment(this, ' + id + ', ' + response.data.agoda_outstanding + ')">รับชำระ</button>'
+                                    ]
+                                ]
+                            ).draw();
+                        }
+
+                        $('#btn-receive-' + id).val(0);
+                        table.draw(); // refresh table
+
+                    }
                 });
             }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'ไม่สามารถบันทึกข้อมูลได้',
+                text: 'กรุณาเลือกยอด Agoda Revenue ที่ต้องการชำระก่อน!',
+            });
+        }
 
-        });
+    }
 
-        $(document).on('click', '.checkbox-item', function () {
-            var id = $(this).attr('id');
-            var agoda_value = $(this).val();
-            var agoda_revenue = Number($('#agoda_revenue'+agoda_value).val());
-            var amount = Number($('#input-total-debit').val());
-            var num = Number($('#input-total-item').val());
+    function btnConfirm() {
+        var total_debit = Number($('#total_receive_payment').val());
+        var tableSelect = $('#myDataTableOutstandingSelect').DataTable();
+        tableSelect.clear().draw();
 
-                if ($('#'+id).is(':checked')) {
-                    $('#txt-total-item').text(num += 1);
-                    $('#txt-total-debit').text(currencyFormat(amount += agoda_revenue));
+        jQuery.ajax({
+            type: "POST",
+            url: "{!! url('debit-confirm-select-agoda-outstanding') !!}",
+            datatype: "JSON",
+            data: $('#form-agoda-select').serialize(),
+            async: false,
+            success: function(response) {
+                if (response.status == 200 && response.data && typeof response.data === 'object') {
+
+                    Swal.fire({
+                        title: 'กำลังโหลด...',
+                        didOpen: () => {
+                            Swal.showLoading(); // แสดงการโหลด
+                        },
+                        timer: 500, // ปิดหลังจาก 0.5 วินาที
+                        timerProgressBar: true, // แสดงแถบความคืบหน้า
+                    });
+
+                    $('#myDataTableDebit').DataTable().destroy();
+                    var table = $('#myDataTableDebit').DataTable(
+                            {
+                                searching: true,
+                                paging: true,
+                                info: true,
+                                order: true,
+                                serverSide: false,
+                                responsive: {
+                                details: {
+                                        type: "column",
+                                        target: "tr",
+                                    },
+                                },
+                                columnDefs: [
+                                    {
+                                        targets: [4], className: 'dt-center text-center',
+                                    },
+                                    {
+                                        targets: [3], className: 'text-end',
+                                    },
+                                    {
+                                        targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                        createdCell: function (td, cellData, rowData, row, col) {
+                                            // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                            if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                $(td).text(
+                                                parseFloat(cellData).toLocaleString("en-US", {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                })
+                                                );
+                                            }
+                                        },
+                                    },
+                                ],
+                            }
+                        );
+
+                    $(window).on("resize", adjustDataTable);
+
+                    $('input[type="search"]').attr("placeholder", "Type to search...");
+                    $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+
+                    response.data.forEach(function(item) {
+                        $('#form-agoda').append('<input type="hidden" id="receive-id-' + item.id + '" name="receive_id[]" value="' + item.id + '">'); // เพิ่มค่าใน form-agoda รายการที่ยืนยันแล้ว
+                        $('#receive-select-id-' + item.id).remove(); // ลบค่าใน form-agoda-select
+
+                        table.rows.add(
+                            [
+                                [
+                                    item.batch,
+                                    moment(item.agoda_check_in).format('DD/MM/YYYY'),
+                                    moment(item.agoda_check_out).format('DD/MM/YYYY'),
+                                    currencyFormat(item.agoda_outstanding),
+                                    '<button type="button" class="btn" id="btn-receive-' + item.id + '" value="1"' +
+                                    'onclick="delete_receive_payment(this, ' + item.id + ', ' + item.agoda_outstanding + ')"><i class="fa fa-trash-o"></i></button>'
+                                ]
+                            ]
+                        ).draw();
+                    });
+
+                    $('#AgodaRevenueList').modal('hide');
+                    $('#input-selected-item').val(0);
+                    $('#input-selected-amount').val(0);
+                    $('#total_receive_payment').val(total_debit);
+
+                    $('#txt-total-selected').text(0);
+                    $('#txt-total-selected-amount').text(currencyFormat(0)); 
+                    $('#tfoot-total-debit').text(currencyFormat(total_debit));
                 } else {
-                    amount -= agoda_revenue;
-                    if (amount < 0) {
-                        amount = 0;
-                    }
-                    $('#txt-total-item').text(num -= 1);
-                    $('#txt-total-debit').text(currencyFormat(amount));
+                    Swal.fire({
+                        title: 'กรุณาเลือกข้อมูลก่อนยืนยัน',
+                        text: 'ไม่สามารถโหลดข้อมูลได้',
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        });
+    }
+
+    // ปุ่มลบรายการตารางที่ยืนยันแล้ว
+    function delete_receive_payment(ele, id, amount) {
+        console.log(123);
+        
+        var revenueID = $('#revenue_id').val();
+        var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
+        var total = Number($('#total_outstanding').val());
+        var total_receive_payment = Number($('#total_receive_payment').val());
+        var debit_amount = Number($('#debit_amount').val()) + 1;
+        $('#debit_amount').val(debit_amount);
+
+        // Update ยอดที่เลือก
+        var agoda_revenue_outstanding = Number($('#input-outstanding-amount').val());
+        var agoda_num = Number($('#input-selected-item').val());
+        var agoda_revenue_amount = Number($('#input-selected-amount').val());
+
+        $('#input-selected-item').val(agoda_num - 1);
+        $('#input-selected-amount').val(agoda_revenue_amount - amount);
+        $('#input-outstanding-amount').val(agoda_revenue_outstanding + amount);
+
+        $('#txt-total-selected').text(agoda_num - 1);
+        $('#txt-total-selected-amount').text(currencyFormat(agoda_revenue_amount - amount));
+        $('#txt-total-selected-outstanding').text(currencyFormat(agoda_revenue_outstanding + amount));
+        $('#tfoot-total-outstanding').text(currencyFormat(agoda_revenue_outstanding + amount)); // tfoot Outstanding
+        $('#tfoot-total-debit').text(currencyFormat(total_receive_payment - amount)); // tfoot Debit
+        // END
+
+        $('#total_receive_payment').val(Number(total_receive_payment - amount).toFixed(2)); // ยอดที่รับชำระ
+        $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment - amount))); // ยอดที่รับชำระ แสดงแบบ Text
+        $('#txt_total_received').text(currencyFormat(Number(total_receive_payment - amount)));
+
+        $('#total_outstanding').val(total + amount);
+        $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
+
+        $('#balance').text(currencyFormat(Number(total_revenue_amount - (total_receive_payment - amount)))); // ยอดคงเหลือ Dashboard
+
+        $('#receive-id-' + id).remove();
+
+        var tb_select = new DataTable('#myDataTableDebit');
+        var removingRow = $(ele).closest('tr');
+        tb_select.row(removingRow).remove().draw();
+
+        jQuery.ajax({
+            type: "GET",
+            url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
+            datatype: "JSON",
+            async: false,
+            success: function(response) {
+                if (response.data) {
+                    var status = "";
+                    $('#myDataTableOutstanding').DataTable().destroy();
+                    var table = $('#myDataTableOutstanding').DataTable(
+                            {
+                                searching: true,
+                                paging: true,
+                                info: true,
+                                order: true,
+                                serverSide: false,
+                                responsive: {
+                                details: {
+                                        type: "column",
+                                        target: "tr",
+                                    },
+                                },
+                                initComplete: function () {
+                                    $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+                                },
+                                columnDefs: [
+                                    {
+                                        targets: [4], className: 'dt-center text-center',
+                                    },
+                                    {
+                                        targets: [3], className: 'text-end',
+                                    },
+                                    {
+                                        targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                        createdCell: function (td, cellData, rowData, row, col) {
+                                            // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                            if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                $(td).text(
+                                                parseFloat(cellData).toLocaleString("en-US", {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                })
+                                                );
+                                            }
+                                        },
+                                    },
+                                ],
+                                order: [2, 'asc'],
+                            }
+                        );
+
+                    // $(window).on("resize", adjustDataTable);
+
+                    // $('input[type="search"]').attr("placeholder", "Type to search...");
+                    // $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+
+                    table.rows.add(
+                        [
+                            [
+                                response.data.batch,
+                                moment(response.data.agoda_check_in).format('DD/MM/YYYY'),
+                                moment(response.data.agoda_check_out).format('DD/MM/YYYY'),
+                                currencyFormat(response.data.agoda_outstanding),
+                                '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-' + id + '" value="0"' +
+                                'onclick="select_receive_payment(this, ' + id + ', ' + response.data.agoda_outstanding + ')">รับชำระ</button>'
+                            ]
+                        ]
+                    ).draw();
                 }
 
-            $('#input-total-item').val(num);
-            $('#input-total-debit').val(amount);
-        });
+                $('#btn-receive-' + id).val(0);
+                table.draw(); // refresh table
 
-        $(document).on('click', '.checkbox-item-all', function () {            
-            var amount = Number($('#total_outstanding').val());
-            var num = Number($('#outstanding_amount').val());
-
-            $('#txt-total-item').text(num);
-            $('#txt-total-debit').text(currencyFormat(amount));
-
-            if ($('.checkbox-item-all').is(':checked')) {
-                $('#txt-total-item').text(num);
-                $('#txt-total-debit').text(currencyFormat(amount));
-            } else {
-                $('#txt-total-item').text(0);
-                $('#txt-total-debit').text(currencyFormat(0));
             }
-
-            $('#input-total-item').val(num);
-            $('#input-total-debit').val(amount);
         });
-    </script>
+    }
+
+    document.querySelector("#btn-save").addEventListener('click', function() {
+        var total_receive_payment = Number($('#total_receive_payment').val()).toFixed(2);
+        var total_revenue_amount = Number($('#total_revenue_amount').val()).toFixed(2);
+
+        if (total_revenue_amount > total_receive_payment) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'ไม่สามารถบันทึกข้อมูลได้',
+                text: 'ยอด Agoda Outstanding ที่เลือกน้อยกว่า Agoda Revenue!',
+            });
+        }
+
+        if (total_revenue_amount < total_receive_payment) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'ไม่สามารถบันทึกข้อมูลได้',
+                text: 'ยอด Agoda Outstanding ที่เลือกมากกว่า Agoda Revenue!',
+            });
+        }
+
+        if (total_revenue_amount == total_receive_payment) {
+
+            Swal.fire({
+                icon: "info",
+                title: 'ต้องการบันทึกข้อมูลใช่หรือไม่?',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+
+                    jQuery.ajax({
+                        type: "POST",
+                        url: "{!! route('debit-agoda-store') !!}",
+                        datatype: "JSON",
+                        data: $('#form-agoda').serialize(),
+                        async: false,
+                        success: function(result) {
+                            // Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success').then(() => {
+                                // ใช้ window.location เพื่อไปยัง URL ที่ต้องการหลังจากบันทึก
+                                window.location.href = "{!! route('debit-agoda-revenue') !!}";
+                            // });
+                        },
+                    });
+
+                } else if (result.isDenied) {
+                    Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', '', 'info');
+                }
+            });
+        }
+
+    });
+</script>
+
 @endsection

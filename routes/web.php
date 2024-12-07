@@ -122,14 +122,33 @@ Route::middleware(['auth'])->group(function () {
     # Debit Agoda Revenue
     Route::controller(AgodaRevenuesController::class)->middleware('role:agoda')->group(function () {
         Route::get('debit-agoda', 'index')->name('debit-agoda');
-        Route::get('debit-agoda-revenue/{month}/{year}', 'index_list_days')->name('debit-agoda-revenue');
+        Route::get('debit-agoda-revenue', 'index_list_days')->name('debit-agoda-revenue'); // แสดงรายการรายได้จาก SMS
         Route::get('debit-agoda-update/{month}/{year}', 'index_update_agoda')->name('debit-agoda-update');
-        Route::get('debit-agoda-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
-        Route::get('debit-agoda-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-agoda-detail'); // แสดงรายละเอียด
-        Route::post('debit-agoda-store', 'receive_payment')->name('debit-agoda-store');
+        Route::get('debit-agoda-update-receive/{id}', 'index_receive')->name('debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('debit-agoda-detail/{id}', 'index_detail_receive')->name('debit-agoda-detail'); // แสดงรายละเอียด
+        Route::post('debit-agoda-store', 'receive_payment')->name('debit-agoda-store'); // บันทึกข้อมูล
         Route::get('debit-select-agoda-outstanding/{id}', 'select_agoda_outstanding')->name('debit-select-agoda-outstanding');
+        Route::post('debit-confirm-select-agoda-outstanding', 'confirm_select_agoda_outstanding')->name('debit-confirm-select-agoda-outstanding'); // Confirm รายการที่เลือก
         Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
-        Route::get('debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('debit-status-agoda-receive');
+        // Route::get('debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('debit-status-agoda-receive');
+
+        // Graph
+        Route::get('debtor-graph-month-sales', 'graph_month_sales')->name('debtor-graph-month-sales');
+        Route::get('debtor-graph-month-charge', 'graph_month_charge')->name('debtor-graph-month-charge');
+
+        // Lock & Unlock
+        Route::get('debtor-agoda-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('debtor-agoda-change-status-lock');
+
+        // Logs
+        Route::get('debtor-agoda-logs/{id}', 'logs')->name('debtor-agoda-logs');
+
+        // Search Child
+        Route::get('debtor-agoda-search-detail-child/{id}', 'search_detail')->name('debtor-agoda-search-detail-child');
+
+        // Search, Paginate
+        // Route::post('debtor-agoda-paginate-table', 'paginate_table')->name('debtor-agoda-paginate-table');
+        Route::post('debtor-agoda-search-table', 'search_table')->name('debtor-agoda-search-table');
+
     });
 
     # Debit Elexa

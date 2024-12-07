@@ -730,10 +730,10 @@
                                         <div class="flex-end-g2">
                                             <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-transfer" onchange="getPage(1, this.value, 'transfer')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>100</option>
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
                                             </select>
                                             <input class="search-button search-data" id="transfer" style="text-align:left;" placeholder="Search" />
                                         </div>
@@ -1420,7 +1420,7 @@
 
     <!-- Modal: เลือกวันที่ modal fade -->
     <div class="modal fade" id="ModalShowCalendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog mw-350" role="document">
+        <div class="modal-dialog modal-bottom md-330px" role="document" >
             <div class="modal-content rounded-xl">
                 <div class="modal-header md-header text-white">
                     <div class="w-full">
@@ -1479,7 +1479,7 @@
                                 <option value="9" {{ isset($status) && $status == 9 ? 'selected' : '' }}>Other Bank Transfer Revenue</option>
                             </select>
 
-                            <input type="text" id="combined-selected-box" name="date" value="{{ $date_current }}" class="selected-value-box t-alight-center" style="width: 300px" />
+                            <input type="text" id="combined-selected-box" name="date" value="{{ $date_current }}" class="selected-value-box t-alight-center w-100"/>
                             <!-- box แสดงวันที่ เดือน ปี -->
                             <div class="calendars-container" id="calendars-container">
                                 <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper" style="transform: translateY(-10px); height: 250px">
@@ -1515,8 +1515,8 @@
 
                         <!-- ล่าง modal -->
                         <div class="modal-footer border-top d-flex justify-content-between mt-2" style="padding: 0 0.7rem">
-                            <div>
-                                <button class="bt-tg-normal bg-tg-light sm" id="select-today-button">Today</button>
+                            <div id="btn-select-today">
+                                <button type="button" class="bt-tg-normal bg-tg-light sm" id="today-btn">Today</button>
                             </div>
                             <div>
                                 <button type="button" class="bt-tg-normal sm bt-grey" data-dismiss="modal">Close</button>
@@ -1699,6 +1699,7 @@
             $(document).on("click", ".filter", function () {
                 var ID = $(this).attr("id");
                 if (ID == "filter-month" || ID == "filter-year") {
+                    $('#today-btn').addClass('hidden');
                     if (picker) {
                         picker.destroy(); // ทำลายอินสแตนซ์
                     }
@@ -1706,6 +1707,7 @@
                     picker = null; // รีเซ็ตตัวแปร
 
                 } else {
+                    $('#today-btn').removeClass('hidden');
 
                     if (picker) {
                         picker.destroy(); // ทำลายอินสแตนซ์
@@ -1734,6 +1736,35 @@
             });
             // END Calendar
 
+            // Select Button Today
+            document.getElementById('today-btn').addEventListener('click', function() {
+                const startday = new Date(); // วันที่เริ่มต้น (วันนี้)
+                const endday = new Date();   // วันที่สิ้นสุด (วันนี้)
+                
+                if (picker) picker.destroy();
+
+                // สร้าง Litepicker
+                picker = new Litepicker({
+                    element: datepickerElement,
+                    inlineMode: true,
+                    singleMode: false,
+                    parentEl: document.getElementById("calendarContainer"),
+                    allowRepick: true,
+                    numberOfMonths: 1,
+                    numberOfColumns: 1,
+                    format: "DD/MM/YYYY",
+                    startDate: startday, // วันที่เริ่มต้น
+                    endDate: endday,     // วันที่สิ้นสุด
+                    dropdowns: {
+                        minYear: 2024,
+                        maxYear: 2030,
+                        months: true,
+                        years: true,
+                    },
+                });
+            });
+
+            // Graph
             if (filter_by == "month") {
                 var dateString = $('#combined-selected-box').val();
                 var dateSplit = dateString.split('-');

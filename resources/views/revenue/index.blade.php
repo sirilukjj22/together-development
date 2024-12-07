@@ -1469,8 +1469,8 @@
 
                 <!-- ล่าง modal -->
                 <div class="modal-footer border-top d-flex justify-content-between mt-2" style="padding: 0 0.7rem">
-                    <div>
-                        <button class="bt-tg-normal bg-tg-light sm" id="select-today-button">Today</button>
+                    <div id="btn-select-today">
+                        <button type="button" class="bt-tg-normal bg-tg-light sm" id="today-btn">Today</button>
                     </div>
                     <div>
                         <button type="button" class="bt-tg-normal sm bt-grey" data-dismiss="modal">Close</button>
@@ -2237,10 +2237,39 @@
             $('#filter-year').click();
         }
 
+        // Select Button Today
+        document.getElementById('today-btn').addEventListener('click', function() {
+            const startday = new Date(); // วันที่เริ่มต้น (วันนี้)
+            const endday = new Date();   // วันที่สิ้นสุด (วันนี้)
+            
+            if (picker) picker.destroy();
+
+            // สร้าง Litepicker
+            picker = new Litepicker({
+                element: datepickerElement,
+                inlineMode: true,
+                singleMode: false,
+                parentEl: document.getElementById("calendarContainer"),
+                allowRepick: true,
+                numberOfMonths: 1,
+                numberOfColumns: 1,
+                format: "DD/MM/YYYY",
+                startDate: startday, // วันที่เริ่มต้น
+                endDate: endday,     // วันที่สิ้นสุด
+                dropdowns: {
+                    minYear: 2024,
+                    maxYear: 2030,
+                    months: true,
+                    years: true,
+                },
+            });
+        });
+
         // ทำลาย Litepicker เมื่อคลิกปุ่ม filter
         $(document).on("click", ".filter", function () {
             var ID = $(this).attr("id");
             if (ID == "filter-month" || ID == "filter-year") {
+                $('#today-btn').addClass('hidden');
                 if (picker) {
                     picker.destroy(); // ทำลายอินสแตนซ์
                 }
@@ -2248,7 +2277,7 @@
                 picker = null; // รีเซ็ตตัวแปร
 
             } else {
-
+                $('#today-btn').removeClass('hidden');
                 if (picker) {
                     picker.destroy(); // ทำลายอินสแตนซ์
                 }

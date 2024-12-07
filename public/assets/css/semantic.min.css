@@ -30771,7 +30771,7 @@ div.dataTables_wrapper div.dataTables_filter input {
     margin-left: 0.5em;
     display: inline-block;
     width: 50px;
-    border-color:red
+    /* border-color:red */
 }
 
 .ui.pagination.menu{
