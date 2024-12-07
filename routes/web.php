@@ -133,8 +133,8 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('debit-status-agoda-receive');
 
         // Graph
-        Route::get('debtor-graph-month-sales', 'graph_month_sales')->name('debtor-graph-month-sales');
-        Route::get('debtor-graph-month-charge', 'graph_month_charge')->name('debtor-graph-month-charge');
+        Route::get('debtor-agoda-graph-month-sales', 'graph_month_sales')->name('debtor-agoda-graph-month-sales');
+        Route::get('debtor-agoda-graph-month-charge', 'graph_month_charge')->name('debtor-agoda-graph-month-charge');
 
         // Lock & Unlock
         Route::get('debtor-agoda-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('debtor-agoda-change-status-lock');
@@ -146,7 +146,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('debtor-agoda-search-detail-child/{id}', 'search_detail')->name('debtor-agoda-search-detail-child');
 
         // Search, Paginate
-        // Route::post('debtor-agoda-paginate-table', 'paginate_table')->name('debtor-agoda-paginate-table');
         Route::post('debtor-agoda-search-table', 'search_table')->name('debtor-agoda-search-table');
 
     });
@@ -156,13 +155,28 @@ Route::middleware(['auth'])->group(function () {
         Route::get('debit-elexa', 'index')->name('debit-elexa');
         Route::get('debit-elexa-revenue', 'index_list_days')->name('debit-elexa-revenue');
         Route::get('debit-elexa-update/{month}/{year}', 'index_update_elexa')->name('debit-elexa-update');
-        Route::get('debit-elexa-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
-        Route::get('debit-elexa-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด
+        Route::get('debit-elexa-update-receive/{id}', 'index_receive')->name('debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('debit-elexa-detail/{id}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด
         Route::post('debit-elexa-store', 'receive_payment')->name('debit-elexa-store');
         Route::get('debit-select-elexa-outstanding/{id}', 'select_elexa_outstanding')->name('debit-select-elexa-outstanding');
-        // Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
+        Route::post('debit-confirm-select-elexa-outstanding', 'confirm_select_elexa_outstanding')->name('debit-confirm-select-elexa-outstanding'); // Confirm รายการที่เลือก
         Route::get('debit-status-elexa-receive/{status}', 'status_elexa_receive')->name('debit-status-elexa-receive');
-        Route::get('debit-elexa-search/{month}', 'search_month')->name('debit-elexa-search');
+
+        // Graph
+        Route::get('debtor-elexa-graph-month-sales', 'graph_month_sales')->name('debtor-elexa-graph-month-sales');
+        Route::get('debtor-elexa-graph-month-charge', 'graph_month_charge')->name('debtor-elexa-graph-month-charge');
+
+        // Lock & Unlock
+        Route::get('debtor-elexa-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('debtor-elexa-change-status-lock');
+
+        // Search Child
+        Route::get('debtor-elexa-search-detail-child/{id}', 'search_detail')->name('debtor-elexa-search-detail-child');
+
+        // Search, Paginate
+        Route::post('debtor-elexa-search-table', 'search_table')->name('debtor-elexa-search-table');
+
+        // Logs
+        Route::get('debtor-elexa-logs/{id}', 'logs')->name('debtor-elexa-logs');
     });
 
 

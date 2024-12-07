@@ -744,6 +744,9 @@ class AgodaRevenuesController extends Controller
                     $month = Carbon::parse($value->date)->format('m');
                     $year = Carbon::parse($value->date)->format('Y');
 
+                    // เข้าบัญชี
+                    $into_account = '<div class=""><img class="img-bank" src="../image/bank/SCB.jpg" style="border-radius: 50%;">SCB '.$value->into_account.'</div>';
+
                     if ($value->status_receive_agoda == 0) 
                     {
                         $status = '<span class="wrap-status-pending">pending</span>';
@@ -751,7 +754,7 @@ class AgodaRevenuesController extends Controller
                         $status = '<span class="wrap-status-paid">paid</span>';
                     }
 
-                    if (@$value->statusLock->status_lock == 0) 
+                    if (@$value->statusLockAgoda->status_lock == 0) 
                     {
                         $status_lock = '<i class="fa fa-unlock"></i>';
                     } else  {
@@ -782,7 +785,7 @@ class AgodaRevenuesController extends Controller
                                                     }
 
                                                     // หากต้องการแก้ไขรายการ ต้องให้ Admin Unlock ให้ก่อน **Admin ต้อง Unlock ก่อนเหมือนกัน จะสามารถแก้ไขได้
-                                                    if (@$value->statusLock->status_lock == 0)
+                                                    if (@$value->statusLockAgoda->status_lock == 0)
                                                     {
                                                         $btn_detail .= '<li>
                                                                             <a href="/debit-agoda-update-receive/'.$value->id.'" class="dropdown-item">Edit</a>
@@ -807,7 +810,8 @@ class AgodaRevenuesController extends Controller
                     $data[] = [
                         'id' => $value->id,
                         'number' => $key + 1,
-                        'date' => Carbon::parse($value->date)->format('d/m/Y H:i:s'),
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'into_account' => $into_account,
                         'amount' => $value->amount,
                         'status' => $status,
                         'lock_unlock' => $status_lock,
@@ -869,8 +873,6 @@ class AgodaRevenuesController extends Controller
             ->select('amount', DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
             ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
             ->get();
-
-        $sms_query_sum = SMS_alerts::where('status', 5)->select('amount')->sum('amount');
 
         // ยอด SMS ที่กดรับชำระแล้ว สถานะเป็น paid
         $sms_paid_query = SMS_alerts::where('status', 5)

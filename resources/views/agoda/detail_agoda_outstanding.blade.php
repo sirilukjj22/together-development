@@ -136,7 +136,6 @@
 
 <!-- Custom Scripts -->
 <script src="{{ asset('assets/js/table-together.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/helper/searchTableDebtorAgoda.js')}}"></script>
 
 <script>
 

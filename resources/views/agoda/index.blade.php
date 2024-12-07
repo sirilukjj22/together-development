@@ -426,9 +426,6 @@
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
     <script src="{{ asset('assets/js/revenueAgoda.js') }}"></script>
 
-    <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableDebtorAgoda.js')}}"></script>
-
 <script>
     function currencyFormat(num) {
         return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")

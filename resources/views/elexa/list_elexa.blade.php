@@ -7,11 +7,11 @@
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col sms-header">
-                <div class=""><span class="span1">Agoda</span><span class="span2"> / {{ $title }}</span></div>
+                <div class=""><span class="span1">Elexa EGAT</span><span class="span2"> / {{ $title }}</span></div>
                 <div class="span3">{{ $title }}</div>
             </div>
             <div class="col-auto">
-                <a href="{{ route('debit-agoda') }}" class="bt-tg-normal">Back</a>
+                <a href="{{ route('debit-elexa') }}" class="bt-tg-normal">Back</a>
             </div>
         </div> <!-- .row end -->
     </div>
@@ -20,18 +20,18 @@
 <div>
     <section class="doc my-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
-            <h4 class="title-top-table">Agoda Revenue</h4>
+            <h4 class="title-top-table">Elexa EGAT Revenue</h4>
         </div>
 
         <div class="flex-end">
             <div class="filter-section bd-select-cl d-flex mb-2" style="gap: 0.3em">
-                <select id="agodaRevenueDayYearFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
+                <select id="elexaRevenueDayYearFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
                     <option value="all">All Years</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
                 </select>
 
-                <select id="agodaRevenueDayMonthFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
+                <select id="elexaRevenueDayMonthFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
                     <option value="all">All Months</option>
                     <option value="1">January</option>
                     <option value="2">February</option>
@@ -47,7 +47,7 @@
                     <option value="12">December</option>
                 </select>
 
-                <select id="agodaRevenueDayStatusFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
+                <select id="elexaRevenueDayStatusFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
                     <option value="all">All Status</option>
                     <option value="1">Paid</option>
                     <option value="0">Pending</option>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="wrap-table-together">
-            <table id="agodaRevenueDayTable" class="table-together table-style">
+            <table id="elexaRevenueDayTable" class="table-together table-style">
                 <thead>
                     <tr>
                         <th data-priority="2">#</th>
@@ -69,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($agoda_revenue as $key => $item)
+                    @foreach ($elexa_revenue as $key => $item)
                         @php
                             $month = Carbon\Carbon::parse($item->date)->format('m');
                             $year = Carbon\Carbon::parse($item->date)->format('Y');
@@ -84,14 +84,14 @@
                             </td>
                             <td class="text-end target-class">{{ $item->amount }}</td>
                             <td>
-                                @if ($item->status_receive_agoda == 0)
+                                @if ($item->status_receive_elexa == 0)
                                     <span class="wrap-status-pending">pending</span>
                                 @else
                                     <span class="wrap-status-paid">paid</span>
                                 @endif
                             </td>
                             <td>
-                                @if (@$item->statusLockAgoda->status_lock == 0)
+                                @if (@$item->statusLockElexa->status_lock == 0)
                                     <i class="fa fa-unlock"></i>
                                 @else
                                     <i class="fa fa-lock"></i>
@@ -104,18 +104,18 @@
                                         Select
                                     </div>
                                     <ul class="dropdown-menu btn-dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if ($item->status_receive_agoda == 0)
+                                        @if ($item->status_receive_elexa == 0)
                                             <li>
-                                                <a href="{{ route('debit-agoda-update-receive', [$item->id, $month, $year]) }}" class="dropdown-item">Create</a>
+                                                <a href="{{ route('debit-elexa-update-receive', [$item->id, $month, $year]) }}" class="dropdown-item">Create</a>
                                             </li>
                                         @else
                                             @php
-                                                $checkReceiveDate = App\Models\Revenue_credit::getAgodaReceiveDate($item->id);
+                                                $checkReceiveDate = App\Models\Revenue_credit::getElexaReceiveDate($item->id);
                                             @endphp
 
                                             {{-- Permission 1 และ 2 สามารถเห็นปุ่ม Lock/Unlock ได้ --}}
                                             @if (Auth::user()->permission == 1 || Auth::user()->permission == 2)
-                                                @if (@$item->statusLockAgoda->status_lock == 0)
+                                                @if (@$item->statusLockElexa->status_lock == 0)
                                                     <li>
                                                         <a href="javascript:void(0);" class="dropdown-item lock-item" onclick="lockItem({{$item->id}}, 1)">Lock</a>
                                                     </li>
@@ -127,18 +127,18 @@
                                             @endif
 
                                             {{-- หากต้องการแก้ไขรายการ ต้องให้ Admin Unlock ให้ก่อน **Admin ต้อง Unlock ก่อนเหมือนกัน จะสามารถแก้ไขได้ --}}
-                                            @if (@$item->statusLockAgoda->status_lock == 0)
+                                            @if (@$item->statusLockElexa->status_lock == 0)
                                                 <li>
-                                                    <a href="{{ route('debit-agoda-update-receive', [$item->id]) }}" class="dropdown-item">Edit</a>
+                                                    <a href="{{ route('debit-elexa-update-receive', [$item->id]) }}" class="dropdown-item">Edit</a>
                                                 </li>
                                             @endif
                                         @endif
                                         <li>
-                                            <a href="{{ route('debit-agoda-detail', [$item->id]) }}" class="dropdown-item">View</a>
+                                            <a href="{{ route('debit-elexa-detail', [$item->id]) }}" class="dropdown-item">View</a>
                                         </li>
-                                        @if ($item->status_receive_agoda == 1)
+                                        @if ($item->status_receive_elexa == 1)
                                             <li>
-                                                <a href="{{ route('debtor-agoda-logs', $item->id) }}" class="dropdown-item">Log</a>
+                                                <a href="{{ route('debtor-elexa-logs', $item->id) }}" class="dropdown-item">Log</a>
                                             </li>
                                         @endif
                                     </ul>
@@ -151,7 +151,7 @@
                     <tr>
                         <td class="text-center" style="padding: 10px">Total</td>
                         <td colspan="2"></td>
-                        <td class="text-end format-number-table" id="tfoot-total-revenue">{{ $total_agoda_revenue }}</td>
+                        <td class="text-end format-number-table" id="tfoot-total-revenue">{{ $total_elexa_revenue }}</td>
                         <td colspan="3"></td>
                     </tr>
                 </tfoot>
@@ -194,14 +194,14 @@
     }
 
     function filterSearch() {
-        var year = $('#agodaRevenueDayYearFilter').val();
-        var month = $('#agodaRevenueDayMonthFilter').val();
-        var status_paid = $('#agodaRevenueDayStatusFilter').val();
+        var year = $('#elexaRevenueDayYearFilter').val();
+        var month = $('#elexaRevenueDayMonthFilter').val();
+        var status_paid = $('#elexaRevenueDayStatusFilter').val();
         var search_value = $('input[type="search"]').val();
-        var table_name = "agodaRevenueDayTable";
+        var table_name = "elexaRevenueDayTable";
 
-        $('#agodaRevenueDayTable').DataTable().destroy();
-        var table = $("#agodaRevenueDayTable").DataTable({
+        $('#elexaRevenueDayTable').DataTable().destroy();
+        var table = $("#elexaRevenueDayTable").DataTable({
             paging: true,
             searching: true,
             ordering: true,
@@ -210,7 +210,7 @@
             serverSide: false,
             responsive: true,
             ajax: {
-                url: 'debtor-agoda-search-table',
+                url: 'debtor-elexa-search-table',
                 type: 'POST',
                 data: {
                     search_value: search_value,
@@ -283,9 +283,9 @@
 
                 jQuery.ajax({
                     type: "GET",
-                    url: "{!! url('debtor-agoda-change-status-lock/"+id+"/"+status+"') !!}",
+                    url: "{!! url('debtor-elexa-change-status-lock/"+id+"/"+status+"') !!}",
                     datatype: "JSON",
-                    data: $('#form-agoda').serialize(),
+                    data: $('#form-elexa').serialize(),
                     async: false,
                     success: function(result) {
                         if (status == 0) {

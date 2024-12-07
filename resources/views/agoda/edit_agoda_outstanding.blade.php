@@ -288,7 +288,6 @@
 
 <!-- Custom Scripts -->
 <script src="{{ asset('assets/js/table-together.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/helper/searchTableDebtorAgoda.js')}}"></script>
 
 <script>
 
@@ -658,8 +657,6 @@
 
     // ปุ่มลบรายการตารางที่ยืนยันแล้ว
     function delete_receive_payment(ele, id, amount) {
-        console.log(123);
-        
         var revenueID = $('#revenue_id').val();
         var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
         var total = Number($('#total_outstanding').val());

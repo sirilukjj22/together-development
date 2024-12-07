@@ -3,63 +3,11 @@
     $excludeDatatable = false;
 @endphp
 @section('content')
-
-<style>
-    .table-together tr th{
-        text-align: center !important;
-    }
-
-    .content-in-log {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-    .content-in-log > div:nth-child(1) {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-    }
-
-    .content-in-log > div:nth-child(1) b {
-      font-weight: 550;
-    }
-
-    .content-in-log > div:nth-child(1) > b:nth-child(4) {
-      color: #3da38d;
-      margin-top: 7px;
-      margin-bottom: 3px;
-    }
-
-    .content-in-log > div:nth-child(2) div {
-      display: flex;
-      justify-content: start;
-      align-items: start;
-      flex-wrap: wrap;
-      gap: 0.2em;
-      border-bottom: 1px solid rgb(214, 214, 213);
-    }
-
-    .content-in-log > div:nth-child(2) div:nth-child(1) {
-      border-top: 1px solid rgb(214, 214, 213);
-    }
-    .content-in-log > div:nth-child(2) div:nth-last-child(1) {
-      border-bottom: none;
-    }
-
-    .content-in-log > div:nth-child(2) div {
-      flex-grow: 1;
-      text-align: start;
-    }
-
-    .content-in-log > div:nth-child(2) div b {
-      font-weight: 550;
-    }
-</style>
-
 <div id="content-index" class="body-header border-bottom d-flex py-3">
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col sms-header">
-                <div class=""><span class="span1">Agoda</span><span class="span2"> / Agoda Revenue / {{ $title }}</span></div>
+                <div class=""><span class="span1">Elexa EGAT</span><span class="span2"> / Elexa EGAT Revenue / {{ $title }}</span></div>
                 <div class="span3">{{ $title }}</div>
             </div>
             <div class="col-auto">
@@ -86,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($log_agoda as $key => $item)
+                    @foreach ($log_elexa as $key => $item)
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td class="fw-bold">{{ $item->type }}</td>
@@ -108,6 +56,59 @@
         </div>
     </section>
 </div>
+
+<style>
+    .table-together tr th{
+        text-align: center !important;
+    }
+</style>
+
+<style>
+    .content-in-log {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .content-in-log > div:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .content-in-log > div:nth-child(1) span b {
+      font-weight: 550;
+    }
+
+    .content-in-log > div:nth-child(1) > b:nth-child(4) {
+      color: #3da38d;
+      margin-top: 7px;
+      margin-bottom: 3px;
+    }
+
+    .content-in-log > div:nth-child(2) div {
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      flex-wrap: wrap;
+      gap: 0.2em;
+      border-bottom: 1px solid rgb(214, 214, 213);
+    }
+
+    .content-in-log > div:nth-child(2) div:nth-child(1) {
+      border-top: 1px solid rgb(214, 214, 213);
+    }
+    .content-in-log > div:nth-child(2) div:nth-last-child(1) {
+      border-bottom: none;
+    }
+
+    .content-in-log > div:nth-child(2) div span {
+      flex-grow: 1;
+      text-align: start;
+    }
+
+    .content-in-log > div:nth-child(2) div span b {
+      font-weight: 550;
+    }
+  </style>
 
 <link rel="stylesheet" href="{{ asset('assets/src/revenueAgoda.css') }}" />
 

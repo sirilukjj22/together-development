@@ -36,7 +36,7 @@
                                 <span>{{ number_format($total_elexa_revenue, 2) }}</span>
                                 <input type="hidden" id="input-total-elexa-paid" value="{{ $total_elexa_revenue }}">
                             </div>
-                            <div class="agoda-ac-rec">
+                            <div class="agoda-ac-rec"> 
                                 <span>Account Receivable</span> <!-- Elexa ที่กดรับชำระแล้ว -->
                                 <span>{{ number_format($totalAccountReceivableAll, 2) }}</span>
                                 <input type="hidden" id="input-total-account-receivable" value="{{ $totalAccountReceivableAll }}">
@@ -67,7 +67,7 @@
                         <h4 class="title-top-table">Credit Elexa Revenue Outstanding</h4>
                     </div>
                     <div class="d-flex box-sh p-2">
-                        <div class="CreditElexaOutstanding">
+                        <div class="CreditAgodaOutstanding">
                             <div>
                                 <div class="wrap-card-graph-revenue mb-2">
                                     <div>
@@ -271,9 +271,7 @@
                                 <tr class="text-capitalize">
                                     <th data-priority="1">#</th>
                                     <th data-priority="1">วันที่ทำรายการ</th>
-                                    <th data-priority="3">Booking number</th>
-                                    <th data-priority="4">Check in date</th>
-                                    <th data-priority="5">Check out date</th>
+                                    <th data-priority="3">Order ID</th>
                                     <th data-priority="1">amount</th>
                                     <th data-priority="2">status</th>
                                 </tr>
@@ -284,9 +282,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                         <td>{{ $item->batch }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->elexa_check_in)->format('d/m/Y') }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->elexa_check_out)->format('d/m/Y') }}</td>
-                                        <td class="text-end target-class">{{ $item->elexa_outstanding }}</td>
+                                        <td class="text-end target-class">{{ $item->ev_revenue }}</td>
                                         <td><span class="wrap-status-unpaid">unpaid</span></td>
                                     </tr>
                                 @endforeach
@@ -295,7 +291,7 @@
                                 <tr>
                                     <td></td>
                                     <td class="text-center" style="padding: 10px">Total</td>
-                                    <td colspan="3"></td>
+                                    <td></td>
                                     <td class="text-end format-number-table" id="tfoot-total-outstanding">{{ $total_elexa_outstanding_revenue }}</td>
                                     <td></td>
                                 </tr>
@@ -339,9 +335,7 @@
                                 <tr class="text-capitalize">
                                     <th data-priority="1">#</th>
                                     <th data-priority="1">วันที่ทำรายการ</th>
-                                    <th data-priority="3">Booking number</th>
-                                    <th data-priority="4">Check in date</th>
-                                    <th data-priority="5">Check out date</th>
+                                    <th data-priority="3">Order ID</th>
                                     <th data-priority="1">amount</th>
                                     <th data-priority="2">status</th>
                                 </tr>
@@ -352,9 +346,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                         <td>{{ $item->batch }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->elexa_check_in)->format('d/m/Y') }}</td>
-                                        <td>{{ Carbon\Carbon::parse($item->elexa_check_out)->format('d/m/Y') }}</td>
-                                        <td class="text-end target-class">{{ $item->elexa_outstanding }}</td>
+                                        <td class="text-end target-class">{{ $item->ev_revenue }}</td>
                                         <td><span class="wrap-status-paid">paid</span></td>
                                     </tr>
                                 @endforeach
@@ -363,7 +355,7 @@
                                 <tr>
                                     <td></td>
                                     <td class="text-center" style="padding: 10px">Total </td>
-                                    <td colspan="3"></td>
+                                    <td></td>
                                     <td class="text-end format-number-table" id="tfoot-total-debit">{{ $total_elexa_debit_outstanding }}</td>
                                     <td></td>
                                 </tr>
@@ -424,10 +416,7 @@
 
     <!-- Custom Scripts -->
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
-    <script src="{{ asset('assets/js/revenueAgoda.js') }}"></script>
-
-    <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableDebtorAgoda.js')}}"></script>
+    <script src="{{ asset('assets/js/revenueElexa.js') }}"></script>
 
 <script>
     function currencyFormat(num) {
@@ -565,9 +554,9 @@
                 $('#tfoot-total-outstanding').text(total);
             },
             columnDefs: [
-                            { targets: [5], className: 'text-end' },
+                            { targets: [3], className: 'text-end' },
                             {
-                                targets: [5], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
+                                targets: [3], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
                                 createdCell: function(td, cellData, rowData, row, col) {
                                     if ($.isNumeric(cellData)) {
                                         // แสดงตัวเลขพร้อม comma
@@ -582,9 +571,7 @@
             columns: [
                 { data: 'number' },
                 { data: 'date' },
-                { data: 'booking' },
-                { data: 'check_in' },
-                { data: 'check_out' },
+                { data: 'orderID' },
                 { data: 'amount' },
                 { data: 'status' },
             ],
@@ -630,9 +617,9 @@
                 $('#tfoot-total-debit').text(total);
             },
             columnDefs: [
-                            { targets: [5], className: 'text-end' },
+                            { targets: [3], className: 'text-end' },
                             {
-                                targets: [5], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
+                                targets: [3], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
                                 createdCell: function(td, cellData, rowData, row, col) {
                                     if ($.isNumeric(cellData)) {
                                         // แสดงตัวเลขพร้อม comma
@@ -647,9 +634,7 @@
             columns: [
                 { data: 'number' },
                 { data: 'date' },
-                { data: 'booking' },
-                { data: 'check_in' },
-                { data: 'check_out' },
+                { data: 'orderID' },
                 { data: 'amount' },
                 { data: 'status' },
             ],

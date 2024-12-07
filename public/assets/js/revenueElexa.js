@@ -1,15 +1,15 @@
-var inputTotalAgodaCharge = $('#input-total-agoda-charge-revenue').val();
-var inputTotalAgodaPaid = $('#input-total-agoda-paid').val();
+var inputTotalElexaCharge = $('#input-total-elexa-charge-revenue').val();
+var inputTotalElexaPaid = $('#input-total-elexa-paid').val();
 var inputTotalAccountReceivable = Number($('#input-total-account-receivable').val());
 var inputTotalPendingAccountReceivable = Number($('#input-total-pending-account-receivable').val());
-var inputTotalOutstandingAll = Number($('#input-total-agoda-outstanding').val());
+var inputTotalOutstandingAll = Number($('#input-total-elexa-outstanding').val());
 
 function getGraphMonthSales(typeRevenue) {
   var revenueData = "";
 
   $.ajax({
       type: "GET",
-      url: "/debtor-agoda-graph-month-sales",
+      url: "/debtor-elexa-graph-month-sales",
       datatype: "JSON",
       async: false,
       success: function(response) {
@@ -32,7 +32,7 @@ function getGraphMonthCharge(year, typeRevenue) {
 
   $.ajax({
       type: "GET",
-      url: "/debtor-agoda-graph-month-charge",
+      url: "/debtor-elexa-graph-month-charge",
       datatype: "JSON",
       async: false,
       success: function(response) {
@@ -282,7 +282,7 @@ function updateSummaryTotals() {
   document.querySelector("#AccountRe span:nth-child(2)").textContent =
     formatNumberCol(accountReTotal);
   document.querySelector("#agodaCharge span:nth-child(2)").textContent =
-    formatNumberCol(parseFloat(inputTotalAgodaCharge).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    formatNumberCol(parseFloat(inputTotalElexaCharge).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
   document.querySelector("#agodaPaid span:nth-child(2)").textContent =
     formatNumberCol(paidTotal);
   document.querySelector("#pendingAccount span:nth-child(2)").textContent =
