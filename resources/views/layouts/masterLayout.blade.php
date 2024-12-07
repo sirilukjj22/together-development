@@ -309,7 +309,7 @@
                                                     <li><a class="ms-link" href="{{ route('report-agoda-revenue') }}">Agoda Revenue Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                    <li><a class="ms-link" href="#">Agoda Outstanding Report</a></li>
+                                                    <li><a class="ms-link" href="{{ route('report-agoda-outstanding') }}">Agoda Outstanding Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
                                                 <li><a class="ms-link" href="#">A/P Agoda Account Receivable Report</a></li>

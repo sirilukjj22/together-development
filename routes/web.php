@@ -34,6 +34,7 @@ use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
 use App\Http\Controllers\LinkPDFProposal;
+use App\Http\Controllers\ReportAgodaOutstandingController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
 use App\Http\Controllers\ReportHotelManualChangeController;
@@ -257,8 +258,11 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ReportAgodaRevenueController::class)->middleware('role:report')->group(function () {
         Route::get('report-agoda-revenue', 'index')->name('report-agoda-revenue');
         Route::post('report-agoda-revenue-search', 'search')->name('report-agoda-revenue-search');
-        Route::post('report-agoda-search-table', 'search_table')->name('report-agoda-search-table');
-        Route::post('report-agoda-paginate-table', 'paginate_table')->name('report-agoda-paginate-table');
+    });
+
+    Route::controller(ReportAgodaOutstandingController::class)->middleware('role:report')->group(function () {
+        Route::get('report-agoda-outstanding', 'index')->name('report-agoda-outstanding');
+        Route::post('report-agoda-outstanding-search', 'search')->name('report-agoda-outstanding-search');
     });
 
     ####################################################

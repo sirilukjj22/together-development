@@ -24,13 +24,13 @@ class ReportAgodaRevenueController extends Controller
 
         $data_query = SMS_alerts::whereBetween('date', [date('Y-m-d 21:00:00', strtotime('last day of previous month')), date('Y-m-t 20:59:59')])
             ->where('status', 5)->whereNull('date_into')
-            ->orderBy('date', 'asc')->paginate(10);
+            ->orderBy('date', 'asc')->get();
 
         $total_sms_amount = SMS_alerts::whereBetween('date', [date('Y-m-d 21:00:00', strtotime('last day of previous month')), date('Y-m-t 20:59:59')])
             ->where('status', 5)->whereNull('date_into')
             ->orderBy('date', 'asc')->sum('amount');
 
-        return view('report.agoda.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date'));
+        return view('report.agoda_revenue.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date'));
     }
 
     public function search(Request $request)
@@ -75,14 +75,10 @@ class ReportAgodaRevenueController extends Controller
 
         $total_sms_amount = $query->sum('amount');
 
-        if ($request->method_name == "search") {
-            $data_query = $query->orderBy('date', 'asc')->paginate(10);
-        } else {
-            $data_query = $query->orderBy('date', 'asc')->get();
-        }
+        $data_query = $query->orderBy('date', 'asc')->get();
 
         if ($request->method_name == "search") {
-            return view('report.agoda.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date', 'startDate'));
+            return view('report.agoda_revenue.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date', 'startDate'));
 
         } elseif ($request->method_name == "pdf") {
 
@@ -102,217 +98,217 @@ class ReportAgodaRevenueController extends Controller
         }
     }
 
-    public function paginate_table(Request $request)
-    {
-        $perPage = (int)$request->perPage;
+    // public function paginate_table(Request $request)
+    // {
+    //     $perPage = (int)$request->perPage;
 
-        $query_sms = SMS_alerts::query();
+    //     $query_sms = SMS_alerts::query();
 
-        if ($request->filter_by == "date") {
-            $exp = explode('-', $request->date);
-            $adate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d 21:00:00');
-            $adate2 = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d 20:59:59');
+    //     if ($request->filter_by == "date") {
+    //         $exp = explode('-', $request->date);
+    //         $adate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d 21:00:00');
+    //         $adate2 = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d 20:59:59');
 
-            $smsFromDate = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime($adate)));
-            $smsEndDate = $adate2;
+    //         $smsFromDate = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime($adate)));
+    //         $smsEndDate = $adate2;
 
-            $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
-            $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
+    //         $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
+    //         $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
 
-            $query_sms->whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into');
-            $query_sms->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5);
-        }
+    //         $query_sms->whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into');
+    //         $query_sms->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5);
+    //     }
 
-        if ($request->filter_by == "month") {
-            $startDate = $request->date ?? 0;
-            $query_sms->whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into');
-            $query_sms->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5);
-        }
+    //     if ($request->filter_by == "month") {
+    //         $startDate = $request->date ?? 0;
+    //         $query_sms->whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into');
+    //         $query_sms->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5);
+    //     }
 
-        if ($request->filter_by == "year") {
-            $startDate = $request->date ?? 0;
-            $query_sms->whereYear('date', $startDate)->where('status', 5)->whereNull('date_into');
-            $query_sms->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5);
-        }
+    //     if ($request->filter_by == "year") {
+    //         $startDate = $request->date ?? 0;
+    //         $query_sms->whereYear('date', $startDate)->where('status', 5)->whereNull('date_into');
+    //         $query_sms->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5);
+    //     }
 
-        if ($perPage == 10) {
-            $data_query = $query_sms->limit($request->page.'0')->get();
-        } else {
-            $data_query = $query_sms->paginate($perPage);
-        }
+    //     if ($perPage == 10) {
+    //         $data_query = $query_sms->limit($request->page.'0')->get();
+    //     } else {
+    //         $data_query = $query_sms->paginate($perPage);
+    //     }
 
-        $data = [];
+    //     $data = [];
 
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
+    //     $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+    //     $page_2 = $request->page.'0';
 
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+    //     $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
 
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+    //     if (isset($data_query) && count($data_query) > 0) {
+    //         foreach ($data_query as $key => $value) {
+    //             if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
-                    $img_bank = '';
-                    $transfer_bank = '';
-                    $revenue_name = '';
-                    $split_from = '';
+    //                 $img_bank = '';
+    //                 $transfer_bank = '';
+    //                 $revenue_name = '';
+    //                 $split_from = '';
     
-                    // โอนจากธนาคาร
-                    $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
-                    $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
+    //                 // โอนจากธนาคาร
+    //                 $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
+    //                 $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
                 
-                    if (file_exists($filename)) {
-                        $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
-                    } elseif (file_exists($filename2)) {
-                        $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
-                    }
+    //                 if (file_exists($filename)) {
+    //                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
+    //                 } elseif (file_exists($filename2)) {
+    //                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+    //                 }
     
-                    $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+    //                 $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
     
-                    // เข้าบัญชี
-                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+    //                 // เข้าบัญชี
+    //                 $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
     
-                    // ประเภทรายได้
-                    if ($value->status == 0) { $revenue_name = '-'; } 
-                    if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; }
+    //                 // ประเภทรายได้
+    //                 if ($value->status == 0) { $revenue_name = '-'; } 
+    //                 if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; }
 
-                    if ($value->split_status == 1)
-                    {
-                        $split_from = '<br>
-                        <span class="text-danger">(Split Credit Card From '.number_format($value->fullAmount->amount_before_split, 2).')</span>';
-                    }
+    //                 if ($value->split_status == 1)
+    //                 {
+    //                     $split_from = '<br>
+    //                     <span class="text-danger">(Split Credit Card From '.number_format($value->fullAmount->amount_before_split, 2).')</span>';
+    //                 }
     
-                    $data[] = [
-                        'number' => $key + 1,
-                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
-                        'time' => Carbon::parse($value->date)->format('H:i:s'),
-                        'transfer_bank' => $transfer_bank,
-                        'into_account' => $into_account,
-                        'amount' => number_format($value->amount, 2),
-                        'remark' => $value->remark ?? 'Auto',
-                        'revenue_name' => $revenue_name.$split_from,
-                        'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
-                    ];
-                }
-            }
-        }
+    //                 $data[] = [
+    //                     'number' => $key + 1,
+    //                     'date' => Carbon::parse($value->date)->format('d/m/Y'),
+    //                     'time' => Carbon::parse($value->date)->format('H:i:s'),
+    //                     'transfer_bank' => $transfer_bank,
+    //                     'into_account' => $into_account,
+    //                     'amount' => number_format($value->amount, 2),
+    //                     'remark' => $value->remark ?? 'Auto',
+    //                     'revenue_name' => $revenue_name.$split_from,
+    //                     'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
+    //                 ];
+    //             }
+    //         }
+    //     }
 
-        return response()->json([
-                'data' => $data,
-            ]);
-    }
+    //     return response()->json([
+    //             'data' => $data,
+    //         ]);
+    // }
 
-    public function search_table(Request $request)
-    {
+    // public function search_table(Request $request)
+    // {
 
-        $data = [];
+    //     $data = [];
 
-        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+    //     $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
-        if (!empty($request->search_value)) {
-            $query_agoda = SMS_alerts::query();
+    //     if (!empty($request->search_value)) {
+    //         $query_agoda = SMS_alerts::query();
 
-            if ($request->filter_by == "date") {
-                $exp = explode('-', $request->date);
-                $adate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d 21:00:00');
-                $adate2 = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d 20:59:59');
+    //         if ($request->filter_by == "date") {
+    //             $exp = explode('-', $request->date);
+    //             $adate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d 21:00:00');
+    //             $adate2 = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d 20:59:59');
     
-                $smsFromDate = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime($adate)));
-                $smsEndDate = $adate2;
+    //             $smsFromDate = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime($adate)));
+    //             $smsEndDate = $adate2;
     
-                $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
-                $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
+    //             $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
+    //             $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
 
-                $query_agoda->whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into')->where('amount', 'LIKE', '%'.$request->search_value.'%');
-                $query_agoda->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5)->where('amount', 'LIKE', '%'.$request->search_value.'%');
-            }
+    //             $query_agoda->whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into')->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    //             $query_agoda->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5)->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    //         }
 
-            if ($request->filter_by == "month") {
-                $startDate = $request->date ?? 0;
-                $query_agoda->whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into')->where('amount', 'LIKE', '%'.$request->search_value.'%');
-                $query_agoda->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5)->where('amount', 'LIKE', '%'.$request->search_value.'%');
-            }
+    //         if ($request->filter_by == "month") {
+    //             $startDate = $request->date ?? 0;
+    //             $query_agoda->whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into')->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    //             $query_agoda->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5)->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    //         }
     
-            if ($request->filter_by == "year") {
-                $startDate = $request->date ?? 0;
-                $query_agoda->whereYear('date', $startDate)->where('status', 5)->whereNull('date_into')->where('amount', 'LIKE', '%'.$request->search_value.'%');
-                $query_agoda->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5)->where('amount', 'LIKE', '%'.$request->search_value.'%');
-            }
+    //         if ($request->filter_by == "year") {
+    //             $startDate = $request->date ?? 0;
+    //             $query_agoda->whereYear('date', $startDate)->where('status', 5)->whereNull('date_into')->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    //             $query_agoda->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5)->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    //         }
 
-            $data_query = $query_agoda->paginate($perPage);
+    //         $data_query = $query_agoda->paginate($perPage);
 
-        } else {
-                if ($request->filter_by == "date") {
-                    $exp = explode('-', $request->date);
-                    $adate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d 21:00:00');
-                    $adate2 = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d 20:59:59');
+    //     } else {
+    //             if ($request->filter_by == "date") {
+    //                 $exp = explode('-', $request->date);
+    //                 $adate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d 21:00:00');
+    //                 $adate2 = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d 20:59:59');
         
-                    $smsFromDate = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime($adate)));
-                    $smsEndDate = $adate2;
+    //                 $smsFromDate = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime($adate)));
+    //                 $smsEndDate = $adate2;
         
-                    $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
-                    $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
+    //                 $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
+    //                 $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
     
-                    $data_query = SMS_alerts::whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into')
-                        ->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5)->paginate($perPage);
-                }
+    //                 $data_query = SMS_alerts::whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into')
+    //                     ->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5)->paginate($perPage);
+    //             }
     
-                if ($request->filter_by == "month") {
-                    $startDate = $request->date ?? 0;
-                    $data_query = SMS_alerts::whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into')
-                        ->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5)->paginate($perPage);
-                }
+    //             if ($request->filter_by == "month") {
+    //                 $startDate = $request->date ?? 0;
+    //                 $data_query = SMS_alerts::whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into')
+    //                     ->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5)->paginate($perPage);
+    //             }
         
-                if ($request->filter_by == "year") {
-                    $startDate = $request->date ?? 0;
-                    $data_query = SMS_alerts::whereYear('date', $startDate)->where('status', 5)->whereNull('date_into')
-                        ->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5)->paginate($perPage);
-                }
-        }
+    //             if ($request->filter_by == "year") {
+    //                 $startDate = $request->date ?? 0;
+    //                 $data_query = SMS_alerts::whereYear('date', $startDate)->where('status', 5)->whereNull('date_into')
+    //                     ->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5)->paginate($perPage);
+    //             }
+    //     }
 
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
+    //     if (isset($data_query) && count($data_query) > 0) {
+    //         foreach ($data_query as $key => $value) {
 
-                $img_bank = '';
-                $transfer_bank = '';
-                $revenue_name = '';
-                $split_from = '';
+    //             $img_bank = '';
+    //             $transfer_bank = '';
+    //             $revenue_name = '';
+    //             $split_from = '';
 
-                // โอนจากธนาคาร
-                $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
-                $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
+    //             // โอนจากธนาคาร
+    //             $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
+    //             $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
             
-                if (file_exists($filename)) {
-                    $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
-                } elseif (file_exists($filename2)) {
-                    $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
-                }
+    //             if (file_exists($filename)) {
+    //                 $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
+    //             } elseif (file_exists($filename2)) {
+    //                 $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+    //             }
 
-                $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+    //             $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
 
-                // เข้าบัญชี
-                $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+    //             // เข้าบัญชี
+    //             $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
 
-                // ประเภทรายได้
-                if ($value->status == 0) { $revenue_name = '-'; }
-                if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; }
+    //             // ประเภทรายได้
+    //             if ($value->status == 0) { $revenue_name = '-'; }
+    //             if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; }
 
-                $data[] = [
-                    'id' => $key + 1,
-                    'date' => Carbon::parse($value->date)->format('d/m/Y'),
-                    'time' => Carbon::parse($value->date)->format('H:i:s'),
-                    'transfer_bank' => $transfer_bank,
-                    'into_account' => $into_account,
-                    'amount' => number_format($value->amount, 2),
-                    'remark' => $value->remark ?? 'Auto',
-                    'revenue_name' => $revenue_name.$split_from,
-                    'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
-                ];
-            }
-        }
+    //             $data[] = [
+    //                 'id' => $key + 1,
+    //                 'date' => Carbon::parse($value->date)->format('d/m/Y'),
+    //                 'time' => Carbon::parse($value->date)->format('H:i:s'),
+    //                 'transfer_bank' => $transfer_bank,
+    //                 'into_account' => $into_account,
+    //                 'amount' => number_format($value->amount, 2),
+    //                 'remark' => $value->remark ?? 'Auto',
+    //                 'revenue_name' => $revenue_name.$split_from,
+    //                 'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
+    //             ];
+    //         }
+    //     }
 
-        return response()->json([
-            'data' => $data,
-            ]);
-    }
+    //     return response()->json([
+    //         'data' => $data,
+    //         ]);
+    // }
 }
