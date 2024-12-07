@@ -154,7 +154,7 @@ Route::middleware(['auth'])->group(function () {
     # Debit Elexa
     Route::controller(ElexaController::class)->middleware('role:elexa')->group(function () {
         Route::get('debit-elexa', 'index')->name('debit-elexa');
-        Route::get('debit-elexa-revenue/{month}/{year}', 'index_list_days')->name('debit-elexa-revenue');
+        Route::get('debit-elexa-revenue', 'index_list_days')->name('debit-elexa-revenue');
         Route::get('debit-elexa-update/{month}/{year}', 'index_update_elexa')->name('debit-elexa-update');
         Route::get('debit-elexa-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
         Route::get('debit-elexa-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด

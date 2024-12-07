@@ -59,11 +59,11 @@
             <table id="agodaRevenueDayTable" class="table-together table-style">
                 <thead>
                     <tr>
-                        <th data-priority="2">#</th>
-                        <th data-priority="4">Date</th>
-                        <th data-priority="3">Amount</th>
-                        <th data-priority="1">Status</th>
-                        <th data-priority="1">Lock/Unlock</th>
+                        <th data-priority="1">#</th>
+                        <th data-priority="1">Date</th>
+                        <th data-priority="1">Amount</th>
+                        <th data-priority="2">Status</th>
+                        <th data-priority="2">Lock/Unlock</th>
                         <th data-priority="1">Action</th>
                     </tr>
                 </thead>

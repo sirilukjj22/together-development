@@ -10,29 +10,99 @@ use Illuminate\Support\Facades\DB;
 
 class ElexaController extends Controller
 {
+    // public function index()
+    // {
+    //     $elexa_revenue = SMS_alerts::where('status', 8)->select('sms_alert.*', DB::raw("Month(date) as month, SUM(amount) as total_sum"))->groupBy('month')->get();
+
+        // $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        //     // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
+        //     ->where('revenue_credit.status', 8)
+        //     ->select('revenue_credit.id', 'revenue_credit.batch',
+        //     'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+        //     ->get();
+
+    //         $total_outstanding_all = 0;
+    //         $elexa_debit_outstanding = 0;
+    //         foreach ($elexa_outstanding as $key => $value) {
+    //             if ($value->receive_payment == 1) {
+    //                 $elexa_debit_outstanding += $value->ev_revenue;
+    //             }
+    //             $total_outstanding_all += $value->ev_revenue;
+    //         }
+
+    //     $title = "Elexa";
+
+    //     return view('elexa.index', compact('elexa_outstanding', 'elexa_revenue', 'total_outstanding_all', 'elexa_debit_outstanding', 'title'));
+    // }
+
     public function index()
     {
-        $elexa_revenue = SMS_alerts::where('status', 8)->select('sms_alert.*', DB::raw("Month(date) as month, SUM(amount) as total_sum"))->groupBy('month')->get();
+        $query_revenue = SMS_alerts::query()->where('status', 8)
+            ->select('sms_alert.*', 
+                DB::raw("MONTH(date) as month, SUM(amount) as total_sum, COUNT(id) as total_item"),
+                DB::raw("SUM(CASE WHEN status_receive_elexa = 1 THEN status_receive_elexa ELSE 0 END) as total_receive"))
+            ->groupBy('month');
+
+        $total_elexa_revenue = $query_revenue->get()->sum('total_sum');
+        $elexa_revenue = $query_revenue->get();
 
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
-            ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch',
-            'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0)
+            ->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->orderBy('revenue.date', 'asc')->get();
+
+        $elexa_debit = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1)
+            ->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->orderBy('revenue.date', 'asc')->get();
+
+        $sms_revenue_all = SMS_alerts::where('status', 8)->select('amount', 'status_receive_elexa')->get();
+
+        $agoda_all = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 5)
+            ->select('revenue_credit.receive_payment', 'revenue_credit.agoda_outstanding', 'revenue_credit.agoda_charge')
             ->get();
 
-            $total_outstanding_all = 0;
-            $elexa_debit_outstanding = 0;
-            foreach ($elexa_outstanding as $key => $value) {
-                if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_revenue;
+
+            $totalAccountReceivableAll = 0;
+            $totalPendingAccountReceivableAll = 0;
+            foreach ($sms_revenue_all as $key => $value) {
+                if ($value->status_receive_agoda == 1) {
+                    $totalAccountReceivableAll += $value->amount;
+                } else {
+                    $totalPendingAccountReceivableAll += $value->amount;
                 }
-                $total_outstanding_all += $value->ev_revenue;
             }
+
+            $total_outstanding_all = 0;
+            $total_agoda_charge_all = 0;
+            $total_agoda_fee = 0;
+            $total_agoda_outstanding_revenue = 0;
+            $total_agoda_debit_outstanding = 0;
+            foreach ($agoda_all as $key => $value) {
+                if ($value->receive_payment == 1) {
+                    $total_agoda_debit_outstanding += $value->agoda_outstanding;
+                } else {
+                    $total_agoda_outstanding_revenue += $value->agoda_outstanding;
+                }
+                $total_outstanding_all += $value->agoda_outstanding;
+                $total_agoda_charge_all += $value->agoda_charge;
+            }
+
+            $total_agoda_fee = $total_agoda_charge_all - $total_outstanding_all;
 
         $title = "Elexa";
 
-        return view('elexa.index', compact('elexa_outstanding', 'elexa_revenue', 'total_outstanding_all', 'elexa_debit_outstanding', 'title'));
+        return view('elexa.index', compact(
+            'totalAccountReceivableAll', 'totalPendingAccountReceivableAll',
+            'agoda_revenue', 'agoda_outstanding', 'agoda_debit', 
+            'total_agoda_revenue', 'total_outstanding_all', 'total_agoda_charge_all',
+            'total_agoda_outstanding_revenue', 'total_agoda_debit_outstanding',
+            'total_agoda_fee',
+            'title'
+        ));
     }
 
     public function index_list_days($month, $year)
@@ -205,16 +275,5 @@ class ElexaController extends Controller
                 'data' => $elexa_received,
                 'status' => 200,
             ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
