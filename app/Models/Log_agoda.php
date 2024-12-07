@@ -56,8 +56,13 @@ class Log_agoda extends Model
                 if ($column == 'receive_id')
                     $column = 'Debit Agoda Revenue';
 
+                    if ($column == 'Issue Date') {
+                        $value = Carbon::parse($value)->format('d/m/Y');
+                    }
+
                     if ($column == 'Hotel Bank Transfer') {
-                        $value = SMS_alerts::where('id', $value)->where('status', 5)->sum('amount');
+                        $Famount = SMS_alerts::where('id', $value)->where('status', 5)->sum('amount');
+                        $value =  number_format($Famount, 2);
                     }
 
                     if ($column != 'Debit Agoda Revenue') {
