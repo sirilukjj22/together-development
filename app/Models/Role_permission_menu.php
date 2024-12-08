@@ -61,10 +61,19 @@ class Role_permission_menu extends Model
         'company_market',
         'company_event',
         'booking',
+
         'report',
         'audit_hotel_water_park_revenue',
         'report_hotel_water_park_revenue',
         'report_hotel_manual_charge',
+        'agoda_revenue_report',
+        'agoda_outstanding_report',
+        'agoda_account_receivable_report',
+        'agoda_paid_revenue_report',
+        'elexa_revenue_report',
+        'elexa_outstanding_report',
+        'elexa_account_receivable_report',
+        'elexa_paid_revenue_report',
         
         'select_menu_all',
     ];

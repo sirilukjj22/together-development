@@ -183,10 +183,19 @@ class AuthController extends Controller
             'company_event' => $data['menu_company_event'] ?? 0,
             'booking' => $data['menu_booking'] ?? 0,
             'document_template_pdf' => $data['menu_document_template_pdf'] ?? 0,
+
             'report' => $data['menu_report_main'] ?? 0,
             'audit_hotel_water_park_revenue' => $data['menu_audit_hotel_water_park_revenue'] ?? 0,
             'report_hotel_water_park_revenue' => $data['menu_report_hotel_water_park_revenue'] ?? 0,
             'report_hotel_manual_charge' => $data['menu_report_hotel_manual_charge'] ?? 0,
+            'agoda_revenue_report' => $data['menu_agoda_revenue_report'] ?? 0,
+            'agoda_outstanding_report' => $data['menu_agoda_outstanding_report'] ?? 0,
+            'agoda_account_receivable_report' => $data['menu_agoda_account_receivable_report'] ?? 0,
+            'agoda_paid_revenue_report' => $data['menu_agoda_paid_revenue_report'] ?? 0,
+            'elexa_revenue_report' => $data['menu_elexa_revenue_report'] ?? 0,
+            'elexa_outstanding_report' => $data['menu_elexa_outstanding_report'] ?? 0,
+            'elexa_account_receivable_report' => $data['menu_elexa_account_receivable_report'] ?? 0,
+            'elexa_paid_revenue_report' => $data['menu_elexa_paid_revenue_report'] ?? 0,
 
             'select_menu_all' => $data['select_menu_all'] ?? 0,
           ]);

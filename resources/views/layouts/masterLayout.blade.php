@@ -305,30 +305,30 @@
 
                                             <!-- Menu: Sub menu level 3 -->
                                             <ul class="sub-menu collapse" id="menu-report-debtor-level-2">
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
+                                                @if (Auth::user()->roleMenu->agoda_revenue_report == 1)
                                                     <li><a class="ms-link" href="{{ route('report-agoda-revenue') }}">Agoda Revenue Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                @endif
+                                                @if (Auth::user()->roleMenu->agoda_outstanding_report == 1)
                                                     <li><a class="ms-link" href="{{ route('report-agoda-outstanding') }}">Agoda Outstanding Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="{{ route('report-agoda-account-receivable') }}">A/P Agoda Account Receivable Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="{{ route('report-agoda-paid') }}">Agoda Paid Revenue Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
-                                                <li><a class="ms-link" href="{{ route('report-elexa-revenue') }}">Elexa EGAT Revenue Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
+                                                @endif
+                                                @if (Auth::user()->roleMenu->agoda_account_receivable_report == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-agoda-account-receivable') }}">A/R Agoda Account Receivable Report</a></li>
+                                                @endif
+                                                @if (Auth::user()->roleMenu->agoda_paid_revenue_report == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-agoda-paid') }}">Agoda Paid Revenue Report</a></li>
+                                                @endif
+                                                @if (Auth::user()->roleMenu->elexa_revenue_report == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-elexa-revenue') }}">Elexa EGAT Revenue Report</a></li>
+                                                @endif
+                                                @if (Auth::user()->roleMenu->elexa_outstanding_report == 1)
                                                     <li><a class="ms-link" href="{{ route('report-elexa-outstanding') }}">Elexa EGAT Outstanding Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="{{ route('report-elexa-account-receivable') }}">A/P Elexa EGAT Account Receivable Report</a></li>
-                                                {{-- @endif --}}
-                                                {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="{{ route('report-elexa-paid') }}">Elexa EGAT Paid Revenue Report</a></li>
-                                                {{-- @endif --}}
+                                                @endif
+                                                @if (Auth::user()->roleMenu->elexa_account_receivable_report == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-elexa-account-receivable') }}">A/R Elexa EGAT Account Receivable Report</a></li>
+                                                @endif
+                                                @if (Auth::user()->roleMenu->elexa_paid_revenue_report == 1)
+                                                    <li><a class="ms-link" href="{{ route('report-elexa-paid') }}">Elexa EGAT Paid Revenue Report</a></li>
+                                                @endif
                                             </ul>
                                         </li>
                                     </ul>
