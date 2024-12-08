@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\TB_permission_department_revenues;
 use App\Models\TB_departments;
 use App\Models\TB_permission_department_menus;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -180,102 +179,5 @@ class UserDepartmentsController extends Controller
         }
 
         return redirect(url('user-department'))->with('success', 'ระบบได้ทำการแก้ไขชื่อ '.$request->name_th.' ในระบบเรียบร้อยแล้ว');
-    }
-
-    public function search_table(Request $request)
-    {
-        $data = [];
-        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $search = $request->search_value;
-
-        if (!empty($search)) {
-            $data_query = TB_departments::where('department', 'like', '%' . $search . '%')->paginate($perPage);
-
-        } else {
-            $data_query = TB_departments::paginate($perPage);
-        }
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-
-                $btn_action = '';
-
-                // if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
-                    $btn_action .='<div class="dropdown">';
-                        $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
-                                            Select <span class="caret"></span>
-                                        </button>';
-                        $btn_action .='<ul class="dropdown-menu">';
-                            if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
-                            {
-                                $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-department-edit/' . $value->id) . '\'">Edit</li>';
-                            }
-                        $btn_action .='</ul>';
-                    $btn_action .='</div>';
-                // }
-
-                $data[] = [
-                    'id' => $key + 1,
-                    'department' => $value->department,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-
-    public function paginate_table(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-
-        $query_sms = TB_departments::query();
-        if ($perPage == 10) {
-            $data_query = $query_sms->limit($request->page.'0')->get();
-        } else {
-            $data_query = $query_sms->paginate($perPage);
-        }
-
-        $data = [];
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    $btn_action = '';
-
-                    // if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
-                        $btn_action .='<div class="dropdown">';
-                            $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
-                                                Select <span class="caret"></span>
-                                            </button>';
-                            $btn_action .='<ul class="dropdown-menu">';
-                                if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
-                                {
-                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-department-edit/' . $value->id) . '\'">Edit</li>';
-                                }
-                            $btn_action .='</ul>';
-                        $btn_action .='</div>';
-                    // }
-
-                    $data[] = [
-                        'id' => $key + 1,
-                        'department' => $value->department,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-
-        return response()->json([
-                'data' => $data,
-            ]);
     }
 }
