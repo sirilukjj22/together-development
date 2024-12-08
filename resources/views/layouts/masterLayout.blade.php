@@ -312,10 +312,10 @@
                                                     <li><a class="ms-link" href="{{ route('report-agoda-outstanding') }}">Agoda Outstanding Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="#">A/P Agoda Account Receivable Report</a></li>
+                                                <li><a class="ms-link" href="{{ route('report-agoda-account-receivable') }}">A/P Agoda Account Receivable Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="#">Agoda Paid Revenue Report</a></li>
+                                                <li><a class="ms-link" href="{{ route('report-agoda-paid') }}">Agoda Paid Revenue Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
                                                 <li><a class="ms-link" href="#">Elexa EGAT Revenue Report</a></li>

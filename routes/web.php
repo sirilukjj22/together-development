@@ -34,7 +34,9 @@ use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
 use App\Http\Controllers\LinkPDFProposal;
+use App\Http\Controllers\ReportAgodaAccountReceivableController;
 use App\Http\Controllers\ReportAgodaOutstandingController;
+use App\Http\Controllers\ReportAgodaPaidController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
 use App\Http\Controllers\ReportHotelManualChangeController;
@@ -263,6 +265,16 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ReportAgodaOutstandingController::class)->middleware('role:report')->group(function () {
         Route::get('report-agoda-outstanding', 'index')->name('report-agoda-outstanding');
         Route::post('report-agoda-outstanding-search', 'search')->name('report-agoda-outstanding-search');
+    });
+
+    Route::controller(ReportAgodaAccountReceivableController::class)->middleware('role:report')->group(function () {
+        Route::get('report-agoda-account-receivable', 'index')->name('report-agoda-account-receivable');
+        Route::post('report-agoda-account-receivable-search', 'search')->name('report-agoda-account-receivable-search');
+    });
+
+    Route::controller(ReportAgodaPaidController::class)->middleware('role:report')->group(function () {
+        Route::get('report-agoda-paid', 'index')->name('report-agoda-paid');
+        Route::post('report-agoda-paid-search', 'search')->name('report-agoda-paid-search');
     });
 
     ####################################################
