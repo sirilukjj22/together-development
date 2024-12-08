@@ -14,7 +14,7 @@ class UserDepartmentsController extends Controller
 {
     public function index()
     {
-        $departments = TB_departments::paginate(10);
+        $departments = TB_departments::get();
 
         $title = "Department";
         return view('user_department.index', compact('departments', 'title'));
