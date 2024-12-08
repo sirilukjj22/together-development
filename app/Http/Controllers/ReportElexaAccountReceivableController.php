@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\DebtorAgodaRevenueExport;
+use App\Exports\DebtorAgodaAccountReceivableExport;
 use App\Models\SMS_alerts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ReportAgodaRevenueController extends Controller
+class ReportElexaAccountReceivableController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,14 +23,14 @@ class ReportAgodaRevenueController extends Controller
         $search_date = date('F Y');
 
         $data_query = SMS_alerts::whereBetween('date', [date('Y-m-d 21:00:00', strtotime('last day of previous month')), date('Y-m-t 20:59:59')])
-            ->where('status', 5)->whereNull('date_into')
+            ->where('status', 8)->where('status_receive_elexa', 1)->whereNull('date_into')
             ->orderBy('date', 'asc')->get();
 
         $total_sms_amount = SMS_alerts::whereBetween('date', [date('Y-m-d 21:00:00', strtotime('last day of previous month')), date('Y-m-t 20:59:59')])
-            ->where('status', 5)->whereNull('date_into')
+            ->where('status', 8)->where('status_receive_elexa', 1)->whereNull('date_into')
             ->orderBy('date', 'asc')->sum('amount');
 
-        return view('report.agoda_revenue.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date'));
+        return view('report.elexa_account_receivable.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date'));
     }
 
     public function search(Request $request)
@@ -41,7 +41,7 @@ class ReportAgodaRevenueController extends Controller
         $statusNotComplete = $request->statusNotComplete ?? 0;
         $endDate = '';
 
-        $query = SMS_alerts::query();
+        $query = SMS_alerts::query()->where('status_receive_elexa', 1);
 
         if ($filter_by == "date") {
             $exp = explode('-', $request->startDate);
@@ -54,22 +54,22 @@ class ReportAgodaRevenueController extends Controller
             $startDate = Carbon::createFromFormat('d/m/Y', trim($exp[0]))->format('Y-m-d');
             $endDate = Carbon::createFromFormat('d/m/Y', trim($exp[1]))->format('Y-m-d');
 
-            $query->whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 5)->whereNull('date_into');
-            $query->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 5);
+            $query->whereBetween('date', [$smsFromDate, $smsEndDate])->where('status', 8)->whereNull('date_into');
+            $query->orWhereBetween(DB::raw('DATE(date_into)'), [$startDate, $endDate])->where('status', 8)->where('status_receive_elexa', 1);
             $search_date = date('d/m/Y', strtotime($startDate))." - ".date('d/m/Y', strtotime($endDate));
         }
 
         if ($filter_by == "month") {
             $startDate = $request->month ?? 0;
-            $query->whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 5)->whereNull('date_into');
-            $query->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 5);
+            $query->whereBetween('date', [date('Y-m-d 21:00:00', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t 20:59:59', strtotime("$startDate-01"))])->where('status', 8)->whereNull('date_into');
+            $query->orWhereBetween(DB::raw('DATE(date_into)'), [date($startDate.'-01'), date('Y-m-t', strtotime("$startDate-01"))])->where('status', 8)->where('status_receive_elexa', 1);
             $search_date = date('F Y', strtotime(date($startDate.'-01')));
         }
 
         if ($filter_by == "year") {
             $startDate = $request->startDate ?? 0;
-            $query->whereYear('date', $startDate)->where('status', 5)->whereNull('date_into');
-            $query->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 5);
+            $query->whereYear('date', $startDate)->where('status', 8)->whereNull('date_into');
+            $query->orWhereYear(DB::raw('DATE(date_into)'), $startDate)->where('status', 8)->where('status_receive_elexa', 1);
             $search_date = $startDate;
         }
 
@@ -78,7 +78,7 @@ class ReportAgodaRevenueController extends Controller
         $data_query = $query->orderBy('date', 'asc')->get();
 
         if ($request->method_name == "search") {
-            return view('report.agoda_revenue.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date', 'startDate'));
+            return view('report.elexa_account_receivable.index', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date', 'startDate'));
 
         } elseif ($request->method_name == "pdf") {
 
@@ -90,11 +90,11 @@ class ReportAgodaRevenueController extends Controller
                 $page_item = 1 + $sum_page > 2.1 ? ceil($sum_page) : 1;
             }
 
-            $pdf = FacadePdf::loadView('pdf.report_agoda.1A', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date', 'startDate', 'page_item'));
+            $pdf = FacadePdf::loadView('pdf.report_elexa.elexa_account_receivable.1A', compact('data_query', 'total_sms_amount', 'filter_by', 'search_date', 'startDate', 'page_item'));
             return $pdf->stream();
 
         } elseif ($request->method_name == "excel") {
-            return Excel::download(new DebtorAgodaRevenueExport($filter_by, $data_query, $total_sms_amount, $search_date), 'agoda_revenue.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+            return Excel::download(new DebtorAgodaAccountReceivableExport($filter_by, $data_query, $total_sms_amount, $search_date), 'elexa_account_receivable.xlsx', \Maatwebsite\Excel\Excel::XLSX);
         }
     }
 }

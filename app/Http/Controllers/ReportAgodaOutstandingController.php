@@ -24,7 +24,7 @@ class ReportAgodaOutstandingController extends Controller
 
         $data_query = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5) ->where('revenue_credit.receive_payment', 0)
-            ->whereBetween('revenue.date', [date('Y-m-d', strtotime('last day of previous month')), date('Y-m-t')])
+            ->whereBetween('revenue.date', [date('Y-m-01'), date('Y-m-t')])
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
                 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
                 'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')
@@ -32,7 +32,7 @@ class ReportAgodaOutstandingController extends Controller
 
         $total_agoda_amount = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5) ->where('revenue_credit.receive_payment', 0)
-            ->whereBetween('revenue.date', [date('Y-m-d', strtotime('last day of previous month')), date('Y-m-t')])
+            ->whereBetween('revenue.date', [date('Y-m-01'), date('Y-m-t')])
             ->select('revenue_credit.agoda_outstanding')
             ->sum('revenue_credit.agoda_outstanding');
 
@@ -64,7 +64,7 @@ class ReportAgodaOutstandingController extends Controller
 
         if ($filter_by == "month") {
             $startDate = $request->month ?? 0;
-            $query->whereBetween('revenue.date', [date('Y-m-d', strtotime('-1 day', strtotime("$startDate-01"))), date('Y-m-t', strtotime("$startDate-01"))]);
+            $query->whereBetween('revenue.date', [date('Y-m-d', strtotime("$startDate-01")), date('Y-m-t', strtotime("$startDate-01"))]);
             $search_date = date('F Y', strtotime(date($startDate.'-01')));
         }
 

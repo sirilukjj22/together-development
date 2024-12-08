@@ -134,7 +134,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Agoda Revenue Report</div>
+                    <div class="span3">Elexa EGAT Account Receivable Report</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
@@ -149,7 +149,7 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                     <!-- Form Container -->
                     <div class="form-container mb-3 mb-md-0">
-                        <form action="{{ route('report-agoda-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
+                        <form action="{{ route('report-elexa-account-receivable-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                             @csrf
                             <div class="col-md-12">
                                 <h3>Search</h3>
@@ -197,7 +197,7 @@
                     </div>
                     <div class="text-capitalize d-grid gap-0" style="height: max-content;">
                         <span class="f-semi">Together Resort Kaengkrachan</span>
-                        <span>Agoda Revenue</span>
+                        <span>Elexa EGAT Account Receivable</span>
                         <span>Date On : {{ $search_date }}</span>
                     </div>
                 </div>
@@ -250,7 +250,7 @@
                                     </td>
                                     <td class="td-content-center target-class text-end">{{$item->amount }}</td>
                                     <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
-                                    <td class="td-content-center">Agoda Bank Transfer Revenue</td>
+                                    <td class="td-content-center">Elexa EGAT Bank Transfer Revenue</td>
                                     <td class="td-content-center">
                                         {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                     </td>
@@ -271,7 +271,7 @@
 
     <input type="hidden" id="filter-by-old" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
     <input type="hidden" id="date-old" value="{{ isset($search_date) ? $search_date : date('Y-m') }}">
-    <input type="hidden" id="status-revenue" value="5">
+    <input type="hidden" id="status-revenue" value="8">
 
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
 

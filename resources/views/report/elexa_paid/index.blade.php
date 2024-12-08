@@ -128,13 +128,22 @@
             padding: 8px 8px;
         }
     }
+
+    .wrap-status-paid {
+        background-color: #44a768;
+        color: white;
+        vertical-align: middle;
+        padding: 3px 8px;
+        border-radius: 7px;
+        font-size: 0.8em;
+    }
 </style>
 
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Agoda Revenue Report</div>
+                    <div class="span3">Elexa EGAT Paid Revenue Report</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
@@ -149,7 +158,7 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                     <!-- Form Container -->
                     <div class="form-container mb-3 mb-md-0">
-                        <form action="{{ route('report-agoda-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
+                        <form action="{{ route('report-elexa-paid-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                             @csrf
                             <div class="col-md-12">
                                 <h3>Search</h3>
@@ -197,7 +206,7 @@
                     </div>
                     <div class="text-capitalize d-grid gap-0" style="height: max-content;">
                         <span class="f-semi">Together Resort Kaengkrachan</span>
-                        <span>Agoda Revenue</span>
+                        <span>Elexa EGAT Paid Revenue</span>
                         <span>Date On : {{ $search_date }}</span>
                     </div>
                 </div>
@@ -211,56 +220,33 @@
                     <div style="min-height: 70vh;">
                         <table id="smsAgodaTable" class="table-together table-style" >
                             <thead>
-                                <tr>
-                                    <th style="text-align: center;" data-priority="1">#</th>
-                                    <th style="text-align: center;" data-priority="1">Date</th>
-                                    <th style="text-align: center;">Time</th>
-                                    <th style="text-align: center;">Bank</th>
-                                    <th style="text-align: center;">Bank Account</th>
-                                    <th style="text-align: center;" data-priority="1">Amount</th>
-                                    <th style="text-align: center;">Creatd By</th>
-                                    <th style="text-align: center;">Income Type</th>
-                                    <th style="text-align: center;">Transfer Date</th>
+                                <tr class="text-capitalize">
+                                    <th data-priority="1">#</th>
+                                    <th data-priority="1">วันที่ทำรายการ</th>
+                                    <th data-priority="3">Order ID</th>
+                                    <th data-priority="1">amount</th>
+                                    <th data-priority="2">status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($data_query as $key => $item)
-                                <tr>
-                                    <td class="td-content-center">{{ $key + 1 }}</td>
-                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                    <td class="td-content-center">
-                                        <?php
-                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
-                                        ?>
-                                        <div>
-                                            @if (file_exists($filename))
-                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
-                                            @elseif (file_exists($filename2))
-                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
-                                            @endif
-                                            {{ @$item->transfer_bank->name_en }}
-                                        </div>
-                                    </td>
-                                    <td class="td-content-center">
-                                        <div class="flex-jc p-left-4 center">
-                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
-                                        </div>
-                                    </td>
-                                    <td class="td-content-center target-class text-end">{{$item->amount }}</td>
-                                    <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
-                                    <td class="td-content-center">Agoda Bank Transfer Revenue</td>
-                                    <td class="td-content-center">
-                                        {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                        <td>{{ $item->batch }}</td>
+                                        <td class="text-end target-class">{{ $item->ev_revenue }}</td>
+                                        <td><span class="wrap-status-paid">paid</span></td>
+                                    </tr>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <td colspan="5" class="text-center fw-bold">Total</td>
-                                <td class="text-end fw-bold">{{ number_format($total_sms_amount, 2) }}</td>
-                                <td colspan="3"></td>
+                            <tfoot style="background-color: #d7ebe1; font-weight: bold">
+                                <tr>
+                                    <td></td>
+                                    <td class="text-center" style="padding: 10px">Total</td>
+                                    <td></td>
+                                    <td class="text-end format-number-table" id="tfoot-total-outstanding">{{ $total_elexa_amount }}</td>
+                                    <td></td>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>
@@ -271,7 +257,7 @@
 
     <input type="hidden" id="filter-by-old" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
     <input type="hidden" id="date-old" value="{{ isset($search_date) ? $search_date : date('Y-m') }}">
-    <input type="hidden" id="status-revenue" value="5">
+    <input type="hidden" id="status-revenue" value="8">
 
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
 

@@ -134,7 +134,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Agoda Revenue Report</div>
+                    <div class="span3">Elexa EGAT Revenue Report</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
@@ -149,7 +149,7 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                     <!-- Form Container -->
                     <div class="form-container mb-3 mb-md-0">
-                        <form action="{{ route('report-agoda-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
+                        <form action="{{ route('report-elexa-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                             @csrf
                             <div class="col-md-12">
                                 <h3>Search</h3>
@@ -197,7 +197,7 @@
                     </div>
                     <div class="text-capitalize d-grid gap-0" style="height: max-content;">
                         <span class="f-semi">Together Resort Kaengkrachan</span>
-                        <span>Agoda Revenue</span>
+                        <span>Elexa EGAT Revenue</span>
                         <span>Date On : {{ $search_date }}</span>
                     </div>
                 </div>

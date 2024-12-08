@@ -12,7 +12,6 @@ use App\Http\Controllers\master_booking;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\master_product_i;
-use App\Http\Controllers\Master_bank;
 use App\Http\Controllers\Master_prefix;
 use App\Http\Controllers\Master_Company_type;
 use App\Http\Controllers\Master_market;
@@ -39,6 +38,10 @@ use App\Http\Controllers\ReportAgodaOutstandingController;
 use App\Http\Controllers\ReportAgodaPaidController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
+use App\Http\Controllers\ReportElexaAccountReceivableController;
+use App\Http\Controllers\ReportElexaOutstandingController;
+use App\Http\Controllers\ReportElexaPaidController;
+use App\Http\Controllers\ReportElexaRevenueController;
 use App\Http\Controllers\ReportHotelManualChangeController;
 use App\Http\Controllers\ReportHotelWaterparkRevenueController;
 use Illuminate\Support\Facades\Artisan;
@@ -275,6 +278,26 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ReportAgodaPaidController::class)->middleware('role:report')->group(function () {
         Route::get('report-agoda-paid', 'index')->name('report-agoda-paid');
         Route::post('report-agoda-paid-search', 'search')->name('report-agoda-paid-search');
+    });
+
+    Route::controller(ReportElexaRevenueController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-revenue', 'index')->name('report-elexa-revenue');
+        Route::post('report-elexa-revenue-search', 'search')->name('report-elexa-revenue-search');
+    });
+
+    Route::controller(ReportElexaOutstandingController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-outstanding', 'index')->name('report-elexa-outstanding');
+        Route::post('report-elexa-outstanding-search', 'search')->name('report-elexa-outstanding-search');
+    });
+
+    Route::controller(ReportElexaAccountReceivableController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-account-receivable', 'index')->name('report-elexa-account-receivable');
+        Route::post('report-elexa-account-receivable-search', 'search')->name('report-elexa-account-receivable-search');
+    });
+
+    Route::controller(ReportElexaPaidController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-paid', 'index')->name('report-elexa-paid');
+        Route::post('report-elexa-paid-search', 'search')->name('report-elexa-paid-search');
     });
 
     ####################################################

@@ -318,16 +318,16 @@
                                                 <li><a class="ms-link" href="{{ route('report-agoda-paid') }}">Agoda Paid Revenue Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_water_park_revenue == 1) --}}
-                                                <li><a class="ms-link" href="#">Elexa EGAT Revenue Report</a></li>
+                                                <li><a class="ms-link" href="{{ route('report-elexa-revenue') }}">Elexa EGAT Revenue Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                    <li><a class="ms-link" href="#">Elexa EGAT Outstanding Report</a></li>
+                                                    <li><a class="ms-link" href="{{ route('report-elexa-outstanding') }}">Elexa EGAT Outstanding Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="#">A/P Elexa EGAT Account Receivable Report</a></li>
+                                                <li><a class="ms-link" href="{{ route('report-elexa-account-receivable') }}">A/P Elexa EGAT Account Receivable Report</a></li>
                                                 {{-- @endif --}}
                                                 {{-- @if (Auth::user()->roleMenu->report_hotel_manual_charge == 1) --}}
-                                                <li><a class="ms-link" href="#">Elexa EGAT Paid Revenue Report</a></li>
+                                                <li><a class="ms-link" href="{{ route('report-elexa-paid') }}">Elexa EGAT Paid Revenue Report</a></li>
                                                 {{-- @endif --}}
                                             </ul>
                                         </li>
