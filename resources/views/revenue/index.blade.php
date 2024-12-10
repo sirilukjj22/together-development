@@ -1294,7 +1294,12 @@
                             <td colspan="100%">Payment Summary Details Report</td>
                           </tr>
                           <tr>
-                            <td class="text-end f-semi">Hotel Revenue </td>
+                            <td class="text-end f-semi">
+                                <i class="fa fa-info-circle" data-tooltip-target="tooltip-default"></i> Hotel Revenue
+                                <div id="tooltip-default" role="tooltip" class="absolute tooltip-2"> 
+                                    Front Desk Revenue <br> Guest Deposit Revenue <br> All Outlet Revenue
+                                </div>
+                            </td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
                                     {{ number_format($summary_hotel_revenue_bank_date + $total_cash, 2) }}
