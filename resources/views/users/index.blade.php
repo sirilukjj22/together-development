@@ -22,7 +22,7 @@
         border-radius: 7px;
         font-size: 0.8em;
     }
-</style>
+</style> 
 
     <div id="content-index" class="border-bottom d-flex py-3">
         <div class="container-xl">
