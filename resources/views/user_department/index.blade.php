@@ -51,9 +51,7 @@
                                             <td class="td-content-center text-start">{{ $item->department }}</td>
                                             <td class="td-content-center">
                                                 <div class="dropdown">
-                                                    <button type="button" class="btn"
-                                                        style="background-color: #2C7F7A; color:white;"
-                                                        data-bs-toggle="dropdown" data-toggle="dropdown">
+                                                    <button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
                                                         Select <span class="caret"></span>
                                                     </button>
                                                     @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
@@ -76,21 +74,9 @@
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
+    <!-- Sweet Alert 2 -->
+    <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
 
     <script>
-        $('.btn-status').on('click', function() {
-            var id = $(this).val();
-
-            jQuery.ajax({
-                type: "GET",
-                url: "{!! url('user/change-status/"+id+"') !!}",
-                datatype: "JSON",
-                async: false,
-                success: function(result) {
-                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                    location.reload();
-                },
-            });
-        });
     </script>
 @endsection

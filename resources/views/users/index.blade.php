@@ -3,6 +3,27 @@
     $excludeDatatable = false;
 @endphp
 @section('content')
+
+<style>
+    .wrap-status-active {
+        background-color: rgb(30, 133, 47);
+        color: white;
+        vertical-align: middle;
+        padding: 3px 8px;
+        border-radius: 7px;
+        font-size: 0.8em;
+    }
+
+    .wrap-status-disable {
+        background-color: rgb(224, 94, 42);
+        color: white;
+        vertical-align: middle;
+        padding: 3px 8px;
+        border-radius: 7px;
+        font-size: 0.8em;
+    }
+</style>
+
     <div id="content-index" class="border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
@@ -83,11 +104,9 @@
                                             <td class="td-content-center text-start">{{ @$item->permissionName->department }}</td>
                                             <td class="td-content-center">
                                                 @if ($item->status == 1)
-                                                    <button type="button" class="btn btn-light-success btn-sm btn-status"
-                                                        value="{{ $item->id }}">Active</button>
+                                                    <span class="wrap-status-active">Active</span>
                                                 @else
-                                                    <button type="button" class="btn btn-light-success btn-sm btn-status"
-                                                        value="{{ $item->id }}">Disabled</button>
+                                                    <span class="wrap-status-disable">No active</span>
                                                 @endif
                                             </td>
                                             <td class="td-content-center">
@@ -98,6 +117,7 @@
                                                     @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
                                                         <ul class="dropdown-menu">
                                                             <li class="button-li" onclick="window.location.href='{{ route('user-edit', $item->id) }}'">Edit</li>
+                                                            <li class="button-li" onclick="btnChangeStatus({{ $item->id }})">{{ $item->status == 1 ? "No active" : "Active" }}</li>
                                                         </ul>
                                                     @endif
                                                 </div>
@@ -115,21 +135,36 @@
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
+    <!-- Sweet Alert 2 -->
+    <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
 
     <script>
-        $('.btn-status').on('click', function() {
-            var id = $(this).val();
+        function btnChangeStatus(id) {
+            Swal.fire({
+                icon: "info",
+                title: 'ต้องการเปลี่ยนสถานะใช่หรือไม่?',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
 
-            jQuery.ajax({
-                type: "GET",
-                url: "{!! url('user/change-status/"+id+"') !!}",
-                datatype: "JSON",
-                async: false,
-                success: function(result) {
-                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                    location.reload();
-                },
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "{!! url('user/change-status/"+id+"') !!}",
+                        datatype: "JSON",
+                        async: false,
+                        success: function(result) {
+                            Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                            location.reload();
+                        },
+                    });
+
+                } else if (result.isDenied) {
+                    Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', '', 'info');
+                }
             });
-        });
+        }
     </script>
 @endsection
