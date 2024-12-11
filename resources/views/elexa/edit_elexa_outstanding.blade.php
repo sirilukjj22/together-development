@@ -184,6 +184,7 @@
                 <table id="myDataTableOutstanding" class="table-style table-together" style="width: 100%;">
                     <thead>
                         <tr class="text-capitalize">
+                            <th hidden></th>
                             <th data-priority="1">Date</th>
                             <th data-priority="1">Order ID</th>
                             <th data-priority="1">amount</th>
@@ -197,6 +198,7 @@
                         ?>
                         @foreach ($elexa_outstanding as $key => $item)
                             <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $outstanding_amount += 1 }}">
+                                <td hidden>{{ Carbon\Carbon::parse($item->date)->format('Y-m-d') }}</td>
                                 <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                 <td>{{ $item->batch }}</td>
                                 <td class="target-class">{{ $item->ev_revenue }}</td>
@@ -467,7 +469,7 @@
                                         searching: true,
                                         paging: true,
                                         info: true,
-                                        order: true,
+                                        ordering: true,
                                         serverSide: false,
                                         responsive: {
                                         details: {
@@ -479,11 +481,12 @@
                                             $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
                                         },
                                         columnDefs: [
+                                            { targets: 0, visible: false }, // ซ่อนคอลัมน์ที่เก็บข้อมูล ISO 8601
                                             {
-                                                targets: [3], className: 'dt-center text-center',
+                                                targets: [4], className: 'dt-center text-center',
                                             },
                                             {
-                                                targets: [2], className: 'text-end',
+                                                targets: [3], className: 'text-end',
                                             },
                                             {
                                                 targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
@@ -500,7 +503,6 @@
                                                 },
                                             },
                                         ],
-                                        order: [2, 'asc'],
                                     }
                                 );
 
@@ -512,6 +514,7 @@
                             table.rows.add(
                                 [
                                     [
+                                        response.data.date, // คอลัมน์ที่ซ่อน ใช้ ISO 8601 สำหรับการจัดเรียง
                                         moment(response.data.date).format('DD/MM/YYYY'),
                                         response.data.batch,
                                         currencyFormat(response.data.ev_revenue),
@@ -523,7 +526,7 @@
                         }
 
                         $('#btn-receive-' + id).val(0);
-                        table.draw(); // refresh table
+                        table.order([0, 'asc']).draw();
 
                     }
                 });
@@ -643,7 +646,7 @@
     }
 
     // ปุ่มลบรายการตารางที่ยืนยันแล้ว
-    function delete_receive_payment(ele, id, amount) {
+    function delete_receive_payment(ele, id, amount) { 
         var revenueID = $('#revenue_id').val();
         var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Elexa EGAT Revenue (SMS)
         var total = Number($('#total_outstanding').val());
@@ -696,7 +699,7 @@
                                 searching: true,
                                 paging: true,
                                 info: true,
-                                order: true,
+                                order: false,
                                 serverSide: false,
                                 responsive: {
                                 details: {
@@ -708,11 +711,12 @@
                                     $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
                                 },
                                 columnDefs: [
+                                    { targets: 0, visible: false }, // ซ่อนคอลัมน์ที่เก็บข้อมูล ISO 8601
                                     {
-                                        targets: [3], className: 'dt-center text-center',
+                                        targets: [4], className: 'dt-center text-center',
                                     },
                                     {
-                                        targets: [2], className: 'text-end',
+                                        targets: [3], className: 'text-end',
                                     },
                                     {
                                         targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
@@ -729,13 +733,13 @@
                                         },
                                     },
                                 ],
-                                order: [0, 'asc'],
                             }
                         );
 
                     table.rows.add(
                         [
                             [
+                                response.data.date, // คอลัมน์ที่ซ่อน ใช้ ISO 8601 สำหรับการจัดเรียง
                                 moment(response.data.date).format('DD/MM/YYYY'),
                                 response.data.batch,
                                 currencyFormat(response.data.ev_revenue),
@@ -747,7 +751,7 @@
                 }
 
                 $('#btn-receive-' + id).val(0);
-                table.draw(); // refresh table
+                table.order([0, 'asc']).draw(); // refresh table
 
                 $(window).on("resize", adjustDataTable);
 
@@ -797,10 +801,8 @@
                         data: $('#form-elexa').serialize(),
                         async: false,
                         success: function(result) {
-                            // Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success').then(() => {
-                                // ใช้ window.location เพื่อไปยัง URL ที่ต้องการหลังจากบันทึก
-                                window.location.href = "{!! route('debit-elexa-revenue') !!}";
-                            // });
+                            // ใช้ window.location เพื่อไปยัง URL ที่ต้องการหลังจากบันทึก
+                            window.location.href = "{!! route('debit-elexa-revenue') !!}";
                         },
                     });
 
