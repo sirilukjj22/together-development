@@ -24,7 +24,7 @@ class UsersController extends Controller
      */
     public function index($menu)
     {
-        $users = User::where('status', 1)->paginate(10);
+        $users = User::where('status', 1)->get();
 
         $exp = explode('_', $menu);
 
@@ -32,11 +32,11 @@ class UsersController extends Controller
             $search = $exp[1];
 
             if ($search == "all") {
-                $users = User::paginate(10);
+                $users = User::get();
             }elseif ($search == 'ac') {
-                $users = User::where('status', 1)->paginate(10);
+                $users = User::where('status', 1)->get();
             }else {
-                $users = User::where('status', 0)->paginate(10);
+                $users = User::where('status', 0)->get();
             }
         }
 
@@ -68,130 +68,6 @@ class UsersController extends Controller
         return view('users.create', compact('tb_menu', 'departments', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
-    public function search_table(Request $request)
-    {
-        $data = [];
-        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $search = $request->search_value;
-
-        if (!empty($search)) {
-            $data_query = User::where('status', 1)->where('name', 'like', '%' . $search . '%')->paginate($perPage);
-
-        } else {
-            $data_query = User::where('status', 1)->paginate($perPage);
-        }
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-
-                $status_name = '';
-                $btn_action = '';
-
-                // ประเภทรายได้
-                if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
-                if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
-
-                if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
-                    $btn_action .='<div class="dropdown">';
-                        $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
-                                            Select <span class="caret"></span>
-                                        </button>';
-                        $btn_action .='<ul class="dropdown-menu">';
-                            if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
-                            {
-                                $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit/' . $value->id) . '\'">Edit</li>';
-                            }
-                        $btn_action .='</ul>';
-                    $btn_action .='</div>';
-                }
-
-                $data[] = [
-                    'id' => $key + 1,
-                    'username' => $value->name,
-                    'permission_name' => @$value->permissionName->department,
-                    'status_name' => $status_name,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-
-    public function paginate_table(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-
-        $query_sms = User::query();
-
-            if ($request->status != 0) { 
-                $query_sms->where('status', $request->status); 
-            }
-
-        $query_sms->orderBy('id', 'asc');
-
-        if ($perPage == 10) {
-            $data_query = $query_sms->limit($request->page.'0')->get();
-        } else {
-            $data_query = $query_sms->paginate($perPage);
-        }
-
-        $data = [];
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    $status_name = '';
-                    $btn_action = '';
-
-                    // ประเภทรายได้
-                    if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
-                    if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
-
-                    if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
-                        $btn_action .='<div class="dropdown">';
-                            $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
-                                                Select <span class="caret"></span>
-                                            </button>';
-                            $btn_action .='<ul class="dropdown-menu">';
-                                if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
-                                {
-                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit/' . $value->id) . '\'">Edit</li>';
-                                }
-                            $btn_action .='</ul>';
-                        $btn_action .='</div>';
-                    }
-
-                    $data[] = [
-                        'number' => $key + 1,
-                        'username' => $value->name,
-                        'permission_name' => @$value->permissionName->department,
-                        'status_name' => $status_name,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-
-        return response()->json([
-                'data' => $data,
-            ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $user = User::where('id', $id)->first();
@@ -309,10 +185,19 @@ class UsersController extends Controller
                 'company_event' => $request->menu_company_event ?? 0,
                 'booking' => $request->menu_booking ?? 0,
                 'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
+
                 'report' => $request->menu_report_main ?? 0,
                 'audit_hotel_water_park_revenue' => $request->menu_audit_hotel_water_park_revenue ?? 0,
                 'report_hotel_water_park_revenue' => $request->menu_report_hotel_water_park_revenue ?? 0,
                 'report_hotel_manual_charge' => $request->menu_report_hotel_manual_charge ?? 0,
+                'agoda_revenue_report' => $request->menu_agoda_revenue_report ?? 0,
+                'agoda_outstanding_report' => $request->menu_agoda_outstanding_report ?? 0,
+                'agoda_account_receivable_report' => $request->menu_agoda_account_receivable_report ?? 0,
+                'agoda_paid_revenue_report' => $request->menu_agoda_paid_revenue_report ?? 0,
+                'elexa_revenue_report' => $request->menu_elexa_revenue_report ?? 0,
+                'elexa_outstanding_report' => $request->menu_elexa_outstanding_report ?? 0,
+                'elexa_account_receivable_report' => $request->menu_elexa_account_receivable_report ?? 0,
+                'elexa_paid_revenue_report' => $request->menu_elexa_paid_revenue_report ?? 0,
 
                 'select_menu_all' => $request->select_menu_all ?? 0,
               ]);

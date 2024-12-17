@@ -2,85 +2,149 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document_elexa;
+use App\Models\Log_elexa;
 use App\Models\Revenue_credit;
 use App\Models\SMS_alerts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ElexaController extends Controller
 {
     public function index()
     {
-        $elexa_revenue = SMS_alerts::where('status', 8)->select('sms_alert.*', DB::raw("Month(date) as month, SUM(amount) as total_sum"))->groupBy('month')->get();
+        $query_revenue = SMS_alerts::query()->where('status', 8)
+            ->select('sms_alert.*', 
+                DB::raw("MONTH(date) as month, SUM(amount) as total_sum, COUNT(id) as total_item"),
+                DB::raw("SUM(CASE WHEN status_receive_elexa = 1 THEN status_receive_elexa ELSE 0 END) as total_receive"))
+            ->groupBy('month');
+
+        $total_elexa_revenue = $query_revenue->get()->sum('total_sum');
+        $elexa_revenue = $query_revenue->get();
 
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
+            ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0)
+            ->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->orderBy('revenue.date', 'asc')->get();
+
+        $elexa_debit = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1)
+            ->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->orderBy('revenue.date', 'asc')->get();
+
+        $sms_revenue_all = SMS_alerts::where('status', 8)->select('amount', 'status_receive_elexa')->get();
+
+        $elexa_all = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch',
-            'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->select('revenue_credit.receive_payment', 'revenue_credit.ev_revenue', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee',)
             ->get();
 
+
+            $totalAccountReceivableAll = 0;
+            $totalPendingAccountReceivableAll = 0;
+            foreach ($sms_revenue_all as $key => $value) {
+                if ($value->status_receive_elexa == 1) {
+                    $totalAccountReceivableAll += $value->amount;
+                } else {
+                    $totalPendingAccountReceivableAll += $value->amount;
+                }
+            }
+
             $total_outstanding_all = 0;
-            $elexa_debit_outstanding = 0;
-            foreach ($elexa_outstanding as $key => $value) {
+            $total_elexa_charge_all = 0;
+            $total_elexa_fee = 0;
+            $total_elexa_outstanding_revenue = 0;
+            $total_elexa_debit_outstanding = 0;
+            foreach ($elexa_all as $key => $value) {
                 if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_revenue;
+                    $total_elexa_debit_outstanding += $value->ev_revenue;
+                } else {
+                    $total_elexa_outstanding_revenue += $value->ev_revenue;
                 }
                 $total_outstanding_all += $value->ev_revenue;
+                $total_elexa_charge_all += $value->ev_charge;
+                $total_elexa_fee += $value->ev_fee;
             }
 
-        $title = "Elexa";
+        $title = "Elexa EGAT";
 
-        return view('elexa.index', compact('elexa_outstanding', 'elexa_revenue', 'total_outstanding_all', 'elexa_debit_outstanding', 'title'));
+        return view('elexa.index', compact(
+            'totalAccountReceivableAll', 'totalPendingAccountReceivableAll',
+            'elexa_revenue', 'elexa_outstanding', 'elexa_debit', 
+            'total_elexa_revenue', 'total_outstanding_all', 'total_elexa_charge_all',
+            'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding',
+            'total_elexa_fee',
+            'title'
+        ));
     }
 
-    public function index_list_days($month, $year)
+    // หน้าเลือกที่จะทำรายการ
+    public function index_list_days()
     {
-        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
-                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
-            ->get();
+        $query = SMS_alerts::query()->where('status', 8);
+        
+        $total_elexa_revenue = $query->get()->sum('amount');
+        $elexa_revenue = $query->orderBy('date', 'asc')->get();
 
-            $total_outstanding_all = 0;
-            $elexa_debit_outstanding = 0;
-            foreach ($elexa_outstanding as $key => $value) {
-                if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_charge;
-                }
-                $total_outstanding_all += $value->ev_charge;
-            }
+        $title = "Elexa EGAT Revenue";
 
-        $title = "Elexa";
-
-        $elexa_revenue = SMS_alerts::where('status', 8)->whereMonth('date', $month)->whereYear('date', $year)->get();
-
-        return view('elexa.elexa_outstanding', compact('elexa_outstanding', 'elexa_revenue', 'total_outstanding_all', 'elexa_debit_outstanding', 'title', 'month', 'year'));
+        return view('elexa.list_elexa', compact('elexa_revenue', 'total_elexa_revenue', 'title'));
     }
 
-    public function index_receive($id, $month, $year)
+    // หน้าเลือกรายการที่จะรับชำระ (Create/Edit)
+    public function index_receive($id)
     {
+        $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount', 'status_receive_elexa', DB::raw('DATE(date) as sms_date'))->first();
+
+        // เลขที่เอกสาร
+        if ($elexa_revenue->status_receive_elexa == 0) {
+            $document_no = $this->generateDocumentNumber();
+        } else {
+            $document_query = Document_elexa::where('sms_id', $id)->select('doc_no')->first();
+            $document_no = !empty($document_query) ? $document_query->doc_no : '';
+        }
+
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
+            ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 0)
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+                'revenue_credit.ev_revenue', 'revenue_credit.ev_fee',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
-            $total_outstanding_all = 0;
-            $elexa_debit_outstanding = 0;
-            foreach ($elexa_outstanding as $key => $value) {
-                if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_charge;
-                }
-                $total_outstanding_all += $value->ev_charge;
+        $elexa_debit_revenue = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 1)
+            ->where('revenue_credit.sms_revenue', $id)
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+                'revenue_credit.ev_revenue', 'revenue_credit.ev_fee',
+                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->orderBy('revenue.date', 'asc')->get();
+
+        $elexa_all = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8)
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+                'revenue_credit.ev_revenue', 'revenue_credit.ev_fee',
+                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->orderBy('revenue.date', 'asc')->get();
+
+        $title = "Debit Elexa EGAT Revenue";
+
+        $total_outstanding_all = 0;
+        $total_elexa_outstanding_revenue = 0;
+        $total_elexa_debit_outstanding = 0;
+        foreach ($elexa_all as $key => $value) {
+            if ($value->receive_payment == 1) {
+                $total_elexa_debit_outstanding += $value->ev_revenue;
+            } else {
+                $total_elexa_outstanding_revenue += $value->ev_revenue;
             }
+            $total_outstanding_all += $value->elexa_outstanding;
+        }
 
-            $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount')->first();
-
-            $title = "Elexa";
-
-        return view('elexa.edit_elexa_outstanding', compact('elexa_outstanding', 'elexa_revenue', 'total_outstanding_all', 'elexa_debit_outstanding', 'title', 'month', 'year'));
+        return view('elexa.edit_elexa_outstanding', compact('elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
     }
 
     public function select_elexa_outstanding($id) {
@@ -96,51 +160,96 @@ class ElexaController extends Controller
             ]);
     }
 
-    public function search_month($month) {
+    // ค้นหารายการ (tr > child) ของหน้าแรกตารางที่ 1
+    public function search_detail($group)
+    {
+        $exp = explode('group', $group);
+        $id = $exp[1];
+        
+        $check = SMS_alerts::where('id', $id)->select('date', 'date_into')->first();
 
-        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            ->whereMonth('revenue.date', $month)->where('revenue_credit.status', 8)
-            ->where('revenue_credit.receive_payment', 0)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
-                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')->get();
+        $data_child = SMS_alerts::whereMonth('date', Carbon::parse($check->date)->format('m'))
+                        ->whereYear('date', Carbon::parse($check->date)->format('Y'))->where('status', 8)
+                        ->select('id', 'date', 'amount', 'status_receive_elexa')->get();
 
-
-        $data = [];
-        $total_amount = 0;
-
-        foreach ($elexa_outstanding as $key => $value) {
-            $checkbox = '<div class="form-check form-check-inline">
-                            <input class="form-check-input checkbox-item" id="checkbox-outstanding'.($key + 1).'" type="checkbox" name="checkbox" value="'.$value->id.'">
-                            <label class="form-check-label"></label>
-                        </div>';
-
-            $btn = '<button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding'.($key + 1).'" id="btn-receive-'.$value->id.'" value="0"
-                                            onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')">รับชำระ</button>';
-            
-            $total_amount += $value->ev_revenue;
-            $data[] = [
-                'id' => $value->id,
-                'date' => Carbon::parse($value->date)->format('d/m/Y'),
-                'orderID' => $value->batch,
-                'ev_revenue' => number_format($value->ev_revenue, 2),
-            ];
-        }
-
-            return response()->json([
-                'data' => $data,
-                'total_amount' => $total_amount
-            ]);
+        return response()->json([
+            'data' => $data_child,
+        ]);
     }
 
-    public function receive_payment(Request $request) {
+    // ปุ่ม Confirm ใน Modal
+    public function confirm_select_elexa_outstanding(Request $request) 
+    {
+        if (!empty($request->receive_select_id)) {
+            $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                ->whereIn('revenue_credit.id', $request->receive_select_id)->where('revenue_credit.status', 8)
+                ->select('revenue_credit.id', 'revenue_credit.batch',
+                    'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.receive_payment',
+                    'revenue_credit.ev_revenue', 'revenue_credit.sms_revenue', 'revenue.date')->get();
 
+            
+            return response()->json([
+                'data' => $elexa_outstanding,
+                'status' => 200,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+            ]);
+        }
+    }
+
+    // บันทึกข้อมูล
+    public function receive_payment(Request $request) 
+    {
         if (isset($request->receive_id)) {
 
-            $data_update = Revenue_credit::where('sms_revenue', $request->revenue_id)->update([
-                'date_receive' => null,
-                'receive_payment' => 0,
-                'sms_revenue' => null
-            ]);
+            $check_document_old = Document_elexa::where('sms_id', $request->sms_id)->first();
+
+            if (!empty($check_document_old)) {
+               Document_elexa::where('sms_id', $request->sms_id)->update([
+                    'issue_date' => $request->issue_date,
+                    'sms_id' => $request->sms_id,
+                    'status_lock' => 1,
+                    'status_paid' => 1,
+                    'created_by' => Auth::user()->id
+                ]);
+
+                $check_detail_old = Revenue_credit::where('sms_revenue', $request->sms_id)->select('id')->get();
+
+                if ($check_detail_old->isNotEmpty()) {
+                    $check_document_old->receive_id = [$check_detail_old->pluck('id')->toArray()]; // ใช้ pluck เพื่อดึง id ทั้งหมด
+                } else {
+                    $check_document_old->receive_id = []; // กรณีไม่มีข้อมูล
+                }
+
+                $request['id'] = $check_document_old->id;
+
+                $log = Log_elexa::SaveLog('edit', $check_document_old, $request);
+
+            } else {
+                $data = Document_elexa::create([
+                    'doc_no' => $this->generateDocumentNumber(),
+                    'issue_date' => $request->issue_date,
+                    'sms_id' => $request->sms_id,
+                    'status_lock' => 1,
+                    'status_paid' => 1,
+                    'created_by' => Auth::user()->id
+                ])->id;
+
+                $request['id'] = $data;
+
+                $log = Log_elexa::SaveLog('add', 0, $request);
+            }
+            
+            if ($log) {
+                // อัพเดทรายการเดิมให้เป็น 0 ก่อน
+                Revenue_credit::where('sms_revenue', $request->sms_id)->update([
+                    'date_receive' => null,
+                    'receive_payment' => 0,
+                    'sms_revenue' => null
+                ]);
+            }
 
             foreach ($request->receive_id as $key => $value) {
                 $check_data = Revenue_credit::where('id', $value)->first();
@@ -149,11 +258,12 @@ class ElexaController extends Controller
                     Revenue_credit::where('id', $value)->update([
                         'date_receive' => date('Y-m-d'),
                         'receive_payment' => 1,
-                        'sms_revenue' => $request->revenue_id
+                        'sms_revenue' => $request->sms_id
                     ]);
                 }
 
-                SMS_alerts::where('id', $request->revenue_id)->update([
+                // เปลี่ยนสถานะ SMS เป็น 1 = รับชำระแล้ว
+                SMS_alerts::where('id', $request->sms_id)->update([
                     'status_receive_elexa' => 1
                 ]);
             }
@@ -171,28 +281,23 @@ class ElexaController extends Controller
         }
     }
 
-    public function index_detail_receive($id, $month, $year)
+    // หน้าดูรายละเอียด
+    public function index_detail_receive($id)
     {
-        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
-                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
-            ->orderBy('revenue.date', 'asc')->get();
+        $elexa_query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 1)->where('revenue_credit.sms_revenue', $id)
+            ->select('revenue_credit.id', 'revenue_credit.batch',
+                'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.receive_payment',
+                'revenue_credit.ev_revenue', 'revenue_credit.sms_revenue', 'revenue.date');
+            
+        $total_elexa_outstanding = $elexa_query->sum('revenue_credit.ev_revenue');
+        $elexa_outstanding = $elexa_query->orderBy('revenue.date', 'asc')->get();
 
-            $total_outstanding_all = 0;
-            $elexa_debit_outstanding = 0;
-            foreach ($elexa_outstanding as $key => $value) {
-                if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_revenue;
-                }
-                $total_outstanding_all += $value->ev_revenue;
-            }
+        $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount', DB::raw('DATE(date) as sms_date'))->first();
 
-            $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount')->first();
+        $title = "Debit Elexa EGAT Revenue";
 
-            $title = "Debit Elexa Revenue";
-
-            return view('elexa.detail_elexa_outstanding', compact('elexa_outstanding', 'elexa_revenue', 'total_outstanding_all', 'elexa_debit_outstanding', 'title', 'month', 'year'));
+        return view('elexa.detail_elexa_outstanding', compact('elexa_outstanding', 'elexa_revenue', 'total_elexa_outstanding', 'title'));
     }
 
     public function status_elexa_receive($status) {
@@ -207,14 +312,555 @@ class ElexaController extends Controller
             ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    // เปลี่ยนสถานะ Lock/Unlock
+    public function change_lock_unlock($id, $status)
     {
-        //
+        
+        try {
+            Document_elexa::where('sms_id', $id)->update([
+                'status_lock' => $status
+            ]);
+
+            $check = Document_elexa::where('sms_id', $id)->first();
+
+            Log_elexa::create([
+                'document_id' => $check->id,
+                'type' => $status == 0 ? "Unlock" : "Lock",
+                'changed_attributes' => "Status (Lock/Unlock) : " . $status == 0 ? "Unlock" : "Lock", // บันทึกเฉพาะฟิลด์ที่มีการเปลี่ยนแปลง
+                'created_by' => Auth::user()->id, // ตรวจสอบการล็อกอินของผู้ใช้
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'status' => 404
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
+    // หน้า Log
+    public function logs($id)
+    {
+        $document_elexa = Document_elexa::where('sms_id', $id)->first();
+
+        $log_elexa = Log_elexa::where('document_id', $document_elexa->id)->get();
+
+        $title = "Logs";
+
+        return view('elexa.log_elexa', compact('document_elexa', 'log_elexa', 'title'));
+    }
+
+    // Generate Document No 
+    public function generateDocumentNumber() {
+        // ดึงปีและเดือนปัจจุบันในรูปแบบ YYMM
+        $yearMonth = now()->format('y') . now()->format('m'); // ตัวอย่าง: 2411
+
+        // ค้นหาเลขที่เอกสารล่าสุดที่ขึ้นต้นด้วย EV-ปีเดือน
+        $lastDocument = Document_elexa::where('doc_no', 'LIKE', "EV-$yearMonth%")
+            ->orderBy('doc_no', 'desc')->first();
+
+        // ตรวจสอบลำดับล่าสุด
+        if ($lastDocument) {
+            // ดึงตัวเลข 4 หลักสุดท้ายจากเลขที่เอกสารล่าสุด
+            $lastNumber = (int)substr($lastDocument->doc_no, -4);
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT); // เพิ่ม 1 และเติม 0
+        } else {
+            // หากไม่มีเลขที่เอกสารในเดือนนั้น เริ่มต้นที่ 0001
+            $newNumber = '0001';
+        }
+
+        // รวมเป็นเลขที่เอกสารใหม่
+        return "EV-$yearMonth$newNumber";
+    }
+
+    public function search_table(Request $request)
+    {
+        $data = [];
+
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+
+        if ($request->table_name == "elexaRevenueTable") {
+            if (!empty($request->search_value)) {
+                $query = SMS_alerts::query()->where('status', 8)
+                    ->select('sms_alert.*', 
+                        DB::raw("MONTH(date) as month, SUM(amount) as total_sum, COUNT(id) as total_item"),
+                        DB::raw("SUM(CASE WHEN status_receive_elexa = 1 THEN status_receive_elexa ELSE 0 END) as total_receive"))
+                    ->groupBy(DB::raw("MONTH(date)"));
+    
+                    if ($request->year == 'all') {
+                        $query->havingRaw('SUM(amount) LIKE ? OR DATE_FORMAT(date, "%M") LIKE ? OR YEAR(date) LIKE ?', ['%' . $request->search_value . '%', '%' . $request->search_value . '%', '%' . $request->search_value . '%']);
+                    } else {
+                        $query->havingRaw('SUM(amount) LIKE ? AND YEAR(date) = ? OR DATE_FORMAT(date, "%M") LIKE ? AND YEAR(date) = ?', ['%' . $request->search_value . '%', $request->year, '%' . $request->search_value . '%', $request->year]);
+                    }
+    
+                    $total_amount = $query->get()->sum('total_sum');
+                    $total_count = $query->get()->count();
+                    $data_query = $query->get();
+            } else {
+                $query = SMS_alerts::query()->where('status', 8);
+    
+                    if (!empty($request->year) && $request->year != 'all') {
+                        $query->whereYear('date', $request->year);
+                    }
+                    $query->select('sms_alert.*', 
+                        DB::raw("MONTH(date) as month, SUM(amount) as total_sum, COUNT(id) as total_item"),
+                        DB::raw("SUM(CASE WHEN status_receive_elexa = 1 THEN status_receive_elexa ELSE 0 END) as total_receive"))
+                    ->groupBy(DB::raw("MONTH(date)"));
+                    
+                $total_amount = $query->get()->sum('total_sum');
+                $total_count = $query->get()->count();
+                $data_query = $query->get();
+            }
+        }
+
+        elseif ($request->table_name == "elexaOutstandingTable") {
+            $month = str_pad($request->month, 2, '0', STR_PAD_LEFT);
+
+            if (!empty($request->search_value)) {
+
+                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                    ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0);
+
+                    if ($request->year == 'all' && $request->month == 'all') { // ทั้งหมด
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? 
+                            OR revenue_credit.batch LIKE ? 
+                            OR revenue.date LIKE ?', ['%' . $request->search_value . '%', '%' . $request->search_value . '%', '%' . $request->search_value . '%']);
+
+                    } elseif ($request->year == 'all' && !empty($request->month) && $request->month != 'all') { // เลือกเฉพาะเดือน
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? AND MONTH(revenue.date) = ? 
+                            OR revenue_credit.batch LIKE ? AND MONTH(revenue.date) = ?
+                            OR revenue.date LIKE ? AND MONTH(revenue.date) = ?', ['%' . $request->search_value . '%', $month, '%' . $request->search_value . '%', $month, '%' . $request->search_value . '%', $month]);
+                    } elseif (!empty($request->year) && $request->year != 'all' && $request->month == 'all') { // เลือกเฉพาะปี
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? AND YEAR(revenue.date) = ? 
+                            OR revenue_credit.batch LIKE ? AND YEAR(revenue.date) = ?
+                            OR revenue.date LIKE ? AND YEAR(revenue.date) = ?', ['%' . $request->search_value . '%', $request->year, '%' . $request->search_value . '%', $request->year, '%' . $request->search_value . '%', $request->year]);
+                    } else { // ทั้งหมดไม่ใช่ค่า All
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? AND MONTH(revenue.date) = ? AND YEAR(revenue.date) = ? 
+                            OR revenue_credit.batch LIKE ? AND MONTH(revenue.date) = ? AND YEAR(revenue.date) = ?
+                            OR revenue.date LIKE ? AND MONTH(revenue.date) = ? AND YEAR(revenue.date) = ?', ['%' . $request->search_value . '%', $month, $request->year, '%' . $request->search_value . '%', $month, $request->year, '%' . $request->search_value . '%', $month, $request->year]);
+                    }
+
+                $query->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                        'revenue_credit.receive_payment', 'revenue_credit.ev_revenue', 'revenue_credit.ev_fee', 'revenue_credit.sms_revenue', 'revenue.date')
+                    ->orderBy('revenue.date', 'asc');
+
+                $total_amount = $query->get()->sum('ev_revenue');
+                $total_count = $query->get()->count();
+                $data_query = $query->get();
+
+            } else {
+                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                    ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0);
+
+                    if (!empty($request->month) && $request->month != 'all') {
+                        $query->whereMonth('revenue.date', $request->month);
+                    }
+
+                    if (!empty($request->year) && $request->year != 'all') {
+                        $query->whereYear('revenue.date', $request->year);
+                    }
+
+                $query->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                            'revenue_credit.receive_payment', 'revenue_credit.ev_revenue', 'revenue_credit.ev_fee', 'revenue_credit.sms_revenue', 'revenue.date')
+                        ->orderBy('revenue.date', 'asc');
+
+                $total_amount = $query->get()->sum('ev_revenue');
+                $total_count = $query->get()->count();
+                $data_query = $query->get();
+            }
+        }
+
+        elseif ($request->table_name == "elexaDebitTable") {
+            $month = str_pad($request->month, 2, '0', STR_PAD_LEFT);
+
+            if (!empty($request->search_value)) {
+
+                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                    ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1);
+
+                    if ($request->year == 'all' && $request->month == 'all') { // ทั้งหมด
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? 
+                            OR revenue_credit.batch LIKE ? 
+                            OR revenue.date LIKE ?', ['%' . $request->search_value . '%', '%' . $request->search_value . '%', '%' . $request->search_value . '%']);
+
+                    } elseif ($request->year == 'all' && !empty($request->month) && $request->month != 'all') { // เลือกเฉพาะเดือน
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? AND MONTH(revenue.date) = ? 
+                            OR revenue_credit.batch LIKE ? AND MONTH(revenue.date) = ?
+                            OR revenue.date LIKE ? AND MONTH(revenue.date) = ?', ['%' . $request->search_value . '%', $month, '%' . $request->search_value . '%', $month, '%' . $request->search_value . '%', $month]);
+                    } elseif (!empty($request->year) && $request->year != 'all' && $request->month == 'all') { // เลือกเฉพาะปี
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? AND YEAR(revenue.date) = ? 
+                            OR revenue_credit.batch LIKE ? AND YEAR(revenue.date) = ?
+                            OR revenue.date LIKE ? AND YEAR(revenue.date) = ?', ['%' . $request->search_value . '%', $request->year, '%' . $request->search_value . '%', $request->year, '%' . $request->search_value . '%', $request->year]);
+                    } else { // ทั้งหมดไม่ใช่ค่า All
+                        $query->havingRaw('revenue_credit.ev_revenue LIKE ? AND MONTH(revenue.date) = ? AND YEAR(revenue.date) = ? 
+                            OR revenue_credit.batch LIKE ? AND MONTH(revenue.date) = ? AND YEAR(revenue.date) = ?
+                            OR revenue.date LIKE ? AND MONTH(revenue.date) = ? AND YEAR(revenue.date) = ?', ['%' . $request->search_value . '%', $month, $request->year, '%' . $request->search_value . '%', $month, $request->year, '%' . $request->search_value . '%', $month, $request->year]);
+                    }
+
+                $query->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                            'revenue_credit.receive_payment', 'revenue_credit.ev_revenue', 'revenue_credit.ev_fee', 'revenue_credit.sms_revenue', 'revenue.date')
+                        ->orderBy('revenue.date', 'asc');
+
+                $total_amount = $query->get()->sum('ev_revenue');
+                $total_count = $query->get()->count();
+                $data_query = $query->get();
+
+            } else {
+                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                    ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1);
+
+                    if (!empty($request->month) && $request->month != 'all') {
+                        $query->whereMonth('revenue.date', $request->month);
+                    }
+
+                    if (!empty($request->year) && $request->year != 'all') {
+                        $query->whereYear('revenue.date', $request->year);
+                    }
+
+                $query->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+                            'revenue_credit.receive_payment', 'revenue_credit.ev_revenue', 'revenue_credit.ev_fee', 'revenue_credit.sms_revenue', 'revenue.date')
+                        ->orderBy('revenue.date', 'asc');
+
+                $total_amount = $query->get()->sum('ev_revenue');
+                $total_count = $query->get()->count();
+                $data_query = $query->get();
+            }
+        }
+
+        elseif ($request->table_name == "elexaRevenueDayTable") {
+            if (!empty($request->search_value)) {
+                $query = SMS_alerts::query()->where('status', 8);
+
+                    if (!empty($request->year) && $request->year != 'all') 
+                    {
+                        $query->whereYear('date', $request->year);
+                    }
+
+                    if (!empty($request->month) && $request->month != 'all') 
+                    {
+                        $query->whereMonth('date', $request->month);
+                    }
+
+                    if (isset($request->status_paid) && $request->status_paid != 'all') 
+                    {
+                        $query->where('status_receive_elexa', $request->status_paid);
+                    }
+
+                    $query->where('amount', 'LIKE', '%'.$request->search_value.'%');
+    
+                    $total_amount = $query->get()->sum('amount');
+                    $total_count = $query->get()->count();
+                    $data_query = $query->get();
+            } else {
+                $query = SMS_alerts::query()->where('status', 8);
+    
+                    if (!empty($request->year) && $request->year != 'all') 
+                    {
+                        $query->whereYear('date', $request->year);
+                    }
+
+                    if (!empty($request->month) && $request->month != 'all') 
+                    {
+                        $query->whereMonth('date', $request->month);
+                    }
+
+                    if (isset($request->status_paid) && $request->status_paid != 'all') 
+                    {
+                        $query->where('status_receive_elexa', $request->status_paid);
+                    }
+                    
+                $total_amount = $query->get()->sum('amount');
+                $total_count = $query->get()->count();
+                $data_query = $query->get();
+            }
+        }
+
+        // Elexa Revenue
+        $total = $total_amount;
+        $totalAllItem = 0;
+        $totalAllReceive = 0;
+        $totalList = $total_count;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+
+                if ($request->table_name == "elexaRevenueTable") {
+                    $btn_detail = '';
+                    $status = '';
+
+                    if ($value->total_receive == 0) 
+                    {
+                        $status = '<i class="fa fa-check-square" style="font-size:20px;color:rgb(131, 133, 131)"></i>';
+                    } elseif ($value->total_receive < $value->total_item) {
+                        $status = '<i class="fa fa-check-square" style="font-size:20px;color:#da8404;"></i>';
+                    } else  {
+                        $status = '<i class="fa fa-check-square" style="font-size:20px;color:#44a768;"></i>';
+                    }
+
+                    $btn_detail = '<div class="dropdown center viewbt">
+                                        <button class="toggle-button btn-detail" data-group="group'.$value->id.'" value="0">
+                                            View
+                                        </button>
+                                    </div>';
+
+                    $totalAllItem += $value->total_item;
+                    $totalAllReceive += $value->total_receive;
+
+                    $data[] = [
+                        'id' => $value->id,
+                        'number' => $key + 1,
+                        'month' => Carbon::parse($value->date)->format('F Y'),
+                        'elexa_paid' => $value->total_sum,
+                        'item' => $value->total_receive."/".$value->total_item,
+                        'status' => $status,
+                        'btn_detail' => $btn_detail,
+                    ];
+                }
+
+                elseif ($request->table_name == "elexaOutstandingTable") {
+                    $status = '<span class="wrap-status-unpaid">unpaid</span>';
+    
+                    $data[] = [
+                        'id' => $value->id,
+                        'number' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'orderID' => $value->batch,
+                        'amount' => $value->ev_revenue,
+                        'status' => $status,
+                    ];
+                }
+
+                elseif ($request->table_name == "elexaDebitTable") {
+                    $status = '<span class="wrap-status-paid">paid</span>';
+
+                    $data[] = [
+                        'id' => $value->id,
+                        'number' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'orderID' => $value->batch,
+                        'amount' => $value->ev_revenue,
+                        'status' => $status,
+                    ];
+                }
+
+                if ($request->table_name == "elexaRevenueDayTable") {
+                    $btn_detail = '';
+                    $status = '';
+                    $status_lock = '';
+
+                    $month = Carbon::parse($value->date)->format('m');
+                    $year = Carbon::parse($value->date)->format('Y');
+
+                    // เข้าบัญชี
+                    $into_account = '<div class=""><img class="img-bank" src="../image/bank/SCB.jpg" style="border-radius: 50%;">SCB '.$value->into_account.'</div>';
+
+                    if ($value->status_receive_elexa == 0) 
+                    {
+                        $status = '<span class="wrap-status-pending">pending</span>';
+                    } else  {
+                        $status = '<span class="wrap-status-paid">paid</span>';
+                    }
+
+                    if (@$value->statusLockElexa->status_lock == 0) 
+                    {
+                        $status_lock = '<i class="fa fa-unlock"></i>';
+                    } else  {
+                        $status_lock = '<i class="fa fa-lock"></i>';
+                    }
+
+                    $btn_detail .= '<div class="dropdown center">
+                                        <div style="width: 90px" class="dropdown-shoose-items dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Select
+                                        </div>
+                                            <ul class="dropdown-menu btn-dropdown-menu" aria-labelledby="dropdownMenuButton">';
+                                                if ($value->status_receive_elexa == 0)
+                                                {
+                                                    $btn_detail .= '<li>
+                                                                        <a href="/debit-elexa-update-receive/'.$value->id.'/'.$month.'/'.$year.'" class="dropdown-item">Create</a>
+                                                                    </li>';
+                                                } else {
+                                                    $checkReceiveDate = Revenue_credit::getElexaReceiveDate($value->id);
+
+                                                    //  Permission 1 และ 2 สามารถเห็นปุ่ม Lock/Unlock ได้
+                                                    if (Auth::user()->permission == 1 || Auth::user()->permission == 2) {
+                                                        if ($value->status_receive_elexa == 0)
+                                                        {
+                                                            $btn_detail .= '<li><a href="javascript:void(0);" class="dropdown-item lock-item" onclick="lockItem('.$value->id.', 1)">Lock</a></li>';
+                                                        } else {
+                                                            $btn_detail .= '<li><a href="javascript:void(0);" class="dropdown-item unlock-item" onclick="lockItem('.$value->id.', 0)">Unlock</a></li>';
+                                                        }
+                                                    }
+
+                                                    // หากต้องการแก้ไขรายการ ต้องให้ Admin Unlock ให้ก่อน **Admin ต้อง Unlock ก่อนเหมือนกัน จะสามารถแก้ไขได้
+                                                    if (@$value->statusLockElexa->status_lock == 0)
+                                                    {
+                                                        $btn_detail .= '<li>
+                                                                            <a href="/debit-elexa-update-receive/'.$value->id.'" class="dropdown-item">Edit</a>
+                                                                        </li>';
+                                                    }
+                                                }
+
+                                            $btn_detail .= '<li>
+                                                    <a href="/debit-elexa-detail/'.$value->id.'" class="dropdown-item">View</a>
+                                                </li>';
+
+                                                if ($value->status_receive_elexa == 0)
+                                                {
+                                                    $btn_detail .= '<li>
+                                                            <a href="/debtor-elexa-logs/'.$value->id.'" class="dropdown-item">Logs</a>
+                                                        </li>';
+                                                }
+                                        
+                                            $btn_detail .= '</ul></div>';
+                                            
+    
+                    $data[] = [
+                        'id' => $value->id,
+                        'number' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'into_account' => $into_account,
+                        'amount' => $value->amount,
+                        'status' => $status,
+                        'lock_unlock' => $status_lock,
+                        'btn_detail' => $btn_detail,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+            'total' => number_format($total, 2),
+            'totalAllItem' => $totalAllItem,
+            'totalAllReceive' => $totalAllReceive,
+            'totalList' => $totalList
+        ]);
+    }
+
+    // Graph Month Sales
+    public function graph_month_sales()
+    {
+        $elexa_query = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+            ->where('revenue_credit.status', 8)
+            ->select(DB::raw('YEAR(revenue.date) as year'), DB::raw('MONTH(revenue.date) as month'), DB::raw('SUM(revenue_credit.ev_revenue) as total_ev_revenue'))
+            ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+            ->get();
+
+            $elexa = $elexa_query->keyBy('month');
+            $elexa_year = $elexa_query->keyBy('year');
+            $data = [];
+            
+            for ($y = 2024; $y <= 2026; $y += 1) { 
+                for ($i = 1; $i <= 12; $i++) { 
+                    if ($elexa_year->has($y)) {
+                        $data[$y][] = $elexa->has($i) ? $elexa[$i]->total_ev_revenue : 0;
+                    } else {
+                        $data[$y][] = 0;
+                    }
+                }
+            }
+
+        return response()->json([
+            'data' => $data,
+            'status' => 200,
+        ]);
+    }
+
+    // Graph Monthly elexa Charge 2026
+    public function graph_month_charge()
+    {
+        // ยอด SMS ทั้งหมด
+        $sms_query = SMS_alerts::where('status', 8)
+            ->select('amount', DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
+            ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+            ->get();
+
+        // ยอด SMS ที่กดรับชำระแล้ว สถานะเป็น paid
+        $sms_paid_query = SMS_alerts::where('status', 8)
+            ->where('status_receive_elexa', 1)
+            ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
+            ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+            ->get();
+
+        // ยอด SMS ที่ยังไม่ได้กดรับชำระแล้ว สถานะเป็น pending
+        $sms_pending_query = SMS_alerts::where('status', 8)
+            ->where('status_receive_elexa', 0)
+            ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
+            ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+            ->get();
+
+        $elexa_outstanding = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+            ->where('revenue_credit.status', 8)
+            ->select(DB::raw('YEAR(revenue.date) as year'), DB::raw('MONTH(revenue.date) as month'),  DB::raw('SUM(revenue_credit.ev_revenue) as total_ev_revenue'))
+            ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+            ->get();
+
+        $elexa_outstanding_sum = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+            ->where('revenue_credit.status', 8)->select('revenue_credit.ev_revenue')
+            ->sum('revenue_credit.ev_revenue');
+
+            // SMS
+            $sms = $sms_query->keyBy('month');
+            $sms_year = $sms_query->keyBy('year');
+            $sms_paid = $sms_paid_query->keyBy('month');
+            $sms_paid_year = $sms_paid_query->keyBy('year');
+            $sms_pending = $sms_pending_query->keyBy('month');
+            $sms_pending_year = $sms_pending_query->keyBy('year');
+
+            // Revenue
+            $elexa = $elexa_outstanding->keyBy('month');
+            $elexa_year = $elexa_outstanding->keyBy('year');
+
+            // เก็บค่าเป็น Array
+            $data_sms = [];
+            $data_sms_pending = [];
+            $data_outstanding = [];
+
+            $sum = 0;
+            
+            for ($y = 2024; $y <= 2026; $y += 1) { 
+                for ($i = 1; $i <= 12; $i++) { 
+                    if ($sms_year->has($y)) {
+                        $data_sms[$y][] = $sms->has($i) ? $sms[$i]->total_sum : 0;
+                    } else {
+                        $data_sms[$y][] = 0;
+                    }
+
+                    if ($sms_paid_year->has($y)) {
+                        $data_sms_paid[$y][] = $sms_paid->has($i) ? $sms_paid[$i]->total_sum : 0;
+                    } else {
+                        $data_sms_paid[$y][] = 0;
+                    }
+
+                    if ($sms_pending_year->has($y)) {
+                        $data_sms_pending[$y][] = $sms_pending->has($i) ? $sms_pending[$i]->total_sum : 0;
+                    } else {
+                        $data_sms_pending[$y][] = 0;
+                    }
+
+                    if ($sms_year->has($y)) {
+                        $elexa_outstanding_sum -= ($sms->has($i) ? (double)$sms[$i]->total_sum : 0);
+                        if ($elexa_outstanding_sum > 0 && $i == date('m')) {
+                            $data_outstanding[$y][] = $elexa_outstanding_sum;
+                        } else {
+                            $data_outstanding[$y][] = 0;
+                        }
+                    } else {
+                        $data_outstanding[$y][] = 0;
+                    }
+                }
+            }
+
+        return response()->json([
+            'data_sms_paid' => $data_sms_paid,
+            'data_sms' => $data_sms,
+            'data_sms_pending' => $data_sms_pending,
+            'data_outstanding' => $data_outstanding,
+            'status' => 200,
+        ]);
     }
 }

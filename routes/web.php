@@ -12,7 +12,6 @@ use App\Http\Controllers\master_booking;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\master_product_i;
-use App\Http\Controllers\Master_bank;
 use App\Http\Controllers\Master_prefix;
 use App\Http\Controllers\Master_Company_type;
 use App\Http\Controllers\Master_market;
@@ -34,8 +33,15 @@ use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
 use App\Http\Controllers\LinkPDFProposal;
+use App\Http\Controllers\ReportAgodaAccountReceivableController;
+use App\Http\Controllers\ReportAgodaOutstandingController;
+use App\Http\Controllers\ReportAgodaPaidController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
+use App\Http\Controllers\ReportElexaAccountReceivableController;
+use App\Http\Controllers\ReportElexaOutstandingController;
+use App\Http\Controllers\ReportElexaPaidController;
+use App\Http\Controllers\ReportElexaRevenueController;
 use App\Http\Controllers\ReportHotelManualChangeController;
 use App\Http\Controllers\ReportHotelWaterparkRevenueController;
 use Illuminate\Support\Facades\Artisan;
@@ -122,28 +128,61 @@ Route::middleware(['auth'])->group(function () {
     # Debit Agoda Revenue
     Route::controller(AgodaRevenuesController::class)->middleware('role:agoda')->group(function () {
         Route::get('debit-agoda', 'index')->name('debit-agoda');
-        Route::get('debit-agoda-revenue/{month}/{year}', 'index_list_days')->name('debit-agoda-revenue');
+        Route::get('debit-agoda-revenue', 'index_list_days')->name('debit-agoda-revenue'); // แสดงรายการรายได้จาก SMS
         Route::get('debit-agoda-update/{month}/{year}', 'index_update_agoda')->name('debit-agoda-update');
-        Route::get('debit-agoda-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
-        Route::get('debit-agoda-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-agoda-detail'); // แสดงรายละเอียด
-        Route::post('debit-agoda-store', 'receive_payment')->name('debit-agoda-store');
+        Route::get('debit-agoda-update-receive/{id}', 'index_receive')->name('debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('debit-agoda-detail/{id}', 'index_detail_receive')->name('debit-agoda-detail'); // แสดงรายละเอียด
+        Route::post('debit-agoda-store', 'receive_payment')->name('debit-agoda-store'); // บันทึกข้อมูล
         Route::get('debit-select-agoda-outstanding/{id}', 'select_agoda_outstanding')->name('debit-select-agoda-outstanding');
+        Route::post('debit-confirm-select-agoda-outstanding', 'confirm_select_agoda_outstanding')->name('debit-confirm-select-agoda-outstanding'); // Confirm รายการที่เลือก
         Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
-        Route::get('debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('debit-status-agoda-receive');
+        // Route::get('debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('debit-status-agoda-receive');
+
+        // Graph
+        Route::get('debtor-agoda-graph-month-sales', 'graph_month_sales')->name('debtor-agoda-graph-month-sales');
+        Route::get('debtor-agoda-graph-month-charge', 'graph_month_charge')->name('debtor-agoda-graph-month-charge');
+
+        // Lock & Unlock
+        Route::get('debtor-agoda-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('debtor-agoda-change-status-lock');
+
+        // Logs
+        Route::get('debtor-agoda-logs/{id}', 'logs')->name('debtor-agoda-logs');
+
+        // Search Child
+        Route::get('debtor-agoda-search-detail-child/{id}', 'search_detail')->name('debtor-agoda-search-detail-child');
+
+        // Search, Paginate
+        Route::post('debtor-agoda-search-table', 'search_table')->name('debtor-agoda-search-table');
+
     });
 
     # Debit Elexa
     Route::controller(ElexaController::class)->middleware('role:elexa')->group(function () {
         Route::get('debit-elexa', 'index')->name('debit-elexa');
-        Route::get('debit-elexa-revenue/{month}/{year}', 'index_list_days')->name('debit-elexa-revenue');
+        Route::get('debit-elexa-revenue', 'index_list_days')->name('debit-elexa-revenue');
         Route::get('debit-elexa-update/{month}/{year}', 'index_update_elexa')->name('debit-elexa-update');
-        Route::get('debit-elexa-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
-        Route::get('debit-elexa-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด
+        Route::get('debit-elexa-update-receive/{id}', 'index_receive')->name('debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('debit-elexa-detail/{id}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด
         Route::post('debit-elexa-store', 'receive_payment')->name('debit-elexa-store');
         Route::get('debit-select-elexa-outstanding/{id}', 'select_elexa_outstanding')->name('debit-select-elexa-outstanding');
-        // Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
+        Route::post('debit-confirm-select-elexa-outstanding', 'confirm_select_elexa_outstanding')->name('debit-confirm-select-elexa-outstanding'); // Confirm รายการที่เลือก
         Route::get('debit-status-elexa-receive/{status}', 'status_elexa_receive')->name('debit-status-elexa-receive');
-        Route::get('debit-elexa-search/{month}', 'search_month')->name('debit-elexa-search');
+
+        // Graph
+        Route::get('debtor-elexa-graph-month-sales', 'graph_month_sales')->name('debtor-elexa-graph-month-sales');
+        Route::get('debtor-elexa-graph-month-charge', 'graph_month_charge')->name('debtor-elexa-graph-month-charge');
+
+        // Lock & Unlock
+        Route::get('debtor-elexa-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('debtor-elexa-change-status-lock');
+
+        // Search Child
+        Route::get('debtor-elexa-search-detail-child/{id}', 'search_detail')->name('debtor-elexa-search-detail-child');
+
+        // Search, Paginate
+        Route::post('debtor-elexa-search-table', 'search_table')->name('debtor-elexa-search-table');
+
+        // Logs
+        Route::get('debtor-elexa-logs/{id}', 'logs')->name('debtor-elexa-logs');
     });
 
 
@@ -224,8 +263,41 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ReportAgodaRevenueController::class)->middleware('role:report')->group(function () {
         Route::get('report-agoda-revenue', 'index')->name('report-agoda-revenue');
         Route::post('report-agoda-revenue-search', 'search')->name('report-agoda-revenue-search');
-        Route::post('report-agoda-search-table', 'search_table')->name('report-agoda-search-table');
-        Route::post('report-agoda-paginate-table', 'paginate_table')->name('report-agoda-paginate-table');
+    });
+
+    Route::controller(ReportAgodaOutstandingController::class)->middleware('role:report')->group(function () {
+        Route::get('report-agoda-outstanding', 'index')->name('report-agoda-outstanding');
+        Route::post('report-agoda-outstanding-search', 'search')->name('report-agoda-outstanding-search');
+    });
+
+    Route::controller(ReportAgodaAccountReceivableController::class)->middleware('role:report')->group(function () {
+        Route::get('report-agoda-account-receivable', 'index')->name('report-agoda-account-receivable');
+        Route::post('report-agoda-account-receivable-search', 'search')->name('report-agoda-account-receivable-search');
+    });
+
+    Route::controller(ReportAgodaPaidController::class)->middleware('role:report')->group(function () {
+        Route::get('report-agoda-paid', 'index')->name('report-agoda-paid');
+        Route::post('report-agoda-paid-search', 'search')->name('report-agoda-paid-search');
+    });
+
+    Route::controller(ReportElexaRevenueController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-revenue', 'index')->name('report-elexa-revenue');
+        Route::post('report-elexa-revenue-search', 'search')->name('report-elexa-revenue-search');
+    });
+
+    Route::controller(ReportElexaOutstandingController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-outstanding', 'index')->name('report-elexa-outstanding');
+        Route::post('report-elexa-outstanding-search', 'search')->name('report-elexa-outstanding-search');
+    });
+
+    Route::controller(ReportElexaAccountReceivableController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-account-receivable', 'index')->name('report-elexa-account-receivable');
+        Route::post('report-elexa-account-receivable-search', 'search')->name('report-elexa-account-receivable-search');
+    });
+
+    Route::controller(ReportElexaPaidController::class)->middleware('role:report')->group(function () {
+        Route::get('report-elexa-paid', 'index')->name('report-elexa-paid');
+        Route::post('report-elexa-paid-search', 'search')->name('report-elexa-paid-search');
     });
 
     ####################################################

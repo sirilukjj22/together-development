@@ -1,5 +1,9 @@
 @extends('layouts.masterLayout')
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
+
 <style>
     /* Form container styling */
     .form-container {
@@ -124,12 +128,31 @@
             padding: 8px 8px;
         }
     }
+
+    .wrap-status-unpaid {
+        background-color: rgb(247, 161, 100);
+        color: white;
+        vertical-align: middle;
+        padding: 3px 8px;
+        border-radius: 7px;
+        font-size: 0.8em;
+    }
+
+    .wrap-status-pending {
+        background-color: rgb(235, 181, 32);
+        color: white;
+        vertical-align: middle;
+        padding: 3px 8px;
+        border-radius: 7px;
+        font-size: 0.8em;
+    }
 </style>
+
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Agoda Revenue Report</div>
+                    <div class="span3">Agoda Account Receivable Report</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
@@ -144,7 +167,7 @@
                 <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                     <!-- Form Container -->
                     <div class="form-container mb-3 mb-md-0">
-                        <form action="{{ route('report-agoda-revenue-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
+                        <form action="{{ route('report-agoda-account-receivable-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                             @csrf
                             <div class="col-md-12">
                                 <h3>Search</h3>
@@ -192,23 +215,11 @@
                     </div>
                     <div class="text-capitalize d-grid gap-0" style="height: max-content;">
                         <span class="f-semi">Together Resort Kaengkrachan</span>
-                        <span>Hotel and water park revenue</span>
+                        <span>Agoda Account Receivable</span>
                         <span>Date On : {{ $search_date }}</span>
                     </div>
                 </div>
                 <div class="p-4 mb-4">
-                    <caption class="caption-top">
-                        <div class="flex-end-g2">
-                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                            <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
-                            </select>
-                            <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
-                        </div>
-                    </caption>
                     <style>
                         .example td:nth-child(4) {
                             text-align: left !important;
@@ -216,7 +227,7 @@
                         }
                         </style>
                     <div style="min-height: 70vh;">
-                        <table id="smsAgodaTable" class="example ui striped table nowrap unstackable hover" >
+                        <table id="smsAgodaTable" class="table-together table-style" >
                             <thead>
                                 <tr>
                                     <th style="text-align: center;" data-priority="1">#</th>
@@ -255,9 +266,7 @@
                                             <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
                                         </div>
                                     </td>
-                                    <td class="td-content-center">
-                                        {{ number_format($item->amount, 2) }}
-                                    </td>
+                                    <td class="td-content-center target-class text-end">{{$item->amount }}</td>
                                     <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
                                     <td class="td-content-center">Agoda Bank Transfer Revenue</td>
                                     <td class="td-content-center">
@@ -266,17 +275,13 @@
                                 </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <td colspan="5" class="text-center fw-bold">Total</td>
+                                <td class="text-end fw-bold">{{ number_format($total_sms_amount, 2) }}</td>
+                                <td colspan="3"></td>
+                            </tfoot>
                         </table>
                     </div>
-                    <caption class="caption-bottom">
-                        <div class="md-flex-bt-i-c">
-                            <div class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_query, 'smsAgoda') }}</div>
-                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms_amount, 2) }} บาท</div>
-                                <div id="smsAgoda-paginate">
-                                    {!! paginateTable($data_query, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                </div>
-                        </div>
-                    </caption>
                 </div>
             </div>
         </div>
@@ -285,17 +290,8 @@
     <input type="hidden" id="filter-by-old" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
     <input type="hidden" id="date-old" value="{{ isset($search_date) ? $search_date : date('Y-m') }}">
     <input type="hidden" id="status-revenue" value="5">
-    <input type="hidden" id="get-total-smsAgoda" value="{{ $data_query->total() }}">
-    <input type="hidden" id="currentPage-smsAgoda" value="1">
 
-    @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
-        {{-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script> --}}
-        {{-- <script src="../assets/bundles/jquerycounterup.bundle.js"></script> --}}
-        <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
-    @else
-        {{-- <script src="http://code.jquery.com/jquery-1.10.2.js"></script> --}}
-        <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
-    @endif
+    <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
     <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
@@ -303,7 +299,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableReportAgoda.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -343,24 +339,6 @@
             $('input[name="startDate"]').daterangepicker({
                 locale: {
                     format: 'DD/MM/YYYY'  // กำหนดรูปแบบวันที่เป็น 'ปี-เดือน-วัน'
-                }
-            });
-
-            new DataTable('.example', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
                 }
             });
         });
@@ -421,85 +399,6 @@
                     }
                 });
             });
-        });
-
-        // Search 
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var total = parseInt($('#get-total-'+id).val());
-            var table_name = id+'Table';
-
-            var filter_by = $('#filter-by-old').val();
-            var dateString = $('#date-old').val();
-            var type = $('#status-revenue').val();
-            var count_total = 0;
-            var getUrl = window.location.pathname;
-
-            $('#'+table_name).DataTable().destroy();
-            var table = $('#'+table_name).dataTable({
-                searching: false,
-                paging: false,
-                info: false,
-                // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                ajax: {
-                    url: 'report-agoda-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        date: dateString,
-                        status: type,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings, json) {
-
-                    if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    } else {
-                        var count = 0;
-                        $('.dataTables_empty').addClass('dt-center');
-                    }
-
-                    if (search_value == '') {
-                        count_total = total;
-                    } else {
-                        count_total = count;
-                    }
-                    
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                columnDefs: [
-                            { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
-                ],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                },
-                columns: [
-                    { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                    { data: 'date' },
-                    { data: 'time' },
-                    { data: 'transfer_bank' },
-                    { data: 'into_account' },
-                    { data: 'amount' },
-                    { data: 'remark' },
-                    { data: 'revenue_name' },
-                    { data: 'date_into' },
-                ],
-                    
-            });  
-
-            document.getElementById(id).focus();
         });
 
         // Export

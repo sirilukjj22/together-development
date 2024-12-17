@@ -1,3 +1,7 @@
+.example td {
+  vertical-align: middle;
+}
+
 /* Remove text selection */
 .no-select {
   user-select: none; /* Standard CSS property for most browsers */
@@ -7,6 +11,16 @@
 }
 li {
   list-style: none;
+}
+
+.doc {
+  width: 100%;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border: 1px solid #d8d7d7;
+  box-shadow: 0 4px 8px rgba(34, 34, 34, 0.1);
+  border-radius: 4px;
 }
 
 .f-top-table {
@@ -245,7 +259,7 @@ section {
   background-color: rgb(73, 184, 179);
   background-image: linear-gradient(
     to right,
-    rgb(4, 8, 8),
+    rgba(12, 67, 67, 0.862),
     rgba(8, 97, 92, 0.685)
   );
   box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6),
@@ -1209,7 +1223,7 @@ textarea {
 .pi .card-content {
   display: grid;
   grid-template-rows: 60px 1fr;
-  gap: 0px;
+  gap: 1em;
 }
 
 .outstanding-amount {
@@ -1476,197 +1490,126 @@ textarea {
   accent-color: #2c7f7a;
 }
 
-.example td{
-    vertical-align: middle;
-}
-/* Proposal */
-
-.proposal-cutomer-detail {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
+/* Data Table */
+.dataTables_wrapper {
+  box-sizing: border-box;
+  width: 100%;
 }
 
-.proposal-cutomer-detail ul {
-    padding: 0;
-    margin: 0px;
+.dt-layout-row {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+  height: 100%;
 }
 
-.proposal-cutomer-detail ul:nth-child(1) {
-    padding: 0;
-    width: 55%;
-    padding-right: 5px;
-    border-right: 2px solid #2D7F7B;
+.dt-layout-row:nth-child(3) {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+  height: 100%;
 }
 
-
-
-.proposal-cutomer-detail ul:nth-child(2) {
-    padding: 0;
-    /* width: 300px; */
-
-    width: 40%;
-
-}
-
-.wrap-full {
-    display:grid;
-    gap:1em;
-    grid-template-columns: 1fr;
-}
-
-.wrap-full li:nth-child(2) {
-    grid-template-columns: 180px auto;
-}
-
-
-
-.proposal-cutomer-detail li {
+@media (max-width: 750px) {
+  .dt-layout-row:nth-child(3) {
     display: grid;
-    grid-template-columns: 180px auto;
-    margin: 0;
-    padding: 5px ;
-    padding-right: 0.5em;
-
+    place-content: center;
+    text-align: center;
+    gap: 0.3rem;
+  }
 }
 
-.proposal-cutomer-detail ul:nth-child(2) li {
-    grid-template-columns: 160px auto;
+div.dt-container {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
-
-
-.proposal-cutomer-detail li > :nth-child(1)::before {
-    content: ":";
-    margin-right: 5px;
-    float: right;
+div.dt-container div.dt-layout-row.dt-layout-table {
+  display: block;
 }
 
+div.dt-container .dt-search input {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border: 1px solid rgba(0, 103, 96, 0.459);
+  background-color: rgba(107, 172, 167, 0.1);
+  color: inherit;
+  margin-left: 3px;
+  border-radius: 7px;
+  height: 2.4em;
+  padding: 0.5em;
+  border-radius: 0.25em;
+  font-size: 1em;
+}
 
-.receipt-cutomer-detail {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+div.dt-container select.dt-input {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border: 1px solid rgba(0, 103, 96, 0.459);
+  background-color: rgba(107, 172, 167, 0.1);
+  color: inherit;
+  height: 2.4em;
+  padding: 0.5em;
+  border-radius: 0.25em;
+  font-size: 1em;
+  margin-right: 5px;
+}
+
+.pagination .active {
+  background-color: var(--dexter-primary-color);
+  border: none;
+}
+
+.pagination.menu {
+  display: flex;
+  justify-content: center;
+  gap: 0.1em;
+}
+
+.dt-paging-button {
+  width: 2.1rem;
+  height: 2.3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+}
+
+.dt-paging-button:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.page-link.previous {
+  display: none;
+}
+
+.page-link.next {
+  display: none;
+}
+
+.page-link.first {
+  border-radius: 7px 0 0 7px;
+}
+
+.page-link.last {
+  border-radius: 0 7px 7px 0;
+}
+
+@media (max-width: 700px) {
+  .flex-between {
+    justify-content: center;
   }
 
-  .receipt-cutomer-detail ul {
-    padding: 0;
+  .dt-layout-row {
+    justify-content: center;
   }
-
-  .receipt-cutomer-detail ul:nth-child(1) {
-    padding: 0;
-  }
-
-  .receipt-cutomer-detail ul:nth-child(2) {
-    padding: 0;
-    width: 300px;
-  }
-
-  .receipt-cutomer-detail li {
-    display: grid;
-    grid-template-columns: 120px auto;
-    margin: 0;
-    padding: 0;
-  }
-
-  .receipt-cutomer-detail li :nth-child(1)::after {
-    content: ":";
-    margin-right: 5px;
-    float: right;
-  }
-
-
-
-
-@media (max-width:900px) {
-    .proposal-cutomer-detail ul:nth-child(1),.proposal-cutomer-detail ul:nth-child(2){
-        width: 100%;
-    }
-
-    .proposal-cutomer-detail ul:nth-child(1) {
-        border-right: none;
-        padding-right: 0px;
-    }
 }
 
-@media (min-width:1400px) {
-
-    .wrap-full {
-        grid-template-columns: 1fr 1fr;
-    }
-    .wrap-full li:nth-child(2) {
-    grid-template-columns: 120px auto;
-    }
+tfoot tr th {
+  text-align: center !important;
 }
-
-@media (min-width:700px) and (max-width:900px) {
-
-    .wrap-full {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .wrap-full li:nth-child(2) {
-    grid-template-columns: 120px auto;
-    }
-}
-
-@media (max-width:800px) {
-    .proposal-cutomer-detail ul:nth-child(2) li {
-        grid-template-columns: 180px auto;
-    }
-
-}
-
-    .proposal-number-cutomer-detail {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    }
-
-    .proposal-number-cutomer-detail ul {
-    padding: 0;
-    display: grid;
-    /* border: red 3px solid; */
-    }
-
-    .proposal-number-cutomer-detail li {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    /* margin: 0; */
-    padding: 0;
-    /* border: #093835 1px solid; */
-    width: 100%;
-    }
-    .proposal-number-cutomer-detail li > span {
-    text-align: end;
-    /* border:yellow 1px solid; */
-    width: 100%;
-    min-width:120px
-    }
-
-    .wrap-b {
-    /* border: red 1px solid; */
-    display: grid;
-    grid-template-columns:1fr auto;
-    gap:1em
-    }
-
-
-
-    .wrap-b .lek{
-    /* border:  rgb(255, 0, 234) 2px solid; */
-    margin-right: 0px;
-    text-align: left;
-    display: flex;
-    justify-content: end;
-
-    }
-
-    @media (max-width:700px) {
-    .wrap-b {
-        /* border: rgb(55, 1, 77) 1px solid; */
-        display: grid;
-        grid-template-columns:1fr ;
-        }
-    }

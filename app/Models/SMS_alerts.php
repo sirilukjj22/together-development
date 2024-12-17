@@ -89,6 +89,30 @@ class SMS_alerts extends Model
         return $this->hasOne(Masters::class, 'id', 'transfer_from');
     }
 
+    // เช็คเลขที่เอกสารของ Agoda
+    public function DocumentNoAgoda()
+    {
+        return $this->hasOne(Document_agoda::class, 'sms_id', 'id');
+    }
+
+    // เช็คเลขที่เอกสารของ Elexa
+    public function DocumentNoElexa()
+    {
+        return $this->hasOne(Document_elexa::class, 'sms_id', 'id');
+    }
+
+    // เช็คสถานะ Lock/Unlock ของ Agoda
+    public function statusLockAgoda()
+    {
+        return $this->hasOne(Document_agoda::class, 'sms_id', 'id');
+    }
+
+    // เช็คสถานะ Lock/Unlock ของ Agoda
+    public function statusLockElexa()
+    {
+        return $this->hasOne(Document_elexa::class, 'sms_id', 'id');
+    }
+
     ## Check Close Day
     public static function checkCloseDay($date) {
 
