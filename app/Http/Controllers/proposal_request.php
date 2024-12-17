@@ -42,7 +42,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\document_proposal_overbill;
 use App\Models\Master_additional;
 use App\Models\proposal_overbill;
-use App\Models\master_payment_and_complimentary;
 class proposal_request extends Controller
 {
     public function index()
@@ -1111,8 +1110,6 @@ class proposal_request extends Controller
         $Quotation_IDoverbill = $Quotation->Additional_ID;
         $Operated_by= $Quotation->Operated_by;
         $additional_type= $Quotation->additional_type;
-        $type = $Quotation->type;
-        $complimentary = master_payment_and_complimentary::where('id',$type)->first();
         $Mvat= $Quotation->vat_type;
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
@@ -1336,7 +1333,7 @@ class proposal_request extends Controller
                     'Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','Proposal','ProposalID','additional_type',
                     'fullname','firstPart','Identification','address','vat','Additional','AdditionaltotalReceipt','Receiptover','statusover','Additional_ID',
                     'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone'
-                    ,'Selectdata','complimentary'));
+                    ,'Selectdata'));
     }
     public function Additional_Approve(Request $request){
         try {
@@ -1389,11 +1386,11 @@ class proposal_request extends Controller
             'proposal_overbill.id as Additional_id',
             'proposal_overbill.correct as Additional_correct',
         )
-        ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional'])
+        ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional','Send documents'])
         ->leftJoin('proposal_overbill', 'log_company.Company_ID', '=', 'proposal_overbill.Additional_ID')
         ->orderBy('log_company.updated_at', 'desc')
         ->paginate($perPage);
-        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
         ->orderBy('updated_at', 'desc')
         ->count();
         $path = 'Log_PDF/proposaloverbill/';

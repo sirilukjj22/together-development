@@ -195,8 +195,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Additional.</small>
-                    <div class=""><span class="span1">Additional</span></div>
+                    <small class="text-muted">Welcome to Additional Charge.</small>
+                    <div class=""><span class="span1">Additional Charge</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -436,14 +436,6 @@
                                             <option value="Cash Manual">Manual Partial payment and complimentary</option>
                                         </select>
                                     </div>
-                                    <div id="Cashinput" class="col-lg-4 col-md-12 col-sm-12 mt-2 Cashinput" style="display: none">
-                                        <label for="">Payment Type</label>
-                                        <select  id="typePayment" name="typePayment" class="select2">
-                                            @foreach ($complimentary as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                     <div id="Cash_Manualinput" class="col-lg-8 col-md-12 col-sm-12 row mt-2 Cash_Manualinput" style="display: none">
                                         <div class="col-lg-4 col-md-12 col-sm-12">
                                             <label for="">Payment</label>
@@ -466,19 +458,12 @@
                                                 var parentContainer = $(this).closest('.payment-container'); // Find the parent container
                                                 // Hide all payment method sections within this specific container
                                                 parentContainer.find('.cashInput, .Cash_Manualinput').hide();
-                                                const Cashinput = document.getElementById('Cashinput');
-                                                const inputs = Cashinput.querySelectorAll("select");
                                                 const CashinputManual = document.getElementById('Cash_Manualinput');
                                                 const inputsManual = CashinputManual.querySelectorAll("input");
                                                 // Show the relevant section based on the selected payment type
-                                                inputs.forEach(input => input.disabled = false);
-                                                if (selectedType === 'Cash') {
-                                                    parentContainer.find('.cashInput').show();
-                                                    inputs.forEach(input => input.disabled = false);
-                                                    inputsManual.forEach(input => input.disabled = true);
-                                                } else if (selectedType === 'Cash Manual') {
+                                                inputsManual.forEach(input => input.disabled = false);
+                                                if (selectedType === 'Cash Manual') {
                                                     parentContainer.find('.Cash_Manualinput').show();
-                                                    inputs.forEach(input => input.disabled = true);
                                                     inputsManual.forEach(input => input.disabled = false);
                                                 }
                                             });

@@ -4783,12 +4783,12 @@ class QuotationController extends Controller
     }
 
     public function Approve($id){
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
         $quotation = Quotation::find($id);
         $quotation->status_guest = 1;
         $quotation->Approve_at = now();
         $quotation->save();
-        $data = Quotation::where('id',$id)->first();
-        $Quotation_ID = $data->Quotation_ID;
         $userid = Auth::user()->id;
         $save = new log_company();
         $save->Created_by = $userid;

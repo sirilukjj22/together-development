@@ -795,14 +795,12 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(BillingFolioController::class)->middleware('role:document')->group(function () {
         Route::get('/Document/BillingFolio/index', 'index')->name('BillingFolio.index');
         Route::get('/Document/BillingFolio/issuebill', 'issuebill')->name('BillingFolio.issuebill');
-        // Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','PaidInvoice')->name('BillingFolio.PaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/{id}','EditPaidInvoice')->name('BillingFolio.EditPaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}','PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/cheque/{id}','cheque');
         Route::get('/Document/BillingFolio/Proposal/invoice/prewive/{id}/{ids}','PaidInvoiceDataprewive')->name('BillingFolio.PaidInvoiceDataprewive');
         Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('BillingFolio.CheckPI');
-        // Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
         // //-------------------------------------save------------------------------------
         Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'savere')->name('BillingFolio.savere');
         //-----------------------------------------update------------------------------------
@@ -811,7 +809,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}','view')->name('receipt.view');
         Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}','log')->name('receipt.log');
         Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
-        Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/ReceiptCreate/{id}','ReceiptCreate')->name('receipt.ReceiptCreate');
 
         Route::post('billing-search-table', 'search_table_billing');
         Route::post('billing-paginate-table', 'paginate_table_billing');

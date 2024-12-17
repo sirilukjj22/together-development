@@ -195,8 +195,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Proposal.</small>
-                    <div class=""><span class="span1">Edit Proposal</span></div>
+                    <small class="text-muted">Welcome to Additional Charge.</small>
+                    <div class=""><span class="span1">View Additional Charge</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -426,14 +426,72 @@
                                     @endif
                                     <div class="styled-hr"></div>
                                 </div>
-                                <div class="mt-3">
-                                    <div class="col-lg-4 col-md-12 col-sm-12 mt-3">
+                                <div class="payment-container row mt-2">
+                                    <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
                                         <label for="">Document Type Additional</label>
-                                        <select name="additional_type" id="additional_type" class="select2" disabled>
+                                        <select name="additional_type" id="additional_type" class="additional_type select2" disabled>
                                             <option value="H/G" {{$Quotation->additional_type == 'H/G' ? 'selected' : ''}}>H/G Online</option>
-                                            <option value="Cash" {{$Quotation->additional_type == 'Cash' ? 'selected' : ''}}>Cash + Complimentary</option>
+                                            <option value="Cash" {{$Quotation->additional_type == 'Cash' ? 'selected' : ''}}>Partial payment and complimentary</option>
+                                            <option value="Cash Manual" {{$Quotation->additional_type == 'Cash Manual' ? 'selected' : ''}}>Manual Partial payment and complimentary</option>
                                         </select>
                                     </div>
+                                    <div id="Cash_Manualinput" class="col-lg-8 col-md-12 col-sm-12  mt-2 Cash_Manualinput " style="display: none">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 row">
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                <label for="">Payment</label>
+                                                <input type="text" name="Cash" id="Cash" class="form-control Cash" value="{{$Quotation->Cash}}" disabled>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                <label for="">Complimentary</label>
+                                                <input type="text" name="Complimentary" id="Complimentary"class="form-control Complimentary" value="{{$Quotation->Complimentary}}" disabled>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                <label for="">Total</label>
+                                                <input type="text" name="totalComplimentary" id="totalComplimentary" class="form-control totalComplimentary" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $(document).ready(function() {
+                                            var countrySelect = $('#additional_type');
+                                                var select = countrySelect.val();
+                                                var CashinputManual = document.getElementById('Cash_Manualinput');
+                                                var Complimentary = parseFloat($('#Complimentary').val().replace(/,/g, '')) || 0;
+                                                var Cash = parseFloat($('#Cash').val().replace(/,/g, ''))|| 0;
+                                                if (select === 'Cash Manual') {
+                                                    Cash_Manualinput.style.display = "Block";
+                                                    var totalComplimentary = Complimentary+Cash;
+                                                    $('#totalComplimentary').val(totalComplimentary.toLocaleString('th-TH'));
+                                                }
+                                            // Listen for change on all elements with class 'paymentType'
+                                            $('.additional_type').on('change', function() {
+                                                var selectedType = $(this).val();
+                                                var parentContainer = $(this).closest('.payment-container'); // Find the parent container
+                                                // Hide all payment method sections within this specific container
+                                                parentContainer.find('.cashInput, .Cash_Manualinput').hide();
+                                                const CashinputManual = document.getElementById('Cash_Manualinput');
+                                                const inputsManual = CashinputManual.querySelectorAll("input");
+                                                // Show the relevant section based on the selected payment type
+                                                inputsManual.forEach(input => input.disabled = false);
+                                                if (selectedType === 'Cash Manual') {
+                                                    parentContainer.find('.Cash_Manualinput').show();
+                                                    inputsManual.forEach(input => input.disabled = false);
+                                                }
+                                            });
+                                            $(document).on('keyup', '.Cash', function() {
+                                                var Cash =  Number($(this).val());
+                                                var Complimentary = parseFloat($('#Complimentary').val().replace(/,/g, '')) || 0;
+                                                var totalComplimentary = Complimentary+Cash;
+                                                $('#totalComplimentary').val(totalComplimentary.toLocaleString('th-TH'));
+                                            });
+                                            $(document).on('keyup', '.Complimentary', function() {
+                                                var Complimentary =  Number($(this).val());
+                                                var Cash = parseFloat($('#Cash').val().replace(/,/g, ''))|| 0;
+                                                var totalComplimentary = Complimentary+Cash;
+                                                $('#totalComplimentary').val(totalComplimentary.toLocaleString('th-TH'));
+                                            });
+                                        });
+                                    </script>
                                 </div>
                                 <div class="row mt-2">
                                     <table id="main" class=" example2 ui striped table nowrap unstackable p-0 " style="width:100%">

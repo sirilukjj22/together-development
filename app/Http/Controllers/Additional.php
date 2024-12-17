@@ -45,7 +45,7 @@ use App\Mail\QuotationEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\master_document_email;
 use App\Models\log_company;
-use App\Models\master_payment_and_complimentary;
+
 class Additional extends Controller
 {
     public function index(){
@@ -165,10 +165,9 @@ class Additional extends Controller
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-        $complimentary = master_payment_and_complimentary::where('status',1)->get();
 
         return view('additional_charge.create',compact('Address','fullName','settingCompany','Quotation','Quotation_ID','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill',
-                    'provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone','Selectdata','complimentary'      ));
+                    'provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone','Selectdata'      ));
     }
     public function save(Request $request ,$id){
         $Quotation = Quotation::where('id', $id)->first();
@@ -368,10 +367,17 @@ class Additional extends Controller
                 if ($TotalPax) {
                     $Pax = 'รวมความจุของห้องพัก : '.$TotalPax;
                 }
+                $Cash = null;
+                $Complimentary = null;
+                if ($additional_type == 'Cash Manual') {
+                    $Cash = 'Cash : '.$request->Cash;
+                    $Complimentary = 'Complimentary : '.$request->Complimentary;
+                }
+                $type ='Additional Type : '.$additional_type;
                 $AdditionalID = 'Additional ID : '.$Additional_ID;
                 $datacompany = '';
 
-                $variables = [$AdditionalID,$QuotationID, $Issue_Date, $Expiration_Date, $fullName, $Contact_Name,$Time,$nameevent,$namevat,$Pax,$Head];
+                $variables = [$AdditionalID,$QuotationID, $Issue_Date, $Expiration_Date, $fullName, $Contact_Name,$Time,$nameevent,$namevat,$Pax,$Head,$type,$Cash,$Complimentary];
 
                 // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
                 $formattedProductDataString = implode(' + ', $formattedProductData);
@@ -709,6 +715,7 @@ class Additional extends Controller
                 log::where('Quotation_ID',$Additional_ID)->delete();
                 return redirect()->route('Additional.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
+
             try {
                 $save = new proposal_overbill();
                 $save->Additional_ID = $Additional_ID;
@@ -735,7 +742,6 @@ class Additional extends Controller
                 $save->comment = $request->comment;
                 $save->Date_type = $Quotation->Date_type;
                 $save->additional_type = $request->additional_type;
-                $save->type = $request->typePayment;
                 $save->Cash = $request->Cash;
                 $save->Complimentary = $request->Complimentary;
                 $save->save();
@@ -759,6 +765,17 @@ class Additional extends Controller
                 }
                 log::where('Quotation_ID',$Additional_ID)->delete();
                 proposal_overbill::where('Additional_ID',$Additional_ID)->delete();
+                return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+            }
+            try {
+                $log = new log_company();
+                $log->Created_by = $userid;
+                $log->Company_ID = $Additional_ID;
+                $log->type = 'Send documents';
+                $log->Category = 'Send documents :: Additional';
+                $log->content = 'Send Document Additional : ' . $Additional_ID;
+                $log->save();
+            } catch (\Throwable $th) {
                 return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
             return redirect()->route('Additional.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
@@ -853,6 +870,7 @@ class Additional extends Controller
         $userid = Auth::user()->id;
         $data = $request->all();
         $Additional_ID=$request->Additional_ID;
+        $additional_type =  $Quotation->additional_type;
         $datarequest = [
             'Proposal_ID' => $data['Quotation_ID'] ?? null,
             'Code' => $data['Code'] ?? null ,
@@ -1059,12 +1077,25 @@ class Additional extends Controller
                     $formattedProductDataA[] = 'เพิ่มรายการ' . ' ' . 'Code : ' . $product['Code'] . ' , ' . 'Detail : ' . $product['Detail'] . ' , ' . 'Amount : ' . $product['Amount'];
                 }
             }
-
+            $Additional_type = null;
+            $Cash = null;
+            $Complimentary = null;
+            $Additional_type = 'Additional Type : '.$request->additional_type;
+            if ($request->Cash) {
+                if ( $Quotation->Cash != $request->Cash) {
+                    $Cash = 'Cash : '.$request->Cash;
+                }
+            }
+            if ($request->Complimentary) {
+                if ( $Quotation->Complimentary != $request->Complimentary) {
+                    $Complimentary = 'Complimentary : '.$request->Complimentary;
+                }
+            }
             $Additional = 'Additional ID : '.$Additional_ID;
             $com = 'รายการ';
             $datacompany = '';
 
-            $variables = [$Additional,$com];
+            $variables = [$Additional,$com,$Additional_type,$Cash,$Complimentary];
             // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
             $formattedProductDataString = implode(' + ', $formattedProductData);
             $formattedProductDataStringA = implode(' + ', $formattedProductDataA);
@@ -1425,6 +1456,7 @@ class Additional extends Controller
             log::where('Quotation_ID',$Additional_ID)->orderBy('created_at', 'desc')->limit(1)->delete();
             return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
         }
+
         try {
             $totalPrice = 0; // กำหนดตัวแปรเริ่มต้น
             foreach ($productItemsData as $item) {
@@ -1442,6 +1474,9 @@ class Additional extends Controller
             $save->Nettotal = $NettotalD; // บันทึกยอดรวมสุทธิ
             $save->total = $NettotalD; // บันทึกยอดรวม
             $save->correct = $correctup;
+            $save->additional_type = $request->additional_type;
+            $save->Cash = $request->Cash;
+            $save->Complimentary = $request->Complimentary;
             $save->status_document = 2;
             $save->save(); // บันทึกข้อมูล
         } catch (\Throwable $e) {
@@ -1483,7 +1518,18 @@ class Additional extends Controller
             log::where('Quotation_ID',$Additional_ID)->orderBy('created_at', 'desc')->limit(1)->delete();
             return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
         }
-
+        try {
+            $userid = Auth::user()->id;
+            $log = new log_company();
+            $log->Created_by = $userid;
+            $log->Company_ID = $Additional_ID;
+            $log->type = 'Send documents';
+            $log->Category = 'Send documents :: Additional';
+            $log->content = 'Send Document Additional : ' . $Additional_ID;
+            $log->save();
+        } catch (\Throwable $th) {
+            return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+        }
         return redirect()->route('Additional.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function view($id){

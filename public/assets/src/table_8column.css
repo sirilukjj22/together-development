@@ -184,43 +184,4 @@ td {
 
 /* Table หน้าออกบิล
 
-*/
-table#table-revenueEditBill {
-  width: 100%;
-  margin-bottom: 2rem;
-}
 
-table#table-revenueEditBill tr :nth-child(1) {
-  text-align: center;
-  width: 10%;
-}
-
-table#table-revenueEditBill tr :nth-child(2) {
-  text-align: start;
-  width: 60%;
-}
-
-table#table-revenueEditBill tr :nth-child(3) {
-  text-align: end;
-  width: 15%;
-}
-
-table#table-revenueEditBill tr :nth-child(4) {
-  text-align: end;
-  width: 15%;
-}
-
-#table-revenueEditBill th {
-  border-top: 1px solid #a7adad;
-  border-bottom: 1px solid #a7adad;
-  text-transform: uppercase;
-}
-#table-revenueEditBill td {
-  border-top: 1px solid #a7adad;
-  text-transform: capitalize;
-}
-
-#table-revenueEditBill th,
-td {
-  padding: 0.5rem;
-}

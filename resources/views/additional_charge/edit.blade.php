@@ -195,8 +195,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Proposal.</small>
-                    <div class=""><span class="span1">Edit Proposal</span></div>
+                    <small class="text-muted">Welcome to Additional Charge.</small>
+                    <div class=""><span class="span1">Edit Additional Charge</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -426,14 +426,72 @@
                                     @endif
                                     <div class="styled-hr"></div>
                                 </div>
-                                <div class="mt-3">
-                                    <div class="col-lg-4 col-md-12 col-sm-12 mt-3">
+                                <div class="payment-container row mt-2">
+                                    <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
                                         <label for="">Document Type Additional</label>
-                                        <select name="additional_type" id="additional_type" class="select2" disabled>
+                                        <select name="additional_type" id="additional_type" class="additional_type select2" >
                                             <option value="H/G" {{$Quotation->additional_type == 'H/G' ? 'selected' : ''}}>H/G Online</option>
-                                            <option value="Cash" {{$Quotation->additional_type == 'Cash' ? 'selected' : ''}}>Cash + Complimentary</option>
+                                            <option value="Cash" {{$Quotation->additional_type == 'Cash' ? 'selected' : ''}}>Partial payment and complimentary</option>
+                                            <option value="Cash Manual" {{$Quotation->additional_type == 'Cash Manual' ? 'selected' : ''}}>Manual Partial payment and complimentary</option>
                                         </select>
                                     </div>
+                                    <div id="Cash_Manualinput" class="col-lg-8 col-md-12 col-sm-12  mt-2 Cash_Manualinput " style="display: none">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 row">
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                <label for="">Payment</label>
+                                                <input type="text" name="Cash" id="Cash" class="form-control Cash" value="{{$Quotation->Cash}}">
+                                            </div>
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                <label for="">Complimentary</label>
+                                                <input type="text" name="Complimentary" id="Complimentary"class="form-control Complimentary" value="{{$Quotation->Complimentary}}">
+                                            </div>
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                                <label for="">Total</label>
+                                                <input type="text" name="totalComplimentary" id="totalComplimentary" class="form-control totalComplimentary" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $(document).ready(function() {
+                                            var countrySelect = $('#additional_type');
+                                                var select = countrySelect.val();
+                                                var CashinputManual = document.getElementById('Cash_Manualinput');
+                                                var Complimentary = parseFloat($('#Complimentary').val().replace(/,/g, '')) || 0;
+                                                var Cash = parseFloat($('#Cash').val().replace(/,/g, ''))|| 0;
+                                                if (select === 'Cash Manual') {
+                                                    Cash_Manualinput.style.display = "Block";
+                                                    var totalComplimentary = Complimentary+Cash;
+                                                    $('#totalComplimentary').val(totalComplimentary.toLocaleString('th-TH'));
+                                                }
+                                            // Listen for change on all elements with class 'paymentType'
+                                            $('.additional_type').on('change', function() {
+                                                var selectedType = $(this).val();
+                                                var parentContainer = $(this).closest('.payment-container'); // Find the parent container
+                                                // Hide all payment method sections within this specific container
+                                                parentContainer.find('.cashInput, .Cash_Manualinput').hide();
+                                                const CashinputManual = document.getElementById('Cash_Manualinput');
+                                                const inputsManual = CashinputManual.querySelectorAll("input");
+                                                // Show the relevant section based on the selected payment type
+                                                inputsManual.forEach(input => input.disabled = false);
+                                                if (selectedType === 'Cash Manual') {
+                                                    parentContainer.find('.Cash_Manualinput').show();
+                                                    inputsManual.forEach(input => input.disabled = false);
+                                                }
+                                            });
+                                            $(document).on('keyup', '.Cash', function() {
+                                                var Cash =  Number($(this).val());
+                                                var Complimentary = parseFloat($('#Complimentary').val().replace(/,/g, '')) || 0;
+                                                var totalComplimentary = Complimentary+Cash;
+                                                $('#totalComplimentary').val(totalComplimentary.toLocaleString('th-TH'));
+                                            });
+                                            $(document).on('keyup', '.Complimentary', function() {
+                                                var Complimentary =  Number($(this).val());
+                                                var Cash = parseFloat($('#Cash').val().replace(/,/g, ''))|| 0;
+                                                var totalComplimentary = Complimentary+Cash;
+                                                $('#totalComplimentary').val(totalComplimentary.toLocaleString('th-TH'));
+                                            });
+                                        });
+                                    </script>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-12 col-sm-12">
@@ -678,6 +736,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <input type="hidden" id="NettotalCheck" name="NettotalCheck" value="{{$Quotation->Nettotal}}">
                                     <div class="styled-hr mt-3"></div>
                                     <div class="col-12 row mt-5">
                                         <div class="col-4"></div>
@@ -1800,6 +1859,7 @@
                         $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
                     }else if(typevat == '51')
                     {
                         allprice += pricetotal+pricetotalMain;
@@ -1807,6 +1867,7 @@
 
                         $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
                     } else if(typevat == '52'){
                         allprice += pricetotal+pricetotalMain;
 
@@ -1815,6 +1876,7 @@
                         $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
                     }
                 });
                 var rowCount = $('#display-selected-items tr').not(':first').length;
@@ -1876,30 +1938,70 @@
             event.preventDefault(); // Prevent the form from submitting
             var Quotationold = $('#Quotationold').val();
             var Quotation_ID = $('#Quotation_ID').val();
-            var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
-            var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
-            Swal.fire({
-                title: title,
-                text: message,
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "preview";
-                    input.value = 0;
+            var NettotalCheck = $('#NettotalCheck').val();
+            var totalComplimentary =parseFloat($('#totalComplimentary').val().replace(/,/g, ''));
+            var additional_type = $('#additional_type').val();
+            if (additional_type == 'Cash Manual') {
+                if (NettotalCheck - totalComplimentary == 0) {
+                    var message = ``;
+                    var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+                    Swal.fire({
+                        title: title,
+                        text: message,
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "บันทึกข้อมูล",
+                        cancelButtonText: "ยกเลิก",
+                        confirmButtonColor: "#2C7F7A",
+                        dangerMode: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = "preview";
+                            input.value = 0;
 
-                    // เพิ่ม input ลงในฟอร์ม
-                    document.getElementById("myForm").appendChild(input);
-                    document.getElementById("myForm").removeAttribute('target');
-                    document.getElementById("myForm").submit();
+                            // เพิ่ม input ลงในฟอร์ม
+                            document.getElementById("myForm").appendChild(input);
+                            document.getElementById("myForm").removeAttribute('target');
+                            document.getElementById("myForm").submit();
+                        }
+                    });
+                }else{
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "กรุณากรองค่าให้ตรง",
+                    });
                 }
-            });
+            }else{
+                // var Quotationold = $('#Quotationold').val();
+                // var Quotation_ID = $('#Quotation_ID').val();
+                var message = ``;
+                var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "บันทึกข้อมูล",
+                    cancelButtonText: "ยกเลิก",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = "preview";
+                        input.value = 0;
+
+                        // เพิ่ม input ลงในฟอร์ม
+                        document.getElementById("myForm").appendChild(input);
+                        document.getElementById("myForm").removeAttribute('target');
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
         }
     </script>
 @endsection

@@ -218,7 +218,7 @@
             text-transform: uppercase;
             }
             #table-revenueEditBill td {
-            border-top: 1px solid #a7adad;
+            /* border-top: 1px solid #a7adad; */
             text-transform: capitalize;
 
             }
@@ -232,9 +232,7 @@
 
 
             #table-revenueEditBill th,
-            #table-revenueEditBill td {
-            padding: 0.5rem;
-            }
+
             table.receipt-subtotal {
                 width: 100%;
                 text-align: end;
@@ -315,6 +313,7 @@
                     <td style="text-align: left" >
                         ------------------------------------------------- <br>
                         <span>Guest's Signature</span>
+                        <br><br>
                     </td>
                     <td style="text-align: right">
                         ------------------------------------------------- <br>
@@ -408,14 +407,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($productItems as $key => $item)
                         <tr>
-                            <td id="displayPaymentDateEditBill">{{$Date}}</td>
+                            <td >{{$Date}}</td>
                             <td >
-                                {{$datanamebank}}
+                                {{ $item['detail'] }}
                             </td>
                             <td ></td>
-                            <td style="text-align: right">{{ number_format($Amount, 2) }}</td>
+                            <td style="text-align: right">{{ number_format($item['amount'], 2) }}</td>
                         </tr>
+                        @endforeach
                         <tr >
                             <td style="border: none"></td>
                             <td style="border: none">***{{$note}}</td>

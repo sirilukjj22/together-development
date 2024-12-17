@@ -147,7 +147,7 @@
                                     <span id="defaultContent">
                                         <li class="pr-3">
                                             <span>Receipt</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($totalReceipt, 2, '.', ',') }}</span>
+                                            <span class="text-danger f-w-bold">{{ number_format($totalReceipt+$totalReceiptCom, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
                                     @if ($additional_type == 'Cash')
@@ -159,6 +159,17 @@
                                             <li class="pr-3">
                                                 <span>Complimentary</span>
                                                 <span class="text-danger f-w-bold">{{ number_format($Additionaltotal-$Additionaltotal*0.37, 2, '.', ',') }}</span>
+                                            </li>
+                                        </span>
+                                    @elseif ($additional_type == 'Cash Manual')
+                                        <span id="toggleContent" style="display: none;">
+                                            <li class="pr-3 ">
+                                                <span>Cash</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($Cash, 2, '.', ',') }}</span>
+                                            </li>
+                                            <li class="pr-3">
+                                                <span>Complimentary</span>
+                                                <span class="text-danger f-w-bold">{{ number_format($Com, 2, '.', ',') }}</span>
                                             </li>
                                         </span>
                                     @else
@@ -173,7 +184,7 @@
                                 </ul>
                                 <li class="outstanding-amount">
                                     <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal+$Additionaltotal-$totalReceipt, 2, '.', ',') }}</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal+$Additionaltotal-$totalReceipt-$totalReceiptCom, 2, '.', ',') }}</span>
                                 </li>
                             </div>
                         </div>
@@ -239,7 +250,7 @@
                                                 <th style="text-align:center;">
                                                     <span class="badge rounded-pill bg-success">Approved</span>
                                                 </th>
-                                                <th style="text-align:center;">{{ number_format($item3->Amount, 2, '.', ',') }}</th>
+                                                <th style="text-align:center;">{{ number_format($item3->Amount+$item3->complimentary, 2, '.', ',') }}</th>
                                                 <th style="text-align:left;">
                                                     <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item3->id) }}">
                                                         View
@@ -277,7 +288,7 @@
                                                 <th style="text-align:center;">
                                                     <span class="badge rounded-pill bg-success">Approved</span>
                                                 </th>
-                                                <th style="text-align:center;">{{ number_format($item4->Amount, 2, '.', ',') }}</th>
+                                                <th style="text-align:center;">{{ number_format($item4->Amount , 2, '.', ',') }}</th>
                                                 <th style="text-align:left;">
                                                     <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolioOverbill/Proposal/invoice/export/'.$item4->id) }}">
                                                         View
@@ -585,32 +596,32 @@
                 <div class="modal-dialog modal-dialog-custom-90p">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color: #2c7f7a">
-                            <h3 class="modal-title fs-3" id="exampleModalLabel" style="color: white"> Proposal Summary </h3>
+                            <h3 class="modal-title fs-3" id="exampleModalLabel" style="color: white"> Additional Summary </h3>
                             <button type="button" class="btn-close light" data-bs-dismiss="modal" aria-label="Close" style="color: white !important"></button>
                         </div>
                         <div class="modal-body">
                         <div class="">
                             <div class="d-flex-wrap-at-300">
                             <section class="card-content2">
-                                <h5 class="card-title">Proposal</h5>
+                                <h5 class="card-title">Additional</h5>
                                 <div class="card-list-between">
                                     <li>
                                         <span>Subtotal</span>
-                                        <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        <span>{{ number_format($Additionaltotal, 2, '.', ',') }}</span>
                                     </li>
                                     <li>
                                         <span>Price Before Tax</span>
-                                        <span>{{ number_format($AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                        <span>{{ number_format($Additionaltotal/1.07, 2, '.', ',') }}</span>
                                     </li>
                                     <li>
                                         <span>Value Added Tax</span>
-                                        <span>{{ number_format($AdditionaltotalReceipt-$AdditionaltotalReceipt/1.07, 2, '.', ',') }}</span>
+                                        <span>{{ number_format($Additionaltotal-$Additionaltotal/1.07, 2, '.', ',') }}</span>
                                     </li>
                                     </div>
                                     <div class="card-list-between">
                                     <li>
                                         <span>Total Balance</span>
-                                        <span>{{ number_format($AdditionaltotalReceipt, 2, '.', ',') }}</span>
+                                        <span>{{ number_format($Additionaltotal, 2, '.', ',') }}</span>
                                     </li>
                                 </div>
                             </section>

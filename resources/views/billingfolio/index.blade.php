@@ -77,7 +77,6 @@
                                                     <th>Room No</th>
                                                     <th>Payment Date</th>
                                                     <th class="text-center">Amount</th>
-                                                    <th class="text-center">Category</th>
                                                     <th class="text-center">Operated By</th>
                                                     <th class="text-center">Document status</th>
                                                     <th class="text-center">Action</th>
@@ -104,9 +103,8 @@
                                                         <td>{{ $item->roomNo }}</td>
                                                         <td>{{ $item->paymentDate }}</td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($item->Amount) }}
+                                                            {{ number_format($item->document_amount) }}
                                                         </td>
-                                                        <td style="text-align: center;">{{ $item->category }}</td>
                                                         <td style="text-align: center;">
                                                             {{ @$item->userOperated->name }}
                                                         </td>
@@ -128,19 +126,22 @@
                                                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
                                                                         @endif
-                                                                        @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                            @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
-                                                                            @endif
-                                                                        @elseif ($rolePermission == 2)
-                                                                            @if ($item->Operated_by == $CreateBy)
+                                                                        @if ($item->created_at->toDateString() < now()->toDateString())
+                                                                        @else
+                                                                            @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                                 @if ($canEditProposal == 1)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
                                                                                 @endif
-                                                                            @endif
-                                                                        @elseif ($rolePermission == 3)
-                                                                            @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                                            @elseif ($rolePermission == 2)
+                                                                                @if ($item->Operated_by == $CreateBy)
+                                                                                    @if ($canEditProposal == 1)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                                                    @endif
+                                                                                @endif
+                                                                            @elseif ($rolePermission == 3)
+                                                                                @if ($canEditProposal == 1)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @else

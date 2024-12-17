@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class master_payment_and_complimentary extends Model
+class document_receive_item extends Model
 {
     use HasFactory;
-    protected $table = 'master_payment_and_complimentary';
+    protected $table = 'document_receive_item';
     protected $fillable = [
-        'name',
-        'percent',
-        'status',
+        'receive_id',
+        'detail',
+        'amount',
     ];
 }

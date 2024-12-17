@@ -1349,7 +1349,7 @@ textarea {
 .pi .card-list-between,
 .pi .card-list-withColon {
   display: grid;
-  gap: 1em;
+  gap: 0.2em;
   font-weight: 500;
   color: black;
 }
