@@ -181,7 +181,7 @@ table.table-together {
   color: rgb(245, 242, 242) !important;
 }
 
-ul.dtr-details li {
+/* ul.dtr-details li {
   display: grid;
   grid-template-columns: auto 1fr;
   padding: 5px 10px;
@@ -199,13 +199,13 @@ ul.dtr-details li span:nth-child(2) {
   gap: 7px;
   text-align: right;
   gap: 5px;
-}
+} */
 
-ul.dtr-details li span:nth-child(1)::after {
+/* ul.dtr-details li span:nth-child(1)::after {
   content: ":";
   font-weight: bold;
   margin: auto 5px;
-}
+} */
 
 /* Table หน้าออกบิล*/
 

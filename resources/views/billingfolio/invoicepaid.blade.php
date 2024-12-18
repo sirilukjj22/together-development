@@ -1394,7 +1394,8 @@
     </script>
     <script>
         $(document).ready(function() {
-            $('.bt-tg').on('click', function() {
+            $('.modal_but').on('click', function() {
+
                 Preview();
             });
         });
@@ -1488,7 +1489,8 @@
                     // เลือก id ที่จะใช้
                     var id = idcheck ? idcheck : nameID;
                     var ids = InvoiceID;
-
+                    let payments = getAllPayments();
+                    updateTable(payments);
 
 
                     // AJAX เรียกข้อมูล
@@ -1517,13 +1519,13 @@
                             $('#date').text(date);
                             $('#dateM').text(Time);
                             $('#Invoicedate').text(valid);
-                            $('#displayReferenceEditBill').text(reservationNo);
                             $('#displayNoteEditBill').text(note);
                         },
                         error: function(xhr, status, error) {
                             console.error("AJAX Error: ", status, error);
                         }
                     });
+
                 } catch (error) {
                     console.error("Error in Preview(): ", error);
                 }

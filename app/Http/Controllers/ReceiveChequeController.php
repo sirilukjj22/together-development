@@ -379,7 +379,6 @@ class ReceiveChequeController extends Controller
 
                 $data[] = [
                     'number' => $key + 1,
-                    'Invoice' => $value->refer_invoice,
                     'proposal' => $value->refer_proposal,
                     'Bank' => @$value->bank->name_th.' '.(@$value->bank->name_en),
                     'Cheque_Number' => $value->cheque_number,
@@ -457,7 +456,6 @@ class ReceiveChequeController extends Controller
 
                     $data[] = [
                         'number' => $key + 1,
-                        'Invoice' => $value->refer_invoice,
                         'proposal' => $value->refer_proposal,
                         'Bank' => @$value->bank->name_th.' '.(@$value->bank->name_en),
                         'Cheque_Number' => $value->cheque_number,

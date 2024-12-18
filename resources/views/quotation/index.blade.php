@@ -392,7 +392,7 @@
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
                                                     @if($item->status_guest == 1 && $item->status_document !== 0 && $item->status_document !== 9)
-                                                        <span class="badge rounded-pill bg-success">Approved</span>
+                                                        <span class="badge rounded-pill bg-success" >Approved</span>
                                                     @else
                                                         @if($item->status_document == 0)
                                                             <span class="badge rounded-pill bg-danger">Cancel</span>
@@ -612,7 +612,7 @@
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                        @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->additional_discount == 0)
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                         @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
@@ -622,7 +622,7 @@
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->additional_discount == 0)
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                             @endif
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
@@ -632,7 +632,7 @@
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                        @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->additional_discount == 0)
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                         @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>

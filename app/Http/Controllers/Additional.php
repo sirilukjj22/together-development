@@ -765,7 +765,7 @@ class Additional extends Controller
                 }
                 log::where('Quotation_ID',$Additional_ID)->delete();
                 proposal_overbill::where('Additional_ID',$Additional_ID)->delete();
-                return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+                return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
             try {
                 $log = new log_company();
@@ -776,7 +776,7 @@ class Additional extends Controller
                 $log->content = 'Send Document Additional : ' . $Additional_ID;
                 $log->save();
             } catch (\Throwable $th) {
-                return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+                return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
             return redirect()->route('Additional.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }
@@ -1454,7 +1454,7 @@ class Additional extends Controller
                 unlink($file); // ลบไฟล์
             }
             log::where('Quotation_ID',$Additional_ID)->orderBy('created_at', 'desc')->limit(1)->delete();
-            return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+            return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
         }
 
         try {
@@ -1490,7 +1490,7 @@ class Additional extends Controller
                 unlink($file); // ลบไฟล์
             }
             log::where('Quotation_ID',$Additional_ID)->orderBy('created_at', 'desc')->limit(1)->delete();
-            return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+            return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
         }
         try {
             if ($productDataSave) {
@@ -1516,7 +1516,7 @@ class Additional extends Controller
                 unlink($file); // ลบไฟล์
             }
             log::where('Quotation_ID',$Additional_ID)->orderBy('created_at', 'desc')->limit(1)->delete();
-            return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+            return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
         }
         try {
             $userid = Auth::user()->id;
@@ -1528,7 +1528,7 @@ class Additional extends Controller
             $log->content = 'Send Document Additional : ' . $Additional_ID;
             $log->save();
         } catch (\Throwable $th) {
-            return redirect()->route('BillingFolioOver.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+            return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
         }
         return redirect()->route('Additional.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }

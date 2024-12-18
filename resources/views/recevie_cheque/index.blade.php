@@ -291,7 +291,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
-                                                    <th>Refer Proforma Invoice</th>
+
                                                     <th>Refer Proposal</th>
                                                     <th data-priority="1">Bank Cheque</th>
                                                     <th class="text-center" data-priority="1">Cheque Number</th>
@@ -310,11 +310,9 @@
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
                                                         </td>
+
                                                         <td style="text-align: left;">
                                                             {{$item->refer_proposal}}
-                                                        </td>
-                                                        <td style="text-align: left;">
-                                                            {{$item->refer_invoice}}
                                                         </td>
                                                         <td style="text-align: left;">
                                                             {{@$item->bank->name_th}} ({{@$item->bank->name_en}})
@@ -607,7 +605,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
+                                { targets: [0,3,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -618,7 +616,6 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Invoice' },
                         { data: 'proposal' },
                         { data: 'Bank' },
                         { data: 'Cheque_Number' },

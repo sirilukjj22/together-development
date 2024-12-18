@@ -107,7 +107,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
+                { targets: [0,3,5,6,7,8,9], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -118,7 +118,7 @@ function getPage(page, perPage, table_n)
             },
             columns: [
                 { data: 'number' },
-                { data: 'Invoice' },
+
                 { data: 'proposal' },
                 { data: 'Bank' },
                 { data: 'Cheque_Number' },
