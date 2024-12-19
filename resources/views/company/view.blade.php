@@ -1,6 +1,6 @@
 @extends('layouts.masterLayout')
 <style>
-    .select2{
+    .form-select{
         margin: 4px 0;
         border: 1px solid #ffffff;
         border-radius: 4px;
@@ -129,7 +129,7 @@
                         <div class="row mt-2">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="booking_channel">ช่องทางการจอง / Booking Channel</label>
-                                <select name="booking_channel" id="booking_channel" class="select2"disabled>
+                                <select name="booking_channel" id="booking_channel" class="form-select"disabled>
                                     @foreach($booking_channel as $item)
                                         <option value="{{ $item->id }}" {{$Company->Booking_Channel == $item->id ? 'selected' : ''}}>{{ $item->name_en }}</option>
                                     @endforeach
@@ -321,7 +321,7 @@
                                                 @if (($representative->Country === 'Thailand'))
                                                     <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                                         <span for="city">City</span><br>
-                                                        <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                                        <select name="province" id="province" class="form-select" onchange="select_province()"disabled>
                                                             @foreach($provinceNames as $item)
                                                             <option value="{{ $item->id }}" {{$representative->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
                                                             @endforeach
@@ -330,7 +330,7 @@
                                                 @else
                                                     <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:none;">
                                                         <span for="city">City</span><br>
-                                                        <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                                        <select name="province" id="province" class="form-select" onchange="select_province()"disabled>
                                                             <option value=""></option>
                                                             @foreach($provinceNames as $item)
                                                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -341,7 +341,7 @@
                                                 @if ($representative->Country === 'Thailand')
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span for="Amphures">Amphures</span><br>
-                                                        <select name="amphures" id="amphures" class="select2" onchange="select_amphures()"disabled>
+                                                        <select name="amphures" id="amphures" class="form-select" onchange="select_amphures()"disabled>
                                                             @foreach($amphures as $item)
                                                             <option value="{{ $item->id }}" {{ $representative->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                                             @endforeach
@@ -350,7 +350,7 @@
                                                 @else
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span for="Amphures">Amphures</span><br>
-                                                        <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
+                                                        <select name="amphures" id="amphures" class="form-select" onchange="select_amphures()" disabled>
                                                             <option value=""></option>
                                                         </select>
                                                     </div>
@@ -358,7 +358,7 @@
                                                 @if ($representative->Country === 'Thailand')
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span for="Tambon">Tambon </span><br>
-                                                        <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()"disabled>
+                                                        <select name="Tambon" id="Tambon" class="form-select" onchange="select_Tambon()"disabled>
                                                         @foreach($Tambon as $item)
                                                         <option value="{{ $item->id }}" {{ $representative->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                                         @endforeach
@@ -367,7 +367,7 @@
                                                 @else
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span for="Tambon">Tambon </span><br>
-                                                        <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
+                                                        <select name="Tambon" id="Tambon" class="form-select" onchange="select_Tambon()" disabled>
                                                             <option value=""></option>
                                                         </select>
                                                     </div>
@@ -375,7 +375,7 @@
                                                 @if ($representative->Country === 'Thailand')
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span for="zip_code">Zip Code</span><br>
-                                                        <select name="zip_code" id="zip_code" class="select2"  disabled>
+                                                        <select name="zip_code" id="zip_code" class="form-select"  disabled>
                                                             @foreach($Zip_code as $item)
                                                             <option value="{{ $item->id }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                                             @endforeach
@@ -384,7 +384,7 @@
                                                 @else
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span for="zip_code">Zip Code</span><br>
-                                                        <select name="zip_code" id="zip_code" class="select2" disabled>
+                                                        <select name="zip_code" id="zip_code" class="form-select" disabled>
                                                             <option value=""></option>
                                                         </select>
                                                     </div>

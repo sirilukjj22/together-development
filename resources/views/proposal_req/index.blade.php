@@ -63,7 +63,7 @@
                                                 <input class="search-button search-data" id="proposal" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="proposalTable" class="example1 ui striped table nowrap unstackable hover">
+                                        <table id="proposalTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <table id="requestTable" class="example1 ui striped table nowrap unstackable hover">
+                                        <table id="requestTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -175,7 +175,7 @@
                                                 <input class="search-button search-data-Awaiting" id="proposalAwaiting" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="proposalAwaitingTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <table id="proposalAwaitingTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>

@@ -922,7 +922,7 @@
                                                         <div class="col-sm-12 mt-2">
                                                             <div class="row">
                                                                 <div class="col-sm-6 col-6">
-                                                                    <label for="Company_type_tax">ประเภทบริษัท / Company Type</label>
+                                                                    <span for="Company_type_tax">ประเภทบริษัท / Company Type</span>
                                                                     <select name="Company_type_tax" id="Company_type_tax" class="select21" required>
                                                                         <option value=""></option>
                                                                         @foreach($MCompany_type as $item)
@@ -931,15 +931,15 @@
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-6 col-6">
-                                                                    <label for="Company_Name">ชื่อบริษัท / Company Name</label>
+                                                                    <span for="Company_Name">ชื่อบริษัท / Company Name</span>
                                                                     <input type="text" id="Company_Name_tax" class="form-control" placeholder="ชื่อบริษัท" name="Company_Name_tax" maxlength="70" required>
                                                                 </div>
                                                                 <div class="col-sm-6 col-6 mt-2">
-                                                                    <label for="Branch">สาขา / Company Branch <span>&nbsp;&nbsp;&nbsp;&nbsp; </span><input class="form-check-input" type="radio" name="flexRadioDefaultBranchTax" id="flexRadioDefaultBranchTax"> สำนักงานใหญ่</label>
+                                                                    <span for="Branch">สาขา / Company Branch <span>&nbsp;&nbsp;&nbsp;&nbsp; </span><input class="form-check-input" type="radio" name="flexRadioDefaultBranchTax" id="flexRadioDefaultBranchTax"> สำนักงานใหญ่</span>
                                                                     <input type="text" id="BranchTax" name="BranchTax" placeholder="สาขาบริษัท" class="form-control" maxlength="70" required>
                                                                 </div>
                                                                 <div class="col-sm-6 col-6 mt-2">
-                                                                    <label for="Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
+                                                                    <span for="Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</span><br>
                                                                     <input type="text" id="IdentificationCompany" class="form-control idcard" name="Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required >
                                                                 </div>
                                                             </div>
@@ -966,7 +966,7 @@
                                                                     <input type="text" id="last_nameCom" class="form-control" placeholder="นามสกุล" name="last_nameCom"maxlength="70" disabled required>
                                                                 </div>
                                                                 <div class="col-sm-6 col-6 mt-2">
-                                                                    <label for="Identification">เลขบัตรประจำตัวประชาชน / Identification number</label><br>
+                                                                    <span for="Identification">เลขบัตรประจำตัวประชาชน / Identification number</span><br>
                                                                     <input type="text" id="IdentificationName" class="form-control idcard" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"disabled required >
                                                                 </div>
                                                             </div>
@@ -1363,9 +1363,93 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="tab-pane fade "id="nav-Billing" role="tabpanel" rel="0">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <caption class="caption-top">
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-company-Billing" onchange="getPageBilling(1, this.value, 'company-Billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Billing" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Billing" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Billing" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Billing" ? 'selected' : '' }}>100</option>
+                                        </select>
+                                        <input class="search-button search-data-company-Billing" id="company-Billing" style="text-align:left;" placeholder="Search" />
+                                    </div>
+                                </caption>
+                                <table id="company-BillingTable" class="example ui striped table nowrap unstackable hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;"data-priority="1">No</th>
+                                            <th data-priority="1">Receipt ID</th>
+                                            <th>Proposal ID</th>
+                                            <th data-priority="1">Company / Individual</th>
+                                            <th>Payment Date</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Operated By</th>
+                                            <th class="text-center">Document status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Billing))
+                                            @foreach ($Billing as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    {{$key +1}}
+                                                </td>
+                                                <td>{{ $item->Receipt_ID}}</td>
+                                                <td>{{ $item->Quotation_ID}}</td>
+                                                <td>{{$item->fullname}}</td>
+                                                <td>{{ $item->paymentDate }}</td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->document_amount) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ @$item->userOperated->name }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill bg-success">Confirm</span>
+                                                </td>
+                                                @php
+                                                    $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                                                @endphp
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="profile-company-Billing" name="profile-company" value="{{$Company->Profile_ID}}">
+                                <input type="hidden" id="get-total-company-Billing" value="{{ $Billing->total() }}">
+                                <input type="hidden" id="currentPage-company-Billing" value="1">
+                                <caption class="caption-bottom">
+                                    <div class="md-flex-bt-i-c">
+                                        <p class="py2" id="company-Billing-showingEntries">{{ showingEntriesTableBilling($Billing, 'company-Billing') }}</p>
+                                        <div id="company-Billing-paginate">
+                                            {!! paginateTableBilling($Billing, 'company-Billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                        </div>
+                                    </div>
+                                </caption>
+                            </div>
+                        </div>
                         <div class="tab-pane fade "id="nav-Contract" role="tabpanel" rel="0">
 
                         </div>
+
                         <div class="tab-pane fade" id="nav-User" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
                                 <caption class="caption-top">
@@ -1808,7 +1892,7 @@
 
     </script>
     <script>
-        const table_name = ['company-VisitTable', 'company-TaxTable','company-LogTable'];
+        const table_name = ['company-VisitTable', 'company-TaxTable','company-LogTable','company-BillingTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
@@ -1926,7 +2010,74 @@
                 });
             document.getElementById(id).focus();
         });
+        $(document).on('keyup', '.search-data-company-Billing', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var guest_profile = $('#profile-company-Billing').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
 
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Billing-company-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        guest_profile: guest_profile,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings,json){
+
+                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        }else{
+                            var count = 0;
+                        }
+                        if (search_value == '') {
+                            count_total = total;
+                        }else{
+                            count_total = count;
+                        }
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearchBilling(1,count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearchBilling(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number'},
+                        { data: 'Receipt' },
+                        { data: 'Proposal' },
+                        { data: 'Company_Name' },
+                        { data: 'Payment_date' },
+                        { data: 'Amount' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
+
+                });
+            document.getElementById(id).focus();
+        });
 
 
 

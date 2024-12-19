@@ -68,9 +68,9 @@ class Document_invoice extends Controller
         $invoicecheck = document_invoices::query()->get();
        // ดึงข้อมูลจาก document_invoices รวมถึง Quotation_ID, total และ sumpayment
         $invoicecount = document_invoices::query()->where('document_status',1)->count();
-        $Complete = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPage);
+        $Complete = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->paginate($perPage);
 
-        $Completecount = document_invoices::query()->where('document_status',2)->where('status_receive',1)->count();
+        $Completecount = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->count();
         $Cancel = document_invoices::query()->where('document_status',0)->paginate($perPage);
         $Cancelcount =document_invoices::query()->where('document_status',0)->count();
         return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount','invoicecheck'));
@@ -616,10 +616,10 @@ class Document_invoice extends Controller
         $data = [];
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
-            $data_query = document_invoices::query()->where('document_status',2)->where('status_receive',1)->limit($request->page.'0')
+            $data_query = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->limit($request->page.'0')
             ->get();
         } else {
-            $data_query = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPage);
+            $data_query = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->paginate($perPage);
         }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -686,7 +686,7 @@ class Document_invoice extends Controller
         $permissionid = Auth::user()->permission;
 
         if ($search_value) {
-            $data_query = document_invoices::where('status_receive', 1)
+            $data_query = document_invoices::WhereIn('status_receive',[1,2])
                 ->where('document_status', 2)
                 ->where(function($query) use ($search_value) {
                     $query->where('Invoice_ID', 'LIKE', '%'.$search_value.'%')
@@ -698,7 +698,7 @@ class Document_invoice extends Controller
                 ->paginate($perPage);
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPageS);
+            $data_query = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->paginate($perPageS);
         }
 
 

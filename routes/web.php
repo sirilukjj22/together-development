@@ -369,6 +369,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Visit-company-search-table', 'search_table_company_Visit');
         Route::post('Visit-company-paginate-table', 'paginate_table_company_Visit');
 
+        Route::post('Billing-company-search-table', 'search_table_company_Billing');
+        Route::post('Billing-company-paginate-table', 'paginate_table_company_Billing');
+
         Route::post('Contact-company-search-table', 'search_table_company_Contact');
         Route::post('Contact-company-paginate-table', 'paginate_table_company_Contact');
 
@@ -409,6 +412,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('Visit-guest-search-table', 'search_table_guest_Visit');
         Route::post('Visit-guest-paginate-table', 'paginate_table_guest_Visit');
+
+        Route::post('Billing-guest-search-table', 'search_table_guest_Billing');
+        Route::post('Billing-guest-paginate-table', 'paginate_table_guest_Billing');
     });
 });
     #master product
@@ -896,6 +902,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
         Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
 
+        Route::post('billing-Approved-search-table', 'search_table_paginate_approved');
+        Route::post('billing-Approved-paginate-table', 'paginate_approved_table_proposal');
+
+        Route::post('billing-reject-search-table', 'search_table_paginate_reject');
+        Route::post('billing-reject-paginate-table', 'paginate_reject_table_proposal');
+
+        Route::post('billing-Cancel-search-table', 'search_table_paginate_Cancel');
+        Route::post('billing-Cancel-paginate-table', 'paginate_Cancel_table_proposal');
 
     });
     Route::controller(Additional::class)->middleware('role:document')->group(function () {

@@ -15,6 +15,7 @@ use App\Models\guest_tax;
 use App\Models\guest_tax_phone;
 use App\Models\Quotation;
 use App\Models\country;
+use App\Models\receive_payment;
 use Illuminate\Support\Facades\DB;
 use Auth;
 class GuestController extends Controller
@@ -520,8 +521,9 @@ class GuestController extends Controller
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $country = country::select('ct_nameENG')->get();
+        $Billing = receive_payment::query()->where('company',$Profile_ID)->WhereIn('document_status',[1,2])->paginate($perPage);
         return view('guest.edit',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
-        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax','Quotation','country'));
+        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax','Quotation','country','Billing'));
     }
     public function view($id){
         $Guest = Guest::find($id);
@@ -1830,5 +1832,148 @@ class GuestController extends Controller
             'data' => $data,
         ]);
     }
+    //-----------------------------------Billing-------------------------------
+    public function search_table_guest_Billing(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
 
+        if ($search_value) {
+            $data_query = receive_payment::query()->where('company',$guest_profile)->WhereIn('document_status',[1,2])
+            ->where(function ($query) use ($search_value) {
+                // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
+                $query->whereHas('userOperated', function ($q) use ($search_value) {
+                    $q->where('name', 'LIKE', '%'.$search_value.'%');
+                })
+                // ค้นหาตาม Receipt_ID หรือ Amount
+                ->orWhere('document_receive.Receipt_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
+            })
+            ->paginate($perPage);
+
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+
+            $data_query = receive_payment::query()->where('company',$guest_profile)->WhereIn('document_status',[1,2])
+                ->paginate($perPageS);
+        }
+
+
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+
+
+
+                $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
+
+                }
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key +1,
+                    'Receipt' => $value->Receipt_ID,
+                    'Proposal' => $value->Quotation_ID,
+                    'Company_Name' => $value->fullname,
+                    'Payment_date' => $value->paymentDate,
+                    'Amount' => number_format($value->Amount),
+                    'Approve' =>  @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_table_guest_Billing(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        $guest_profile = $request->guest_profile;
+        if ($perPage == 10) {
+            $data_query = receive_payment::query()->where('company',$guest_profile)->WhereIn('document_status',[1,2])
+                ->limit($request->page.'0')
+                ->get();
+        } else {
+            $data_query = receive_payment::query()->where('company',$guest_profile)->WhereIn('document_status',[1,2])
+                ->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+
+
+                    $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
+
+                    }
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key +1,
+                        'Receipt' => $value->Receipt_ID,
+                        'Proposal' => $value->Quotation_ID,
+                        'Company_Name' => $value->fullname,
+                        'Payment_date' => $value->paymentDate,
+                        'Amount' => number_format($value->Amount),
+                        'Approve' =>  @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 }

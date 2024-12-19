@@ -210,7 +210,7 @@
                                             <li>
                                             <span>Guest Name</span>
                                             @if ($type == 'Guest')
-                                                <span>{{$name}}</span>
+                                                <span>{{$fullname}}</span>
                                             @else
                                                 <span> - </span>
                                             @endif
@@ -218,7 +218,7 @@
                                             <li>
                                             <span>Company</span>
                                             @if ($type == 'Company')
-                                                <span>{{$name}}</span>
+                                                <span>{{$fullname}}</span>
                                             @else
                                                 <span> - </span>
                                             @endif
@@ -362,9 +362,13 @@
                                             <h4 >
                                                 <span>Customer Details</span>
                                             </h4>
+
                                             <section class="d-grid-2column p-2" >
+                                                <div style="grid-column: span 2;">
+                                                    <span style="color: red">( Previous Guest : {{$re->fullname}} )</span>
+                                                </div>
                                                 <div>
-                                                    <label for="" class="star-red">Guest Name <span style="color: red">( Previous Guest : {{$re->fullname}} )</span></label>
+                                                    <label for="" class="star-red">Guest Name </label>
                                                     <select name="Guest" id="Guest" class="select2" onchange="data()" required>
                                                         <option value="{{$name_ID}}">{{$name}}</option>
                                                         @foreach($datasub as $item)
@@ -492,23 +496,35 @@
                                             <h4 class="font-upper"> Tax invoice {{$REID}}</h4>
                                             <li>
                                                 <span>Guest name</span>
-                                                <span id="displayGuestNameEditBill">คุณพัชรี</span>
+                                                <span id="displayGuestNameEditBill">
+                                                    @if ($type == 'Guest')
+                                                        {{$fullname}}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </span>
                                             </li>
                                             <li>
                                                 <span>Reservation No</span>
-                                                <span id="displayReservationNoEditBill">6576</span>
+                                                <span id="displayReservationNoEditBill">{{$re->reservationNo}}</span>
                                             </li>
                                             <li>
                                                 <span>Company</span>
-                                                <span id="displayCompanyEditBill">Together Resort </span>
+                                                <span id="displayCompanyEditBill">
+                                                    @if ($type == 'Company')
+                                                        {{$fullname}}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </span>
                                             </li>
                                             <li>
                                                 <span>Tax ID/Gst Pass</span>
-                                                <span id="displayTaxIDEditBill">0764559000169</span>
+                                                <span id="displayTaxIDEditBill">{{$Identification}}</span>
                                             </li>
                                             <li>
                                                 <span>Address</span>
-                                                <span id="displayAddressEditBill" >168 Moo 2 Kaengkrachan phetchaburi 76170</span>
+                                                <span id="displayAddressEditBill" >{{$address}}</span>
                                             </li>
                                             </ul>
                                             <ul>
@@ -518,19 +534,19 @@
                                             </li>
                                             <li>
                                                 <span>Room No.</span>
-                                                <span id="displayRoomNoEditBill">9643</span>
+                                                <span id="displayRoomNoEditBill">{{$re->roomNo}}</span>
                                             </li>
                                             <li>
                                                 <span>Arrival</span>
-                                                <span id="displayArrivalEditBill">01/06/2024</span>
+                                                <span id="displayArrivalEditBill">{{$re->arrival}}</span>
                                             </li>
                                             <li>
                                                 <span>Departure</span>
-                                                <span id="displayDepartureEditBill">02/06/2024</span>
+                                                <span id="displayDepartureEditBill">{{$re->departure}}</span>
                                             </li>
                                             <li>
                                                 <span>No of Guest</span>
-                                                <span id="displayNumberOfGuestsEditBill">3</span>
+                                                <span id="displayNumberOfGuestsEditBill">{{$re->numberOfGuests}}</span>
                                             </li>
                                             <li>
                                                 <span>Printed Date</span>

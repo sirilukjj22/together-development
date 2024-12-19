@@ -95,7 +95,7 @@
                                                 <input class="search-button search-data" id="Additional" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="AdditionalTable" class="example1 ui striped table nowrap unstackable hover">
+                                        <table id="AdditionalTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -191,7 +191,7 @@
                                                 <input class="search-button search-data-Awaiting" id="proposalAwaiting" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="proposalAwaitingTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <table id="proposalAwaitingTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -284,7 +284,7 @@
                                                 <input class="search-button search-data-Approved" id="proposalApproved" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="proposalApprovedTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <table id="proposalApprovedTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -402,7 +402,7 @@
                                                 <input class="search-button search-data-Reject" id="proposalReject" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="proposalRejectTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <table id="proposalRejectTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -519,7 +519,7 @@
                                                 <input class="search-button search-data-Cancel" id="proposalCancel" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="proposalCancelTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <table id="proposalCancelTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>

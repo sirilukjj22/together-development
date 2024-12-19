@@ -25,6 +25,8 @@ use App\Models\log;
 use App\Models\Master_company;
 use App\Models\phone_guest;
 use App\Models\document_invoices;
+use App\Models\proposal_overbill;
+use App\Models\receive_payment;
 use Auth;
 use App\Models\User;
 use PDF;
@@ -873,8 +875,8 @@ class QuotationController extends Controller
 
                     if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
                         if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                         }
                     }
 
@@ -965,8 +967,8 @@ class QuotationController extends Controller
 
                 if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
                     if ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
 
@@ -5053,7 +5055,27 @@ class QuotationController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('Proposal.index')->with('error', $e->getMessage());
         }
+        try {
+            $receive = receive_payment::where('Quotation_ID',$data->Quotation_ID)->get();
 
+            foreach ($receive as $value) {
+                $id = $value->id;
+                $Receipt_ID = $value->Receipt_ID;
+                $Quotation_ID = $value->Quotation_ID;
+                $save = receive_payment::find($id);
+                $save->document_status = 0;
+                $save->save();
+                $savelogin = new log_company();
+                $savelogin->Created_by = $userid;
+                $savelogin->Company_ID = $Receipt_ID;
+                $savelogin->type = 'Cancel';
+                $savelogin->Category = 'Cancel :: Receipt';
+                $savelogin->content = 'Cancel Receipt ID : '.$Receipt_ID.'+'.'Based on : '.$Quotation_ID ;
+                $savelogin->save();
+            }
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
         return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function Revice($id){
@@ -5091,6 +5113,27 @@ class QuotationController extends Controller
                 $savelogin->type = 'Revice';
                 $savelogin->Category = 'Revice :: Invoice';
                 $savelogin->content = 'Revice Document Invoice ID : '.$Invoice_ID.'+'.'Based on : '.$Quotation_ID ;
+                $savelogin->save();
+            }
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
+        try {
+            $receive = receive_payment::where('Quotation_ID',$data->Quotation_ID)->get();
+
+            foreach ($receive as $value) {
+                $id = $value->id;
+                $Receipt_ID = $value->Receipt_ID;
+                $Quotation_ID = $value->Quotation_ID;
+                $save = receive_payment::find($id);
+                $save->document_status = 4;
+                $save->save();
+                $savelogin = new log_company();
+                $savelogin->Created_by = $userid;
+                $savelogin->Company_ID = $Receipt_ID;
+                $savelogin->type = 'Reject';
+                $savelogin->Category = 'Reject :: Receipt';
+                $savelogin->content = 'Reject Receipt ID : '.$Receipt_ID.'+'.'Based on : '.$Quotation_ID ;
                 $savelogin->save();
             }
         } catch (\Throwable $e) {

@@ -50,7 +50,7 @@
                                         <input class="search-button search-data" id="billing" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="billingTable" class="example1 ui striped table nowrap unstackable hover">
+                                <table id="billingTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>

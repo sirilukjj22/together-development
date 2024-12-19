@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-auto">
                     @if ($Nettotal-$totalReceipt !== 0 )
-                        @if ($Nettotal+$Additionaltotal-$totalinvoices !== 0 )
+                        @if ($Nettotal+$Additionaltotal-$totalReceipt-$totalReceiptCom !== 0 )
                             <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
                                 <i class="fa fa-plus"></i> Create Invoice
                             </button>
@@ -117,7 +117,7 @@
                                         <div class="outer-glow-circle"></div>
                                         <div class="circle-content">
                                             <p class="circle-text">
-                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal+$Additionaltotal-$totalReceipt, 2, '.', ',') }}</p>
+                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal+$Additionaltotal-$totalReceipt-$totalReceiptCom, 2, '.', ',') }}</p>
                                             <span class="subtext fs-6" >Total Amount</span>
                                             </p>
                                         </div>
@@ -191,7 +191,7 @@
                         @if ($status == '0')
                             <div class="card-body">
                                 <b>Invoice</b>
-                                <table id="InvoiceTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
+                                <table id="InvoiceTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
                                     <thead >
                                         <tr>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%;">Proforma Invoice ID</th>
@@ -227,7 +227,7 @@
                         @endif
                         <div class="card-body">
                             <b>Receipt</b>
-                            <table id="ReceiptTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
+                            <table id="ReceiptTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
                                 <thead >
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
@@ -265,7 +265,7 @@
                         @if ($statusover == '0')
                         <div class="card-body">
                             <b>Additional</b>
-                            <table id="ReceiptTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
+                            <table id="ReceiptTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
                                 <thead >
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>

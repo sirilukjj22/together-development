@@ -324,7 +324,7 @@
                                         <input class="search-button search-data" id="proposal" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="proposalTable" class="example1 ui striped table nowrap unstackable hover">
+                                <table id="proposalTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -524,7 +524,7 @@
                                         <input class="search-button search-data-Pending" id="proposalPending" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="proposalPendingTable" class="example2 ui striped table nowrap unstackable hover">
+                                <table id="proposalPendingTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -681,7 +681,7 @@
                                         <input class="search-button search-data-Awaiting" id="proposalAwaiting" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="proposalAwaitingTable" class="example2 ui striped table nowrap unstackable hover">
+                                <table id="proposalAwaitingTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -777,8 +777,8 @@
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
                                                         </ul>
@@ -815,7 +815,7 @@
                                         <input class="search-button search-data-Approved" id="proposalApproved" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="proposalApprovedTable" class="example2 ui striped table nowrap unstackable hover">
+                                <table id="proposalApprovedTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -969,7 +969,7 @@
                                         <input class="search-button search-data-Reject" id="proposalReject" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="proposalRejectTable" class="example2 ui striped table nowrap unstackable hover">
+                                <table id="proposalRejectTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -1114,7 +1114,7 @@
                                         <input class="search-button search-data-Cancel" id="proposalCancel" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="proposalCancelTable" class="example2 ui striped table nowrap unstackable hover">
+                                <table id="proposalCancelTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -1260,7 +1260,7 @@
                                         <input class="search-button search-data-complete" id="complete" style="text-align:left;" placeholder="Search" />
                                     </div>
                                 </caption>
-                                <table id="completeTable" class="example1 ui striped table nowrap unstackable hover">
+                                <table id="completeTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>

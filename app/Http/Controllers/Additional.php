@@ -402,7 +402,7 @@ class Additional extends Controller
                 $save->content =$datacompany;
                 $save->save();
             } catch (\Throwable $e) {
-                return redirect()->route('Additional.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+                return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
             try {
                 $userid = Auth::user()->id;
@@ -646,7 +646,7 @@ class Additional extends Controller
                 $pdf->save($path . $Additional_ID . '.pdf');
             } catch (\Throwable $e) {
                 log_company::where('Category','Create :: Additional')->delete();
-                return redirect()->route('Additional.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+                return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
             try {
                 $currentDateTime = Carbon::now();
@@ -713,7 +713,7 @@ class Additional extends Controller
                     unlink($file); // ลบไฟล์
                 }
                 log::where('Quotation_ID',$Additional_ID)->delete();
-                return redirect()->route('Additional.proposal', ['id' => $Quotation->id])->with('error',$e->getMessage());
+                return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
 
             try {

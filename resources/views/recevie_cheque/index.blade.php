@@ -287,7 +287,7 @@
                                                 <input class="search-button search-data" id="cheque" style="text-align:left;" placeholder="Search" />
                                             </div>
                                         </caption>
-                                        <table id="chequeTable" class="example1 ui striped table nowrap unstackable hover">
+                                        <table id="chequeTable" class="example ui striped table nowrap unstackable hover">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>

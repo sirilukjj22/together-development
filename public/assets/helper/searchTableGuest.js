@@ -133,3 +133,5 @@ function getPage(page, perPage, table_n)
     $('#' + table_n + '-paginate').append(paginateSearch(total, table_n, getUrl));
 
 }
+//billing
+

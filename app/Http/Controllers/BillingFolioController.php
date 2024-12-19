@@ -51,19 +51,25 @@ class BillingFolioController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
-        $Approved = receive_payment::query()->where('type','billing')->paginate($perPage);
-        $ApprovedCount = receive_payment::query()->where('type','billing')->count();
+        $Approved = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->paginate($perPage);
+        $ApprovedCount = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->count();
         $ComplateCount = Quotation::query()->where('quotation.status_document', 9)->count();
         $Complate = Quotation::query()
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
         ->where('quotation.status_document', 9)
         ->select(
             'quotation.*',
-            DB::raw('COUNT(document_receive.Quotation_ID) as receive_count')
+            DB::raw('document_receive.fullname as fullname'),
+            DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
+            DB::raw('SUM(document_receive.document_amount) as document_amount')
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
         ->paginate($perPage);
-        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount'));
+        $Noshow = receive_payment::query()->where('type','billing')->where('document_status',0)->paginate($perPage);
+        $NoshowCount = receive_payment::query()->where('type','billing')->where('document_status',0)->count();
+        $Rejectcount = receive_payment::query()->where('type','billing')->where('document_status',4)->count();
+        $Reject = receive_payment::query()->where('type','billing')->where('document_status',4)->paginate($perPage);
+        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount','Noshow','NoshowCount','Reject','Rejectcount'));
     }
     //---------------------------------table-----------------
     public function  paginate_table_billing(Request $request)
@@ -73,11 +79,11 @@ class BillingFolioController extends Controller
         $data = [];
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
-            $data_query = receive_payment::query()->where('type','billing')
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',1)
                 ->limit($request->page.'0')
                 ->get();
         } else {
-            $data_query = receive_payment::query()->where('type','billing')
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',1)
                 ->paginate($perPage);
         }
 
@@ -95,15 +101,7 @@ class BillingFolioController extends Controller
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' . (isset($value->company->Company_Name) ? $value->company->Company_Name : '') . '</td>';
-                    } elseif ($value->type_Proposal == 'Guest') {
-                        $name = '<td>' . (isset($value->guest->First_name) && isset($value->guest->Last_name) ? $value->guest->First_name . ' ' . $value->guest->Last_name : '') . '</td>';
-                    } elseif ($value->type_Proposal == 'company_tax') {
-                        $name = '<td>' . (isset($value->company_tax->Companny_name) ? $value->company_tax->Companny_name : (isset($value->company_tax->first_name) && isset($value->company_tax->last_name) ? $value->company_tax->first_name . ' ' . $value->company_tax->last_name : '')) . '</td>';
-                    } elseif ($value->type_Proposal == 'guest_tax') {
-                        $name = '<td>' . (isset($value->guest_tax->Company_name) ? $value->guest_tax->Company_name : (isset($value->guest_tax->first_name) && isset($value->guest_tax->last_name) ? $value->guest_tax->first_name . ' ' . $value->guest_tax->last_name : '')) . '</td>';
-                    }
+
 
 
                     $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
@@ -138,12 +136,11 @@ class BillingFolioController extends Controller
 
                     $data[] = [
                         'number' => $key +1,
-                        'Proposal' => $value->Receipt_ID,
-                        'Company_Name' => $name,
-                        'IssueDate' => $value->roomNo,
-                        'ExpirationDate' => $value->paymentDate,
+                        'Receipt' => $value->Receipt_ID,
+                        'Proposal' => $value->Quotation_ID,
+                        'Company_Name' => $value->fullname,
+                        'Payment_date' => $value->paymentDate,
                         'Amount' => number_format($value->Amount),
-                        'Balance' => $value->category,
                         'Approve' =>  @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -164,22 +161,23 @@ class BillingFolioController extends Controller
         $userid = Auth::user()->id;
 
         if ($search_value) {
-            $data_query = receive_payment::query()->where('type','billing')
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',1)
             ->where(function ($query) use ($search_value) {
                 // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
                 $query->whereHas('userOperated', function ($q) use ($search_value) {
                     $q->where('name', 'LIKE', '%'.$search_value.'%');
                 })
                 // ค้นหาตาม Receipt_ID หรือ Amount
-                ->orWhere('receive_payment.Receipt_ID', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('receive_payment.Amount', 'LIKE', '%'.$search_value.'%');
+                ->orWhere('document_receive.Receipt_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
             })
             ->paginate($perPage);
 
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
-            $data_query = receive_payment::query()->where('type','billing')
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',1)
                 ->paginate($perPageS);
         }
 
@@ -190,16 +188,7 @@ class BillingFolioController extends Controller
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
                 $btn_status = "";
-                $name ="";
-                if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' . (isset($value->company->Company_Name) ? $value->company->Company_Name : '') . '</td>';
-                } elseif ($value->type_Proposal == 'Guest') {
-                    $name = '<td>' . (isset($value->guest->First_name) && isset($value->guest->Last_name) ? $value->guest->First_name . ' ' . $value->guest->Last_name : '') . '</td>';
-                } elseif ($value->type_Proposal == 'company_tax') {
-                    $name = '<td>' . (isset($value->company_tax->Companny_name) ? $value->company_tax->Companny_name : (isset($value->company_tax->first_name) && isset($value->company_tax->last_name) ? $value->company_tax->first_name . ' ' . $value->company_tax->last_name : '')) . '</td>';
-                } elseif ($value->type_Proposal == 'guest_tax') {
-                    $name = '<td>' . (isset($value->guest_tax->Company_name) ? $value->guest_tax->Company_name : (isset($value->guest_tax->first_name) && isset($value->guest_tax->last_name) ? $value->guest_tax->first_name . ' ' . $value->guest_tax->last_name : '')) . '</td>';
-                }
+
 
 
                 $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
@@ -233,12 +222,11 @@ class BillingFolioController extends Controller
                 $btn_action .= '</div>';
                 $data[] = [
                     'number' => $key +1,
-                    'Proposal' => $value->Receipt_ID,
-                    'Company_Name' => $name,
-                    'IssueDate' => $value->roomNo,
-                    'ExpirationDate' => $value->paymentDate,
+                    'Receipt' => $value->Receipt_ID,
+                    'Proposal' => $value->Quotation_ID,
+                    'Company_Name' => $value->fullname,
+                    'Payment_date' => $value->paymentDate,
                     'Amount' => number_format($value->Amount),
-                    'Balance' => $value->category,
                     'Approve' =>  @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -259,6 +247,7 @@ class BillingFolioController extends Controller
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
         ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
         ->where('quotation.status_guest', 1)
+        ->where('quotation.status_receive', 1)
         ->select(
             'quotation.*',
             'proposal_overbill.Nettotal as Adtotal',
@@ -424,6 +413,150 @@ class BillingFolioController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function  paginate_approved_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = Quotation::query()
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->where('quotation.status_document', 9)
+                ->select(
+                    'quotation.*',
+                    DB::raw('document_receive.fullname as fullname'),
+                    DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
+                    DB::raw('SUM(document_receive.document_amount) as document_amount')
+                )
+                ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
+                ->limit($request->page.'0')
+                ->get();
+        } else {
+            $data_query = Quotation::query()
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->where('quotation.status_document', 9)
+                ->select(
+                    'quotation.*',
+                    DB::raw('document_receive.fullname as fullname'),
+                    DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
+                    DB::raw('SUM(document_receive.document_amount) as document_amount')
+                )
+                ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
+                ->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+                    $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
+
+
+
+                    $url = url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id);
+                    $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                    Select
+                                </button>';
+                    $data[] = [
+                        'number' => $key +1,
+                        'Proposal' => $value->Quotation_ID,
+                        'Company_Name' => $value->fullname,
+                        'IssueDate' => $value->issue_date,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Amount' => number_format($value->document_amount),
+                        'Deposit' => $value->receive_count,
+                        'Approve' => @$value->userOperated->name ?? '-',
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_approved(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = Quotation::query()
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->where('quotation.status_document', 9)
+                ->select(
+                    'quotation.*',
+                    DB::raw('document_receive.fullname as fullname'),
+                    DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
+                    DB::raw('SUM(document_receive.document_amount) as document_amount')
+                )
+                ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
+                ->paginate($perPage);
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+
+            $data_query = Quotation::query()
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+                ->where('quotation.status_document', 9)
+                ->select(
+                    'quotation.*',
+                    DB::raw('document_receive.fullname as fullname'),
+                    DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
+                    DB::raw('SUM(document_receive.document_amount) as document_amount')
+                )
+                ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
+                ->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
+
+                $url = url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id);
+                $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . $url . '\'">
+                                Select
+                            </button>';
+                $data[] = [
+                    'number' => $key +1,
+                    'Proposal' => $value->Quotation_ID,
+                    'Company_Name' => $value->fullname,
+                    'IssueDate' => $value->issue_date,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Amount' => number_format($value->document_amount),
+                    'Deposit' => $value->receive_count,
+                    'Approve' => @$value->userOperated->name ?? '-',
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
     public function CheckPI($id)
     {
         $userid = Auth::user()->id;
@@ -540,17 +673,6 @@ class BillingFolioController extends Controller
         foreach ($entertainment as $item) {
             $totalentertainment +=  $item->netpriceproduct;
         }
-        $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->where('status_document',3)->where('status_guest',0)->first();
-        $additional_type= "";
-        $Additionaltotal= 0;
-        $Cash= 0;
-        $Com= 0;
-        if ($Additional) {
-            $additional_type = $Additional->additional_type;
-            $Additionaltotal = $Additional->Nettotal;
-            $Cash = $Additional->Cash;
-            $Com = $Additional->Complimentary;
-        }
         $Rm = []; // กำหนดตัวแปร $Rm เป็น array ว่าง
         $FB = [];
         $BQ = [];
@@ -561,12 +683,21 @@ class BillingFolioController extends Controller
         $BQCount = 0;
         $EMCount = 0;
         $ATCount = 0;
-
+        $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->where('status_document',3)->first();
+        $additional_type= "";
+        $Additionaltotal= 0;
+        $Cash= 0;
+        $Com= 0;
         $AdditionaltotalReceipt = 0;
         $statusover = 1;
         $Receiptover = null;
         $Additional_ID = null;
         if ($Additional) {
+            $additional_type = $Additional->additional_type;
+            $Additionaltotal = $Additional->Nettotal;
+            $Cash = $Additional->Cash;
+            $Com = $Additional->Complimentary;
+
             $Additional_ID = $Additional->Additional_ID;
             $document = document_proposal_overbill::where('Additional_ID',$Additional_ID)->get();
 
@@ -633,6 +764,9 @@ class BillingFolioController extends Controller
                 $statusover = 1;
             }
         }
+
+
+
 
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
                     'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
@@ -752,6 +886,7 @@ class BillingFolioController extends Controller
         $REID = $re->Receipt_ID;
         $proposalid = $re->Quotation_ID;
         $sumpayment =$re->document_amount;
+        $fullname = $re->fullname;
         $productItems = document_receive_item::where('receive_id',$REID)->get();
 
         $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
@@ -804,7 +939,7 @@ class BillingFolioController extends Controller
         $additional =  $re->additional;
         $additional_type =$re->additional_type;
 
-        return view('billingfolio.editinvoicepaid',compact('company','address','re','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany',
+        return view('billingfolio.editinvoicepaid',compact('company','address','re','Identification','valid','Proposal','name','fullname','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany',
                     'sumpayment','complimentary','additional','additional_type','productItems'));
     }
     public function PaidInvoiceData($id)
@@ -1643,7 +1778,9 @@ class BillingFolioController extends Controller
                 $Additional_Nettotal = $Additional->Nettotal;
             }
             $Nettotal = $proposal->Nettotal;
-            $total = $Nettotal+$Additional_Nettotal-$Amounttotal+$Comtotal;
+            $amountMain=$Nettotal+$Additional_Nettotal;
+            $amountPaid=$Amounttotal+$Comtotal;
+            $total = $amountMain-$amountPaid;
             if ($total == 0) {
                 foreach ($receive as $value) {
                    $value->document_status = 2;
@@ -1755,6 +1892,7 @@ class BillingFolioController extends Controller
         $sumpayment =$dataArray->document_amount;
         $paymentDate =$dataArray->paymentDate;
         $note =$dataArray->note;
+        $document_status =$dataArray->document_status;
         if ($correct >= 1) {
             $correctup = $correct + 1;
         }else{
@@ -1835,10 +1973,13 @@ class BillingFolioController extends Controller
             }
             $fullname = 'รหัส : '.$REID;
             $edit = 'แก้ไข';
-
+            $status = null;
+            if ($document_status == 4) {
+                $status = 'สถานะเอกสาร';
+            }
             $datacompany = '';
 
-            $variables = [$fullname,$edit,$FullName, $Reservation_No,$Room_No,$NumberOfGuests, $Arrival,$Departure];
+            $variables = [$fullname,$edit,$status,$FullName, $Reservation_No,$Room_No,$NumberOfGuests, $Arrival,$Departure];
             foreach ($variables as $variable) {
                 if (!empty($variable)) {
                     if (!empty($datacompany)) {
@@ -1869,6 +2010,7 @@ class BillingFolioController extends Controller
             $save->arrival = $request->arrival;
             $save->departure = $request->departure;
             $save->correct = $correctup;
+            $save->document_status = 1;
             $save->save();
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
@@ -2826,4 +2968,337 @@ class BillingFolioController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function  paginate_reject_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',4)
+                ->limit($request->page.'0')
+                ->get();
+        } else {
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',4)
+                ->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+
+
+                    $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
+
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    }
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key +1,
+                        'Receipt' => $value->Receipt_ID,
+                        'Proposal' => $value->Quotation_ID,
+                        'Company_Name' => $value->fullname,
+                        'Payment_date' => $value->paymentDate,
+                        'Amount' => number_format($value->Amount),
+                        'Approve' =>  @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_reject(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',4)
+            ->where(function ($query) use ($search_value) {
+                // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
+                $query->whereHas('userOperated', function ($q) use ($search_value) {
+                    $q->where('name', 'LIKE', '%'.$search_value.'%');
+                })
+                // ค้นหาตาม Receipt_ID หรือ Amount
+                ->orWhere('document_receive.Receipt_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
+            })
+            ->paginate($perPage);
+
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',4)
+                ->paginate($perPageS);
+        }
+
+
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+
+
+
+                $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
+
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                }
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key +1,
+                    'Receipt' => $value->Receipt_ID,
+                    'Proposal' => $value->Quotation_ID,
+                    'Company_Name' => $value->fullname,
+                    'Payment_date' => $value->paymentDate,
+                    'Amount' => number_format($value->Amount),
+                    'Approve' =>  @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function  paginate_Cancel_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',0)
+                ->limit($request->page.'0')
+                ->get();
+        } else {
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',0)
+                ->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+
+
+                    $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
+
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    }
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key +1,
+                        'Receipt' => $value->Receipt_ID,
+                        'Proposal' => $value->Quotation_ID,
+                        'Company_Name' => $value->fullname,
+                        'Payment_date' => $value->paymentDate,
+                        'Amount' => number_format($value->Amount),
+                        'Approve' =>  @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_Cancel(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',0)
+            ->where(function ($query) use ($search_value) {
+                // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
+                $query->whereHas('userOperated', function ($q) use ($search_value) {
+                    $q->where('name', 'LIKE', '%'.$search_value.'%');
+                })
+                // ค้นหาตาม Receipt_ID หรือ Amount
+                ->orWhere('document_receive.Receipt_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
+            })
+            ->paginate($perPage);
+
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+
+            $data_query = receive_payment::query()->where('type','billing')->where('document_status',0)
+                ->paginate($perPageS);
+        }
+
+
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+
+
+
+                $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
+
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                }
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key +1,
+                    'Receipt' => $value->Receipt_ID,
+                    'Proposal' => $value->Quotation_ID,
+                    'Company_Name' => $value->fullname,
+                    'Payment_date' => $value->paymentDate,
+                    'Amount' => number_format($value->Amount),
+                    'Approve' =>  @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
 }
