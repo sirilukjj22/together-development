@@ -48,11 +48,11 @@ use App\Models\master_payment_and_complimentary;
 class ReportDocumentController extends Controller
 {
     //Proposal
-    public function index()
+    public function proposal()
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
 
-        return view('report.document.index');
+        return view('report.document.proposal');
     }
 }

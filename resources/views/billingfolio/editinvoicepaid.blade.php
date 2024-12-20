@@ -163,12 +163,11 @@
     }
 </style>
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Billing Folio.</small>
-                    <div class=""><span class="span1">Edit Billing Folio (แก้ไขใบเรียกเก็บเงิน)</span></div>
+                    <div class="span3">Edit Billing Folio</div>
                 </div>
                 <div class="col-auto">
                     <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">

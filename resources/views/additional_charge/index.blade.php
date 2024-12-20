@@ -1,11 +1,11 @@
 @extends('layouts.masterLayout')
+
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Additional.</small>
-                    <div class=""><span class="span1">Additional</span></div>
+                    <div class="span3">Additional</div>
                 </div>
                 <div class="col-auto">
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
@@ -65,6 +65,9 @@
                         <li></li>
                         <li></li>
                     </ol>
+                </div>
+                <div class="col-auto">
+
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
@@ -644,7 +647,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -1123,5 +1125,4 @@
             });
         }
     </script>
-
 @endsection

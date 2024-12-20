@@ -48,6 +48,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use App\Http\Controllers\ReportDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -302,7 +303,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::controller(ReportDocumentController::class)->middleware('role:report')->group(function () {
-        Route::get('report-proposal-index', 'index')->name('report-proposal-index');
+        Route::get('report-proposal-index', 'proposal')->name('report-proposal-index');
        // Route::post('report-elexa-paid-search', 'search')->name('report-elexa-paid-search');
     });
     ####################################################

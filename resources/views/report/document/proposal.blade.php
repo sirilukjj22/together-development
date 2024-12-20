@@ -5,8 +5,12 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Document Report.</small>
-                    <div class=""><span class="span1">Document Report</span></div>
+                    <small class="text-muted">Welcome to Document Proposal Report.</small>
+                    <div class=""><span class="span1">Document Proposal Report</span></div>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
+                    <button type="button" class="bt-tg-normal export-excel" id="export-excel"> Export <img src="/image/front/xls.png" width="30px" alt=""></button>
                 </div>
             </div> <!-- .row end -->
         </div>

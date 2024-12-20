@@ -1,17 +1,19 @@
 @extends('layouts.masterLayout')
 
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Proposal Request.</small>
-                    <div class=""><span class="span1">Proposal Request</span></div>
+                    <div class="span3">Proposal Request </div>
+                </div>
+                <div class="col-auto">
+
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
-
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >

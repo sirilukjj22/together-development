@@ -191,12 +191,15 @@
     }
 </style>
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Edit Proposal.</small>
-                    <div class=""><span class="span1">Edit Proposal (แก้ไขเอกสารใบข้อเสนอ)</span></div>
+                    <div class="span3">Edit Proposal </div>
+                </div>
+                <div class="col-auto">
+
                 </div>
             </div> <!-- .row end -->
         </div>

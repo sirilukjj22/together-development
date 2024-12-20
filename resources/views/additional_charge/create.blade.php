@@ -191,17 +191,19 @@
     }
 </style>
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Additional Charge.</small>
-                    <div class=""><span class="span1">Additional Charge</span></div>
+                    <div class="span3">Create Additional Charge</div>
+                </div>
+                <div class="col-auto">
+
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
-
     <form id="myForm" action="{{url('/Document/Additional/Charge/save/'.$Quotation->id)}}" method="POST">
         @csrf
         <div id="content-index" class="body d-flex py-lg-4 py-3">

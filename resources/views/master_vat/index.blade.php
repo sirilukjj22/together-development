@@ -1,12 +1,11 @@
 @extends('layouts.masterLayout')
 
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Vat.</small>
-                    <div class=""><span class="span1">Vat (ภาษีมูลค่าเพิ่ม)</span></div>
+                    <div class="span3">Vat</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#EventVat">
@@ -59,6 +58,7 @@
             </div> <!-- .row end -->
         </div>
     </div>
+
 
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">

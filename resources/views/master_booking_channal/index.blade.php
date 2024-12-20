@@ -1,61 +1,61 @@
 @extends('layouts.masterLayout')
 
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Booking.</small>
-                    <div class=""><span class="span1">Booking (ช่องทางการจอง)</span></div>
+                    <div class="span3">Booking Channal</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#MbookingCreate">
-                        <i class="fa fa-plus"></i> เพิ่มช่องทางติดต่อ </button>
-                </div>
-                <!-- Prename Modal Center-->
-                <div class="modal fade" id="MbookingCreate" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
-                style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="PrenameModalCenterTitle">เพิ่มช่องทางติดต่อ</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="col-12">
-                                        <div class="card-body">
-                                            <form action="{{route('Mbooking.save')}}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form" id="form-id">
-                                                @csrf
-                                                <div class="col-sm-12 col-12">
-                                                    <label class="form-label">ชื่อภาษาไทย <sup class="text-danger">*</sup> </label>
-                                                    <input type="text" class="form-control check_name_th mb-2" id="name_th" name="name_th" maxlength="50">
-                                                    <p class="text-danger" id="comment"></p>
-                                                </div>
-                                                <div class="col-sm-12 col-12">
-                                                    <label class="form-label text-danger">ชื่อที่คล้ายกัน:</label>
-                                                    <span id="search_list"></span>
-                                                </div>
-                                                <div class="col-sm-12 col-12">
-                                                    <label class="form-label">ชื่อภาษาอังกฤษ</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" maxlength="50">
-                                                </div>
-                                                <div class="col-sm-12 col-12">
-                                                    <label class="form-label">Code</label>
-                                                    <input type="text" class="form-control" id="code" name="code" maxlength="50">
-                                                </div>
+                        <i class="fa fa-plus"></i> เพิ่มช่องทางติดต่อ
+                    </button>
+                    <div class="modal fade" id="MbookingCreate" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
+                    style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="PrenameModalCenterTitle">เพิ่มช่องทางติดต่อ</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-12">
+                                            <div class="card-body">
+                                                <form action="{{route('Mbooking.save')}}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form" id="form-id">
+                                                    @csrf
+                                                    <div class="col-sm-12 col-12">
+                                                        <label class="form-label">ชื่อภาษาไทย <sup class="text-danger">*</sup> </label>
+                                                        <input type="text" class="form-control check_name_th mb-2" id="name_th" name="name_th" maxlength="50">
+                                                        <p class="text-danger" id="comment"></p>
+                                                    </div>
+                                                    <div class="col-sm-12 col-12">
+                                                        <label class="form-label text-danger">ชื่อที่คล้ายกัน:</label>
+                                                        <span id="search_list"></span>
+                                                    </div>
+                                                    <div class="col-sm-12 col-12">
+                                                        <label class="form-label">ชื่อภาษาอังกฤษ</label>
+                                                        <input type="text" class="form-control" id="name_en" name="name_en" maxlength="50">
+                                                    </div>
+                                                    <div class="col-sm-12 col-12">
+                                                        <label class="form-label">Code</label>
+                                                        <input type="text" class="form-control" id="code" name="code" maxlength="50">
+                                                    </div>
 
-                                                <input type="hidden" id="edit_id" name="edit_id" value="">
-                                                <input type="hidden" name="created_by" value="1">
-                                                <input type="hidden" name="category" value="prename">
-                                                <input type="hidden" id="module_name" name="module_name" value="create">
+                                                    <input type="hidden" id="edit_id" name="edit_id" value="">
+                                                    <input type="hidden" name="created_by" value="1">
+                                                    <input type="hidden" name="category" value="prename">
+                                                    <input type="hidden" id="module_name" name="module_name" value="create">
 
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
-                                                    <button type="button" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                </div><!-- Form Validation -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                        <button type="button" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                    </div><!-- Form Validation -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,7 +63,6 @@
             </div> <!-- .row end -->
         </div>
     </div>
-
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >
