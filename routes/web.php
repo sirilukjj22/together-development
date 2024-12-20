@@ -300,6 +300,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('report-elexa-paid-search', 'search')->name('report-elexa-paid-search');
     });
 
+
+    Route::controller(ReportDocumentController::class)->middleware('role:report')->group(function () {
+        Route::get('report-proposal-index', 'index')->name('report-proposal-index');
+       // Route::post('report-elexa-paid-search', 'search')->name('report-elexa-paid-search');
+    });
     ####################################################
 
     ## Master Booking Channal

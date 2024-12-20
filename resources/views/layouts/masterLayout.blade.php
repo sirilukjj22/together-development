@@ -13,7 +13,7 @@
     <title>TOGETHER DEVELOPMENT</title>
     <link rel="icon" href="../../../image/Logo1-01.png" type="image/x-icon" />
     <!-- Favicon -->
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css"> --}} 
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css"> --}}
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.semanticui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.semanticui.css"> --}}
 
@@ -332,6 +332,18 @@
                                             </ul>
                                         </li>
                                     </ul>
+                                    <ul class="sub-menu collapse" id="menu-Report">
+                                        <li class="collapsed">
+                                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-report-Document-level-2" href="#"><span>Document Report</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
+
+                                            <!-- Menu: Sub menu level 3 -->
+                                            <ul class="sub-menu collapse" id="menu-report-Document-level-2">
+
+                                                    <li><a class="ms-link" href="{{ route('report-proposal-index') }}">Proposal Report</a></li>
+
+                                            </ul>
+                                        </li>
+                                    </ul>
                                 </li>
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
@@ -399,7 +411,7 @@
                             @endif
                             <li>
                                 <a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout">
-                                    <i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i> 
+                                    <i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i>
                                     <span>Logout</span>
                                 </a>
                             </li>

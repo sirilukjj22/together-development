@@ -22,7 +22,7 @@ class CheckRole
             // หยุดการทำงานและแสดงหน้า error 403 (Forbidden)
             abort(403, 'Permission Denied');
         }
-    
+
         return $next($request);
     }
 }
