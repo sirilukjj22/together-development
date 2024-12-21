@@ -1,7 +1,4 @@
 @extends('layouts.masterLayout')
-@php
-    $excludeDatatable = false;
-@endphp
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -24,7 +21,20 @@
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="card p-4 mb-4">
-                    <table id="smsAgodaTable" class="table-together table-style">
+                    <table id="smsAgodaTable" class="example ui striped table nowrap unstackable hover">
+                        <caption class="caption-top mt-2">
+                            <div>
+                                <div class="flex-end-g2">
+                                    <label class="entriespage-label">entries per page :</label>
+                                    <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                    </select>
+                                    <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
+                                </div>
+                        </caption>
                         <thead>
                             <tr>
                                 <th style="text-align: center;" data-priority="1">#</th>
@@ -47,7 +57,7 @@
                                 <td class="td-content-center">{{ $key + 1 }}</td>
                                 <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                 <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                <td class="td-content-center text-start">
+                                <td class="td-content-center">
                                     <?php
                                     $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                     $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
@@ -66,8 +76,8 @@
                                         <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
                                     </div>
                                 </td>
-                                <td class="td-content-center target-class text-end">
-                                    {{ $item->amount_before_split > 0 ? $item->amount_before_split : $item->amount }}
+                                <td class="td-content-center">
+                                    {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
                                 </td>
                                 <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
                                 <td class="td-content-center">Agoda Bank Transfer Revenue</td>
@@ -158,12 +168,15 @@
                             <?php $total_sms += $item->amount; ?>
                             @endforeach
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5" class="fw-bold" style="background-color: #dff8f0;">Total</td>
-                                <td colspan="5" class="fw-bold text-start" style="background-color: #dff8f0;">{{ number_format($total_sms, 2) }}</td>
-                            </tr>
-                        </tfoot>
+                        <caption class="caption-bottom">
+                            <div class="md-flex-bt-i-c">
+                                <p class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_sms, 'smsAgoda') }}</p>
+                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
+                                    <div id="smsAgoda-paginate">
+                                        {!! paginateTable($data_sms, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
+                            </div>
+                        </caption>
                     </table>
                 </div> <!-- .card end -->
             </div> <!-- .row end -->
@@ -392,18 +405,144 @@
     </div>
     <!-- END MODAL -->
 
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
+    <input type="hidden" id="combined-selected-box" name="date" value="{{ $search_date }}">
+    <input type="hidden" id="status" value="5">
+    <input type="hidden" id="into_account" value="{{ $into_account }}">
+    <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
+    <input type="hidden" id="get-total-smsAgoda" value="{{ $data_sms->total() }}">
+    <input type="hidden" id="currentPage-smsAgoda" value="1">
+
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
-        {{-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script> --}}
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @else
-        {{-- <script src="http://code.jquery.com/jquery-1.10.2.js"></script> --}}
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
+    
+
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script src="{{ asset('assets/js/table-together.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
 
     <script>
+        $(document).ready(function() {
+            new DataTable('.example', {
+                responsive: true,
+                searching: false,
+                paging: false,
+                info: false,
+                columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    },
+                    {
+                        width: '7%',
+                        targets: 0
+                    },
+                    {
+                        width: '10%',
+                        targets: 1
+                    },
+                    {
+                        width: '15%',
+                        targets: 2
+                    }
+
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
+            });
+        });
+
+        // Search 
+        $(document).on('keyup', '.search-data', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var total = parseInt($('#get-total-'+id).val());
+            var table_name = id+'Table';
+
+            var filter_by = $('#filter-by').val();
+            var dateString = $('#combined-selected-box').val();
+            var type_status = $('#status').val();
+            var account = $('#account').val();
+            var getUrl = window.location.pathname;         
+                
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#smsAgodaTable').dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                        url: 'sms-search-table',
+                        type: 'POST',
+                        dataType: "json",
+                        cache: false,
+                        data: {
+                            search_value: search_value,
+                            table_name: table_name,
+                            filter_by: filter_by,
+                            date: dateString,
+                            status: type_status,
+                            into_account: account
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    },
+                    "initComplete": function (settings, json) {
+
+                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        } else {
+                            var count = 0;
+                            $('.dataTables_empty').addClass('dt-center');
+                        }
+                        
+                        if (search_value == '') {
+                            count_total = total;
+                        } else {
+                            count_total = count;
+                        }
+                    
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 2, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                                { targets: [3], className: 'text-start' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'date' },
+                        { data: 'time' },
+                        { data: 'transfer_bank' },
+                        { data: 'into_account' },
+                        { data: 'amount' },
+                        { data: 'remark' },
+                        { data: 'revenue_name' },
+                        { data: 'date_into' },
+                        { data: 'btn_action' },
+                    ],
+                        
+                }); 
+                
+            document.getElementById(id).focus();
+        });
+
         function transfer_data(id) {
             $('#dataID').val(id);
             $('#exampleModalCenter2').modal('show');

@@ -1,6 +1,14 @@
 @extends('layouts.masterLayout')
-
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
+<style>
+    .box-sub-revenue-content {
+        font-size: 16px;
+        line-height: 23px;
+    }
+</style>
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
             @php
@@ -69,13 +77,13 @@
                         <!-- Button เพิ่มข้อมูล -->
                         <div class="searh-box-bg">
                             <div>
-                                <input type="text" id="select-date" class="showdate-button" style="width: 100%;" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
+                                <input type="text" id="select-date" class="showdate-button form-control-sm" style="width: 100%;" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
                             </div>
-                            <button type="button" class="ch-button" data-toggle="modal" data-target="#ModalShowCalendar" style="white-space: nowrap;">
+                            <button type="button" class="ch-button btn-sm" data-toggle="modal" data-target="#ModalShowCalendar" style="white-space: nowrap;">
                                 <span class="d-sm-none d-none d-md-inline-block">Search</span>
                                 <i class="fa fa-search" style="font-size: 15px;"></i>
                             </button>
-                            <button class="ch-button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
+                            <button class="ch-button btn-sm dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
                                 <span id="txt-daily">
                                     @if ($filter_by == 'date' && count($exp_date) == 2 && $exp_date[0] == date('d/m/Y') && $exp_date[1] == date('d/m/Y') || $filter_by == 'today')
                                         Today
@@ -108,7 +116,7 @@
                             </div>
                             @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
                                 @if (@Auth::user()->roleMenuAdd('Bank Transaction Revenue', Auth::user()->id) == 1)
-                                    <button type="button" class="ch-button" id="add-data" style="white-space: nowrap;">Add</button>
+                                    <button type="button" class="ch-button btn-sm" id="add-data" style="white-space: nowrap;">Add</button>
                                 @endif
                             @endif
                         </div>
@@ -518,18 +526,6 @@
                         <div class="row clearfix">
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
-                                            </select>
-                                            <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
                                     <style>
                                         .example td:nth-child(4) {
                                             text-align: left !important;
@@ -537,7 +533,7 @@
                                         }
                                         </style>
                                     <div style="min-height: 70vh;">
-                                        <table id="smsTable" class="example ui striped table nowrap unstackable hover" >
+                                        <table id="smsTable" class="table-together table-style" >
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;" data-priority="1">#</th>
@@ -563,7 +559,7 @@
                                                     <td class="td-content-center">{{ $key + 1 }}</td>
                                                     <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                                     <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                                    <td class="td-content-center">
+                                                    <td class="td-content-center text-start">
                                                         <?php
                                                             $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                             $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
@@ -582,8 +578,8 @@
                                                             <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
                                                         </div>
                                                     </td>
-                                                    <td class="td-content-center">
-                                                        {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                                    <td class="td-content-center target-class">
+                                                        {{ $item->amount_before_split > 0 ? $item->amount_before_split : $item->amount }}
                                                     </td>
                                                     <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
                                                     <td class="td-content-center">
@@ -620,7 +616,7 @@
                                                     </td>
                                                     <td class="td-content-center" style="text-align: center;">
                                                         @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
-                                                            <div class="dropdown">
+                                                            {{-- <div class="dropdown"> --}}
                                                                 <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                                                     Select <span class="caret"></span>
                                                                 </button>
@@ -695,23 +691,20 @@
                                                                         <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
                                                                     @endif
                                                                 </ul>
-                                                            </div>
+                                                            {{-- </div> --}}
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="5" class="fw-bold" style="background-color: #dff8f0;">Total</td>
+                                                    <td colspan="5" class="fw-bold text-start" style="background-color: #dff8f0;">{{ number_format($total_sms_amount->amount ?? 0, 2) }}</td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <div class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</div>
-                                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_sms_amount) ? $total_sms_amount->amount : 0 , 2) }} บาท</div>
-                                                <div id="sms-paginate">
-                                                    {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                        </div>
-                                    </caption>
                                 </div>
                                 <!-- .card end -->
                             </div>
@@ -726,20 +719,8 @@
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
                                     <h1 class="table-label">Transfer Revenue</h1>
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-transfer" onchange="getPage(1, this.value, 'transfer')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
-                                            </select>
-                                            <input class="search-button search-data" id="transfer" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
                                     <div style="min-height: 70vh;">
-                                        <table id="transferTable" class="example ui striped table nowrap unstackable hover">
+                                        <table id="transferTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;" data-priority="1">#</th>
@@ -765,7 +746,7 @@
                                                         <td class="td-content-center">{{ $key + 1 }}</td>
                                                         <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                                         <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                                        <td class="td-content-center">
+                                                        <td class="td-content-center text-start">
                                                             <?php
                                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
@@ -784,8 +765,8 @@
                                                                 <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
                                                             </div>
                                                         </td>
-                                                        <td class="td-content-center">
-                                                            {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                                        <td class="td-content-center target-class text-end">
+                                                            {{ $item->amount_before_split > 0 ? $item->amount_before_split : $item->amount }}
                                                         </td>
                                                         <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
                                                         <td class="td-content-center">
@@ -824,7 +805,7 @@
                                                         <td class="td-content-center" style="text-align: center;">
                                                             @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
                                                                 @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
-                                                                    <div class="dropdown">
+                                                                    {{-- <div class="dropdown"> --}}
                                                                         <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                                                             Select <span class="caret"></span>
                                                                         </button>
@@ -899,24 +880,21 @@
                                                                                 <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
                                                                             @endif
                                                                         </ul>
-                                                                    </div>
+                                                                    {{-- </div> --}}
                                                                 @endif
                                                             @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="5" class="fw-bold" style="background-color: #dff8f0;">Total</td>
+                                                    <td colspan="5" class="fw-bold text-start" style="background-color: #dff8f0;">{{ number_format($total_transfer_amount->amount ?? 0, 2) }}</td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="transfer-showingEntries">{{ showingEntriesTable($data_sms_transfer, 'transfer') }}</p>
-                                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_transfer_amount) ? $total_transfer_amount->amount : 0 , 2) }} บาท</div>
-                                                <div id="transfer-paginate">
-                                                    {!! paginateTable($data_sms_transfer, 'transfer') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                        </div>
-                                    </caption>
                                 </div>
                                 <!-- .card end -->
                             </div>
@@ -930,20 +908,8 @@
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
                                     <h1 class="table-label">Split Credit Card Hotel Revenue</h1>
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-split" onchange="getPage(1, this.value, 'split')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
-                                            </select>
-                                            <input class="search-button search-data" id="split" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
                                     <div style="min-height: 70vh;">
-                                        <table id="splitTable" class="example ui striped table nowrap unstackable hover">
+                                        <table id="splitTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;" data-priority="1">#</th>
@@ -964,7 +930,7 @@
                                                         <td class="td-content-center">{{ $key + 1 }}</td>
                                                         <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                                         <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                                        <td class="td-content-center">
+                                                        <td class="td-content-center text-start">
                                                             <?php
                                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
@@ -983,8 +949,8 @@
                                                                 <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
                                                             </div>
                                                         </td>
-                                                        <td class="td-content-center">
-                                                            {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                                        <td class="td-content-center target-class text-end">
+                                                            {{ $item->amount_before_split > 0 ? $item->amount_before_split : $item->amount }}
                                                         </td>
                                                         <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
                                                         <td class="td-content-center">
@@ -1022,7 +988,7 @@
                                                         <td class="td-content-center" style="text-align: center;">
                                                             @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
                                                                 @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
-                                                                    <div class="dropdown">
+                                                                    {{-- <div class="dropdown"> --}}
                                                                         <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                                                             Select <span class="caret"></span>
                                                                         </button>
@@ -1097,24 +1063,21 @@
                                                                                 <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
                                                                             @endif
                                                                         </ul>
-                                                                    </div>
+                                                                    {{-- </div> --}}
                                                                 @endif
                                                             @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="5" class="fw-bold" style="background-color: #dff8f0;">Total</td>
+                                                    <td colspan="5" class="fw-bold text-start" style="background-color: #dff8f0;">{{ number_format($total_split_amount->amount ?? 0, 2) }}</td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="split-showingEntries">{{ showingEntriesTable($data_sms_split, 'split') }}</p>
-                                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_split_amount) ? $total_split_amount->amount : 0 , 2) }} บาท</div>
-                                                <div id="split-paginate">
-                                                    {!! paginateTable($data_sms_split, 'split') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                        </div>
-                                    </caption>
                                 </div>
                                 <!-- .card end -->
                             </div>
@@ -1317,7 +1280,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Modal เพิ่มข้อมูล modal fade -->
     <div class="modal fade bd-example-modal-lg" id="exampleModalCenter5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter5Label" aria-hidden="true">
@@ -1528,20 +1490,6 @@
             </div>
         </div>
     </div>
-    
-    <input type="hidden" id="get-total-sms" value="{{ !empty($total_sms_amount) ? $total_sms_amount->total_sms : 0 }}">
-    <input type="hidden" id="get-total-transfer" value="{{ !empty($total_transfer_amount) ? $total_transfer_amount->total_transfer : 0 }}">
-    <input type="hidden" id="get-total-split" value="{{ !empty($total_split_amount) ? $total_split_amount->total_split : 0 }}">
-    <input type="hidden" id="currentPage-sms" value="1">
-    <input type="hidden" id="currentPage-transfer" value="1">
-    <input type="hidden" id="currentPage-split" value="1">
-
-    <!-- dataTable -->
-    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <!-- style สำหรับเปิดปิด custom date -->
 
     <!-- Moment Date -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
@@ -1555,7 +1503,7 @@
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
 
     <!-- Sweet Alert 2 -->
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
@@ -1566,6 +1514,10 @@
     <script type="text/javascript" src="{{ asset('assets/graph/graphCondition.js')}}"></script>
 
     <style>
+        .content-index {
+            /* font-style: inherit; */
+            font-size: 4px !important;
+        }
         .content-col {
             display: none;
         }
@@ -1637,24 +1589,6 @@
         ]; // ชื่อเดือน
 
         $(document).ready(function() {
-            new DataTable('.example', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                }
-            });
-
             // Calendar
             let picker;
             const datepickerElement = document.getElementById("combined-selected-box");
@@ -1890,88 +1824,6 @@
                     }
                 }
             }
-        });
-
-        // Search 
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var total = parseInt($('#get-total-'+id).val());
-            var table_name = id+'Table';
-
-            var filter_by = $('#filter-by').val();
-            var dateString = $('#combined-selected-box').val();
-            var type = $('#status').val();
-            var account = $('#into_account').val();
-            var count_total = 0;
-            var getUrl = window.location.pathname;
-
-            $('#'+table_name).DataTable().destroy();
-            var table = $('#'+table_name).dataTable({
-                searching: false,
-                paging: false,
-                info: false,
-                // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                ajax: {
-                    url: 'sms-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        date: dateString,
-                        status: type,
-                        into_account: account
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings, json) {
-
-                    if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    } else {
-                        var count = 0;
-                        $('.dataTables_empty').addClass('dt-center');
-                    }
-
-                    if (search_value == '') {
-                        count_total = total;
-                    } else {
-                        count_total = count;
-                    }
-                    
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                columnDefs: [
-                            { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
-                ],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                },
-                columns: [
-                    { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                    { data: 'date' },
-                    { data: 'time' },
-                    { data: 'transfer_bank' },
-                    { data: 'into_account' },
-                    { data: 'amount' },
-                    { data: 'remark' },
-                    { data: 'revenue_name' },
-                    { data: 'date_into' },
-                    { data: 'btn_action' },
-                ],
-                    
-            });  
-
-            document.getElementById(id).focus();
         });
 
         function sms_detail(revenue_name) 
