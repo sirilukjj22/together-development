@@ -1,5 +1,7 @@
 @extends('layouts.masterLayout')
-
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -55,19 +57,8 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade  show active" id="nav-Receipt" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-billing" onchange="getPage(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billing" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billing" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billing" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billing" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data" id="billing" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="billingTable" class="example ui striped table nowrap unstackable hover">
+
+                                        <table id="billingTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;"data-priority="1">No</th>
@@ -148,33 +139,13 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-billing" value="{{ $Approved->total() }}">
-                                        <input type="hidden" id="currentPage-billing" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="billing-showingEntries">{{ showingEntriesTable($Approved, 'billing') }}</p>
-                                                <div id="billing-paginate">
-                                                    {!! paginateTable($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Approved" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-proposalApproved" onchange="getPageApproved(1, this.value, 'proposalApproved')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-Approved" id="proposalApproved" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="proposalApprovedTable" class="example ui striped table nowrap unstackable hover">
+
+                                        <table id="proposalApprovedTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;"data-priority="1">No</th>
@@ -227,33 +198,13 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-proposalApproved" value="{{ $Complate->total() }}">
-                                        <input type="hidden" id="currentPage-proposalApproved" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="proposalApproved-showingEntries">{{ showingEntriesTableApproved($Complate, 'proposalApproved') }}</p>
-                                                    <div id="proposalApproved-paginate">
-                                                        {!! paginateTableApproved($Complate, 'proposalApproved') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-billingCancel" onchange="getPageCancel(1, this.value, 'billingCancel')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billingCancel" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billingCancel" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billingCancel" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billingCancel" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-billingCancel" id="billingCancel" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="billingCancelTable" class="example ui striped table nowrap unstackable hover">
+
+                                        <table id="billingCancelTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;"data-priority="1">No</th>
@@ -307,33 +258,13 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-billingCancel" value="{{ $Noshow->total() }}">
-                                        <input type="hidden" id="currentPage-billingCancel" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="billingCancel-showingEntries">{{ showingEntriesTableCancel($Noshow, 'billingCancel') }}</p>
-                                                <div id="billingCancel-paginate">
-                                                    {!! paginateTableCancel($Noshow, 'billingCancel') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Reject" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-billingReject" onchange="getPageReject(1, this.value, 'billingReject')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billingReject" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billingReject" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billingReject" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billingReject" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-billingReject" id="billingReject" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="billingRejectTable" class="example ui striped table nowrap unstackable hover">
+
+                                        <table id="billingRejectTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;"data-priority="1">No</th>
@@ -412,16 +343,6 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-billingReject" value="{{ $Reject->total() }}">
-                                        <input type="hidden" id="currentPage-billingReject" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="billingReject-showingEntries">{{ showingEntriesTableReject($Reject, 'billingReject') }}</p>
-                                                <div id="billingReject-paginate">
-                                                    {!! paginateTableReject($Reject, 'billingReject') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                            </div>
-                                        </caption>
                                     </div>
                                 </div>
                             </div>
@@ -441,335 +362,13 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableBilling.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
     <script>
-        const table_name = ['billingTable','proposalApprovedTable','billingCancelTable','billingRejectTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
         function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
         }
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-            console.log(table_name);
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/billing-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Receipt' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'Payment_date' },
-                        { data: 'Amount' },
-                        { data: 'Approve' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-Approved', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-            console.log(table_name);
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/billing-Approved-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,3,4,5,6,7,8,9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Amount' },
-                        { data: 'Deposit' },
-                        { data: 'Approve' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-billingReject', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-            console.log(table_name);
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/billing-reject-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchReject(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Receipt' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'Payment_date' },
-                        { data: 'Amount' },
-                        { data: 'Approve' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-billingCancel', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/billing-Cancel-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchCancel(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Receipt' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'Payment_date' },
-                        { data: 'Amount' },
-                        { data: 'Approve' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
     </script>
 @endsection

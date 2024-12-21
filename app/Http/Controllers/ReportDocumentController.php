@@ -52,7 +52,9 @@ class ReportDocumentController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
-
-        return view('report.document.proposal');
+        $filter_by = "date";
+        $status = '';
+        $search_date = date('d/m/Y');
+        return view('report.document.proposal',compact('filter_by','search_date'));
     }
 }

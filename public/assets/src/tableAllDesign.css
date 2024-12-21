@@ -147,7 +147,7 @@ table.table-together {
 .table-together td {
   padding: 6px 5px !important;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   white-space: nowrap;
 }
 
@@ -168,7 +168,10 @@ table.table-together {
 .table-together tbody tr:hover td {
   background-color: #e8faf6;
 }
-
+.table-together ul.dtr-details {
+    width: 100%;
+    text-align: start;
+  }
 .dt-layout-row {
   justify-content: end;
 }

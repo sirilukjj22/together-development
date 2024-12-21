@@ -51,7 +51,7 @@ class BillingFolioController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
-        $Approved = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->paginate($perPage);
+        $Approved = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->get();
         $ApprovedCount = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->count();
         $ComplateCount = Quotation::query()->where('quotation.status_document', 9)->count();
         $Complate = Quotation::query()
@@ -64,11 +64,11 @@ class BillingFolioController extends Controller
             DB::raw('SUM(document_receive.document_amount) as document_amount')
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
-        ->paginate($perPage);
-        $Noshow = receive_payment::query()->where('type','billing')->where('document_status',0)->paginate($perPage);
+        ->get();
+        $Noshow = receive_payment::query()->where('type','billing')->where('document_status',0)->get();
         $NoshowCount = receive_payment::query()->where('type','billing')->where('document_status',0)->count();
         $Rejectcount = receive_payment::query()->where('type','billing')->where('document_status',4)->count();
-        $Reject = receive_payment::query()->where('type','billing')->where('document_status',4)->paginate($perPage);
+        $Reject = receive_payment::query()->where('type','billing')->where('document_status',4)->get();
         return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount','Noshow','NoshowCount','Reject','Rejectcount'));
     }
     //---------------------------------table-----------------
@@ -84,7 +84,7 @@ class BillingFolioController extends Controller
                 ->get();
         } else {
             $data_query = receive_payment::query()->where('type','billing')->where('document_status',1)
-                ->paginate($perPage);
+                ->get();
         }
 
 
@@ -172,7 +172,7 @@ class BillingFolioController extends Controller
                 ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
             })
-            ->paginate($perPage);
+            ->get();
 
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
@@ -254,7 +254,7 @@ class BillingFolioController extends Controller
             DB::raw('SUM(document_receive.document_amount) as receive_amount'),
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
-        ->paginate($perPage);
+        ->get();
         return view('billingfolio.proposal',compact('Approved'));
     }
     //---------------------------------table-----------------
@@ -288,7 +288,7 @@ class BillingFolioController extends Controller
                     DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_guest')
-                ->paginate($perPage);
+                ->get();
         }
 
 
@@ -358,7 +358,7 @@ class BillingFolioController extends Controller
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
-                ->paginate($perPage);
+                ->get();
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
@@ -444,7 +444,7 @@ class BillingFolioController extends Controller
                     DB::raw('SUM(document_receive.document_amount) as document_amount')
                 )
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
-                ->paginate($perPage);
+                ->get();
         }
 
 
@@ -509,7 +509,7 @@ class BillingFolioController extends Controller
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
-                ->paginate($perPage);
+                ->get();
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
@@ -2461,11 +2461,11 @@ class BillingFolioController extends Controller
             }
         }
 
-        $log = log::where('Quotation_ID',$Receipt_ID)->paginate($perPage);
+        $log = log::where('Quotation_ID',$Receipt_ID)->get();
         $path = 'Log_PDF/billingfolio/';
         $logReceipt = log_company::where('Company_ID', $Receipt_ID)
             ->orderBy('updated_at', 'desc')
-            ->paginate($perPage);
+            ->get();
 
         return view('billingfolio.document',compact('log','path','correct','logReceipt','Receipt_ID'));
     }
@@ -2796,7 +2796,7 @@ class BillingFolioController extends Controller
             $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
                 ->where('Company_ID',$guest_profile)
                 ->orderBy('updated_at', 'desc')
-                ->paginate($perPage);
+                ->get();
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPageS);
@@ -2830,7 +2830,7 @@ class BillingFolioController extends Controller
         if ($perPage == 10) {
             $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
         } else {
-            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPage);
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->get();
         }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -2868,7 +2868,7 @@ class BillingFolioController extends Controller
             $data_query = log::where('Quotation_ID',$guest_profile)->limit($request->page.'0')
             ->get();
         } else {
-            $data_query =  log::where('Quotation_ID',$guest_profile)->paginate($perPage);
+            $data_query =  log::where('Quotation_ID',$guest_profile)->get();
         }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -2921,7 +2921,7 @@ class BillingFolioController extends Controller
         $data = [];
         if ($search_value) {
             $query = Log::where('Quotation_ID', $guest_profile);
-            $data_query = $query->where('created_at', 'LIKE', '%'.$search_value.'%')->paginate($perPage);
+            $data_query = $query->where('created_at', 'LIKE', '%'.$search_value.'%')->get();
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query =  log::where('Quotation_ID',$guest_profile)->paginate($perPageS);
@@ -2981,7 +2981,7 @@ class BillingFolioController extends Controller
                 ->get();
         } else {
             $data_query = receive_payment::query()->where('type','billing')->where('document_status',4)
-                ->paginate($perPage);
+                ->get();
         }
 
 
@@ -3068,7 +3068,7 @@ class BillingFolioController extends Controller
                 ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
             })
-            ->paginate($perPage);
+            ->get();
 
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
@@ -3146,7 +3146,7 @@ class BillingFolioController extends Controller
                 ->get();
         } else {
             $data_query = receive_payment::query()->where('type','billing')->where('document_status',0)
-                ->paginate($perPage);
+                ->get();
         }
 
 
@@ -3234,7 +3234,7 @@ class BillingFolioController extends Controller
                 ->orWhere('document_receive.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('document_receive.Amount', 'LIKE', '%'.$search_value.'%');
             })
-            ->paginate($perPage);
+            ->get();
 
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;

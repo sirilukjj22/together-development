@@ -925,6 +925,7 @@
     </form>
     <input type="hidden" name="preview" value="1" id="preview">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
     <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
@@ -1619,7 +1620,7 @@
                             // var rowExist = $('#display-selected-items tr').filter(function() {
                             //     return $(this).find('input[type="hidden"][name="ProductIDmain[]"]').val() === val.Product_ID;
                             // }).length > 0;
-                            $('#main').DataTable().destroy();
+
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                                     var number = val.Product_ID;
@@ -1692,7 +1693,7 @@
 
                                      // If the product doesn't exist
 
-
+                                        $('#main').DataTable().destroy();
                                         var rowNumbemain = $('#display-selected-items tr').length + 1;
                                         $('#display-selected-items').append(
                                             '<tr id="tr-select-addmain' + val.id + '">' +
@@ -1714,28 +1715,27 @@
                                         $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
                                         $('#display-selected-items tr.odd').remove();
 
-                                    $('#main').DataTable({
-                                        searching: false,
-                                        paging: false,
-                                        info: false,
-                                        ordering:false,
-                                        language: {
-                                            emptyTable: "",
-                                            zeroRecords: ""
-                                        },
-                                        columnDefs: [{
-                                            className: 'dtr-control',
-                                            orderable: false,
-                                            target: null,
-                                        }],
-                                        order:  false,
-                                        responsive: {
-                                            details: {
-                                                type: 'column',
-                                                target: 'tr'
+                                        $('#main').DataTable({
+                                            searching: false,
+                                            paging: false,
+                                            info: false,
+                                            language: {
+                                                emptyTable: "",
+                                                zeroRecords: ""
+                                            },
+                                            columnDefs: [{
+                                                className: 'dtr-control',
+                                                orderable: false,
+                                                target: null,
+                                            }],
+                                            order:  false,
+                                            responsive: {
+                                                details: {
+                                                    type: 'column',
+                                                    target: 'tr'
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
                                     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                                     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                                         return new bootstrap.Tooltip(tooltipTriggerEl)

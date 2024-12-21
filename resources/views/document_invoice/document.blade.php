@@ -1,5 +1,7 @@
 @extends('layouts.masterLayout')
-
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
 
     <div id="content-index" class="body-header border-bottom d-flex py-3">
@@ -27,19 +29,8 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade  show active" id="nav-PDF" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-invoiceLog" onchange="getPageLog(1, this.value, 'invoiceLog')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "invoiceLog" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "invoiceLog" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "invoiceLog" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "invoiceLog" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-invoiceLog" id="invoiceLog" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="invoiceLogTable" class="example ui striped table nowrap unstackable hover">
+
+                                        <table id="invoiceLogTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center">No</th>
@@ -81,34 +72,13 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="profile-invoiceLog" name="profile-invoiceLog" value="{{$Invoice_ID}}">
-                                        <input type="hidden" id="get-total-invoiceLog" value="{{ $log->total() }}">
-                                        <input type="hidden" id="currentPage-invoiceLog" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="invoiceLog-showingEntries">{{ showingEntriesTableLog($log, 'invoiceLog') }}</p>
-                                                <div id="invoiceLog-paginate">
-                                                    {!! paginateTableLog($log, 'invoiceLog') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Log" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="flex-end-g2">
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-invoice-Log" onchange="getPageLogDoc(1, this.value, 'invoice-Log')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "invoice-Log" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "invoice-Log" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "invoice-Log" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "invoice-Log" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-invoice-Log" id="invoice-Log" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="invoice-LogTable" class="example ui striped table nowrap unstackable hover">
+
+                                        <table id="invoice-LogTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th  class="text-center">No</th>
@@ -136,7 +106,7 @@
 
                                                             <b style="color:#0000FF ">{{$item->Category}}</b>
                                                             @foreach($contentArray as $contentItem)
-                                                                <div>{{ $contentItem }}</div>
+                                                                <div style="white-space:wrap">{{ $contentItem }}</div>
                                                             @endforeach
                                                         </td>
                                                     </tr>
@@ -144,17 +114,7 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="profile-invoice-Log" name="profile-invoice" value="{{$Invoice_ID}}">
-                                        <input type="hidden" id="get-total-invoice-Log" value="{{ $loginvoice->total() }}">
-                                        <input type="hidden" id="currentPage-invoice-Log" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="invoice-Log-showingEntries">{{ showingEntriesTableLogDoc($loginvoice, 'invoice-Log') }}</p>
-                                                    <div id="invoice-Log-paginate">
-                                                        {!! paginateTableLogDoc($loginvoice, 'proposal-Log') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                             </div>
@@ -183,165 +143,14 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableInvoice.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
     <script>
-        const table_name = ['invoiceLogTable','invoice-LogTable'];
-            $(document).ready(function() {
-                for (let index = 0; index < table_name.length; index++) {
-                    console.log();
-
-                    new DataTable('#'+table_name[index], {
-                        searching: false,
-                        paging: false,
-                        info: false,
-                        columnDefs: [{
-                            className: 'dtr-control',
-                            orderable: true,
-                            target: null,
-                        }],
-                        order: [0, 'asc'],
-                        responsive: {
-                            details: {
-                                type: 'column',
-                                target: 'tr'
-                            }
-                        }
-                    });
-                }
-            });
-        $(document).on('keyup', '.search-data-invoiceLog', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-invoiceLog').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/invoice-Log-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchLog(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchLog(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 2, 3,4,5], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Quotation_ID' },
-                        { data: 'type' },
-                        { data: 'Correct' },
-                        { data: 'created_at' },
-                        { data: 'Export' },
-                    ],
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-invoice-Log', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-invoice-Log').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/invoice-LogDoc-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchLogDoc(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchLogDoc(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Category' },
-                        { data: 'type' },
-                        { data: 'Created_by' },
-                        { data: 'created_at' },
-                        { data: 'Content' },
-                    ],
-
-                });
-            document.getElementById(id).focus();
-        });
+        function nav(id) {
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
+        }
     </script>
 
 @endsection

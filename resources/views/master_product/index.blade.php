@@ -1,5 +1,7 @@
 @extends('layouts.masterLayout')
-
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
 
     <div id="content-index" class="body-header border-bottom d-flex py-3">
@@ -139,20 +141,8 @@
                     </div>
                     <div class="card p-4 mb-4 mt-5" style="display: block;"id="alltable" >
                         <h4><b>All Product Item</b></h4>
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-product" onchange="getPage(1, this.value, 'product')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "product" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "product" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "product" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "product" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="product" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="productTable" class="example1 ui striped table nowrap unstackable hover">
+                        <div style="min-height: 70vh;">
+                            <table id="alltable" class="table-together table-style" >
                                 <thead>
                                     <tr>
                                         <th class="text-center"data-priority="1">No</th>
@@ -177,8 +167,8 @@
                                             <td style="text-align: center;">
                                                 {{$item->Product_ID}}
                                             </td>
-                                            <td>{{ $item->name_th }}</td>
-                                            <td>{{ $item->detail_th }}</td>
+                                            <td style="text-align: left;">{{ $item->name_th }}</td>
+                                            <td style="text-align: left;">{{ $item->detail_th }}</td>
                                             <td style="text-align: center;">
                                                 @if ($item->room_size === null)
                                                     -
@@ -186,8 +176,8 @@
                                                     {{ $item->room_size }}
                                                 @endif
                                             </td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->normal_price) }}
+                                            <td style="text-align: center;" class="target-class">
+                                                {{$item->normal_price }}
                                             </td>
                                             <td style="text-align: center;">
                                                 {{ @$item->productquantity->name_th}}
@@ -217,35 +207,14 @@
                                         @endforeach
                                     @endif
                                 </tbody>
+
                             </table>
-                            <input type="hidden" id="get-total-product" value="{{ $product->total() }}">
-                            <input type="hidden" id="currentPage-product" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="product-showingEntries">{{ showingEntriesTable($product, 'product') }}</p>
-                                        <div id="product-paginate">
-                                            {!! paginateTable($product, 'product') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                </div>
-                            </caption>
                         </div>
                     </div> <!-- .card end -->
                     <div class="card p-4 mb-4 mt-5" style="display: none;" id="Roomtable" >
                         <h4><b>Room</b></h4>
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-productroom" onchange="getPagePending(1, this.value, 'productroom')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "productroom" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "productroom" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "productroom" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "productroom" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data-productroom" id="productroom" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="productroomTable" class="example2 ui striped table nowrap unstackable hover">
+                        <div style="min-height: 70vh;">
+                            <table id="Roomtable" class="table-together table-style" >
                                 <thead>
                                     <tr>
                                         <th class="text-center"data-priority="1">No</th>
@@ -270,8 +239,8 @@
                                             <td style="text-align: center;">
                                                 {{$item->Product_ID}}
                                             </td>
-                                            <td>{{ $item->name_th }}</td>
-                                            <td>{{ $item->detail_th }}</td>
+                                            <td style="text-align: left;">{{ $item->name_th }}</td>
+                                            <td style="text-align: left;">{{ $item->detail_th }}</td>
                                             <td style="text-align: center;">
                                                 @if ($item->room_size === null)
                                                     -
@@ -279,8 +248,8 @@
                                                     {{ $item->room_size }}
                                                 @endif
                                             </td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->normal_price) }}
+                                            <td style="text-align: center;" class="target-class">
+                                                {{ $item->normal_price }}
                                             </td>
                                             <td style="text-align: center;">
                                                 {{ @$item->productquantity->name_th}}
@@ -311,34 +280,12 @@
                                     @endif
                                 </tbody>
                             </table>
-                            <input type="hidden" id="get-total-productroom" value="{{ $productroom->total() }}">
-                            <input type="hidden" id="currentPage-productroom" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="productroom-showingEntries">{{ showingEntriesTablePending($productroom, 'productroom') }}</p>
-                                        <div id="productroom-paginate">
-                                            {!! paginateTablePending($productroom, 'productroom') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                </div>
-                            </caption>
                         </div>
                     </div>
                     <div class="card p-4 mb-4 mt-5" style="display: none; " id="Banquettable">
                         <h4><b>Banquet</b></h4>
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-productBanquet" onchange="getPageAwaiting(1, this.value, 'productBanquet')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "productBanquet" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "productBanquet" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "productBanquet" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "productBanquet" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data-productBanquet" id="productBanquet" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="productBanquetTable" class="example2 ui striped table nowrap unstackable hover">
+                        <div style="min-height: 70vh;">
+                            <table id="Banquettable" class="table-together table-style" >
                                 <thead>
                                     <tr>
                                         <th class="text-center"data-priority="1">No</th>
@@ -363,8 +310,8 @@
                                             <td style="text-align: center;">
                                                 {{$item->Product_ID}}
                                             </td>
-                                            <td>{{ $item->name_th }}</td>
-                                            <td>{{ $item->detail_th }}</td>
+                                            <td style="text-align: left;">{{ $item->name_th }}</td>
+                                            <td style="text-align: left;">{{ $item->detail_th }}</td>
                                             <td style="text-align: center;">
                                                 @if ($item->room_size === null)
                                                     -
@@ -372,8 +319,8 @@
                                                     {{ $item->room_size }}
                                                 @endif
                                             </td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->normal_price) }}
+                                            <td style="text-align: center;" class="target-class">
+                                                {{ $item->normal_price }}
                                             </td>
                                             <td style="text-align: center;">
                                                 {{ @$item->productquantity->name_th}}
@@ -404,34 +351,12 @@
                                     @endif
                                 </tbody>
                             </table>
-                            <input type="hidden" id="get-total-productBanquet" value="{{ $productBanquet->total() }}">
-                            <input type="hidden" id="currentPage-productBanquet" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="productBanquet-showingEntries">{{ showingEntriesTableAwaiting($productBanquet, 'productBanquet') }}</p>
-                                        <div id="productBanquet-paginate">
-                                            {!! paginateTableAwaiting($productBanquet, 'productBanquet') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                </div>
-                            </caption>
                         </div>
                     </div>
                     <div class="card p-4 mb-4 mt-5" style="display: none; " id="Mealstable">
                         <h4><b>Meals</b></h4>
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-productMeals" onchange="getPageApproved(1, this.value, 'productMeals')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "productMeals" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "productMeals" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "productMeals" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "productMeals" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data-productMeals" id="productMeals" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="productMealsTable" class="example2 ui striped table nowrap unstackable hover">
+                        <div style="min-height: 70vh;">
+                            <table id="Mealstable" class="table-together table-style" >
                                 <thead>
                                     <tr>
                                         <th class="text-center"data-priority="1">No</th>
@@ -456,8 +381,8 @@
                                             <td style="text-align: center;">
                                                 {{$item->Product_ID}}
                                             </td>
-                                            <td>{{ $item->name_th }}</td>
-                                            <td>{{ $item->detail_th }}</td>
+                                            <td style="text-align: left;">{{ $item->name_th }}</td>
+                                            <td style="text-align: left;">{{ $item->detail_th }}</td>
                                             <td style="text-align: center;">
                                                 @if ($item->room_size === null)
                                                     -
@@ -465,8 +390,8 @@
                                                     {{ $item->room_size }}
                                                 @endif
                                             </td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->normal_price) }}
+                                            <td style="text-align: center;" class="target-class">
+                                                {{ $item->normal_price }}
                                             </td>
                                             <td style="text-align: center;">
                                                 {{ @$item->productquantity->name_th}}
@@ -497,34 +422,12 @@
                                     @endif
                                 </tbody>
                             </table>
-                            <input type="hidden" id="get-total-productMeals" value="{{ $productMeals->total() }}">
-                            <input type="hidden" id="currentPage-productMeals" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="productMeals-showingEntries">{{ showingEntriesTableApproved($productMeals, 'productMeals') }}</p>
-                                        <div id="productMeals-paginate">
-                                            {!! paginateTableApproved($productMeals, 'productMeals') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                </div>
-                            </caption>
                         </div>
                     </div>
                     <div class="card p-4 mb-4 mt-5" style="display: none; " id="Entertainmenttable">
                         <h4><b>Entertainment</b></h4>
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-productEntertainment" onchange="getPageReject(1, this.value, 'productEntertainment')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "productEntertainment" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "productEntertainment" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "productEntertainment" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "productEntertainment" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data-productEntertainment" id="productEntertainment" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="productEntertainmentTable" class="example2 ui striped table nowrap unstackable hover">
+                        <div style="min-height: 70vh;">
+                            <table id="Entertainmenttable" class="table-together table-style" >
                                 <thead>
                                     <tr>
                                         <th class="text-center"data-priority="1">No</th>
@@ -549,8 +452,8 @@
                                             <td style="text-align: center;">
                                                 {{$item->Product_ID}}
                                             </td>
-                                            <td>{{ $item->name_th }}</td>
-                                            <td>{{ $item->detail_th }}</td>
+                                            <td style="text-align: left;">{{ $item->name_th }}</td>
+                                            <td style="text-align: left;">{{ $item->detail_th }}</td>
                                             <td style="text-align: center;">
                                                 @if ($item->room_size === null)
                                                     -
@@ -558,8 +461,8 @@
                                                     {{ $item->room_size }}
                                                 @endif
                                             </td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->normal_price) }}
+                                            <td style="text-align: center;" class="target-class">
+                                                {{ $item->normal_price }}
                                             </td>
                                             <td style="text-align: center;">
                                                 {{ @$item->productquantity->name_th}}
@@ -590,16 +493,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                            <input type="hidden" id="get-total-productEntertainment" value="{{ $productEntertainment->total() }}">
-                            <input type="hidden" id="currentPage-productEntertainment" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="productEntertainment-showingEntries">{{ showingEntriesTableReject($productEntertainment, 'productEntertainment') }}</p>
-                                        <div id="productEntertainment-paginate">
-                                            {!! paginateTableReject($productEntertainment, 'productEntertainment') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                </div>
-                            </caption>
+
                         </div>
                     </div>
                 </div>
@@ -617,404 +511,11 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableMasterProduct.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
     @include('script.script')
+
     <script>
-        const table_name = ['productTable','productroomTable','productBanquetTable','productMealsTable','productEntertainmentTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                console.log();
 
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
-        function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        }
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/product-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,4,5,6,7,8,9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Product' },
-                        { data: 'Name' },
-                        { data: 'Detail' },
-                        { data: 'Room' },
-                        { data: 'Normal' },
-                        { data: 'Quantity' },
-                        { data: 'Unit' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-productroom', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/productroom-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchPending(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,4,5,6,7,8,9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Product' },
-                        { data: 'Name' },
-                        { data: 'Detail' },
-                        { data: 'Room' },
-                        { data: 'Normal' },
-                        { data: 'Quantity' },
-                        { data: 'Unit' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-productBanquet', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/productBanquet-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchAwaiting(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,4,5,6,7,8,9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Product' },
-                        { data: 'Name' },
-                        { data: 'Detail' },
-                        { data: 'Room' },
-                        { data: 'Normal' },
-                        { data: 'Quantity' },
-                        { data: 'Unit' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-productMeals', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/productMeals-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchApproved(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,4,5,6,7,8,9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Product' },
-                        { data: 'Name' },
-                        { data: 'Detail' },
-                        { data: 'Room' },
-                        { data: 'Normal' },
-                        { data: 'Quantity' },
-                        { data: 'Unit' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-productEntertainment', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/productEntertainment-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchReject(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,4,5,6,7,8,9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Product' },
-                        { data: 'Name' },
-                        { data: 'Detail' },
-                        { data: 'Room' },
-                        { data: 'Normal' },
-                        { data: 'Quantity' },
-                        { data: 'Unit' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-                });
-            document.getElementById(id).focus();
-        });
-    </script>
-    <script>
         function Delete(id){
             Swal.fire({
             title: "คุณต้องการลบรายการนี้ใช่หรือไม่?",
@@ -1053,66 +554,7 @@
             Banquettable.style.display = 'none';
             Mealstable.style.display = 'none';
             Entertainmenttable.style.display = 'none';
-        }
-        function alldataRoom() {
-            var alltable = document.getElementById('alltable');
-            var Roomtable = document.getElementById('Roomtable');
-            var Banquettable = document.getElementById('Banquettable');
-            var Mealstable = document.getElementById('Mealstable');
-            var Entertainmenttable = document.getElementById('Entertainmenttable');
-            alltable.style.display = 'none';
-            Roomtable.style.display = 'block';
-            Banquettable.style.display = 'none';
-            Mealstable.style.display = 'none';
-            Entertainmenttable.style.display = 'none';
-            $.fn.dataTable
-            .tables({
-                visible: true,
-                api: true,
-            })
-            .columns.adjust()
-            .responsive.recalc();
 
-        }
-        function alldataBanquet() {
-            console.log('Banquet');
-            var alltable = document.getElementById('alltable');
-            var Roomtable = document.getElementById('Roomtable');
-            var Banquettable = document.getElementById('Banquettable');
-            var Mealstable = document.getElementById('Mealstable');
-            var Entertainmenttable = document.getElementById('Entertainmenttable');
-            alltable.style.display = 'none';
-            Roomtable.style.display = 'none';
-            Banquettable.style.display = 'block';
-            Mealstable.style.display = 'none';
-            Entertainmenttable.style.display = 'none';
-            $.fn.dataTable
-            .tables({
-                visible: true,
-                api: true,
-            })
-            .columns.adjust()
-            .responsive.recalc();
-        }
-        function alldataMeals() {
-            console.log('Meals');
-            var alltable = document.getElementById('alltable');
-            var Roomtable = document.getElementById('Roomtable');
-            var Banquettable = document.getElementById('Banquettable');
-            var Mealstable = document.getElementById('Mealstable');
-            var Entertainmenttable = document.getElementById('Entertainmenttable');
-            alltable.style.display = 'none';
-            Roomtable.style.display = 'none';
-            Banquettable.style.display = 'none';
-            Mealstable.style.display = 'block';
-            Entertainmenttable.style.display = 'none';
-            $.fn.dataTable
-            .tables({
-                visible: true,
-                api: true,
-            })
-            .columns.adjust()
-            .responsive.recalc();
         }
         function alldataEntertainment() {
             console.log('Entertainment');
@@ -1127,10 +569,59 @@
             Mealstable.style.display = 'none';
             Entertainmenttable.style.display = 'block';
             $.fn.dataTable
-            .tables({
-                visible: true,
-                api: true,
-            })
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
+        }
+
+        function alldataBanquet() {
+            console.log('alldataRoom');
+            var alltable = document.getElementById('alltable');
+            var Roomtable = document.getElementById('Roomtable');
+            var Banquettable = document.getElementById('Banquettable');
+            var Mealstable = document.getElementById('Mealstable');
+            var Entertainmenttable = document.getElementById('Entertainmenttable');
+            alltable.style.display = 'none';
+            Roomtable.style.display = 'none';
+            Banquettable.style.display = 'block';
+            Mealstable.style.display = 'none';
+            Entertainmenttable.style.display = 'none';
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
+        }
+        function alldataMeals() {
+            console.log('alldataRoom');
+            var alltable = document.getElementById('alltable');
+            var Roomtable = document.getElementById('Roomtable');
+            var Banquettable = document.getElementById('Banquettable');
+            var Mealstable = document.getElementById('Mealstable');
+            var Entertainmenttable = document.getElementById('Entertainmenttable');
+            alltable.style.display = 'none';
+            Roomtable.style.display = 'none';
+            Banquettable.style.display = 'none';
+            Mealstable.style.display = 'block';
+            Entertainmenttable.style.display = 'none';
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
+        }
+        function alldataRoom() {
+            console.log('alldataRoom');
+            var alltable = document.getElementById('alltable');
+            var Roomtable = document.getElementById('Roomtable');
+            var Banquettable = document.getElementById('Banquettable');
+            var Mealstable = document.getElementById('Mealstable');
+            var Entertainmenttable = document.getElementById('Entertainmenttable');
+            alltable.style.display = 'none';
+            Roomtable.style.display = 'block';
+            Banquettable.style.display = 'none';
+            Mealstable.style.display = 'none';
+            Entertainmenttable.style.display = 'none';
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
             .columns.adjust()
             .responsive.recalc();
         }

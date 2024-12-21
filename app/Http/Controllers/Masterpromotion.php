@@ -43,17 +43,17 @@ class Masterpromotion extends Controller
     public function index($menu)
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $promotion = master_promotion::query()->paginate($perPage);
+        $promotion = master_promotion::query()->get();
         $path = 'promotion/';
         $exp = explode('.', $menu);
         if (count($exp) > 1) {
             $search = $exp[1];
             if ($search == "all") {
-                $promotion = master_promotion::query()->paginate($perPage);
+                $promotion = master_promotion::query()->get();
             }elseif ($search == 'ac') {
-                $promotion = master_promotion::query()->where('status',1)->paginate($perPage);
+                $promotion = master_promotion::query()->where('status',1)->get();
             }else {
-                $promotion = master_promotion::query()->where('status',0)->paginate($perPage);
+                $promotion = master_promotion::query()->where('status',0)->get();
             }
         }
         return view('master_promotion.index',compact('promotion','path','menu'));
@@ -162,204 +162,13 @@ class Masterpromotion extends Controller
         $save->save();
         return redirect()->route('Mpromotion','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
-    public function search_table(Request $request){
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-        if ($search_value) {
-            $data_query = master_promotion::where('name', 'LIKE', '%'.$search_value.'%')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = master_promotion::query()->orderBy('created_at', 'desc')->paginate($perPageS);
-        }
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $view ="";
-                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
-                $daysPassed = $issueDate->diffInDays(now());
-                // สร้าง dropdown สำหรับการทำรายการ
-                if ($value->status == 1) {
-                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
-                } else {
-                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
-                }
-
-                $path = 'promotion/';
-                $btn_action = '<div class="dropdown">';
-                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-                if ($value->type == 'Link') {
-                    $btn_action .= '<li><a href="' . asset($value->name ) . '" type="button" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top">View</a></li>';
-                } else {
-                    $btn_action .= '<li><a href="' . asset($path . $value->name ) . '" type="button" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">View</a></li>';
-                }
-
-                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-
-                $data[] = [
-                    'number' => ($key + 1) ,
-                    'image'=> '<img src="'.asset($path . $value->image).'" alt="Together Resort Logo" class="logo" id="logoImage" />',
-                    'name' => $value->name,
-                    'status' => $btn_status,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function paginate_table(Request $request){
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-        if ($perPage == 10) {
-            $data_query = master_promotion::query()->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query = master_promotion::query()->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
-                $daysPassed = $issueDate->diffInDays(now());
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-                    if ($value->status == 1) {
-                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
-                    } else {
-                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
-                    }
-
-                    $path = 'promotion/';
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($value->type == 'Link') {
-                        $btn_action .= '<li><a href="' . asset($value->name ) . '" type="button" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top">View</a></li>';
-                    } else {
-                        $btn_action .= '<li><a href="' . asset($path . $value->name ) . '" type="button" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">View</a></li>';
-                    }
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => ($key + 1) ,
-                        'image'=> '<img src="'.asset($path . $value->image).'" alt="Together Resort Logo" class="logo" id="logoImage"/>',
-                        'name' => $value->name,
-                        'status' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
 
     public function log(){
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $log = log_company::where('Company_ID', 'Master Promotion')
         ->orderBy('updated_at', 'desc')
-        ->paginate($perPage);
+        ->get();
         return view('master_promotion.log',compact('log'));
-    }
-    public function search_table_paginate_log(Request $request){
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-
-        if ($search_value) {
-            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID','Master Promotion')
-                ->orderBy('updated_at', 'desc')
-                ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = log_company::where('Company_ID', 'Master Promotion')->orderBy('updated_at', 'desc')->paginate($perPageS);
-        }
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $contentArray = explode('+', $value->content);
-                $content = implode('</br>', $contentArray);
-                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
-                $name = $Category.'</br>'.$content;
-                $data[] = [
-                    'number' => $key + 1,
-                    'Category'=>$value->Category,
-                    'type'=>$value->type,
-                    'Created_by'=>@$value->userOperated->name,
-                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
-                    'Content' => $name,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function paginate_log_table(Request $request){
-        $perPage = (int)$request->perPage;
-        $guest_profile = $request->guest_profile;
-
-
-        if ($perPage == 10) {
-            $data_query = log_company::where('Company_ID', 'Master Promotion')->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
-        } else {
-            $data_query = log_company::where('Company_ID', 'Master Promotion')->orderBy('updated_at', 'desc')->paginate($perPage);
-        }
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $contentArray = explode('+', $value->content);
-                $content = implode('</br>', $contentArray);
-                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
-                $name = $Category.'</br>'.$content;
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-                    $data[] = [
-                        'number' => $key + 1,
-                        'Category'=>$value->Category,
-                        'type'=>$value->type,
-                        'Created_by'=>@$value->userOperated->name,
-                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
-                        'Content' => $name,
-                    ];
-                }
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-
     }
     public function status($id)
     {

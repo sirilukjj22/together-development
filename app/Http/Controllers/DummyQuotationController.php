@@ -43,20 +43,20 @@ class DummyQuotationController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
-        $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
+        $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->get();
         $Proposalcount = dummy_quotation::query()->count();
-        $Pending = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 1 )->paginate($perPage);
+        $Pending = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 1 )->get();
         $Pendingcount = dummy_quotation::query()->where('status_document',1)->count();
         $Awaitingcount = dummy_quotation::query()->where('status_document',2)->count();
-        $Awaiting  = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 2 )->paginate($perPage);
+        $Awaiting  = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 2 )->get();
         $Approvedcount = dummy_quotation::query()->where('status_document',3)->count();
-        $Approved = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 3 )->paginate($perPage);
+        $Approved = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 3 )->get();
         $Rejectcount = dummy_quotation::query()->where('status_document',4)->count();
-        $Reject = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 4)->paginate($perPage);
+        $Reject = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 4)->get();
         $Cancelcount = dummy_quotation::query()->where('status_document',0)->count();
-        $Cancel = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
+        $Cancel = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->get();
         $Generatecount = dummy_quotation::query()->where('status_document',5)->count();
-        $Generate = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 5 )->paginate($perPage);
+        $Generate = dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document', 5 )->get();
 
         $DummyNo = dummy_quotation::query()->pluck('DummyNo');
         $document = document_dummy_quotation::whereIn('Quotation_ID', $DummyNo)->get();
@@ -73,7 +73,7 @@ class DummyQuotationController extends Controller
         ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
         ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
         ->orderBy('log_company.updated_at', 'desc')
-        ->paginate($perPage);
+        ->get();
         $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete ','Send documents'])
         ->orderBy('updated_at', 'desc')
         ->count();
@@ -107,68 +107,68 @@ class DummyQuotationController extends Controller
             $Proposalcount = dummy_quotation::query()->count();
 
             if ($Filter == 'All') {
-                $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
+                $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->get();
             }elseif ($Filter == 'Nocheckin') {
                 if ($Filter == 'Nocheckin'&&$checkin ==null&& $checkout == null) {
                     if ($Filter == 'Nocheckin'&&$Usercheck ==null&& $status == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$Usercheck !==null&& $status == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 5 && $Usercheck == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('created_at','desc')->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('created_at','desc')->where('status_document',5)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck == null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck !== null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck !== null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck !== null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck !== null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 5 && $Usercheck !== null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                     }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck !== null) {
-                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                     }
                 }
             }elseif ($Filter == 'Checkin') {
                 if ($checkin && $checkout &&$Usercheck ==null&& $status == null ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == null ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 1 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 2 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 3 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 4 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 5 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 0 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 1 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->whereIn('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->whereIn('status_document',1)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 2 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 3 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 4 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 5 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                 }
             }elseif ($Filter == 'Company') {
                 $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
@@ -181,97 +181,97 @@ class DummyQuotationController extends Controller
                     $porfile = $nameGuest->Profile_ID;
                 }
                 if ($porfile) {
-                    $Proposal = dummy_quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('Company_ID',$porfile)->get();
                 }
             }elseif ($Filter == null) {
                 if ($Usercheck) {
                     if ($Usercheck !== null && $status == null) {
-                        $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
                     }elseif ($Usercheck !== null && $status == 0) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 1) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 2) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 3) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 4) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 5) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                     }
                 }else {
                     if ($status == 0) {
                         if ($status == null) {
-                            $Proposal = dummy_quotation::query()->where('status_document',0)->paginate($perPage);
+                            $Proposal = dummy_quotation::query()->where('status_document',0)->get();
                         }else{
-                            $Proposal = dummy_quotation::query()->where('status_document',0)->paginate($perPage);
+                            $Proposal = dummy_quotation::query()->where('status_document',0)->get();
                         }
                     }elseif ($status == 1) {
-                        $Proposal = dummy_quotation::query()->where('status_document',1)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('status_document',1)->get();
 
                     }elseif ($status == 2) {
-                        $Proposal = dummy_quotation::query()->where('status_document',2)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('status_document',2)->get();
                     }elseif ($status == 3) {
-                        $Proposal = dummy_quotation::query()->where('status_document',3)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('status_document',3)->get();
 
                     }elseif ($status == 4) {
-                        $Proposal = dummy_quotation::query()->where('status_document',4)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('status_document',4)->get();
                     }elseif ($status == 5) {
-                        $Proposal = dummy_quotation::query()->where('status_document',5)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('status_document',5)->get();
                     }
                 }
             }
-            $Pending = dummy_quotation::query()->where('status_document',1)->paginate($perPage);
-            $Approved = dummy_quotation::query()->where('status_document',3)->paginate($perPage);
+            $Pending = dummy_quotation::query()->where('status_document',1)->get();
+            $Approved = dummy_quotation::query()->where('status_document',3)->get();
             $Pendingcount = dummy_quotation::query()->where('status_document',1)->count();
-            $Awaiting = dummy_quotation::query()->where('status_document',2)->paginate($perPage);
+            $Awaiting = dummy_quotation::query()->where('status_document',2)->get();
             $Awaitingcount = dummy_quotation::query()->where('status_document',2)->count();
             $Approvedcount = dummy_quotation::query()->where('status_document',3)->count();
-            $Approved = dummy_quotation::query()->where('status_document',3)->paginate($perPage);
-            $Reject = dummy_quotation::query()->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+            $Approved = dummy_quotation::query()->where('status_document',3)->get();
+            $Reject = dummy_quotation::query()->where('status_document',4)->orderBy('created_at', 'desc')->get();
             $Rejectcount = dummy_quotation::query()->where('status_document',4)->count();
-            $Cancel = dummy_quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+            $Cancel = dummy_quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->get();
             $Cancelcount = dummy_quotation::query()->where('status_document',0)->count();
             $Generatecount = dummy_quotation::query()->where('status_document',5)->count();
-            $Generate = dummy_quotation::query()->where('status_document', 5 )->paginate($perPage);
+            $Generate = dummy_quotation::query()->where('status_document', 5 )->get();
         }
         if ($user->permission == 0) {
 
             $User = User::select('name','id')->where('id',$userid)->get();
             if ($Filter == 'All') {
-                $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
+                $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
             }elseif ($Filter == 'Nocheckin') {
                 if ($Filter == 'Nocheckin'&&$checkin ==null&& $checkout == null&&$status == null && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
                 }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                 }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                 }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                 }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                 }elseif ($Filter == 'Nocheckin'&&$status == 5 && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                 }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck !== null) {
-                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                 }
             }elseif ($Filter == 'Checkin') {
                 if ($checkin && $checkout &&$Usercheck !==null&& $status == null ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 1 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 2 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 3 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 4 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 5 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
-                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                 }
             }elseif ($Filter == 'Company') {
                 $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
@@ -284,41 +284,41 @@ class DummyQuotationController extends Controller
                     $porfile = $nameGuest->Profile_ID;
                 }
                 if ($porfile) {
-                    $Proposal = dummy_quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
+                    $Proposal = dummy_quotation::query()->where('Company_ID',$porfile)->get();
                 }
             }
             elseif ($Filter == null) {
                 if ($Usercheck) {
                     if ($Usercheck !== null && $status == null) {
-                        $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
                     }elseif ($Usercheck !== null && $status == 0) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 1) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',1)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 2) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 3) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 4) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 5) {
-                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
+                        $Proposal = dummy_quotation::query()->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->get();
                     }
                 }
             }
             $Proposalcount = dummy_quotation::query()->where('Operated_by',$userid)->count();
-            $Pending = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',1)->paginate($perPage);
+            $Pending = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',1)->get();
             $Pendingcount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',1)->count();
-            $Awaiting = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPage);
+            $Awaiting = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->get();
             $Awaitingcount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',2)->count();
-            $Approved = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPage);
+            $Approved = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',3)->get();
             $Approvedcount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',3)->count();
-            $Reject = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
+            $Reject = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->get();
             $Rejectcount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
-            $Cancel = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
+            $Cancel = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->get();
             $Cancelcount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
             $Generatecount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',5)->count();
-            $Generate = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document', 5 )->paginate($perPage);
+            $Generate = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document', 5 )->get();
         }
         return view('dummy_quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'
         ,'User','Generate','Generatecount'));
@@ -2989,1985 +2989,6 @@ class DummyQuotationController extends Controller
         }
     }
 
-    //---------------------------------table-----------------
-    public function  paginate_table_dummyproposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-        if ($perPage == 10) {
-            $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')
-            ->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input checkbox-select checkbox-'.($key + 1).'" type="checkbox" name="checkbox[]" value="'.$value->id.'" id="checkbox-'.($key + 1).'" rel="'.$value->vat.'">
-                            <label class="form-check-label" for="checkbox-'.($key + 1).'"></label>
-                        </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input checkbox-select checkbox-'.($key + 1).'" type="checkbox" name="checkbox[]" value="'.$value->id.'" id="checkbox-'.($key + 1).'" rel="'.$value->vat.'" disabled>
-                            <label class="form-check-label" for="checkbox-'.($key + 1).'"></label>
-                        </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document !== 2 && $value->status_document !== 5) {
-                                    if ($value->status_document == 3) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                    }else{
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    }
-                                    if ($value->status_document !== 0) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                    }else {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                    }
-                                }
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    if ($value->status_document !== 2 && $value->status_document !== 5) {
-                                        if ($value->status_document == 3) {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                        }else{
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                        }
-                                        if ($value->status_document !== 0) {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                        }else {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                        }
-                                    }
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document !== 2 && $value->status_document !== 5) {
-                                    if ($value->status_document == 3 ) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                    }else{
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    }
-                                    if ($value->status_document !== 0) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                    }else {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
-                        'Type'=>$value->Date_type ?? '-',
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'ExpirationDate' => $value->Expirationdate,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_dummyproposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-        if ($search_value) {
-            $data_query = dummy_quotation::where('DummyNo', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')->paginate($perPageS);
-        }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document !== 2 && $value->status_document !== 5) {
-                                    if ($value->status_document == 3) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                    }else{
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    }
-                                    if ($value->status_document !== 0) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                    }else {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                    }
-                                }
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    if ($value->status_document !== 2 && $value->status_document !== 5) {
-                                        if ($value->status_document == 3) {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                        }else{
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                        }
-                                        if ($value->status_document !== 0) {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                        }else {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                        }
-                                    }
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document !== 2 && $value->status_document !== 5) {
-                                    if ($value->status_document == 3 ) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                    }else{
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    }
-                                    if ($value->status_document !== 0) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                    }else {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-     //------------------tablepending----------------------
-    public function  paginate_pending_table_proposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-
-        if ($perPage == 10) {
-            $data_query = dummy_quotation::query()->where('status_document',1)->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query = dummy_quotation::query()->where('status_document',1)->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input checkbox-select checkbox-'.($key + 1).'" type="checkbox" name="checkbox[]" value="'.$value->id.'" id="checkbox-'.($key + 1).'" rel="'.$value->vat.'">
-                            <label class="form-check-label" for="checkbox-'.($key + 1).'"></label>
-                        </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input checkbox-select checkbox-'.($key + 1).'" type="checkbox" name="checkbox[]" value="'.$value->id.'" id="checkbox-'.($key + 1).'" rel="'.$value->vat.'" disabled>
-                            <label class="form-check-label" for="checkbox-'.($key + 1).'"></label>
-                        </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_paginate_pending(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-        if ($search_value) {
-            $data_query = dummy_quotation::where('status_document',1)
-            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = dummy_quotation::query()->where('status_document',1)->paginate($perPageS);
-        }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                       'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    //----------------------tableAwaiting-----------------
-    public function  paginate_awaiting_table_proposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-        if ($perPage == 10) {
-            $data_query = dummy_quotation::query()->where('status_document',2)->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query = dummy_quotation::query()->where('status_document',2)->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                        if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                       'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_paginate_awaiting(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-
-        if ($search_value) {
-            $data_query = dummy_quotation::where('status_document',2)
-            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPageS);
-        }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' .@$value->company->Company_Name. '</td>';
-                }else {
-                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                }
-                // สร้างสถานะการใช้งาน
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 5) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Generate</span>';
-                    }
-                }
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $btn_action = '<div class="dropdown">';
-                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                    if ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                    }
-                }
-
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-                $data[] = [
-                    'number' => $checkbox,
-                    'DummyNo' => $value->DummyNo,
-                    'Company_Name' => $name,
-                    'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'CheckIn' => $value->checkin,
-                    'CheckOut'=> $value->checkout,
-                    'Type'=>$value->Date_type,
-                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                    'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                    'DocumentStatus' => $btn_status,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    //----------------------tableApp-----------------
-    public function  paginate_approved_table_proposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-
-        if ($perPage == 10) {
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                    $btn_action = '<div class="btn-group">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document == 3) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                }
-                                if ($value->status_document !== 0) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }else {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Revice</a></li>';
-                                }
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    if ($value->status_document == 3) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                    }
-                                    if ($value->status_document !== 0) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                    }else {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Revice</a></li>';
-                                    }
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document == 3 ) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                }
-                                if ($value->status_document !== 0) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }else {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Revice</a></li>';
-                                }
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                       'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_paginate_approved(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-        if ($search_value) {
-            $data_query = dummy_quotation::where('status_document',3)
-            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPageS);
-        }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name = "";
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' .@$value->company->Company_Name. '</td>';
-                }else {
-                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                }
-                // สร้างสถานะการใช้งาน
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 5) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Generate</span>';
-                    }
-                }
-                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                $CreateBy = Auth::user()->id;
-                $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                $btn_action = '<div class="btn-group">';
-                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                if ($rolePermission > 0) {
-                    if ($rolePermission == 1 && $isOperatedByCreator) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                        if ($canEditProposal) {
-                            if ($value->status_document == 3) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                            }
-                            if ($value->status_document !== 0) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }else {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Revice</a></li>';
-                            }
-                        }
-                    } elseif ($rolePermission == 2) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                        }
-                        if ($isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document == 3) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                                }
-                                if ($value->status_document !== 0) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }else {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Revice</a></li>';
-                                }
-                            }
-                        }
-                    } elseif ($rolePermission == 3) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        }
-                        if ($canEditProposal) {
-                            if ($value->status_document == 3 ) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Generate(' . $value->id . ')">Generate</a></li>';
-                            }
-                            if ($value->status_document !== 0) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }else {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Revice</a></li>';
-                            }
-                        }
-                    }
-                } else {
-                    if ($canViewProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                    }
-                }
-
-
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-                $data[] = [
-                    'number' => $checkbox,
-                    'DummyNo' => $value->DummyNo,
-                    'Company_Name' => $name,
-                    'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'CheckIn' => $value->checkin,
-                    'CheckOut'=> $value->checkout,
-                    'Type'=>$value->Date_type,
-                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                    'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                    'DocumentStatus' => $btn_status,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    //----------------------tablegenerate-----------------
-    public function  paginate_generate_table_proposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-        if ($perPage == 10) {
-            $data_query = dummy_quotation::query()->where('status_document',5)->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query = dummy_quotation::query()->where('status_document',5)->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                    $btn_action = '<div class="dropdown">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                        if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                       'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_paginate_generate(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-
-        if ($search_value) {
-            $data_query = dummy_quotation::where('status_document',5)
-            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',5)->paginate($perPageS);
-        }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' .@$value->company->Company_Name. '</td>';
-                }else {
-                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                }
-                // สร้างสถานะการใช้งาน
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 5) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                    }
-                }
-                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                $CreateBy = Auth::user()->id;
-                $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                $btn_action = '<div class="dropdown">';
-                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                    if ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                    }
-                }
-
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-                $data[] = [
-                    'number' => $checkbox,
-                    'DummyNo' => $value->DummyNo,
-                    'Company_Name' => $name,
-                    'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'CheckIn' => $value->checkin,
-                    'CheckOut'=> $value->checkout,
-                    'Type'=>$value->Date_type,
-                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                    'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                    'DocumentStatus' => $btn_status,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    //----------------------tablereject-----------------
-    public function  paginate_reject_table_proposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-        if ($perPage == 10) {
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->limit($request->page.'0')
-            ->get();
-        } else {
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
-        }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-                    $btn_action = '<div class="btn-group">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                       'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_paginate_reject(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-
-        if ($search_value) {
-            $data_query = dummy_quotation::where('status_document',4)
-            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
-        }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox = "";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' .@$value->company->Company_Name. '</td>';
-                }else {
-                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                }
-                // สร้างสถานะการใช้งาน
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 5) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                    }
-                }
-                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                $CreateBy = Auth::user()->id;
-                $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                $btn_action = '<div class="btn-group">';
-                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-
-                if ($rolePermission > 0) {
-                    if ($rolePermission == 1 && $isOperatedByCreator) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                        if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                        }
-                    } elseif ($rolePermission == 2) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                        }
-                        if ($isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        }
-                    } elseif ($rolePermission == 3) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        }
-                        if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                        }
-                    }
-                } else {
-                    if ($canViewProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                    }
-                }
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-                $data[] = [
-                    'number' => $checkbox,
-                    'DummyNo' => $value->DummyNo,
-                    'Company_Name' => $name,
-                    'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'CheckIn' => $value->checkin,
-                    'CheckOut'=> $value->checkout,
-                    'Type'=>$value->Date_type,
-                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                    'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                    'DocumentStatus' => $btn_status,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function  paginate_cancel_table_proposal(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $userid = Auth::user()->id;
-        $data = [];
-        $permissionid = Auth::user()->permission;
-
-            if ($perPage == 10) {
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
-            }
-
-
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name ="";
-                $checkbox ="";
-                // สร้าง dropdown สำหรับการทำรายการ
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-
-                    if ($value->status_document == 1) {
-                        // Checkbox is enabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    } else {
-                        // Checkbox is disabled
-                        $checkbox = '<div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                        <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                    </div>';
-                    }
-                    if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                    }
-                    // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 5) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                        }
-                    }
-                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                    $CreateBy = Auth::user()->id;
-                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                    $btn_action = '<div class="btn-group">';
-                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                                }
-                            }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                            }
-                        }
-                    } else {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                    }
-
-                    $btn_action .= '</ul>';
-                    $btn_action .= '</div>';
-
-                    $data[] = [
-                        'number' => $checkbox,
-                        'DummyNo' => $value->DummyNo,
-                        'Company_Name' => $name,
-                       'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin ?? '-',
-                        'CheckOut'=> $value->checkout ?? '-',
-                        'Type'=>$value->Date_type,
-                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                        'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                        'DocumentStatus' => $btn_status,
-                        'btn_action' => $btn_action,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function search_table_paginate_cancel(Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
-
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',0)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPageS);
-            }
-
-
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $btn_action = "";
-                $btn_status = "";
-                $name = "";
-                $checkbox ="";
-                if ($value->status_document == 1) {
-                    // Checkbox is enabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '">
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                } else {
-                    // Checkbox is disabled
-                    $checkbox = '<div class="form-check form-check-inline">
-                                    <input class="form-check-input checkbox-select checkbox-' . ($key + 1) . '" type="checkbox" name="checkbox[]" value="' . $value->id . '" id="checkbox-' . ($key + 1) . '" rel="' . $value->vat . '" disabled>
-                                    <label class="form-check-label" for="checkbox-' . ($key + 1) . '"></label>
-                                </div>';
-                }
-                if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' .@$value->company->Company_Name. '</td>';
-                }else {
-                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
-                }
-                // สร้างสถานะการใช้งาน
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill bg-success" >Approved</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 5) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
-                    }
-                }
-                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                $CreateBy = Auth::user()->id;
-                $isOperatedByCreator = $value->Operated_by == $CreateBy;
-
-                $btn_action = '<div class="btn-group">';
-                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
-                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
-
-                if ($rolePermission > 0) {
-                    if ($rolePermission == 1 && $isOperatedByCreator) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-                        if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                        }
-                    } elseif ($rolePermission == 2) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                        }
-                        if ($isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                            }
-                        }
-                    } elseif ($rolePermission == 3) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        }
-                        if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
-                        }
-                    }
-                } else {
-                    if ($canViewProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Dummy/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                    }
-                }
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-                $data[] = [
-                    'number' => $checkbox,
-                    'DummyNo' => $value->DummyNo,
-                    'Company_Name' => $name,
-                    'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'CheckIn' => $value->checkin,
-                    'CheckOut'=> $value->checkout,
-                    'Type'=>$value->Date_type,
-                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
-                    'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
-                    'DocumentStatus' => $btn_status,
-                    'btn_action' => $btn_action,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
      //----------------------------log---------------------------------
     public function LOG($id)
     {
@@ -4976,83 +2997,10 @@ class DummyQuotationController extends Controller
         $QuotationID = $Quotation->DummyNo;
         $logproposal = log_company::where('Company_ID', $QuotationID)
             ->orderBy('updated_at', 'desc')
-            ->paginate($perPage);
+            ->get();
         return view('dummy_quotation.document',compact('logproposal','QuotationID'));
     }
-    public function search_table_paginate_log_doc_dummyproposal (Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $search_value = $request->search_value;
-        $guest_profile = $request->guest_profile;
 
-        if ($search_value) {
-            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('updated_at', 'desc')
-                ->paginate($perPage);
-        }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPageS);
-        }
-        $data = [];
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $contentArray = explode('+', $value->content);
-                $content = implode('</br>', $contentArray);
-                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
-                $name = $Category.'</br>'.$content;
-                $data[] = [
-                    'number' => $key + 1,
-                    'Category'=>$value->Category,
-                    'type'=>$value->type,
-                    'Created_by'=>@$value->userOperated->name,
-                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
-                    'Content' => $name,
-                ];
-            }
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function  paginate_log_doc_table_dummyproposal (Request $request)
-    {
-        $perPage = (int)$request->perPage;
-        $guest_profile = $request->guest_profile;
-        $data = [];
-        if ($perPage == 10) {
-            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
-        } else {
-            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPage);
-        }
-        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
-        $page_2 = $request->page.'0';
-
-        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
-        if (isset($data_query) && count($data_query) > 0) {
-            foreach ($data_query as $key => $value) {
-                $contentArray = explode('+', $value->content);
-                $content = implode('</br>', $contentArray);
-                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
-                $name = $Category.'</br>'.$content;
-                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-                    $data[] = [
-                        'number' => $key + 1,
-                        'Category'=>$value->Category,
-                        'type'=>$value->type,
-                        'Created_by'=>@$value->userOperated->name,
-                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
-                        'Content' => $name,
-                    ];
-                }
-            }
-        }
-        // dd($data);
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
     public function sheetpdf(Request $request ,$id) {
         $Quotation = dummy_quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation->DummyNo;

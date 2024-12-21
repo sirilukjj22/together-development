@@ -19,6 +19,9 @@
         margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
     }
 </style>
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -576,19 +579,7 @@
                                         </div>
                                     </div>
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <table id="guest-TaxTable" class="example ui striped table nowrap unstackable hover">
-                                            <caption class="caption-top">
-                                                    <div class="flex-end-g2">
-                                                        <label class="entriespage-label">entries per page :</label>
-                                                        <select class="entriespage-button" id="search-per-page-guest-Tax" onchange="getPageTax(1, this.value, 'guest-Tax')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>10</option>
-                                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>25</option>
-                                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>50</option>
-                                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>100</option>
-                                                        </select>
-                                                        <input class="search-button search-data-guest-Tax" id="guest-Tax" style="text-align:left;" placeholder="Search" />
-                                                    </div>
-                                            </caption>
+                                        <table id="guest-TaxTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-priority="1">No</th>
@@ -606,9 +597,9 @@
                                                         <td style="text-align: center;">{{ $key + 1 }}</td>
                                                         <td style="text-align: center;">{{ $item->GuestTax_ID }}</td>
                                                         @if ($item->Tax_Type == 'Company')
-                                                            <td >{{ $item->Company_name }}</td>
+                                                            <td style="white-space:wrap">{{ $item->Company_name }}</td>
                                                         @else
-                                                            <td >{{ $item->first_name.' '.$item->last_name }} </td>
+                                                            <td style="white-space:wrap">{{ $item->first_name.' '.$item->last_name }} </td>
                                                         @endif
                                                         <td style="text-align: center;">{{ $item->BranchTax }}</td>
                                                         <td style="text-align: center;">
@@ -647,37 +638,13 @@
                                                     @endforeach
                                                 @endif
                                             </tbody>
-                                            <input type="hidden" id="profile-guest-Tax" name="profile-guest" value="{{$Guest->Profile_ID}}">
-                                            <input type="hidden" id="get-total-guest-Tax" value="{{ $guesttax->total() }}">
-                                            <input type="hidden" id="currentPage-guest-Tax" value="1">
-                                            <caption class="caption-bottom">
-                                                <div class="md-flex-bt-i-c">
-                                                    <p class="py2" id="guest-Tax-showingEntries">{{ showingEntriesTableTax($guesttax, 'guest-Tax') }}</p>
-                                                        <div id="guest-Tax-paginate">
-                                                            {!! paginateTableTax($guesttax, 'guest-Tax') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                        </div>
-                                                </div>
-                                            </caption>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="guest-VisitTable" class="example ui striped table nowrap unstackable hover">
-                                        <caption class="caption-top">
-                                            <div>
-                                                <div class="flex-end-g2">
-                                                    <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-guest-Visit" onchange="getPageVisit(1, this.value, 'guest-Visit')">
-                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>10</option>
-                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>25</option>
-                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>50</option>
-                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                    <input class="search-button search-data-guest-Visit" id="guest-Visit" style="text-align:left;" placeholder="Search" />
-                                                </div>
-                                        </caption>
+                                    <table id="guest-VisitTable" class="table-together table-style">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" data-priority="1">No</th>
@@ -701,7 +668,7 @@
                                                         {{$key +1}}
                                                     </td>
                                                     <td style="text-align: center;">{{ $item->Quotation_ID }}</td>
-                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    <td style="white-space:wrap">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     <td style="text-align: center;">{{ $item->issue_date }}</td>
                                                     <td style="text-align: center;">{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
@@ -750,35 +717,12 @@
                                                 @endforeach
                                             @endif
                                         </tbody>
-                                        <input type="hidden" id="profile-guest-Visit" name="profile-company" value="{{$Guest->Profile_ID}}">
-                                        <input type="hidden" id="get-total-guest-Visit" value="{{ $Quotation->total() }}">
-                                        <input type="hidden" id="currentPage-guest-Visit" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="guest-Visit-showingEntries">{{ showingEntriesTableVisit($Quotation, 'guest-Visit') }}</p>
-                                                    <div id="guest-Visit-paginate">
-                                                        {!! paginateTableVisit($Quotation, 'guest-Visit') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
                                     </table>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Billing" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-guest-Billing" onchange="getPageBilling(1, this.value, 'guest-Billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest-Billing" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest-Billing" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest-Billing" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest-Billing" ? 'selected' : '' }}>100</option>
-                                            </select>
-                                            <input class="search-button search-data-guest-Billing" id="guest-Billing" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
-                                    <table id="guest-BillingTable" class="example ui striped table nowrap unstackable hover">
+                                    <table id="guest-BillingTable" class="table-together table-style">
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center;"data-priority="1">No</th>
@@ -801,7 +745,7 @@
                                                     </td>
                                                     <td>{{ $item->Receipt_ID}}</td>
                                                     <td>{{ $item->Quotation_ID}}</td>
-                                                    <td>{{$item->fullname}}</td>
+                                                    <td style="white-space:wrap">{{$item->fullname}}</td>
                                                     <td>{{ $item->paymentDate }}</td>
                                                     <td style="text-align: center;">
                                                         {{ number_format($item->document_amount) }}
@@ -834,17 +778,6 @@
                                             @endif
                                         </tbody>
                                     </table>
-                                    <input type="hidden" id="profile-guest-Billing" name="profile-company" value="{{$Guest->Profile_ID}}">
-                                    <input type="hidden" id="get-total-guest-Billing" value="{{ $Billing->total() }}">
-                                    <input type="hidden" id="currentPage-guest-Billing" value="1">
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="guest-Billing-showingEntries">{{ showingEntriesTableBilling($Billing, 'guest-Billing') }}</p>
-                                            <div id="guest-Billing-paginate">
-                                                {!! paginateTableBilling($Billing, 'guest-Billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                            </div>
-                                        </div>
-                                    </caption>
                                 </div>
                             </div>
                             <div class="tab-pane fade "id="nav-Contract" role="tabpanel" rel="0">
@@ -855,19 +788,7 @@
                             </div>
                             <div class="tab-pane fade" id="nav-User" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
-                                            </select>
-                                            <input class="search-button search-data-log" id="guest" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
-                                    <table id="guestTable" class="example ui striped table nowrap unstackable hover">
+                                    <table id="guestTable" class="table-together table-style">
                                         <thead>
                                             <tr>
                                                 <th  class="text-center">No</th>
@@ -895,7 +816,7 @@
 
                                                         <b style="color:#0000FF ">{{$item->Category}}</b>
                                                         @foreach($contentArray as $contentItem)
-                                                            <div>{{ $contentItem }}</div>
+                                                            <div style="white-space:wrap">{{ $contentItem }}</div>
                                                         @endforeach
                                                     </td>
                                                 </tr>
@@ -903,17 +824,6 @@
                                             @endif
                                         </tbody>
                                     </table>
-                                    <input type="hidden" id="profile-guest" name="profile-guest" value="{{$Guest->Profile_ID}}">
-                                    <input type="hidden" id="get-total-guest" value="{{ $log->total() }}">
-                                    <input type="hidden" id="currentPage-guest" value="1">
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($log, 'guest') }}</p>
-                                            <div id="guest-paginate">
-                                                {!! paginateTable($log, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                            </div>
-                                        </div>
-                                    </caption>
                                 </div>
                             </div>
                         </div>
@@ -1154,328 +1064,14 @@
 <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-<script type="text/javascript" src="{{ asset('assets/helper/searchTableLogGuest.js')}}"></script>
+<script src="{{ asset('assets/js/table-together.js') }}"></script>
     <script>
-       const table_name = ['guest-TaxTable','guestTable','guest-VisitTable','guest-BillingTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                console.log(table_name);
-
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
         function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
         }
-        $(document).on('keyup', '.search-data-log', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-guest').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/logguest-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Category' },
-                        { data: 'type' },
-                        { data: 'Created_by' },
-                        { data: 'created_at' },
-                        { data: 'Content' },
-                    ],
-
-                });
-
-
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-guest-Tax', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-guest').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/tax-guest-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchTax(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchTax(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 1, 3,4,5], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Profile_ID_TAX' },
-                        { data: 'Company/Individual' },
-                        { data: 'Branch' },
-                        { data: 'Status' },
-                        { data: 'Order' },
-                    ],
-
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-guest-Visit', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-guest-Visit').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Visit-guest-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchVisit(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchVisit(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9,10], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'ID' },
-                        { data: 'Company' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'CheckIn' },
-                        { data: 'CheckOut' },
-                        { data: 'Discount' },
-                        { data: 'OperatedBy' },
-                        { data: 'Documentstatus' },
-                        { data: 'Order' },
-
-                    ],
-
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-guest-Billing', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-guest-Billing').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Billing-guest-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchBilling(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchBilling(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Receipt' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'Payment_date' },
-                        { data: 'Amount' },
-                        { data: 'Approve' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-            document.getElementById(id).focus();
-        });
     </script>
 
     <script>

@@ -1,4 +1,7 @@
 @extends('layouts.masterLayout')
+@php
+    $excludeDatatable = false;
+@endphp
 <style>
     .logo {
         width: 70px;
@@ -139,6 +142,30 @@
                     </ol>
                 </div>
                 <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
+                                @if ($menu == 'promotion.all')
+                                    All
+                                @elseif ($menu == 'promotion.ac')
+                                    Active
+                                @elseif ($menu == 'promotion.no')
+                                    Disabled
+                                @else
+                                    Status
+                                @endif
+                        <i class="fas fa-angle-down arrow-dropdown"></i>
+                            </button>
+                            <ul class="dropdown-menu border-0 shadow p-3">
+                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.all') }}">All</a></li>
+                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.ac') }}">Active</a></li>
+                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.no') }}">Disabled</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Mpromotion.Log') }}'">
+                            LOG
+                        </button>
+                    </div>
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
@@ -147,46 +174,8 @@
                 <div class="col-md-12 col-12">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <caption class="caption-top">
-                                <div class="top-table-3c">
-                                    <div class="top-table-3c_1">
-                                        <div class="dropdown">
-                                            <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
-                                                @if ($menu == 'promotion.all')
-                                                    All
-                                                @elseif ($menu == 'promotion.ac')
-                                                    Active
-                                                @elseif ($menu == 'promotion.no')
-                                                    Disabled
-                                                @else
-                                                    Status
-                                                @endif
-                                        <i class="fas fa-angle-down arrow-dropdown"></i>
-                                            </button>
-                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.all') }}">All</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.ac') }}">Active</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.no') }}">Disabled</a></li>
-                                            </ul>
-                                        </div>
-                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Mpromotion.Log') }}'">
-                                            LOG
-                                        </button>
-                                    </div>
-
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-promotion" onchange="getPage(1, this.value, 'promotion')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="promotion" style="text-align:left;" placeholder="Search" />
-
-                                </div>
-                            </caption>
                             <div style="min-height: 70vh;" class="mt-2">
-                                <table id="promotionTable" class="example ui striped table nowrap unstackable hover">
+                                <table id="promotionTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th style="text-align: center" data-priority="1">No</th>
@@ -233,16 +222,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <input type="hidden" id="get-total-promotion" value="{{ $promotion->total() }}">
-                            <input type="hidden" id="currentPage-promotion" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="promotion-showingEntries">{{ showingEntriesTable($promotion, 'promotion') }}</p>
-                                        <div id="promotion-paginate">
-                                            {!! paginateTable($promotion, 'promotion') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                </div>
-                            </caption>
                         </div>
                     </div>
                 </div>
@@ -255,110 +234,20 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTablePromotion.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
     <script>
         $(document).ready(function() {
             // ใช้ jQuery ในการจัดการการคลิกที่รูปภาพทั้งหมดที่มีคลาส .logo
             $(document).on('click', '.logo', function() {
                 $(this).toggleClass('logo-expanded'); // สลับคลาสเพื่อขยายและย่อรูป
             });
-        });
-    </script>
-    <script>
-
-        $(document).ready(function() {
+        });$(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
         });
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Mpromotion-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,3,4], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'image' },
-                        { data: 'name' },
-                        { data: 'status' },
-                        { data: 'btn_action' },
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).ready(function() {
-            new DataTable('.example', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                }
-            });
-        });
-
     </script>
+
     @include('script.script')
 
     <script>

@@ -34,7 +34,16 @@ $(document).ready(function () {
       },
     ],
   });
-
+  $(".dropdown-menu").appendTo("body");
+  function adjustDataTable() {
+    $.fn.dataTable
+      .tables({
+        visible: true,
+        api: true,
+      })
+      .columns.adjust()
+      .responsive.recalc();
+  }
   // Function to adjust DataTable
   function adjustDataTable() {
     $.fn.dataTable

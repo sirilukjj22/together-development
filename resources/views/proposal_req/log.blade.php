@@ -1,5 +1,7 @@
 @extends('layouts.masterLayout')
-
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
 
     <div id="content-index" class="body-header border-bottom d-flex py-3">
@@ -21,19 +23,8 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <div style="min-height: 70vh;" class="mt-2">
-                                <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-proposal-Log" onchange="getPageLogDoc(1, this.value, 'proposal-Log')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data-proposal-Log" id="proposal-Log" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                                </caption>
-                                <table id="proposal-LogTable" class="example ui striped table nowrap unstackable hover">
+
+                                <table id="proposal-LogTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th  class="text-center">No</th>
@@ -62,7 +53,7 @@
 
                                                     <b style="color:#0000FF ">{{$item->Category}}</b>
                                                     @foreach($contentArray as $contentItem)
-                                                        <div>{{ $contentItem }}</div>
+                                                        <div style="white-space:wrap">{{ $contentItem }}</div>
                                                     @endforeach
                                                 </td>
                                                 <td style="text-align: center;">
@@ -85,17 +76,7 @@
                                         @endif
                                     </tbody>
                                 </table>
-                                <input type="hidden" id="profile-proposal-Log" name="profile-proposal" value="{{$userid}}">
-                                <input type="hidden" id="get-total-proposal-Log" value="{{ $log->total() }}">
-                                <input type="hidden" id="currentPage-proposal-Log" value="1">
-                                <caption class="caption-bottom">
-                                    <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="proposal-Log-showingEntries">{{ showingEntriesTableLogDoc($log, 'proposal-Log') }}</p>
-                                            <div id="proposal-Log-paginate">
-                                                {!! paginateTableLogDoc($log, 'proposal-Log') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                            </div>
-                                    </div>
-                                </caption>
+
                             </div>
                             <div class="col-12 row mt-5">
                                 <div class="col-4"></div>
@@ -118,125 +99,9 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposalRequest.js')}}"></script>
-
-    <script>
-        const table_name = ['proposal-LogTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                console.log();
-
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
-        function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        }
-        $(document).on('keyup', '.search-data-proposal-Log', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-proposal-Log').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(guest_profile);
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
 
 
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Proposal-LogDoc-request-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchLogDoc(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchLogDoc(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 2, 3 ,4 ,6], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Category' },
-                        { data: 'type' },
-                        { data: 'Created_by' },
-                        { data: 'created_at' },
-                        { data: 'Content' },
-                        { data: 'Doc' },
-                    ],
-
-                });
-            document.getElementById(id).focus();
-        });
-    </script>
-    @include('script.script')
 
 
 @endsection

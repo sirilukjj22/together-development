@@ -1,5 +1,7 @@
 @extends('layouts.masterLayout')
-
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
 
     <div id="content-index" class="body-header border-bottom d-flex py-3">
@@ -48,24 +50,12 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade  show active" id="nav-proposal" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="top-table-3c">
-                                                <div class="top-table-3c_1">
-                                                    <div class="dropdown">
-                                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ProposalReq.log') }}'">LOG</button>
-                                                    </div>
-                                                </div>
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-proposal" onchange="getPage(1, this.value, 'proposal')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data" id="proposal" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="proposalTable" class="example ui striped table nowrap unstackable hover">
+                                        <div class="flex-end">
+                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ProposalReq.log') }}'">LOG</button>
+                                        </div>
+
+
+                                        <table id="proposalTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -103,21 +93,12 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-proposal" value="{{ $proposal->total() }}">
-                                        <input type="hidden" id="currentPage-proposal" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="proposal-showingEntries">{{ showingEntriesTable($proposal, 'proposal') }}</p>
-                                                    <div id="proposal-paginate">
-                                                        {!! paginateTable($proposal, 'proposal') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <table id="requestTable" class="example ui striped table nowrap unstackable hover">
+                                        <table id="requestTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -146,38 +127,15 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-request" value="{{ $request->total() }}">
-                                        <input type="hidden" id="currentPage-request" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="request-showingEntries">{{ showingEntriesTablePending($request, 'request') }}</p>
-                                                <div id="request-paginate">
-                                                    {!! paginateTablePending($request, 'request') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                            </div>
-                                        </caption>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Awaiting" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <caption class="caption-top">
-                                            <div class="top-table-3c">
-                                                <div class="top-table-3c_1">
-                                                    <div class="dropdown">
-                                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ProposalReq.LogAdditional') }}'">LOG</button>
-                                                    </div>
-                                                </div>
-                                                <label class="entriespage-label">entries per page :</label>
-                                                <select class="entriespage-button" id="search-per-page-proposalAwaiting" onchange="getPageAwaiting(1, this.value, 'proposalAwaiting')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>10</option>
-                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>25</option>
-                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>50</option>
-                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>100</option>
-                                                </select>
-                                                <input class="search-button search-data-Awaiting" id="proposalAwaiting" style="text-align:left;" placeholder="Search" />
-                                            </div>
-                                        </caption>
-                                        <table id="proposalAwaitingTable" class="example ui striped table nowrap unstackable hover">
+                                        <div class="flex-end">
+                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ProposalReq.LogAdditional') }}'">LOG</button>
+                                        </div>
+                                        <table id="proposalAwaitingTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
@@ -238,16 +196,6 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-proposalAwaiting" value="{{ $Additional->total() }}">
-                                        <input type="hidden" id="currentPage-proposalAwaiting" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="proposalAwaiting-showingEntries">{{ showingEntriesTableAwaiting($Additional, 'proposalAwaiting') }}</p>
-                                                    <div id="proposalAwaiting-paginate">
-                                                        {!! paginateTableAwaiting($Additional, 'proposalAwaiting') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
                                     </div>
                                 </div>
                             </div>
@@ -263,197 +211,8 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposalRequest.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
 
-    <script>
-        const table_name = ['proposalTable','proposal-LogTable','requestTable','proposalAwaitingTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                console.log();
-
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
-        function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        }
-
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Proposal-request-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,2,3,4,5,6], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Company_Name' },
-                        { data: 'QuotationType' },
-                        { data: 'Operated_by' },
-                        { data: 'Count' },
-                        { data: 'status' },
-                        { data: 'btn_action' },
-                    ],
-                });
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-Awaiting', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Proposal-request-Additional-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchAwaiting(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,1,2,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Additional_ID' },
-                        { data: 'Proposal_ID' },
-                        { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'Type' },
-                        { data: 'CheckIn' },
-                        { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Operated' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-    </script>
     @include('script.script')
     <script>
         function btnConfirm(id) {
@@ -467,6 +226,12 @@
                     location.reload();
                 },
             });
+        }
+        function nav(id) {
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
         }
         function btnCancel(id) {
             jQuery.ajax({

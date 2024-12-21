@@ -1,6 +1,7 @@
 @extends('layouts.masterLayout')
-
-</style>
+@php
+    $excludeDatatable = false;
+@endphp
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -52,19 +53,8 @@
                     <div class="tab-content">
                         <div class="tab-pane fade  show active" id="nav-Dummy" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-                                <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-invoice" onchange="getPage(1, this.value, 'invoice')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "invoice" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "invoice" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "invoice" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "invoice" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data" id="invoice" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                                </caption>
-                                <table id="invoiceTable" class="example ui striped table nowrap unstackable hover">
+
+                                <table id="invoiceTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
@@ -196,33 +186,13 @@
                                         @endif
                                     </tbody>
                                 </table>
-                                <input type="hidden" id="get-total-invoice" value="{{ $Approved->total() }}">
-                                <input type="hidden" id="currentPage-invoice" value="1">
-                                <caption class="caption-bottom">
-                                    <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="invoice-showingEntries">{{ showingEntriesTable($Approved, 'invoice') }}</p>
-                                        <div id="invoice-paginate">
-                                            {!! paginateTable($Approved, 'invoice') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                    </div>
-                                </caption>
+
                             </div>
                         </div>
                         <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" >
-                                <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-invoicePending" onchange="getPagePending(1, this.value, 'invoicePending')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "invoicePending" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "invoicePending" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "invoicePending" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "invoicePending" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data-Pending" id="invoicePending" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                                </caption>
-                                <table id="invoicePendingTable" class="example ui striped table nowrap unstackable hover">
+
+                                <table id="invoicePendingTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th class="text-center">#</th>
@@ -313,33 +283,13 @@
                                         @endif
                                     </tbody>
                                 </table>
-                                <input type="hidden" id="get-total-invoicePending" value="{{ $invoice->total() }}">
-                                <input type="hidden" id="currentPage-invoicePending" value="1">
-                                <caption class="caption-bottom">
-                                    <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="invoicePending-showingEntries">{{ showingEntriesTablePending($invoice, 'invoicePending') }}</p>
-                                            <div id="invoicePending-paginate">
-                                                {!! paginateTablePending($invoice, 'invoicePending') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                            </div>
-                                    </div>
-                                </caption>
+
                             </div>
                         </div>
                         <div class="tab-pane fade "id="nav-Approved" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-                                <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-invoiceGenerate" onchange="getPageGenerate(1, this.value, 'invoiceGenerate')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data-Generate" id="invoiceGenerate" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                                </caption>
-                                <table id="invoiceGenerateTable" class="example ui striped table nowrap unstackable hover">
+
+                                <table id="invoiceGenerateTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th class="text-center">#</th>
@@ -395,33 +345,13 @@
                                         @endif
                                     </tbody>
                                 </table>
-                                <input type="hidden" id="get-total-invoiceGenerate" value="{{ $Complete->total() }}">
-                                <input type="hidden" id="currentPage-invoiceGenerate" value="1">
-                                <caption class="caption-bottom">
-                                    <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="invoiceGenerate-showingEntries">{{ showingEntriesTableGenerate($Complete, 'invoiceGenerate') }}</p>
-                                        <div id="invoiceGenerate-paginate">
-                                            {!! paginateTableGenerate($Complete, 'invoiceGenerate') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
-                                    </div>
-                                </caption>
+
                             </div>
                         </div>
                         <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-                                <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-invoiceCancel" onchange="getPageCancel(1, this.value, 'invoiceCancel')">
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "invoiceCancel" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "invoiceCancel" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "invoiceCancel" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "invoiceCancel" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data-Cancel" id="invoiceCancel" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                                </caption>
-                                <table id="invoiceCancelTable" class="example ui striped table nowrap unstackable hover">
+
+                                <table id="invoiceCancelTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th class="text-center">#</th>
@@ -481,16 +411,7 @@
                                         @endif
                                     </tbody>
                                 </table>
-                                <input type="hidden" id="get-total-invoiceCancel" value="{{ $Cancel->total() }}">
-                                <input type="hidden" id="currentPage-invoiceCancel" value="1">
-                                <caption class="caption-bottom">
-                                    <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="invoiceCancel-showingEntries">{{ showingEntriesTableCancel($Cancel, 'getPageCancel') }}</p>
-                                            <div id="invoiceCancel-paginate">
-                                                {!! paginateTableCancel($Cancel, 'getPageCancel') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                            </div>
-                                    </div>
-                                </caption>
+
                             </div>
                         </div>
                     </div>
@@ -508,337 +429,14 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableInvoice.js')}}"></script>
+    <script src="{{ asset('assets/js/table-together.js') }}"></script>
     <script>
-        const table_name = ['invoiceTable','invoicePendingTable','invoiceGenerateTable','invoiceCancelTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
         function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
+            $.fn.dataTable
+            .tables({ visible: true, api: true })
+            .columns.adjust()
+            .responsive.recalc();
         }
-        $(document).on('keyup', '.search-data', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-            console.log(table_name);
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/invoice-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Amount' },
-                        { data: 'Deposit' },
-                        { data: 'Balance' },
-                        { data: 'Approve' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-Pending', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-            console.log(table_name);
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/invoice-pendind-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Invoice' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Amount' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-Generate', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(search_value);
-            console.log(table_name);
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/invoice-generate-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Invoice' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Amount' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
-        $(document).on('keyup', '.search-data-Cancel', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var filter_by = $('#filter-by').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/invoice-Cancel-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                "initComplete": function (settings,json){
-
-                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                        var count = $('#'+id+'Table tr').length - 1;
-                    }else{
-                        var count = 0;
-                    }
-                    if (search_value == '') {
-                        count_total = total;
-                    }else{
-                        count_total = count;
-                    }
-                    $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearchCancel(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
-                },
-                    columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'number'},
-                        { data: 'Invoice' },
-                        { data: 'Proposal' },
-                        { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
-                        { data: 'Amount' },
-                        { data: 'DocumentStatus' },
-                        { data: 'btn_action' }
-                    ],
-
-                });
-
-
-            document.getElementById(id).focus();
-        });
         function Delete(id){
             Swal.fire({
             title: "คุณต้องการลบรายการนี้ใช่หรือไม่?",
