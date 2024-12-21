@@ -1,7 +1,4 @@
 @extends('layouts.masterLayout')
-@php
-    $excludeDatatable = false;
-@endphp
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -21,8 +18,21 @@
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
+                        <caption class="caption-top">
+                            <div>
+                                <div class="flex-end-g2">
+                                    <label class="entriespage-label sm-500px-hidden">entries per page :</label>
+                                    <select class="entriespage-button" id="search-per-page-manualAgoda" onchange="getPage(1, this.value, 'manualAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                    </select>
+                                    <input class="search-button search-data" id="manualAgoda" style="text-align:left;" placeholder="Search" />
+                                </div>
+                        </caption>
                         <div style="min-height: 70vh;">
-                            <table id="agodaOutstandingTable" class="table-together table-style">
+                            <table id="manualAgodaTable" class="example ui striped table nowrap unstackable hover">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
@@ -31,6 +41,7 @@
                                         <th style="text-align: center;">Income type</th>
                                         <th style="text-align: center;">Check in date</th>
                                         <th style="text-align: center;">Check out date</th>
+                                        <th style="text-align: center;">Credit Card Agoda Charge</th>
                                         <th style="text-align: center;">Credit Agoda Revenue Outstanding</th>
                                     </tr>
                                 </thead>
@@ -43,34 +54,57 @@
                                             <td class="td-content-center">Agoda Revenue</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
-                                            <td class="td-content-center target-class text-end">{{ $item->agoda_outstanding }}</td>
+                                            <td class="td-content-center">{{ number_format($item->agoda_charge, 2) }}</td>
+                                            <td class="td-content-center">{{ number_format($item->agoda_outstanding, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="6" class="fw-bold" style="background-color: #dff8f0;">Total</td>
-                                        <td class="fw-bold text-start" style="background-color: #dff8f0;">{{ number_format($total_query, 2) }}</td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
+                        <caption class="caption-bottom">
+                            <div class="md-flex-bt-i-c">
+                                <p class="py2" id="manualAgoda-showingEntries">{{ showingEntriesTable($data_query, 'manualAgoda') }}</p>
+                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_query, 2) }} บาท</div>
+                                    <div id="manualAgoda-paginate">
+                                        {!! paginateTable($data_query, 'manualAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
+                            </div>
+                        </caption>
                     </div> <!-- .card end -->
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
 
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
+    <input type="hidden" id="date" name="date" value="{{ $search_date }}">
+    <input type="hidden" id="status" value="{{ $status }}">
+    <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
+    <input type="hidden" id="get-total-manualAgoda" value="{{ $data_query->total() }}">
+    <input type="hidden" id="currentPage-manualAgoda" value="1">
+
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
-        {{-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script> --}}
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @else
-        {{-- <script src="http://code.jquery.com/jquery-1.10.2.js"></script> --}}
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
+    <!-- table design css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css') }}">
+
+    <!-- table design js -->
+    <script src="{{ asset('assets/js/semantic.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.semanticui.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.responsive.js') }}"></script>
+    <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
+
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script src="{{ asset('assets/js/table-together.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenue.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -84,7 +118,20 @@
                         className: 'dtr-control',
                         orderable: true,
                         target: null,
+                    },
+                    {
+                        width: '7%',
+                        targets: 0
+                    },
+                    {
+                        width: '10%',
+                        targets: 3
+                    },
+                    {
+                        width: '15%',
+                        targets: 4
                     }
+
                 ],
                 order: [0, 'asc'],
                 responsive: {
@@ -148,7 +195,7 @@
 
                 },
                 columnDefs: [
-                            { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
+                            { targets: [0, 1, 2, 3, 4, 5, 6, 7], className: 'dt-center td-content-center' },
                 ],
                 order: [0, 'asc'],
                 responsive: {
@@ -164,6 +211,7 @@
                     { data: 'revenue_name' },
                     { data: 'check_in' },
                     { data: 'check_out' },
+                    { data: 'agoda_charge' },
                     { data: 'agoda_outstanding' },
                 ],
 

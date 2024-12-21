@@ -1,7 +1,4 @@
 @extends('layouts.masterLayout')
-@php
-    $excludeDatatable = false;
-@endphp
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -20,179 +17,170 @@
         $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
     @endphp
     <div id="content-index" class="body d-flex py-lg-4 py-3">
+
         <div class="container-xl">
             <div class="row clearfix">
-                <div class="col-md-12 col-12">
-                    <div class="card p-4 mb-4">
-                        <div style="min-height: 70vh;">
-                            <table id="smsDetailTable" class="table-together table-style">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center;" data-priority="1">#</th>
-                                        <th style="text-align: center;" data-priority="1">Date</th>
-                                        <th style="text-align: center;">Time</th>
-                                        <th style="text-align: center;">Bank</th>
-                                        <th style="text-align: center;">Bank Account</th>
-                                        <th style="text-align: center;" data-priority="1">Amount</th>
-                                        <th style="text-align: center;">Creatd By</th>
-                                        <th style="text-align: center;">Income Type</th>
-                                        <th style="text-align: center;">Transfer Date</th>
-                                        <th style="text-align: center;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($data_sms as $key => $item)
-                                    @if ($item->split_status == 3)
-                                        <tr style="text-align: center;" class="table-secondary">
-                                        @else
-                                        <tr style="text-align: center;">
+                <div class="card p-4 mb-4">
+                    <table id="smsAgodaTable" class="example ui striped table nowrap unstackable hover">
+                        <caption class="caption-top mt-2">
+                            <div>
+                                <div class="flex-end-g2">
+                                    <label class="entriespage-label">entries per page :</label>
+                                    <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                    </select>
+                                    <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
+                                </div>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;" data-priority="1">#</th>
+                                <th style="text-align: center;" data-priority="1">Date</th>
+                                <th style="text-align: center;">Time</th>
+                                <th style="text-align: center;">Bank</th>
+                                <th style="text-align: center;">Bank Account</th>
+                                <th style="text-align: center;" data-priority="1">Amount</th>
+                                <th style="text-align: center;">Creatd By</th>
+                                <th style="text-align: center;">Income Type</th>
+                                <th style="text-align: center;">Transfer Date</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $total_sms = 0; ?>
+    
+                            @foreach ($data_sms as $key => $item)
+                            <tr>
+                                <td class="td-content-center">{{ $key + 1 }}</td>
+                                <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                <td class="td-content-center">
+                                    <?php
+                                    $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                    $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                    ?>
+                                    <div class="flex-jc p-left-4">
+                                        @if (file_exists($filename))
+                                            <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
+                                        @elseif (file_exists($filename2))
+                                            <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
+                                        @endif
+                                        {{ @$item->transfer_bank->name_en }}
+                                    </div>
+                                </td>
+                                <td class="td-content-center">
+                                    <div class="flex-jc p-left-4 center">
+                                        <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
+                                    </div>
+                                </td>
+                                <td class="td-content-center">
+                                    {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                </td>
+                                <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                <td class="td-content-center">Agoda Bank Transfer Revenue</td>
+                                <td class="td-content-center">
+                                    {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                </td>
+                                <td class="td-content-center" style="text-align: center;">
+                                    @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
+                                        <div class="dropdown">
+                                            <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                                Select <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                @if (@$role_revenue->front_desk == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                        Front Desk Bank <br>Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->guest_deposit == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                        Guest Deposit Bank <br> Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->all_outlet == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                        All Outlet Bank <br> Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->agoda == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                        Agoda Bank <br>Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->credit_card_hotel == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                        Credit Card Hotel <br> Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->elexa == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                        Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->no_category == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                        No Category
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->water_park == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                        Water Park Bank <br> Transfer Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->credit_water_park == 1)
+                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                        Credit Card Water <br>Park Revenue 
+                                                    </li>
+                                                @endif
+                                                @if (@@$role_revenue->other_revenue == 1)
+                                                    <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
+                                                        Other Revenue <br> Bank Transfer
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->transfer == 1)
+                                                    <li class="button-li" onclick="transfer_data({{ $item->id }})">
+                                                        Transfer
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->time == 1)
+                                                    <li class="button-li" onclick="update_time_data({{ $item->id }})">
+                                                        Update Time
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->split == 1)
+                                                    <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                        Split Revenue
+                                                    </li>
+                                                @endif
+                                                @if (@$role_revenue->edit == 1)
+                                                    <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                    <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     @endif
-                                            <td class="td-content-center">{{ $key + 1 }}</td>
-                                            <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                            <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                            <td class="td-content-center text-start">
-                                                <?php
-                                                $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                                                $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
-                                                ?>
-                                                <div class="flex-jc p-left-4">
-                                                    @if (file_exists($filename))
-                                                        <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
-                                                    @elseif (file_exists($filename2))
-                                                        <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
-                                                    @endif
-                                                    {{ @$item->transfer_bank->name_en }}
-                                                </div>
-                                            </td>
-                                            <td class="td-content-center">
-                                                <div class="flex-jc p-left-4 center">
-                                                    <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
-                                                </div>
-                                            </td>
-                                            <td class="td-content-center target-class text-end">
-                                                {{ $item->amount_before_split > 0 ? $item->amount_before_split : $item->amount }}
-                                            </td>
-                                            <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
-                                            <td class="td-content-center">
-                                                @if ($item->status == 0)
-                                                    -
-                                                @elseif ($item->status == 1)
-                                                    Guest Deposit Revenue
-                                                @elseif($item->status == 2)
-                                                    All Outlet Revenue
-                                                @elseif($item->status == 3)
-                                                    Water Park Revenue
-                                                @elseif($item->status == 4)
-                                                    Credit Card Revenue
-                                                @elseif($item->status == 5)
-                                                    Agoda Bank Transfer Revenue
-                                                @elseif($item->status == 6)
-                                                    Front Desk Revenue
-                                                @elseif($item->status == 7)
-                                                    Credit Card Water Park Revenue
-                                                @elseif($item->status == 8)
-                                                    Elexa EGAT Revenue
-                                                @elseif($item->status == 9)
-                                                    Other Revenue Bank Transfer
-                                                @endif
-
-                                                @if ($item->split_status == 1)
-                                                    <br>
-                                                    <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
-                                                @endif
-                                            </td>
-
-                                            <td class="td-content-center">
-                                                {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
-                                            </td>
-                                            <td class="td-content-center">
-                                                @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
-                                                    {{-- @if ($item->split_status < 3) --}}
-                                                        {{-- <div class="dropdown dropdown-toggle"> --}}
-                                                            <button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown" >Select
-                                                                <span class="caret"></span></button>
-                                                                <ul class="dropdown-menu">
-                                                                    @if ($role_revenue->front_desk == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
-                                                                            Front Desk Bank Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->guest_deposit == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
-                                                                            Guest Deposit Bank Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->all_outlet == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
-                                                                            All Outlet Bank Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->agoda == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
-                                                                            Agoda Bank Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->credit_card_hotel == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
-                                                                            Credit Card Hotel Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->elexa == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
-                                                                            Elexa EGAT Bank Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->no_category == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
-                                                                            No Category
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->water_park == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
-                                                                            Water Park Bank Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->credit_water_park == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
-                                                                            Credit Card Water Park Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->transfer == 1)
-                                                                        <li class="button-li" onclick="transfer_data({{ $item->id }})">Transfer</li>
-                                                                    @endif
-                                                                    @if ($role_revenue->time == 1)
-                                                                        <li class="button-li" onclick="update_time_data({{ $item->id }})">Update Time</li>
-                                                                    @endif
-                                                                    @if ($role_revenue->split == 1)
-                                                                        <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
-                                                                            Split Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if ($role_revenue->edit == 1)
-                                                                        <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
-                                                                        <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
-                                                                    @endif
-                                                                </ul>
-                                                        {{-- </div> --}}
-                                                    {{-- @endif --}}
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="5" class="fw-bold" style="background-color: #dff8f0;">Total</td>
-                                        <td colspan="5" class="fw-bold text-start" style="background-color: #dff8f0;">{{ number_format($total_sms, 2) }}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div> <!-- .card end -->
-                </div>
+                                </td>
+                            </tr>
+                            <?php $total_sms += $item->amount; ?>
+                            @endforeach
+                        </tbody>
+                        <caption class="caption-bottom">
+                            <div class="md-flex-bt-i-c">
+                                <p class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_sms, 'smsAgoda') }}</p>
+                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
+                                    <div id="smsAgoda-paginate">
+                                        {!! paginateTable($data_sms, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
+                            </div>
+                        </caption>
+                    </table>
+                </div> <!-- .card end -->
             </div> <!-- .row end -->
         </div>
-
     </div>
 
     <!-- Modal -->
@@ -417,26 +405,144 @@
     </div>
     <!-- END MODAL -->
 
-    {{-- <style>
-        .dropdown-menu {
-            position: absolute;
-    will-change: transform;
-    z-index: 1050; /* สูงกว่า DataTable */
-        }
-    </style> --}}
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
+    <input type="hidden" id="combined-selected-box" name="date" value="{{ $search_date }}">
+    <input type="hidden" id="status" value="5">
+    <input type="hidden" id="into_account" value="{{ $into_account }}">
+    <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
+    <input type="hidden" id="get-total-smsAgoda" value="{{ $data_sms->total() }}">
+    <input type="hidden" id="currentPage-smsAgoda" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
-        {{-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script> --}}
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @else
-        {{-- <script src="http://code.jquery.com/jquery-1.10.2.js"></script> --}}
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
+    
+
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script src="{{ asset('assets/js/table-together.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
 
     <script>
+        $(document).ready(function() {
+            new DataTable('.example', {
+                responsive: true,
+                searching: false,
+                paging: false,
+                info: false,
+                columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    },
+                    {
+                        width: '7%',
+                        targets: 0
+                    },
+                    {
+                        width: '10%',
+                        targets: 1
+                    },
+                    {
+                        width: '15%',
+                        targets: 2
+                    }
+
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
+            });
+        });
+
+        // Search 
+        $(document).on('keyup', '.search-data', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var total = parseInt($('#get-total-'+id).val());
+            var table_name = id+'Table';
+
+            var filter_by = $('#filter-by').val();
+            var dateString = $('#combined-selected-box').val();
+            var type_status = $('#status').val();
+            var account = $('#account').val();
+            var getUrl = window.location.pathname;         
+                
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#smsAgodaTable').dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                        url: 'sms-search-table',
+                        type: 'POST',
+                        dataType: "json",
+                        cache: false,
+                        data: {
+                            search_value: search_value,
+                            table_name: table_name,
+                            filter_by: filter_by,
+                            date: dateString,
+                            status: type_status,
+                            into_account: account
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    },
+                    "initComplete": function (settings, json) {
+
+                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        } else {
+                            var count = 0;
+                            $('.dataTables_empty').addClass('dt-center');
+                        }
+                        
+                        if (search_value == '') {
+                            count_total = total;
+                        } else {
+                            count_total = count;
+                        }
+                    
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 2, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                                { targets: [3], className: 'text-start' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'date' },
+                        { data: 'time' },
+                        { data: 'transfer_bank' },
+                        { data: 'into_account' },
+                        { data: 'amount' },
+                        { data: 'remark' },
+                        { data: 'revenue_name' },
+                        { data: 'date_into' },
+                        { data: 'btn_action' },
+                    ],
+                        
+                }); 
+                
+            document.getElementById(id).focus();
+        });
+
         function transfer_data(id) {
             $('#dataID').val(id);
             $('#exampleModalCenter2').modal('show');
@@ -454,6 +560,26 @@
             $('#SplitModalCenter').modal('show');
         }
 
+        $('#add-data').on('click', function() {
+            $('#sms-date').css('border-color', '#f0f0f0');
+            $('#sms-time').css('border-color', '#f0f0f0');
+            $('#error-transfer').css('border-color', '#f0f0f0');
+            $('#error-into').css('border-color', '#f0f0f0');
+            $('#amount').css('border-color', '#f0f0f0');
+
+            $('#id').val('');
+            $('#status').val(0).trigger('change');
+            $('#sms-date').val('');
+            $('#sms-time').val('');
+            $('#booking_id').val('');
+            $('#transfer_from').val(0).trigger('change');
+            $('#add_into_account').val(0).trigger('change');
+            $('#amount').val('');
+
+            $('#exampleModalCenter5').modal('show');
+
+        });
+
         function change_time() {
             var time = $('#update_time').val();
             var id = $('#timeID').val();
@@ -464,12 +590,7 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    if (response.status == 200) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    } else {
-                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
-                    }
+                    location.reload();
                 },
             });
         }
@@ -494,53 +615,6 @@
                 },
             });
         }
-
-        $(document).on('click', '#btn-save-other-revenue', function () {
-            var id = $('#otherDataID').val();
-            var remark = $('#other_revenue_remark').val();
-
-            jQuery.ajax({
-                type: "POST",
-                url: "{!! url('sms-other-revenue') !!}",
-                datatype: "JSON",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {dataID: id, other_revenue_remark: remark},
-                cache: false,
-                async: false,
-                success: function(response) {
-                    if (response.status == 200) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    } else {
-                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
-                    }
-                },
-            });
-        });
-
-        $(document).on('click', '#btn-save-transfer', function () {
-            jQuery.ajax({
-                type: "POST",
-                url: "{!! url('sms-transfer') !!}",
-                datatype: "JSON",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: $('#form-transfer').serialize(),
-                cache: false,
-                async: false,
-                success: function(response) {
-                    if (response.status == 200) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    } else {
-                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
-                    }
-                },
-            });
-        });
 
         $('.btn-split-add').on('click', function() {
             var date_split = $('#date-split').val();
@@ -591,6 +665,7 @@
             }
 
             $('#text-split-balance').text("("+currencyFormat(balance - Number($('#split_total_number').val()))+")");
+
         });
 
         $('.split-todo-list .close').on('click', function() {
@@ -616,18 +691,7 @@
             $('.split-todo-list tr').remove();
         }
 
-        function select_type() {
-            var type = $('#status_type').val();
-
-            if (type == 5) {
-                $('.agoda').prop('hidden', false);
-            } else {
-                $('.agoda').prop('hidden', true);
-            }
-        }
-
         function edit($id) {
-
             $('#exampleModalCenter5').modal('show');
             $('#id').val($id);
             $('#sms-date').css('border-color', '#f0f0f0');
@@ -635,7 +699,7 @@
             $('#error-transfer').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
-            $('#status_type').val(0).trigger('change');
+            $('#status').val(0).trigger('change');
             $('#sms-date').val('');
             $('#sms-time').val('');
             $('#booking_id').val('');
@@ -651,7 +715,7 @@
                 success: function(response) {
                     if (response.data) {
                         var myArray = response.data.date.split(" ");
-                        $('#status_type').val(response.data.status).trigger('change');
+                        $('#status').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
                         $('#sms-time').val(myArray[1]);
                         $('#booking_id').val(response.data.booking_id);
@@ -674,13 +738,8 @@
                 url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
-                success: function(response) {
-                    if (response.status == 200) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    } else {
-                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
-                    }
+                success: function(result) {
+                    location.reload();
                 },
             });
         }
@@ -736,83 +795,83 @@
         }
 
         // Sweetalert2 #กรอกข้อมูลไม่ครบ
-        document.querySelector(".sa-button-submit").addEventListener('click', function() {
-            var date = $('#sms-date').val();
-            var time = $('#sms-time').val();
-            var transfer = $('#error-transfer').val();
-            var into = $('#error-into').val();
-            var amount = $('#amount').val();
-            var type = $('#status_type').val();
+        // document.querySelector(".sa-button-submit").addEventListener('click', function() {
+        //     var date = $('#sms-date').val();
+        //     var time = $('#sms-time').val();
+        //     var transfer = $('#error-transfer').val();
+        //     var into = $('#error-into').val();
+        //     var amount = $('#amount').val();
+        //     var type = $('#status').val();
 
-            $('#sms-date').css('border-color', '#f0f0f0');
-            $('#sms-time').css('border-color', '#f0f0f0');
-            $('#error-transfer').css('border-color', '#f0f0f0');
-            $('#error-into').css('border-color', '#f0f0f0');
-            $('#amount').css('border-color', '#f0f0f0');
+        //     $('#sms-date').css('border-color', '#f0f0f0');
+        //     $('#sms-time').css('border-color', '#f0f0f0');
+        //     $('#error-transfer').css('border-color', '#f0f0f0');
+        //     $('#error-into').css('border-color', '#f0f0f0');
+        //     $('#amount').css('border-color', '#f0f0f0');
 
-            if (date == '') {
-                $('#sms-date').css('border-color', 'red');
+        //     if (date == '') {
+        //         $('#sms-date').css('border-color', 'red');
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (type != 5 && time == '') {
-                $('#sms-time').css('border-color', 'red');
+        //     if (type != 5 && time == '') {
+        //         $('#sms-time').css('border-color', 'red');
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (transfer == 0) {
-                $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
+        //     if (transfer == 0) {
+        //         $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (into == 0) {
-                $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
+        //     if (into == 0) {
+        //         $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (amount == '') {
-                $('#amount').css('border-color', 'red');
+        //     if (amount == '') {
+        //         $('#amount').css('border-color', 'red');
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
 
-            } else {
+        //     } else {
 
-                jQuery.ajax({
-                    type: "POST",
-                    url: "{!! route('sms-store') !!}",
-                    datatype: "JSON",
-                    data: $('#form-id').serialize(),
-                    async: false,
-                    success: function(result) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    },
-                });
-            }
-        });
+        //         jQuery.ajax({
+        //             type: "POST",
+        //             url: "{!! route('sms-store') !!}",
+        //             datatype: "JSON",
+        //             data: $('#form-id').serialize(),
+        //             async: false,
+        //             success: function(result) {
+        //                 Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+        //                 location.reload();
+        //             },
+        //         });
+        //     }
+        // });
     </script>
 @endsection

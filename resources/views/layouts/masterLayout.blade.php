@@ -12,10 +12,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>TOGETHER DEVELOPMENT</title>
     <link rel="icon" href="../../../image/Logo1-01.png" type="image/x-icon" />
-    <!-- Favicon -->
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css"> --}}
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.semanticui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.semanticui.css"> --}}
 
     <!-- Plugin Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}?v={{ time() }}">
@@ -72,6 +68,10 @@
             #mobileshow {
                 margin-top: 60px;
             }
+        }
+
+        body {
+            font-size: 14px; /* กำหนดขนาดตามที่ต้องการ */
         }
     </style>
 
@@ -339,7 +339,7 @@
                                             <!-- Menu: Sub menu level 3 -->
                                             <ul class="sub-menu collapse" id="menu-report-Document-level-2">
 
-                                                    <li><a class="ms-link" href="{{ route('report-proposal-index') }}">Proposal Report</a></li>
+                                                    {{-- <li><a class="ms-link" href="{{ route('report-proposal-index') }}">Proposal Report</a></li> --}}
 
                                             </ul>
                                         </li>

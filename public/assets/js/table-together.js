@@ -13,6 +13,9 @@ $(document).ready(function () {
     },
     initComplete: function () {
       $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+      $('.dropdown-toggle').dropdown({
+        appendTo: 'body'
+    });
     },
     columnDefs: [
       {
