@@ -649,12 +649,12 @@
                                                 <hr class="mt-3 my-3" style="border: 1px solid #000">
                                                 <div class="col-12 mt-3" >
                                                     <h3>รายการที่เลือก</h3>
-                                                    <table id="mainselecttwo" class="example ui striped table nowrap unstackable hover">
+                                                    <table  class=" example4 ui striped table nowrap unstackable hover">
                                                         <thead >
                                                             <tr>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%"data-priority="1">#</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%"data-priority="1">รหัส</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">รายการ</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%">#</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">ราคา</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">หน่วย</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">คำสั่ง</th>
@@ -916,7 +916,6 @@
                                     </div>
                                     <div class="col-4"></div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -924,9 +923,6 @@
             </div>
         </div>
     </form>
-    <input type="hidden" id="create" name="create">
-    <input type="hidden" id="allRowsDataInput" name="allRowsData">
-    <input type="hidden" id="allRowsDataInputSelect" name="allRowsDataSelect">
     <input type="hidden" name="preview" value="1" id="preview">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -1376,7 +1372,6 @@
                     searching: false,
                     paging: false,
                     info: false,
-                    ordering:false,
                     columnDefs: [{
                         className: 'dtr-control',
                         orderable: true,
@@ -1392,14 +1387,13 @@
                 });
             }
         });
-        const table_name2 = ['main','mainselecttwo'];
+        const table_name2 = ['main'];
         $(document).ready(function() {
             for (let index = 0; index < table_name2.length; index++) {
                 new DataTable('#'+table_name2[index], {
                     searching: false,
                     paging: false,
                     info: false,
-                    ordering:false,
                     language: {
                         emptyTable: "",
                         zeroRecords: ""
@@ -1421,29 +1415,9 @@
             }
         });
         function fetchProducts(status) {
-            let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
-            $('#main tbody tr').each(function() {
-                // สำหรับแต่ละแถวใน tbody
-                let rowData = {
-                    id : $(this).find('input[name="productid').val(),
-                    Product_ID: $(this).find('input[name="ProductIDmain[]"]').val(),
-                    Product_Name: $(this).find('td').eq(1).text(), // ข้อความใน <td> ที่ 2 (ชื่อสินค้า)
-                    Pax: $(this).find('.pax').val(),
-                    Quantity: $(this).find('.quantitymain').val(),
-                    Unit: $(this).find('.unitmain').val(),
-                    Price: $(this).find('input[name="priceproductmain[]"]').val(),
-                    Discount: $(this).find('.discountmain').val(),
-                };
-                if (
-                    rowData.Product_ID
-                ) {
-                    // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
-                    allRowsData.push(rowData);
-                    $("#create").val(1);
-                }
-            });
-            $('#allRowsDataInput').val(JSON.stringify(allRowsData));
-            console.log($('#allRowsDataInput').val());
+
+            $('#display-selected-items tr.child').remove();
+
             if (status == 'all' ) {
                 $('#ProductName').text('All Product');
             }else if (status == 'Room_Type') {
@@ -1462,9 +1436,6 @@
             var table = $('#mainselect1').DataTable();
             var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
             var clickCounter = 1;
-
-
-
             $.ajax({
                 url: '{{ route("Proposal.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
                 method: 'GET',
@@ -1488,44 +1459,16 @@
                             for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
                                 const data = response.products[i];
                                 const productId = data.id;
-                                let create = $('#create').val();
-
-                                if (!create) {
-                                    var existingRowId = $('#tr-select-add' + productId).attr('id');
-                                    if ($('#' + existingRowId).val() == undefined) {
-                                        table.row.add([
-                                            num++,
-                                            data.Product_ID,
-                                            data.name_th,
-                                            Number(data.normal_price).toLocaleString(),
-                                            data.unit_name,
-                                            `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                                        ]).node().id = `row-${productId}`;
-                                    }
-                                }
-                                if (create) {
-                                    $.each(response.products, function(index, val) {
-
-                                    });
-                                    var allRowsDataInput = $('#allRowsDataInput').val();
-                                    let parsedArray = JSON.parse(allRowsDataInput); // แปลง JSON เป็น Array
-
-                                    // วนลูปตรวจสอบ ID ใน parsedArray
-                                    $.each(parsedArray, function (key, val) {
-                                        let product_Id = val.id;
-console.log($('#row-' + product_Id));
-
-                                        if ($('#row-' + product_Id).length > 0) {
-                                            table.row.add([
-                                                num++,
-                                                data.Product_ID,
-                                                data.name_th,
-                                                Number(data.normal_price).toLocaleString(),
-                                                data.unit_name,
-                                                `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                                            ]).node().id = `row-${productId}`;
-                                        }
-                                    });
+                                var existingRowId = $('#tr-select-add' + productId).attr('id');
+                                if ($('#' + existingRowId).val() == undefined) {
+                                    table.row.add([
+                                        num++,
+                                        data.Product_ID,
+                                        data.name_th,
+                                        Number(data.normal_price).toLocaleString(),
+                                        data.unit_name,
+                                        `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                    ]).node().id = `row-${productId}`;
                                 }
                             }
                             table.draw(false);
@@ -1595,15 +1538,16 @@ console.log($('#row-' + product_Id));
                 }
             });
             $(document).ready(function() {
-
+                if (!$.fn.DataTable.isDataTable('.product-list-select')) {
+                    var table = $('.product-list-select').DataTable();
+                } else {
+                    var table = $('.product-list-select').DataTable();
+                }
                 $(document).on('click', '.select-button-product', function() {
-                    var product = $(this).val() ;
-                    console.log(product);
 
-                        $('#row-' + product).prop('hidden',true);
-                        $('tr .child').prop('hidden',true);
-
-
+                    var product = $(this).val();
+                    $('#row-' + product).prop('hidden',true);
+                    $('tr .child').prop('hidden',true);
                     console.log(product);
                     if ($('#productselect' + product).length > 0) {
                         return;
@@ -1618,18 +1562,15 @@ console.log($('#row-' + product_Id));
                             $.each(response.products, function(index, val) {
                                 var name = '';
                                 var price = 0;
-
-                                console.log(rowNumber);
-
-                                if ($('#product-list-select tr').length == 0) {
+                                var rowNumber = $('#product-list-select tr:visible').length+1;
+                                if ($('#productselect' + val.id).length > 0) {
                                     console.log("Product already exists after AJAX call: ", val.id);
-
+                                    return;
                                 }
                                 if ($('#product-list' + val.Product_ID).length > 0) {
                                     console.log("Product already exists after AJAX call: ", val.Product_ID);
                                 }
-                                $('#mainselecttwo').DataTable().destroy();
-                                var rowNumber = $('#product-list-select tr').length+1;
+
                                 $('#product-list-select').append(
                                     '<tr id="tr-select-add' + val.id + '">' +
                                     '<td style="text-align:center;">' + rowNumber + '</td>' +
@@ -1638,46 +1579,9 @@ console.log($('#row-' + product_Id));
                                     '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                     '<td style="text-align:center;">' + val.unit_name + '</td>' +
                                     '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                    '<input type="hidden" id="productselect" name="productselect" value="' + val.id + '">' +
+                                    '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
                                     '</tr>'
                                 );
-                                $('#mainselecttwo').DataTable({
-                                    searching: false,
-                                    paging: false,
-                                    info: false,
-                                    ordering:false,
-                                    language: {
-                                        emptyTable: "",
-                                        zeroRecords: ""
-                                    },
-                                    columnDefs: [{
-                                        className: 'dtr-control',
-                                        orderable: false,
-                                        target: null,
-                                    }],
-                                    order:  false,
-                                    responsive: {
-                                        details: {
-                                            type: 'column',
-                                            target: 'tr'
-                                        }
-                                    }
-                                });
-                                let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
-                                $('#mainselecttwo tbody tr').each(function() {
-                                    // สำหรับแต่ละแถวใน tbody
-                                    let rowData = {
-                                        id : $(this).find('input[name="productselect').val(),
-                                    };
-                                    if (
-                                        rowData.id
-                                    ) {
-                                        // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
-                                        allRowsData.push(rowData);
-                                    }
-                                });
-                                $('#allRowsDataInputSelect').val(JSON.stringify(allRowsData));
-                                console.log($('#allRowsDataInputSelect').val());
 
                             });
                         },
@@ -1687,9 +1591,22 @@ console.log($('#row-' + product_Id));
                     });
                 });
             });
-
+            function renumberRows() {
+                $('#product-list-select tr:visible').each(function(index) {
+                    $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                });
+                $('#display-selected-items tr').each(function(index) {
+                    $(this).find('td:first-child').text(index + 1 ); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                });
+            }
+            $(document).on('click', '.remove-button', function() {
+                console.log(1);
+                var product = $(this).val();
+                $('#tr-select-add' + product).remove();
+                $('#row-' + product).prop('hidden',false);
+                renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+            });
             $(document).on('click', '.confirm-button', function() {
-
 
                 var all = 'all';
                 $.ajax({
@@ -1699,21 +1616,31 @@ console.log($('#row-' + product_Id));
                         value: "all"
                     },
                     success: function(response) {
-                        var allRowsDataInputSelectValue = $('#allRowsDataInputSelect').val();  // เช่น '[{"id":1},{"id":2}]'
-                        if (allRowsDataInputSelectValue) {
-                            let parsedArray = JSON.parse(allRowsDataInputSelectValue);  // แปลง JSON เป็นอาร์เรย์
-                            let matchingProducts = response.products.filter(product =>
-                                parsedArray.some(item => Number(item.id) === Number(product.id))  // ใช้ Number เพื่อแปลงเป็นตัวเลข
-                            );
+                        $('#display-selected-items').empty();
 
-                            $.each(matchingProducts, function(key, val) {
-                                var number = val.Product_ID;
+
+
+                        $.each(response.products, function (key, val) {
+
+                            $('#tr-select-add' + val.id).prop('hidden',true);
+                            // var rowExist = $('#display-selected-items tr').filter(function() {
+                            //     return $(this).find('input[type="hidden"][name="ProductIDmain[]"]').val() === val.Product_ID;
+                            // }).length > 0;
+                            $('#main').DataTable().destroy();
+                            if ($('#productselect' + val.id).val() !== undefined) {
+                                if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
+                                    var datatable = $('#display-selected-items tr');
+
+
+                                    var number = val.Product_ID;
                                     var name = '';
                                     var price = 0;
                                     var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
                                     var normalPrice = parseFloat(normalPriceString);
                                     var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                     var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+
                                     let discountInput;
                                     let quantity;
                                     var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
@@ -1769,66 +1696,71 @@ console.log($('#row-' + product_Id));
                                             'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
                                             '<span class="input-group-text">' + val.quantity_name + '</span>' +
                                             '</div>';
-                                    $('#main').DataTable().destroy();
-                                    var rowNumbemain = $('#display-selected-items tr').length + 1;
-                                    $('#display-selected-items').append(
-                                        '<tr id="tr-select-addmain' + val.id + '">' +
-                                        '<td style="text-align:center;"><input type="hidden" id="productid" name="productid" value="' + val.id + '">' + rowNumbemain + '</td>' +
-                                        '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +
-                                        '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span></td>' +
-                                        '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal-' + number + '">' + valpax + '</span></td>' +
-                                        '<td style="text-align:center;width:12%;">' + quantity + '</td>' +
-                                        '<td style="text-align:center;width:12%;">' + unit + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value="' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                        '</tr>'
-                                    );
-                                    $('#main').DataTable({
-                                        searching: false,
-                                        paging: false,
-                                        info: false,
-                                        ordering:false,
-                                        language: {
-                                            emptyTable: "",
-                                            zeroRecords: ""
-                                        },
-                                        columnDefs: [{
-                                            className: 'dtr-control',
-                                            orderable: false,
-                                            target: null,
-                                        }],
-                                        order:  false,
-                                        responsive: {
-                                            details: {
-                                                type: 'column',
-                                                target: 'tr'
+
+
+
+
+
+
+                                        var rowNumbemain = $('#display-selected-items tr').length + 1;
+                                        console.log(rowNumbemain);
+
+                                        $('#display-selected-items').append(
+                                            '<tr id="tr-select-addmain' + val.id + '">' +
+                                            '<td style="text-align:center;">' + rowNumbemain + '</td>' +
+                                            '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +
+                                            '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span></td>' +
+                                            '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal-' + number + '">' + valpax + '</span></td>' +
+                                            '<td style="text-align:center;width:12%;">' + quantity + '</td>' +
+                                            '<td style="text-align:center;width:12%;">' + unit + '</td>' +
+                                            '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                                            '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
+                                            '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
+                                            '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value="' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
+                                            '<td style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                            '</tr>'
+                                        );
+
+                                        // Optionally remove rows based on other conditions
+                                        $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
+                                        $('#display-selected-items tr.odd').remove();
+                                        $('#main').DataTable().destroy();
+                                        $('#main').DataTable({
+                                            searching: false,
+                                            paging: false,
+                                            info: false,
+                                            language: {
+                                                emptyTable: "",
+                                                zeroRecords: ""
+                                            },
+                                            columnDefs: [{
+                                                className: 'dtr-control',
+                                                orderable: false,
+                                                target: null,
+                                            }],
+                                            order:  false,
+                                            responsive: {
+                                                details: {
+                                                    type: 'column',
+                                                    target: 'tr'
+                                                }
                                             }
-                                        }
+                                        });
+                                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                        return new bootstrap.Tooltip(tooltipTriggerEl)
                                     });
-                                    // let table = $('#mainselecttwo').DataTable();  // เรียก DataTable ที่ต้องการ
-                                    // table.clear().draw();
-                            });
-                        }
 
-
-
-
-
-
-
-
-
+                                }
+                            }
+                        });
+                        totalAmost();
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
                 });
-
                 $('#exampleModalproduct').modal('hide');
-
             });
 
             $(document).ready(function() {
@@ -1849,41 +1781,7 @@ console.log($('#row-' + product_Id));
                 });
                 totalAmost();
             });
-            function renumberRows() {
-                $('#product-list-select tr:visible').each(function(index) {
-                    $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
-                });
-                $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first-child').text(index + 1 ); // เปลี่ยนเลขลำดับในคอลัมน์แรก
-                });
-            }
-            $(document).on('click', '.remove-button', function() {
-                console.log(1);
-                let table = $('#mainselecttwo').DataTable();
-                var product = $(this).val();
-                console.log(product);
 
-                let row = $('#tr-select-add' + product);
-                $('#product-list-select tr.child').remove();
-                table.row(row).remove().draw();
-                let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
-                $('#mainselecttwo tbody tr').each(function() {
-                    // สำหรับแต่ละแถวใน tbody
-                    let rowData = {
-                        id : $(this).find('input[name="productselect').val(),
-                    };
-                    if (
-                        rowData.id
-                    ) {
-                        // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
-                        allRowsData.push(rowData);
-                    }
-                });
-                $('#allRowsDataInputSelect').val(JSON.stringify(allRowsData));
-                console.log($('#allRowsDataInputSelect').val());
-                $('#row-' + product).prop('hidden',false);
-                renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
-            });
         }
         //----------------------------------------รายการ---------------------------
         $(document).ready(function() {});

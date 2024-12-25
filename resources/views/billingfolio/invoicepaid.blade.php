@@ -456,6 +456,7 @@
                                                                 <option value="bankTransfer">Bank Transfer</option>
                                                                 <option value="creditCard">Credit Card</option>
                                                                 <option value="cheque">Cheque</option>
+                                                                <option value="NoShow">No Show</option>
                                                             </select>
                                                         </div>
                                                         <!-- Cash Input -->
@@ -472,6 +473,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        
                                                         <!-- Bank Transfer Input -->
                                                         <div class="bankTransferInput" style="display: none;">
                                                             <div class=" d-grid-2column bg-paymentType">
@@ -545,6 +547,15 @@
                                                                             </span>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Cash Input -->
+                                                        <div class="NoShowInput" id="NoShowInput" style="display: none;">
+                                                            <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
+                                                                <div>
+                                                                    <label for="NoShowAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
+                                                                    <input type="text" id="Amount" name="NoShowAmount" class="NoShowAmount form-control" placeholder="Enter transfer amount">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1024,8 +1035,8 @@
                 var selectedType = $(this).val();
                 var parentContainer = $(this).closest('.payment-container'); // Find the parent container
                 // Hide all payment method sections within this specific container
-                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
-                parentContainer.find('#Amount, #chequeamount,#chequedate,#chequebank,#cheque').val('');
+                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput .NoShowInput').hide();
+                parentContainer.find('#Amount, #chequeamount,#chequedate,#chequebank,#cheque,#NoShowAmount').val('');
                 // Show the relevant section based on the selected payment type
                 if (selectedType === 'cash') {
                     parentContainer.find('.cashInput').show();
@@ -1042,6 +1053,9 @@
 
                     parentContainer.find('.chequeInput').show();
                     Total();
+                }else{
+                    parentContainer.find('.NoShowInput').show();
+                    Total();
                 }
             });
             $('.creditCardNumber').on('input', function() {
@@ -1055,7 +1069,6 @@
             $(document).on('keyup', '#Amount', function() {
 
                 var cash =  Number($(this).val());
-
                 Total();
             });
             function Total() {
