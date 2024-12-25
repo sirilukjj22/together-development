@@ -1511,11 +1511,11 @@
                                     let parsedArray = JSON.parse(allRowsDataInput); // แปลง JSON เป็น Array
 
                                     // วนลูปตรวจสอบ ID ใน parsedArray
-                                    $.each(parsedArray, function (key, val) {
-                                        let product_Id = val.id;
-console.log($('#row-' + product_Id));
+                                    // $.each(parsedArray, function (key, val) {
+                                        // let product_Id = val.id;
+// console.log("Test : "+product_Id + " DATA :" + data.id);
 
-                                        if ($('#row-' + product_Id).length > 0) {
+                                        if ($('#tr-select-addmain'+data.id).length == 0) {
                                             table.row.add([
                                                 num++,
                                                 data.Product_ID,
@@ -1524,8 +1524,17 @@ console.log($('#row-' + product_Id));
                                                 data.unit_name,
                                                 `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
                                             ]).node().id = `row-${productId}`;
+                                        } else {
+                                            // table.row.add([
+                                            //     num++,
+                                            //     data.Product_ID,
+                                            //     data.name_th,
+                                            //     Number(data.normal_price).toLocaleString(),
+                                            //     data.unit_name,
+                                            //     `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                            // ]).node().id = `row-${productId}`;
                                         }
-                                    });
+                                    // });
                                 }
                             }
                             table.draw(false);
@@ -1594,99 +1603,7 @@ console.log($('#row-' + product_Id));
                     console.error('Error:', error);
                 }
             });
-            $(document).ready(function() {
-
-                $(document).on('click', '.select-button-product', function() {
-                    var product = $(this).val() ;
-                    console.log(product);
-
-                        $('#row-' + product).prop('hidden',true);
-                        $('tr .child').prop('hidden',true);
-
-
-                    console.log(product);
-                    if ($('#productselect' + product).length > 0) {
-                        return;
-                    }
-                    $.ajax({
-                        url: '{{ route("Proposal.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', product),
-                        method: 'GET',
-                        data: {
-                            value:product
-                        },
-                        success: function(response) {
-                            $.each(response.products, function(index, val) {
-                                var name = '';
-                                var price = 0;
-
-                                console.log(rowNumber);
-
-                                if ($('#product-list-select tr').length == 0) {
-                                    console.log("Product already exists after AJAX call: ", val.id);
-
-                                }
-                                if ($('#product-list' + val.Product_ID).length > 0) {
-                                    console.log("Product already exists after AJAX call: ", val.Product_ID);
-                                }
-                                $('#mainselecttwo').DataTable().destroy();
-                                var rowNumber = $('#product-list-select tr').length+1;
-                                $('#product-list-select').append(
-                                    '<tr id="tr-select-add' + val.id + '">' +
-                                    '<td style="text-align:center;">' + rowNumber + '</td>' +
-                                    '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
-                                    '<td style="text-align:left;">' + val.name_en + '</td>' +
-                                    '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                    '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                    '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                    '<input type="hidden" id="productselect" name="productselect" value="' + val.id + '">' +
-                                    '</tr>'
-                                );
-                                $('#mainselecttwo').DataTable({
-                                    searching: false,
-                                    paging: false,
-                                    info: false,
-                                    ordering:false,
-                                    language: {
-                                        emptyTable: "",
-                                        zeroRecords: ""
-                                    },
-                                    columnDefs: [{
-                                        className: 'dtr-control',
-                                        orderable: false,
-                                        target: null,
-                                    }],
-                                    order:  false,
-                                    responsive: {
-                                        details: {
-                                            type: 'column',
-                                            target: 'tr'
-                                        }
-                                    }
-                                });
-                                let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
-                                $('#mainselecttwo tbody tr').each(function() {
-                                    // สำหรับแต่ละแถวใน tbody
-                                    let rowData = {
-                                        id : $(this).find('input[name="productselect').val(),
-                                    };
-                                    if (
-                                        rowData.id
-                                    ) {
-                                        // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
-                                        allRowsData.push(rowData);
-                                    }
-                                });
-                                $('#allRowsDataInputSelect').val(JSON.stringify(allRowsData));
-                                console.log($('#allRowsDataInputSelect').val());
-
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error:', error);
-                        }
-                    });
-                });
-            });
+            
 
             $(document).on('click', '.confirm-button', function() {
 
@@ -2220,5 +2137,93 @@ console.log($('#row-' + product_Id));
             document.getElementById("myForm").setAttribute("target","_blank");
             document.getElementById("myForm").submit();
         }
+
+        $(document).ready(function() {
+
+$(document).on('click', '.select-button-product', function() {
+    var product = $(this).val() ;
+    console.log(product);
+
+        $('#row-' + product).prop('hidden',true);
+        $('tr .child').prop('hidden',true);
+
+
+    console.log(product);
+    if ($('#productselect' + product).length > 0) {
+        return;
+    }
+    $.ajax({
+        url: '{{ route("Proposal.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', product),
+        method: 'GET',
+        data: {
+            value:product
+        },
+        success: function(response) {
+
+        var name = '';
+        var price = 0;
+
+        console.log(rowNumber);
+
+
+        $('#mainselecttwo').DataTable().destroy();
+        var rowNumber = $('#product-list-select tr').length+1;
+        $('#product-list-select').append(
+            '<tr id="tr-select-add' + response.products.id + '">' +
+            '<td style="text-align:center;">' + rowNumber + '</td>' +
+            '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + response.products.Product_ID + '">' + response.products.Product_ID + '</td>' +
+            '<td style="text-align:left;">' + response.products.name_en + '</td>' +
+            '<td style="text-align:left;">' + Number(response.products.normal_price).toLocaleString() + '</td>' +
+            '<td style="text-align:center;">' + response.products.unit_name + '</td>' +
+            '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + response.products.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+            '<input type="hidden" id="productselect" name="productselect" value="' + response.products.id + '">' +
+            '</tr>'
+        );
+        $('#mainselecttwo').DataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ordering:false,
+            language: {
+                emptyTable: "",
+                zeroRecords: ""
+            },
+            columnDefs: [{
+                className: 'dtr-control',
+                orderable: false,
+                target: null,
+            }],
+            order:  false,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            }
+        });
+        let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
+        $('#mainselecttwo tbody tr').each(function() {
+            // สำหรับแต่ละแถวใน tbody
+            let rowData = {
+                id : $(this).find('input[name="productselect').val(),
+            };
+            if (
+                rowData.id
+            ) {
+                // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
+                allRowsData.push(rowData);
+            }
+        });
+        $('#allRowsDataInputSelect').val(JSON.stringify(allRowsData));
+        console.log($('#allRowsDataInputSelect').val());
+
+
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+});
+});
     </script>
 @endsection

@@ -3174,7 +3174,7 @@ class QuotationController extends Controller
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
-        ->get();
+        ->first();
 
         return response()->json([
             'products' => $products,
