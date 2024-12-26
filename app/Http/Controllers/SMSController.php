@@ -16,11 +16,7 @@ use PhpParser\Node\Expr\Cast\Double;
 
 class SMSController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         // dd(explode(" ", "เช็คเข้าบ/ช x267913 ยอด THB95,890.00 ผ่าน TELL"));
@@ -1588,12 +1584,6 @@ class SMSController extends Controller
         return view('sms-forward.sms-example');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         ## Check Close Day
@@ -1648,12 +1638,6 @@ class SMSController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function change_status($id, $status)
     {
         ## Check Close Day
@@ -1890,12 +1874,6 @@ class SMSController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $data = SMS_alerts::find($id);
@@ -2014,7 +1992,7 @@ class SMSController extends Controller
             $filter_by = "yesterday";
 
         } elseif ($checkDateRange == "tomorrow") {
-            $FormatDate = Carbon::now()->addDay(1);
+            $FormatDate = Carbon::now();
             $FormatDate2 = Carbon::now()->addDay(1);
 
             // Format Y-m-d
