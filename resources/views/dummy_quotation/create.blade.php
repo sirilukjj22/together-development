@@ -643,7 +643,7 @@
                                             <hr class="mt-3 my-3" style="border: 1px solid #000">
                                             <div class="col-12 mt-3" >
                                                 <h3>รายการที่เลือก</h3>
-                                                <table  class=" example4 ui striped table nowrap unstackable hover">
+                                                <table id="mainselecttwo"  class=" example ui striped table nowrap unstackable hover">
                                                     <thead >
                                                         <tr>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%">#</th>
@@ -849,8 +849,8 @@
                                         </div>
                                         <div class="col-lg-2 centered-content">
                                             <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                            <br><br>
-                                            <span>{{@Auth::user()->name}}</span>
+                                            <img src="/boss.png" style="width: 70%;"/>
+                                            <span>Sopida Thuphom</span>
                                             <span id="issue_date_document1"></span>
                                         </div>
                                         <div class="col-lg-2 centered-content">
@@ -891,6 +891,9 @@
             </div>
         </div>
     </form>
+    <input type="hidden" id="create" name="create">
+    <input type="hidden" id="allRowsDataInput" name="allRowsData">
+    <input type="hidden" id="allRowsDataInputSelect" name="allRowsDataSelect">
     <input type="hidden" name="preview" value="1" id="preview">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
@@ -1359,6 +1362,7 @@
                     searching: false,
                     paging: false,
                     info: false,
+                    ordering:false,
                     columnDefs: [{
                         className: 'dtr-control',
                         orderable: true,
@@ -1374,13 +1378,14 @@
                 });
             }
         });
-        const table_name2 = ['main'];
+        const table_name2 = ['main','mainselecttwo'];
         $(document).ready(function() {
             for (let index = 0; index < table_name2.length; index++) {
                 new DataTable('#'+table_name2[index], {
                     searching: false,
                     paging: false,
                     info: false,
+                    ordering:false,
                     language: {
                         emptyTable: "",
                         zeroRecords: ""
@@ -1402,6 +1407,30 @@
             }
         });
         function fetchProducts(status) {
+            let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
+            $('#main tbody tr').each(function() {
+                // สำหรับแต่ละแถวใน tbody
+                let rowData = {
+                    rowHtml: $(this)[0].outerHTML,  // เก็บข้อมูล HTML ทั้งแถว
+                    id : $(this).find('input[name="productid"]').val(),
+                    Product_ID: $(this).find('input[name="ProductIDmain[]"]').val(),
+                    Product_Name: $(this).find('td').eq(1).text(), // ข้อความใน <td> ที่ 2 (ชื่อสินค้า)
+                    Pax: $(this).find('.pax').val(),
+                    Quantity: $(this).find('.quantitymain').val(),
+                    Unit: $(this).find('.unitmain').val(),
+                    Price: $(this).find('input[name="priceproductmain[]"]').val(),
+                    Discount: $(this).find('.discountmain').val(),
+                };
+                if (
+                    rowData.Product_ID
+                ) {
+                    // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
+                    allRowsData.push(rowData);
+                    $("#create").val(1);
+                }
+            });
+            $('#allRowsDataInput').val(JSON.stringify(allRowsData));
+            console.log($('#allRowsDataInput').val());
             if (status == 'all' ) {
                 $('#ProductName').text('All Product');
             }else if (status == 'Room_Type') {
@@ -1420,8 +1449,11 @@
             var table = $('#mainselect1').DataTable();
             var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
             var clickCounter = 1;
+
+
+
             $.ajax({
-                url: '{{ route("DummyQuotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
+                url: '{{ route("Proposal.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
                 method: 'GET',
                 data: {
                     value: status
@@ -1443,16 +1475,33 @@
                             for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
                                 const data = response.products[i];
                                 const productId = data.id;
-                                var existingRowId = $('#tr-select-add' + productId).attr('id');
-                                if ($('#' + existingRowId).val() == undefined) {
-                                    table.row.add([
-                                        num++,
-                                        data.Product_ID,
-                                        data.name_th,
-                                        Number(data.normal_price).toLocaleString(),
-                                        data.unit_name,
-                                        `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                                    ]).node().id = `row-${productId}`;
+                                let create = $('#create').val();
+
+                                if (!create) {
+                                    var existingRowId = $('#tr-select-add' + productId).attr('id');
+                                    if ($('#' + existingRowId).val() == undefined) {
+                                        table.row.add([
+                                            num++,
+                                            data.Product_ID,
+                                            data.name_th,
+                                            Number(data.normal_price).toLocaleString(),
+                                            data.unit_name,
+                                            `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                        ]).node().id = `row-${productId}`;
+                                    }
+                                }
+                                if (create) {
+                                    console.log($('#tr-select-addmain' +data.id).length);
+                                    if ($('#tr-select-addmain' +data.id).length == 0) {
+                                        table.row.add([
+                                            num++,
+                                            data.Product_ID,
+                                            data.name_th,
+                                            Number(data.normal_price).toLocaleString(),
+                                            data.unit_name,
+                                            `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                        ]).node().id = `row-${productId}`;
+                                    }
                                 }
                             }
                             table.draw(false);
@@ -1521,230 +1570,322 @@
                     console.error('Error:', error);
                 }
             });
-            $(document).ready(function() {
-                if (!$.fn.DataTable.isDataTable('.product-list-select')) {
-                    var table = $('.product-list-select').DataTable();
-                } else {
-                    var table = $('.product-list-select').DataTable();
-                }
-                $(document).on('click', '.select-button-product', function() {
 
-                    var product = $(this).val();
-                    $('#row-' + product).prop('hidden',true);
-                    $('tr .child').prop('hidden',true);
-
-                    if ($('#productselect' + product).length > 0) {
-                        return;
-                    }
-                    $.ajax({
-                        url: '{{ route("DummyQuotation.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', product),
-                        method: 'GET',
-                        data: {
-                            value:product
-                        },
-                        success: function(response) {
-                            $.each(response.products, function(index, val) {
-                                var name = '';
-                                var price = 0;
-                                var rowNumber = $('#product-list-select tr:visible').length+1;
-                                if ($('#productselect' + val.id).length > 0) {
-                                    console.log("Product already exists after AJAX call: ", val.id);
-                                    return;
-                                }
-                                if ($('#product-list' + val.Product_ID).length > 0) {
-                                    console.log("Product already exists after AJAX call: ", val.Product_ID);
-                                }
-
-                                $('#product-list-select').append(
-                                    '<tr id="tr-select-add' + val.id + '">' +
-                                    '<td style="text-align:center;">' + rowNumber + '</td>' +
-                                    '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
-                                    '<td style="text-align:left;">' + val.name_en + '</td>' +
-                                    '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                    '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                    '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                    '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
-                                    '</tr>'
-                                );
-
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error:', error);
-                        }
-                    });
-                });
-            });
-            function renumberRows() {
-                $('#product-list-select tr:visible').each(function(index) {
-                    $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
-                });
-                $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first-child').text(index + 1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
-                });
-            }
-            $(document).on('click', '.remove-button', function() {
-
-                var product = $(this).val();
-                $('#tr-select-add' + product).remove();
-                $('#row-' + product).prop('hidden',false);
-                renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
-            });
-            $(document).on('click', '.confirm-button', function() {
-                var number = $('#randomKey').val();
-                var all = 'all';
-
+        }
+        $(document).ready(function() {
+            $(document).on('click', '.select-button-product', function() {
+                var product = $(this).val() ;
+                $('#row-' + product).prop('hidden',true);
+                $('tr .child').prop('hidden',true);
                 $.ajax({
-                    url: '{{ route("DummyQuotation.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', all),
+                    url: '{{ route("Proposal.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', product),
                     method: 'GET',
                     data: {
-                        value: "all"
+                        value:product
                     },
                     success: function(response) {
-                        $.each(response.products, function (key, val) {
-                            $('#main').DataTable().destroy();
-                            $('#tr-select-add' + val.id).prop('hidden',true);
-                            if ($('#productselect' + val.id).val() !== undefined) {
-                                if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
-                                    number = val.Product_ID;
-                                    var name = '';
-                                    var price = 0;
-                                    var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
-                                    var normalPrice = parseFloat(normalPriceString);
-                                    var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    let discountInput;
-                                    let quantity;
-                                    let unit;
-                                    var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
-                                    var SpecialDiscount = document.getElementById('SpecialDiscount').value;
-                                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-                                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                    var maximum_discount = val.maximum_discount;
-                                    var valpax = val.pax;
-                                    if (valpax == null) {
-                                        valpax = 0;
-                                    }
-                                    if (roleMenuDiscount == 1) {
-                                        if (maximum_discount > 0) {
-                                            if (Add_discount > 0) {
-                                                if (SpecialDiscount > 0 ) {
-                                                    if (SpecialDiscount > maximum_discount) {
-                                                        discountInput = '<div class="input-group">' +
-                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + maximum_discount + ') this.value = ' + maximum_discount + ';">' +
-                                                            '<span class="input-group-text">%</span>' +
-                                                            '</div>';
-                                                    }else{
-                                                        discountInput = '<div class="input-group">' +
-                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + ') this.value = ' + SpecialDiscount + ';">' +
-                                                            '<span class="input-group-text">%</span>' +
-                                                            '</div>';
-                                                    }
-                                                }
-                                            }else{
-                                                discountInput = '<div class="input-group">' +
-                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + User_discount + ') this.value = ' + User_discount + ';">' +
-                                                            '<span class="input-group-text">%</span>' +
-                                                            '</div>';
-                                            }
-                                        }else{
-                                            discountInput = '<div class="input-group">' +
-                                                    '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;"' +
-                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                    '</div>';
-                                        }
-                                    }
-                                    quantity = '<div class="input-group">' +
-                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
-                                                '<span class="input-group-text">'+ val.unit_name +'</span>' +
-                                                '</div>';
-
-                                    unit = '<div class="input-group">' +
-                                            '<input class="unitmain form-control" type="text" id="unitmain' + number + '" name="Unitmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
-                                            '<span class="input-group-text">' + val.quantity_name + '</span>' +
-                                            '</div>';
-
-
-                                    var rowNumbemain = $('#display-selected-items tr').length + 1;
-                                    $('#display-selected-items').append(
-                                        '<tr id="tr-select-addmain' + val.id + '">' +
-                                        '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-                                        '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
-                                        '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td style="text-align:center;width:12%;">'+ quantity +'</td>' +
-                                        '<td style="text-align:center;width:12%;">' + unit + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                        '</tr>'
-                                    );
-                                    $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
-                                    $('#display-selected-items tr.odd').remove();
-                                    $('#main').DataTable({
-                                        searching: false,
-                                        paging: false,
-                                        info: false,
-                                        ordering:false,
-                                        language: {
-                                            emptyTable: "",
-                                            zeroRecords: ""
-                                        },
-                                        columnDefs: [{
-                                            className: 'dtr-control',
-                                            orderable: false,
-                                            target: null,
-                                        }],
-                                        order:  false,
-                                        responsive: {
-                                            details: {
-                                                type: 'column',
-                                                target: 'tr'
-                                            }
-                                        }
-                                    });
-                                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-                                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                                        return new bootstrap.Tooltip(tooltipTriggerEl)
-                                    });
+                        $('#mainselecttwo').DataTable().destroy();
+                        var rowNumber = $('#product-list-select tr').length+1;
+                        $('#product-list-select').append(
+                            '<tr id="tr-select-add' + response.products.id + '">' +
+                            '<td style="text-align:center;">' + rowNumber + '</td>' +
+                            '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + response.products.Product_ID + '">' + response.products.Product_ID + '</td>' +
+                            '<td style="text-align:left;">' + response.products.name_en + '</td>' +
+                            '<td style="text-align:left;">' + Number(response.products.normal_price).toLocaleString() + '</td>' +
+                            '<td style="text-align:center;">' + response.products.unit_name + '</td>' +
+                            '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + response.products.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                            '<input type="hidden" id="productselect" name="productselect" value="' + response.products.id + '">' +
+                            '</tr>'
+                        );
+                        $('#mainselecttwo').DataTable({
+                            searching: false,
+                            paging: false,
+                            info: false,
+                            ordering:false,
+                            language: {
+                                emptyTable: "",
+                                zeroRecords: ""
+                            },
+                            columnDefs: [{
+                                className: 'dtr-control',
+                                orderable: false,
+                                target: null,
+                            }],
+                            order:  false,
+                            responsive: {
+                                details: {
+                                    type: 'column',
+                                    target: 'tr'
                                 }
                             }
                         });
-                        totalAmost();
+                        let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
+                        $('#mainselecttwo tbody tr').each(function() {
+                            // สำหรับแต่ละแถวใน tbody
+                            let rowData = {
+                                id : $(this).find('input[name="productselect').val(),
+                            };
+                            if (
+                                rowData.id
+                            ) {
+                                // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
+                                allRowsData.push(rowData);
+                            }
+                        });
+                        $('#allRowsDataInputSelect').val(JSON.stringify(allRowsData));
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
                 });
-                $('#exampleModalproduct').modal('hide');
+            });
+        });
+
+        $(document).on('click', '.confirm-button', function() {
+            var all = 'all';
+            $.ajax({
+                url: '{{ route("Proposal.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', all),
+                method: 'GET',
+                data: {
+                    value: "all"
+                },
+                success: function(response) {
+                    let table = $('#main').DataTable();
+                    table.clear().draw();
+                    var allRowsDataInput = $('#allRowsDataInput').val();
+                    var create = $('#create').val();
+                    var allRowsDataInputSelectValue = $('#allRowsDataInputSelect').val();
+                    console.log(allRowsDataInput);
+                    if (create == 1) {
+                        console.log(0);
+
+                        let parsedArray = JSON.parse(allRowsDataInput);
+                        console.log(parsedArray);
+                        var number = parsedArray.Product_ID;
+                        $('#main').DataTable().destroy();
+                        var rowNumbemain = $('#display-selected-items tr').length + 1;
+                        parsedArray.forEach(item => {
+                            // เพิ่มแถวที่มีค่า input ที่กรอกไว้
+                            let newRow = $(item.rowHtml);  // สร้างแถวใหม่จาก HTML ที่เก็บไว้
+
+                            // กำหนดค่าให้กับ input fields
+                            newRow.find('input[name="productid"]').val(item.id);
+                            newRow.find('input[name="ProductIDmain[]"]').val(item.Product_ID);
+                            newRow.find('.pax').val(item.Pax);
+                            newRow.find('.quantitymain').val(item.Quantity);
+                            newRow.find('.unitmain').val(item.Unit);
+                            newRow.find('input[name="priceproductmain[]"]').val(item.Price);
+                            newRow.find('.discountmain').val(item.Discount);
+
+                            // เพิ่มแถวเข้าไปใน #display-selected-items
+                            $('#display-selected-items').append(newRow);
+                        });
+                        $('#main').DataTable({
+                            searching: false,
+                            paging: false,
+                            info: false,
+                            ordering:false,
+                            language: {
+                                emptyTable: "",
+                                zeroRecords: ""
+                            },
+                            columnDefs: [{
+                                className: 'dtr-control',
+                                orderable: false,
+                                target: null,
+                            }],
+                            order:  false,
+                            responsive: {
+                                details: {
+                                    type: 'column',
+                                    target: 'tr'
+                                }
+                            }
+                        });
+                    }
+                      // เช่น '[{"id":1},{"id":2}]'
+                    if (allRowsDataInputSelectValue) {
+                        let parsedArray = JSON.parse(allRowsDataInputSelectValue);  // แปลง JSON เป็นอาร์เรย์
+                        let matchingProducts = response.products.filter(product =>
+                            parsedArray.some(item => Number(item.id) === Number(product.id))  // ใช้ Number เพื่อแปลงเป็นตัวเลข
+                        );
+                        console.log(matchingProducts);
+
+                        $.each(matchingProducts, function(key, val) {
+                                var number = val.Product_ID;
+                                var name = '';
+                                var price = 0;
+                                var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
+                                var normalPrice = parseFloat(normalPriceString);
+                                var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                let discountInput;
+                                let quantity;
+                                var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
+                                var SpecialDiscount = document.getElementById('SpecialDiscount').value;
+                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                var maximum_discount = val.maximum_discount;
+                                let unit;
+                                var valpax = val.pax;
+                                if (valpax == null) {
+                                    valpax = 0;
+                                }
+                                if (roleMenuDiscount == 1) {
+                                    if (maximum_discount > 0) {
+                                        if (Add_discount > 0) {
+                                            if (SpecialDiscount > 0 ) {
+                                                if (SpecialDiscount > maximum_discount) {
+                                                    discountInput = '<div class="input-group">' +
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + maximum_discount + ') this.value = ' + maximum_discount + ';">' +
+                                                        '<span class="input-group-text">%</span>' +
+                                                        '</div>';
+                                                }else{
+                                                    discountInput = '<div class="input-group">' +
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + ') this.value = ' + SpecialDiscount + ';">' +
+                                                        '<span class="input-group-text">%</span>' +
+                                                        '</div>';
+                                                }
+                                            }
+                                        }else{
+                                            discountInput = '<div class="input-group">' +
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + User_discount + ') this.value = ' + User_discount + ';">' +
+                                                        '<span class="input-group-text">%</span>' +
+                                                        '</div>';
+                                        }
+                                    }else{
+                                        discountInput = '<div class="input-group">' +
+                                                '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;"' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                '</div>';
+                                    }
+                                }
+
+                                quantity = '<div class="input-group">' +
+                                            '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
+                                            '<span class="input-group-text">'+ val.unit_name +'</span>' +
+                                            '</div>';
+                                unit = '<div class="input-group">' +
+                                        '<input class="unitmain form-control" type="text" id="unitmain' + number + '" name="Unitmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                        'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
+                                        '<span class="input-group-text">' + val.quantity_name + '</span>' +
+                                        '</div>';
+                                $('#main').DataTable().destroy();
+                                var rowNumbemain = $('#display-selected-items tr').length + 1;
+                                $('#display-selected-items').append(
+                                    '<tr id="tr-select-addmain' + val.id + '">' +
+                                    '<td style="text-align:center;"><input type="hidden" id="productid" name="productid" value="' + val.id + '">' + rowNumbemain + '</td>' +
+                                    '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +
+                                    '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span></td>' +
+                                    '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal-' + number + '">' + valpax + '</span></td>' +
+                                    '<td style="text-align:center;width:12%;">' + quantity + '</td>' +
+                                    '<td style="text-align:center;width:12%;">' + unit + '</td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                                    '<td style="text-align:center;width:12%;">' + discountInput + '</td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value="' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
+                                    '<td style="text-align:center;"><button type="button" class="Btn remove-buttonmain" style=" border: none;"    value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                    '</tr>'
+                                );
+                                $('#main').DataTable({
+                                    searching: false,
+                                    paging: false,
+                                    info: false,
+                                    ordering:false,
+                                    language: {
+                                        emptyTable: "",
+                                        zeroRecords: ""
+                                    },
+                                    columnDefs: [{
+                                        className: 'dtr-control',
+                                        orderable: false,
+                                        target: null,
+                                    }],
+                                    order:  false,
+                                    responsive: {
+                                        details: {
+                                            type: 'column',
+                                            target: 'tr'
+                                        }
+                                    }
+                                });
+                                let table = $('#mainselecttwo').DataTable();  // เรียก DataTable ที่ต้องการ
+                                table.clear().draw();
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
             });
 
-            $(document).ready(function() {
-                totalAmost();
-                $(document).on('click', '.remove-buttonmain', function() {
-                    var product = $(this).val();
-                    $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
+            $('#exampleModalproduct').modal('hide');
 
-                    $('#display-selected-items tbody tr').each(function(index) {
-                        // เปลี่ยนเลขลำดับใหม่
-                        $(this).find('td:first').text(index+1);
-                    });
-                    renumberRows();
-                    totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+        });
+
+        $(document).ready(function() {
+            $(document).on('click', '.remove-buttonmain', function() {
+                var product = $(this).val();
+                console.log(product);
+
+                $('#display-selected-items tr.child').remove();
+                $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
+
+                $('#display-selected-items tbody tr').each(function(index) {
+                    // เปลี่ยนเลขลำดับใหม่
+                    $(this).find('td:first').text(index+1);
                 });
+                renumberRows();
+                totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+
+            });
+            totalAmost();
+        });
+        function renumberRows() {
+            $('#product-list-select tr:visible').each(function(index) {
+                $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+            });
+            $('#display-selected-items tr').each(function(index) {
+                $(this).find('td:first-child').text(index + 1 ); // เปลี่ยนเลขลำดับในคอลัมน์แรก
             });
         }
+        $(document).on('click', '.remove-button', function() {
+            console.log(1);
+            let table = $('#mainselecttwo').DataTable();
+            var product = $(this).val();
+            console.log(product);
+
+            let row = $('#tr-select-add' + product);
+            $('#product-list-select tr.child').remove();
+            table.row(row).remove().draw();
+            let allRowsData = []; // ตัวแปรเก็บข้อมูลทั้งหมด
+            $('#mainselecttwo tbody tr').each(function() {
+                // สำหรับแต่ละแถวใน tbody
+                let rowData = {
+                    id : $(this).find('input[name="productselect').val(),
+                };
+                if (
+                    rowData.id
+                ) {
+                    // เพิ่มข้อมูลของแถวนี้เข้าไปใน allRowsData หากค่าครบถ้วน
+                    allRowsData.push(rowData);
+                }
+            });
+            $('#allRowsDataInputSelect').val(JSON.stringify(allRowsData));
+            console.log($('#allRowsDataInputSelect').val());
+            $('#row-' + product).prop('hidden',false);
+            renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+        });
         //----------------------------------------รายการ---------------------------
-        $(document).ready(function() {
+        $(document).ready(function() {});
             $(document).on('keyup', '.quantitymain', function() {
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
+                    console.log(number_ID);
                     var quantitymain =  Number($(this).val());
                     var discountmain =  $('#discountmain'+number_ID).val();
                     var unitmain =  $('#unitmain'+number_ID).val();
@@ -1752,12 +1893,15 @@
                     if (isNaN(paxmain)) {
                         paxmain = 0;
                     }
+                    console.log($('#pax' + number_ID).val());
                     var pax = paxmain*quantitymain;
-                    $('#paxtotal'+number_ID).text(pax);
+                    console.log(pax);
+
+                    $('#paxtotal-'+number_ID).text(pax);
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
                     var pricenew = quantitymain*unitmain*price
-                    console.log(discountmain);
+
 
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
@@ -1837,7 +1981,20 @@
                     totalAmost();
                 }
             });
-        });
+            $(document).on('keyup', '.DiscountAmount', function() {
+                var DiscountAmount =  Number($(this).val());
+                if (DiscountAmount) {
+                    $('#Special').css('display', 'grid');
+                    $('#Subtotal').css('display', 'grid');
+                    document.getElementById('Preview').disabled = true;
+                }else{
+                    $('#Special').css('display', 'none');
+                    $('#Subtotal').css('display', 'none');
+                    document.getElementById('Preview').disabled = false;
+                }
+                totalAmost();
+            });
+
         function totalAmost() {
 
             $(document).ready(function() {
@@ -1871,6 +2028,10 @@
                         Nettotal= beforetax+addedtax;
                         totalperson = Nettotal/paxtotal;
 
+                        if (Discount) {
+                            $('#Special').css('display', 'grid');
+                            $('#Subtotal').css('display', 'grid');
+                        }
                         $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1885,6 +2046,7 @@
                         }else{
                             $('#Pax').css('display', 'block');
                         }
+
                     }
                     else if(typevat == '51')
                     {
@@ -1896,6 +2058,10 @@
                         addedtax =0;
                         Nettotal= beforetax;
                         totalperson = Nettotal/paxtotal;
+                        if (Discount) {
+                            $('#Special11').css('display', 'grid');
+                            $('#Subtotal11').css('display', 'grid');
+                        }
                         $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1910,17 +2076,22 @@
                         }else{
                             $('#Pax').css('display', 'block');
                         }
+
                     } else if(typevat == '52'){
                         paxtotal +=pax;
                         PaxToTalall = paxtotal;
                         allprice += pricetotal;
                         lessDiscount = allprice-DiscountAmount;
-                        addedtax = lessDiscount*7/100;;
+                        addedtax = lessDiscount*7/100;
                         beforetax= lessDiscount+addedtax;
                         Nettotal= beforetax;
                         totalperson = Nettotal/paxtotal;
 
-
+                        console.log(Discount);
+                        if (Discount) {
+                            $('#Special1').css('display', 'grid');
+                            $('#Subtotal1').css('display', 'grid');
+                        }
                         $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1935,6 +2106,7 @@
                         }else{
                             $('#Pax').css('display', 'block');
                         }
+
                     }
 
 

@@ -1504,6 +1504,7 @@ class QuotationController extends Controller
         $SpecialDiscountBath = $request->DiscountAmount;
         $Add_discount = $request->Add_discount;
         $data = $request->all();
+
         $userid = Auth::user()->id;
         $Quotationcheck = Quotation::where('id',$id)->first();
         $correct = $Quotationcheck->correct;
@@ -1543,27 +1544,16 @@ class QuotationController extends Controller
                     'Unitmain' => $data['Unitmain'] ?? null,
                 ];
                 $Products = $datarequest['ProductIDmain'];
-                $Productslast = $datarequest['CheckProduct'];
+                // $Productslast = $datarequest['CheckProduct'];
                 $pax=$datarequest['pax'];
-                $productsCount = is_array($Products) ? count($Products) : 0;
-                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                if (is_array($Products) && is_array($Productslast)) {
-                    $commonValues = array_intersect($Products, $Productslast);
-                    if (!empty($commonValues)) {
-                        $diffFromProducts = array_diff($Products, $Productslast);
-                        $diffFromProductslast = array_diff($Productslast, $Products);
-                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                    } else {
-                        $Products = array_merge($Productslast,$Products);
-                    }
-
-                }else{
-                    $Products = $Productslast;
-                }
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
                 $Unitmain = $datarequest['Unitmain'] ?? [];
+                $maxCount = max(count($quantities), count($priceUnits), count($Unitmain));
+
+                // เติมค่า 0 ให้ครบ
+                $discounts = array_pad($discounts, $maxCount, 0);
                 $productItems = [];
                 $totaldiscount = [];
                 foreach ($Products as $index => $productID) {
@@ -1595,6 +1585,7 @@ class QuotationController extends Controller
 
                         }
                     }
+
                     $items = master_product_item::where('Product_ID', $productID)->get();
                     $QuotationVat= $datarequest['Mvat'];
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -1619,6 +1610,7 @@ class QuotationController extends Controller
                         ];
                     }
                 }
+
                 {//คำนวน
                     $totalAmount = 0;
                     $totalPrice = 0;
@@ -1888,9 +1880,8 @@ class QuotationController extends Controller
                 $discounts = $data['discountmain'] ?? [];
                 $priceUnits = $data['priceproductmain'] ?? [];
                 $Unitmain = $data['Unitmain'] ?? [];
-                $discounts = array_map(function($value) {
-                    return ($value !== null) ? $value : "0";
-                }, $discounts);
+                $maxCount = max(count($quantities), count($priceUnits), count($Unitmain));
+                $discounts = array_pad($discounts, $maxCount, 0);
 
                 if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
@@ -1924,30 +1915,6 @@ class QuotationController extends Controller
                     $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
                 }
                 $Products = $datarequest['ProductIDmain'];
-
-                $Productslast = $datarequest['CheckProduct'];
-
-                $pax=$datarequest['pax'];
-                $productsCount = is_array($Products) ? count($Products) : 0;
-                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                if (is_array($Products) && is_array($Productslast)) {
-
-                    $commonValues = array_intersect($Products, $Productslast);
-                    if (!empty($commonValues)) {
-                        $diffFromProducts = array_diff($Products, $Productslast);
-                        $diffFromProductslast = array_diff($Productslast, $Products);
-                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                    } else {
-                        $Products = array_merge($Productslast,$Products);
-                    }
-                }else{
-                    if ($Productslast !== null) {
-                        $Products = $Productslast;
-                    } else {
-                        $Products = $Products;
-                    }
-                }
-
 
                 $productsArray = [];
                 foreach ($Products as $index => $ProductID) {
@@ -2324,7 +2291,7 @@ class QuotationController extends Controller
                 $save->type = 'Edit';
                 $save->Category = 'Edit :: Proposal';
                 $save->content =$datacompany;
-                $save->save();
+                // $save->save();
             } catch (\Throwable $e) {
                 return redirect()->route('Proposal.index')->with('error', $e->getMessage());
             }
@@ -2386,9 +2353,9 @@ class QuotationController extends Controller
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
                 $Unitmain = $datarequest['Unitmain'] ?? [];
-                $discounts = array_map(function($value) {
-                    return ($value !== null) ? $value : "0";
-                }, $discounts);
+                $maxCount = max(count($quantities), count($priceUnits), count($Unitmain));
+                $discounts = array_pad($discounts, $maxCount, 0);
+
 
                 if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
@@ -2422,27 +2389,9 @@ class QuotationController extends Controller
                     $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
                 }
                 $Products = $datarequest['ProductIDmain'];
-                $Productslast = $datarequest['CheckProduct'];
-                $pax=$datarequest['pax'];
-                $productsCount = is_array($Products) ? count($Products) : 0;
-                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                if (is_array($Products) && is_array($Productslast)) {
-                    $commonValues = array_intersect($Products, $Productslast);
-                    if (!empty($commonValues)) {
-                        $diffFromProducts = array_diff($Products, $Productslast);
-                        $diffFromProductslast = array_diff($Productslast, $Products);
-                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                    } else {
-                        $Products = array_merge($Productslast,$Products);
-                    }
 
-                }else{
-                    if ($Productslast !== null) {
-                        $Products = $Productslast;
-                    } else {
-                        $Products = $Products;
-                    }
-                }
+                $pax=$datarequest['pax'];
+
                 $productsArray = [];
                 foreach ($Products as $index => $ProductID) {
                     $saveProduct = [
@@ -2517,31 +2466,15 @@ class QuotationController extends Controller
                     'Unitmain' => $data['Unitmain'] ?? null,
                 ];
                 $Products = $datarequest['ProductIDmain'];
-                $Productslast = $datarequest['CheckProduct'];
-                $pax=$datarequest['pax'];
-                $productsCount = is_array($Products) ? count($Products) : 0;
-                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                if (is_array($Products) && is_array($Productslast)) {
-                    $commonValues = array_intersect($Products, $Productslast);
-                    if (!empty($commonValues)) {
-                        $diffFromProducts = array_diff($Products, $Productslast);
-                        $diffFromProductslast = array_diff($Productslast, $Products);
-                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                    } else {
-                        $Products = array_merge($Productslast,$Products);
-                    }
 
-                }else{
-                    if ($Productslast !== null) {
-                        $Products = $Productslast;
-                    } else {
-                        $Products = $Products;
-                    }
-                }
+                $pax=$datarequest['pax'];
+
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
                 $Unitmain = $datarequest['Unitmain'] ?? [];
+                $maxCount = max(count($quantities), count($priceUnits), count($Unitmain));
+                $discounts = array_pad($discounts, $maxCount, 0);
                 $productItems = [];
                 $totaldiscount = [];
                 foreach ($Products as $index => $productID) {
