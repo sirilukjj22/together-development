@@ -50,7 +50,6 @@
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Receipt" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$ApprovedCount}}</span> Receipt</a></li>{{--ประวัติการแก้ไข--}}
                         <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav2')" role="tab"><span class="badge bg-success">{{$ComplateCount}}</span> Complete</a></li>
                         <li class="nav-item" id="nav6"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav6')" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>
-                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><span class="badge  bg-danger"  >{{$NoshowCount}}</span> No Show</a></li>
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -192,66 +191,6 @@
                                                             <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}'">
                                                                 Select
                                                             </button>
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                @endif
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
-                                    <div style="min-height: 70vh;" class="mt-2">
-
-                                        <table id="billingCancelTable" class="table-together table-style">
-                                            <thead>
-                                                <tr>
-                                                    <th style="text-align: center;"data-priority="1">No</th>
-                                                    <th data-priority="1">Receipt ID</th>
-                                                    <th>Proposal ID</th>
-                                                    <th data-priority="1">Company / Individual</th>
-                                                    <th>Payment Date</th>
-                                                    <th class="text-center">Amount</th>
-                                                    <th class="text-center">Operated By</th>
-                                                    <th class="text-center">Document status</th>
-                                                    <th class="text-center">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if(!empty($Noshow))
-                                                    @foreach ($Noshow as $key => $item)
-                                                    <tr>
-                                                        <td style="text-align: center;">
-                                                            {{$key +1}}
-                                                        </td>
-                                                        <td>{{ $item->Receipt_ID}}</td>
-                                                        <td>{{ $item->Quotation_ID}}</td>
-                                                        <td>{{$item->fullname}}</td>
-                                                        <td>{{ $item->paymentDate }}</td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($item->document_amount) }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ @$item->userOperated->name }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            <span class="badge rounded-pill bg-success">Confirm</span>
-                                                        </td>
-                                                        @php
-                                                            $CreateBy = Auth::user()->id;
-                                                            $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                            $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
-                                                            $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
-                                                        @endphp
-                                                        <td style="text-align: center;">
-                                                            <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                                <ul class="dropdown-menu border-0 shadow p-3">
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
-                                                                </ul>
-                                                            </div>
                                                         </td>
                                                     </tr>
                                                     @endforeach

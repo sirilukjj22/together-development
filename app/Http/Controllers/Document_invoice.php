@@ -71,9 +71,7 @@ class Document_invoice extends Controller
         $Complete = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->get();
 
         $Completecount = document_invoices::query()->where('document_status',2)->WhereIn('status_receive',[1,2])->count();
-        $Cancel = document_invoices::query()->where('document_status',0)->get();
-        $Cancelcount =document_invoices::query()->where('document_status',0)->count();
-        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount','invoicecheck'));
+        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','invoicecheck'));
     }
 
 

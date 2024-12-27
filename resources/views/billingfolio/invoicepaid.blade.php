@@ -456,7 +456,7 @@
                                                                 <option value="bankTransfer">Bank Transfer</option>
                                                                 <option value="creditCard">Credit Card</option>
                                                                 <option value="cheque">Cheque</option>
-                                                                <option value="NoShow">No Show</option>
+                                                                <option value="No Show">No Show</option>
                                                             </select>
                                                         </div>
                                                         <!-- Cash Input -->
@@ -473,7 +473,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <!-- Bank Transfer Input -->
                                                         <div class="bankTransferInput" style="display: none;">
                                                             <div class=" d-grid-2column bg-paymentType">
@@ -530,7 +530,7 @@
                                                                 </div>
                                                                 <div>
                                                                     <label for="chequeBank">To Account</label>
-                                                                    <select  id="chequebank" name="chequebank" class="select2">
+                                                                    <select  id="chequebank" name="chequebank" class="ToAccount select2">
                                                                         @foreach ($data_bank as $item)
                                                                             <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
                                                                         @endforeach
@@ -539,7 +539,7 @@
                                                                 <div>
                                                                     <label for="chequeNumber">Date</label>
                                                                     <div class="input-group">
-                                                                        <input type="text" name="deposit_date" id="deposit_date" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                                        <input type="text" name="deposit_date" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
                                                                         <div class="input-group-prepend">
                                                                             <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                                                 <i class="fas fa-calendar-alt"></i>
@@ -551,12 +551,10 @@
                                                             </div>
                                                         </div>
                                                         <!-- Cash Input -->
-                                                        <div class="NoShowInput" id="NoShowInput" style="display: none;">
+                                                        <div class="NoShowInput" style="display: none;">
                                                             <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
-                                                                <div>
-                                                                    <label for="NoShowAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                                    <input type="text" id="Amount" name="NoShowAmount" class="NoShowAmount form-control" placeholder="Enter transfer amount">
-                                                                </div>
+                                                                <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
+                                                                <input type="text" id="Amount" name="NoShowAmount" class="NoShowAmount form-control" placeholder="Enter cash amount" value="{{ number_format($sumpayment) }}" readonly>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -899,17 +897,11 @@
                         </div>
                     </div>
                 `;
-
                 // เพิ่มฟอร์มใหม่ต่อท้าย payment-container ล่าสุด
                 $('.payment-container').last().after(newPaymentForm);
-
-                // อัปเดต Select2 หากมีการใช้
                 $('.select2').select2({
                     placeholder: "Please select an option"
                 });
-
-                // เพิ่มค่า counter เพื่อให้ id และ name ไม่ซ้ำกัน
-
                 $('.creditCardNumber').on('input', function() {
                     var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
                     input = input.substring(0, 16); // Limit input to 16 digits
@@ -991,10 +983,9 @@
                 Total();
                 });
                 $(document).on('keyup', `[id^='bankTransferAmount_${counter}']`, function() {
-
-                var cash =  Number($(this).val());
-                console.log(cash);
-                Total();
+                    var cash =  Number($(this).val());
+                    console.log(cash);
+                    Total();
                 });
                 $(document).on('click', '.remove', function() {
                     let containerId = $(this).closest('.payment-container').attr('id'); // ดึง ID ของ parent container
@@ -1028,35 +1019,98 @@
             });
 
 
+
             $(document).on('change', '#paymentType', function () {
-
-                console.log(1);
-
                 var selectedType = $(this).val();
-                var parentContainer = $(this).closest('.payment-container'); // Find the parent container
-                // Hide all payment method sections within this specific container
-                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput .NoShowInput').hide();
-                parentContainer.find('#Amount, #chequeamount,#chequedate,#chequebank,#cheque,#NoShowAmount').val('');
-                // Show the relevant section based on the selected payment type
+                var cashInputDiv = document.querySelector(".cashInput"); // ใช้ class
+                var cashAmountInput = document.querySelector(".cashAmount"); // ใช้ class
+
+                //-----------------------------
+                var bankTransferDiv = document.querySelector(".bankTransferInput"); // เลือก div ด้วย class
+                var bankTransferAmount = document.querySelector(".bankTransferAmount"); // เลือก input สำหรับจำนวนเงิน
+                //-----------------------------
+                var creditCardDiv = document.querySelector(".creditCardInput"); // เลือก div ด้วย class
+                var creditCardAmount = document.querySelector(".creditCardAmount");
+                var expiryDate = document.querySelector(".expiryDate");
+                //-----------------------------
+                var chequeDiv = document.querySelector("#chequeInput");
+                var ToAccount = document.querySelector(".ToAccount");
+                var deposit_date = document.querySelector(".deposit_date");
+                //-----------------------------
+                var NoShowInputDiv = document.querySelector(".NoShowInput"); // ใช้ class
+                var NoShowAmount = document.querySelector(".NoShowAmount"); // ใช้ class
                 if (selectedType === 'cash') {
-                    parentContainer.find('.cashInput').show();
+                    cashInputDiv.style.display = "Block";
+                    cashAmountInput.disabled = false;
+                    bankTransferDiv.style.display = "none"; // แสดง div
+                    bankTransferAmount.disabled = true;
+                    creditCardDiv.style.display = "none"; // แสดง div
+                    creditCardAmount.disabled = true;
+                    expiryDate.disabled = true;
+                    chequeDiv.style.display = "none";
+                    ToAccount.disabled = true;
+                    deposit_date.disabled = true;
+                    NoShowInputDiv.style.display = "none";
+                    NoShowAmount.disabled = true;
                     Total();
                 } else if (selectedType === 'bankTransfer') {
-
-                    parentContainer.find('.bankTransferInput').show();
+                    cashInputDiv.style.display = "none";
+                    cashAmountInput.disabled = true;
+                    bankTransferDiv.style.display = "block"; // แสดง div
+                    bankTransferAmount.disabled = false;
+                    creditCardDiv.style.display = "none"; // แสดง div
+                    creditCardAmount.disabled = true;
+                    expiryDate.disabled = true;
+                    chequeDiv.style.display = "none";
+                    ToAccount.disabled = true;
+                    deposit_date.disabled = true;
+                    NoShowInputDiv.style.display = "none";
+                    NoShowAmount.disabled = true;
                     Total();
                 } else if (selectedType === 'creditCard') {
-
-                    parentContainer.find('.creditCardInput').show();
+                    cashInputDiv.style.display = "none";
+                    cashAmountInput.disabled = true;
+                    bankTransferDiv.style.display = "none"; // แสดง div
+                    bankTransferAmount.disabled = true;
+                    creditCardDiv.style.display = "block"; // แสดง div
+                    creditCardAmount.disabled = false;
+                    expiryDate.disabled = false;
+                    chequeDiv.style.display = "none";
+                    ToAccount.disabled = true;
+                    deposit_date.disabled = true;
+                    NoShowInputDiv.style.display = "none";
+                    NoShowAmount.disabled = true;
                     Total();
                 } else if (selectedType === 'cheque') {
-
-                    parentContainer.find('.chequeInput').show();
+                    cashInputDiv.style.display = "none";
+                    cashAmountInput.disabled = true;
+                    bankTransferDiv.style.display = "none"; // แสดง div
+                    bankTransferAmount.disabled = true;
+                    creditCardDiv.style.display = "none"; // แสดง div
+                    creditCardAmount.disabled = true;
+                    expiryDate.disabled = true;
+                    chequeDiv.style.display = "block";
+                    ToAccount.disabled = false;
+                    deposit_date.disabled = false;
+                    NoShowInputDiv.style.display = "none";
+                    NoShowAmount.disabled = true;
                     Total();
                 }else{
-                    parentContainer.find('.NoShowInput').show();
+                    cashInputDiv.style.display = "none";
+                    cashAmountInput.disabled = true;
+                    bankTransferDiv.style.display = "none"; // แสดง div
+                    bankTransferAmount.disabled = true;
+                    creditCardDiv.style.display = "none"; // แสดง div
+                    creditCardAmount.disabled = true;
+                    expiryDate.disabled = true;
+                    chequeDiv.style.display = "none";
+                    ToAccount.disabled = true;
+                    deposit_date.disabled = true;
+                    NoShowInputDiv.style.display = "Block";
+                    NoShowAmount.disabled = false;
                     Total();
                 }
+
             });
             $('.creditCardNumber').on('input', function() {
                 var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
@@ -1073,9 +1127,19 @@
             });
             function Total() {
                 const checkbox = document.getElementById('flexSwitchCheckChecked');
+
                 var chequeamount = parseFloat($('#chequeamount').val().replace(/,/g, '')) || 0; // แปลงค่า chequeamount
-                var Amount = parseFloat($('#Amount').val()) || 0; // แปลงค่า Amount
-                console.log(Amount);
+                var NoShowAmount = document.querySelector(".NoShowAmount");
+
+                 // แปลงค่า Amount
+                if (!NoShowAmount.disabled) { // ถ้า NoShowAmount ไม่ถูกปิดการใช้งาน
+                    console.log(0);
+                    var Amount = parseFloat($('#sumpayment').val()) || 0; // ดึงค่าจาก #sumpayment
+                } else {
+                    console.log(1);
+                    var Amount = parseFloat($('#Amount').val()) || 0; // ดึงค่าจาก #Amount
+                }
+                // console.log(Amount);
 
                 var sumpayment = parseFloat($('#sumpayment').val()) || 0; // แปลงค่า Amount
                 var Complimentary = parseFloat($('#Complimentary').val()) || 0;
@@ -1418,6 +1482,7 @@
                     var paymentDate = $('#paymentDate').val();
                     var Complimentary = $('#Complimentary').val();
                     const checkbox = document.getElementById('flexSwitchCheckChecked');
+                    var NoShowAmount = document.querySelector(".NoShowAmount");
                     // ตรวจสอบว่าถูกติ๊กหรือไม่
                     if (checkbox.checked) {
                         var ComplimentaryNum = 1;
@@ -1454,6 +1519,12 @@
                         }
                         paymentData.Date = paymentDate;
                         paymentData.datanamebank = 'Cash';
+                    }else if (paymentType === 'No Show') {
+                        console.log(1);
+
+                        paymentData.amount = NoShowAmount.value.replace(/,/g, "");
+                        paymentData.datanamebank = 'No Show';
+                        paymentData.Date = paymentDate;
                     }
                     payments.push(paymentData);
                     console.log(payments);

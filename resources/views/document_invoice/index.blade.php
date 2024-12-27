@@ -47,7 +47,6 @@
                     <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$Approvedcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
                     <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$invoicecount}}</span> Invoice</a></li>
                     <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Completecount}}</span> Generate</a></li>
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><span class="badge  bg-danger"  >{{$Cancelcount}}</span> No Show</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
@@ -341,72 +340,6 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
-                            <div style="min-height: 70vh;" class="mt-2">
-
-                                <table id="invoiceCancelTable" class="table-together table-style">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">#</th>
-                                            <th data-priority="1">Invoice ID</th>
-                                            <th data-priority="1">Proposal ID</th>
-                                            <th data-priority="1">Company / Individual</th>
-                                            <th class="text-center">Issue Date</th>
-                                            <th class="text-center">Expiration Date</th>
-                                            <th class="text-center">Amount</th>
-                                            <th class="text-center">Document status</th>
-                                            <th class="text-center">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(!empty($Cancel))
-                                            @foreach ($Cancel as $key => $item)
-                                                <tr>
-                                                    <td style="text-align: center;">
-                                                    {{$key +1}}
-                                                    </td>
-                                                    <td>{{ $item->Invoice_ID}}</td>
-                                                    <td>{{ $item->Quotation_ID}}</td>
-                                                    @if ($item->type_Proposal == 'Company')
-                                                        <td>{{ @$item->company00->Company_Name}}</td>
-                                                    @else
-                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                                    @endif
-                                                    <td style="text-align: center;">{{ $item->IssueDate }}</td>
-                                                    <td style="text-align: center;">{{ $item->Expiration }}</td>
-                                                    <td style="text-align: center;"> {{ number_format($item->sumpayment, 2) }}</td>
-                                                    <td style="text-align: center;">
-                                                        <span class="badge rounded-pill bg-danger" >Cancel</span>
-                                                    </td>
-                                                    @php
-                                                        $CreateBy = Auth::user()->id;
-                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
-                                                        $DeleteCount =  DB::table('document_receive')->where('Quotation_ID', $item->Quotation_ID)
-                                                        ->count();
-                                                    @endphp
-                                                    <td style="text-align: center;">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
-                                                                @if ($DeleteCount != 0)
-                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
                                             @endforeach
                                         @endif
                                     </tbody>

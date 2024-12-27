@@ -3215,48 +3215,6 @@ class QuotationController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('Proposal.index')->with('error', $e->getMessage());
         }
-        try {
-            $invoice = document_invoices::where('Quotation_ID',$data->Quotation_ID)->get();
-
-            foreach ($invoice as $value) {
-                $id = $value->id;
-                $Invoice_ID = $value->Invoice_ID;
-                $Quotation_ID = $value->Quotation_ID;
-                $save = document_invoices::find($id);
-                $save->document_status = 0;
-                $save->save();
-                $savelogin = new log_company();
-                $savelogin->Created_by = $userid;
-                $savelogin->Company_ID = $Invoice_ID;
-                $savelogin->type = 'Cancel';
-                $savelogin->Category = 'Cancel :: Invoice';
-                $savelogin->content = 'Cancel Document Invoice ID : '.$Invoice_ID.'+'.'Based on : '.$Quotation_ID ;
-                $savelogin->save();
-            }
-        } catch (\Throwable $e) {
-            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
-        }
-        try {
-            $receive = receive_payment::where('Quotation_ID',$data->Quotation_ID)->get();
-
-            foreach ($receive as $value) {
-                $id = $value->id;
-                $Receipt_ID = $value->Receipt_ID;
-                $Quotation_ID = $value->Quotation_ID;
-                $save = receive_payment::find($id);
-                $save->document_status = 0;
-                $save->save();
-                $savelogin = new log_company();
-                $savelogin->Created_by = $userid;
-                $savelogin->Company_ID = $Receipt_ID;
-                $savelogin->type = 'Cancel';
-                $savelogin->Category = 'Cancel :: Receipt';
-                $savelogin->content = 'Cancel Receipt ID : '.$Receipt_ID.'+'.'Based on : '.$Quotation_ID ;
-                $savelogin->save();
-            }
-        } catch (\Throwable $e) {
-            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
-        }
         return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function Revice($id){
@@ -3275,48 +3233,6 @@ class QuotationController extends Controller
             $save->Category = 'Revice :: Proposal';
             $save->content = 'Revice Document Proposal ID : '.$Quotation_ID;
             $save->save();
-        } catch (\Throwable $e) {
-            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
-        }
-        try {
-            $invoice = document_invoices::where('Quotation_ID',$Quotation_ID)->get();
-            foreach ($invoice as $value) {
-                $id = $value->id;
-                $Invoice_ID = $value->Invoice_ID;
-                $Quotation_ID = $value->Quotation_ID;
-                $save = document_invoices::find($id);
-                $save->document_status = 1;
-                $save->save();
-
-                $savelogin = new log_company();
-                $savelogin->Created_by = $userid;
-                $savelogin->Company_ID = $Invoice_ID;
-                $savelogin->type = 'Revice';
-                $savelogin->Category = 'Revice :: Invoice';
-                $savelogin->content = 'Revice Document Invoice ID : '.$Invoice_ID.'+'.'Based on : '.$Quotation_ID ;
-                $savelogin->save();
-            }
-        } catch (\Throwable $e) {
-            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
-        }
-        try {
-            $receive = receive_payment::where('Quotation_ID',$data->Quotation_ID)->get();
-
-            foreach ($receive as $value) {
-                $id = $value->id;
-                $Receipt_ID = $value->Receipt_ID;
-                $Quotation_ID = $value->Quotation_ID;
-                $save = receive_payment::find($id);
-                $save->document_status = 4;
-                $save->save();
-                $savelogin = new log_company();
-                $savelogin->Created_by = $userid;
-                $savelogin->Company_ID = $Receipt_ID;
-                $savelogin->type = 'Reject';
-                $savelogin->Category = 'Reject :: Receipt';
-                $savelogin->content = 'Reject Receipt ID : '.$Receipt_ID.'+'.'Based on : '.$Quotation_ID ;
-                $savelogin->save();
-            }
         } catch (\Throwable $e) {
             return redirect()->route('Proposal.index')->with('error', $e->getMessage());
         }
