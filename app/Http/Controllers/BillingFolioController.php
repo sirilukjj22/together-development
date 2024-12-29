@@ -65,9 +65,7 @@ class BillingFolioController extends Controller
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
         ->get();
-        $Rejectcount = receive_payment::query()->where('type','billing')->where('document_status',4)->count();
-        $Reject = receive_payment::query()->where('type','billing')->where('document_status',4)->get();
-        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount','Reject','Rejectcount'));
+        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount'));
     }
     //---------------------------------table-----------------
 

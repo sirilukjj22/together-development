@@ -321,7 +321,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -501,7 +501,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -638,7 +638,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -752,7 +752,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -886,7 +886,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -1011,7 +1011,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -1137,7 +1137,7 @@
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center">Dummy</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>

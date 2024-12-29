@@ -304,7 +304,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(ReportDocumentController::class)->middleware('role:report')->group(function () {
         Route::get('report-proposal-index', 'proposal')->name('report-proposal-index');
-       // Route::post('report-elexa-paid-search', 'search')->name('report-elexa-paid-search');
+        Route::post('report-proposal-search', 'search_proposal')->name('report-proposal-search');
+
+        Route::get('report-invoice-index', 'invoice')->name('report-invoice-index');
+        Route::post('report-invoice-search', 'search_invoice')->name('report-invoice-search');
+
+        Route::get('report-additional-index', 'additional')->name('report-additional-index');
+        Route::post('report-additional-search', 'search_additional')->name('report-additional-search');
+
+        Route::get('report-billingfolio-index', 'billingfolio')->name('report-billingfolio-index');
+        Route::post('report-billingfolio-search', 'search_billingfolio')->name('report-billingfolio-search');
     });
     ####################################################
 
@@ -320,11 +329,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/Mbooking/log/detail', 'log')->name('Mbooking.Log');
 
-        Route::post('book-search-table', 'book_search_table')->name('book-search-table');
-        Route::post('book-paginate-table', 'book_paginate_table')->name('book-paginate-table');
 
-        Route::post('book-Log-search-table', 'book_search_table_paginate_log');
-        Route::post('book-Log-paginate-table', 'book_paginate_log_table');
     });
 
     ## Company
@@ -366,23 +371,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/company/change-status/Contact/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
         Route::get('/Company/view/contact/{id}', 'contactview')->name('Company.contact.view');
 
-        Route::post('company-search-table', 'company_search_table');
-        Route::post('company-paginate-table', 'company_paginate_table');
 
-        Route::post('tax-company-search-table', 'search_table_company');
-        Route::post('tax-company-paginate-table', 'paginate_table_company');
-
-        Route::post('Visit-company-search-table', 'search_table_company_Visit');
-        Route::post('Visit-company-paginate-table', 'paginate_table_company_Visit');
-
-        Route::post('Billing-company-search-table', 'search_table_company_Billing');
-        Route::post('Billing-company-paginate-table', 'paginate_table_company_Billing');
-
-        Route::post('Contact-company-search-table', 'search_table_company_Contact');
-        Route::post('Contact-company-paginate-table', 'paginate_table_company_Contact');
-
-        Route::post('Log-company-search-table', 'search_table_company_Log');
-        Route::post('Log-company-paginate-table', 'paginate_table_company_Log');
     });
 
     Route::controller(GuestController::class)->middleware('role:guest')->group(function () {
@@ -399,28 +388,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/guest/change-status/{id}', 'guestStatus')->name('guestStatus');
         Route::post('/guest/edit/update/{id}', 'guest_update')->name('guest_edit_update');
 
-        Route::post('guest-search-table', 'search_table')->name('guest-search-table');
-        Route::post('guest-paginate-table', 'paginate_table')->name('guest-paginate-table');
 
-        Route::post('logguest-search-table', 'search_table_log')->name('guest-search-table_log');
-        Route::post('logguest-paginate-table', 'paginate_table_log')->name('guest-paginate-table_log');
         //--------------------------------เพิ่ม ซับ ------------------------
         Route::post('/guest/save/cover/{id}', 'guest_cover')->name('guest_cover');
         Route::get('/guest/change-status/tax/{id}', 'guestStatustax')->name('guestStatustax');
 
-        Route::post('tax-guest-search-table', 'search_table_guest')->name('guest-search-table_guest');
-        Route::post('tax-guest-paginate-table', 'paginate_table_guest')->name('guest-paginate-table_guest');
+
 
         Route::get('/guest/view/{id}', 'view')->name('guest_view');
         Route::get('/guest/Tax/edit/{id}', 'guest_edit_tax')->name('guest_edit_tax');
         Route::post('/guest/tax/edit/update/{id}', 'guest_update_tax')->name('guest_update_tax');
         Route::get('/guest/Tax/view/{id}', 'guest_view_tax')->name('guest_view_tax');
 
-        Route::post('Visit-guest-search-table', 'search_table_guest_Visit');
-        Route::post('Visit-guest-paginate-table', 'paginate_table_guest_Visit');
-
-        Route::post('Billing-guest-search-table', 'search_table_guest_Billing');
-        Route::post('Billing-guest-paginate-table', 'paginate_table_guest_Billing');
     });
 });
     #master product
@@ -442,23 +421,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mproduct/delete/{id}','delete')->name('Mproduct.delete');
         Route::get('/Mproduct/log/detail', 'product_log')->name('Mproduct.Log');
         //----------------------------
-        Route::post('product-search-table', 'search_table_product');
-        Route::post('product-paginate-table', 'paginate_table_product');
-        //----------------------------
-        Route::post('productroom-search-table', 'search_table_productroom');
-        Route::post('productroom-paginate-table', 'paginate_table_productroom');
-        //----------------------------
-        Route::post('productBanquet-search-table', 'search_table_productBanquet');
-        Route::post('productBanquet-paginate-table', 'paginate_table_productBanquet');
-        //----------------------------
-        Route::post('productMeals-search-table', 'search_table_productMeals');
-        Route::post('productMeals-paginate-table', 'paginate_table_productMeals');
-        //----------------------------
-        Route::post('productEntertainment-search-table', 'search_table_productEntertainment');
-        Route::post('productEntertainment-paginate-table', 'paginate_table_productEntertainment');
 
-        Route::post('product-Log-search-table', 'product_search_table_paginate_log');
-        Route::post('product-Log-paginate-table', 'product_paginate_log_table');
         // ----------------------------------Quantity-----------------------------------------------
         Route::get('/Mproduct/Quantity/{menu}','index_quantity')->name('Quantity');
         Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');
@@ -469,11 +432,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mproduct/quantity/update/{id}/{datakey}/{dataEN}','update_quantity')->name('Mproduct.update.quantity');
         Route::get('/Mproduct/Quantity/log/detail', 'quantity_log')->name('Quantity.Log');
 
-        Route::post('quantity-search-table', 'quantity_search_table')->name('quantity-search-table');
-        Route::post('quantity-paginate-table', 'quantity_paginate_table')->name('quantity-paginate-table');
 
-        Route::post('quantity-Log-search-table', 'quantity_search_table_paginate_log');
-        Route::post('quantity-Log-paginate-table', 'quantity_paginate_log_table');
         //----------------------------------Unit-----------------------------------------------------
         Route::get('/Mproduct/Unit/{menu}','index_unit')->name('Unit');
         Route::post('/Mproduct/Unit/Save','save_unit')->name('Mproduct.save.unit');
@@ -485,11 +444,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/Mproduct/Unit/log/detail', 'unit_log')->name('Unit.Log');
 
-        Route::post('unit-search-table', 'unit_search_table')->name('unit-search-table');
-        Route::post('unit-paginate-table', 'unit_paginate_table')->name('unit-paginate-table');
 
-        Route::post('unit-Log-search-table', 'unit_search_table_paginate_log');
-        Route::post('unit-Log-paginate-table', 'unit_paginate_log_table');
     });
 
     #master prefix
@@ -506,11 +461,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/Mprefix/log/detail', 'log')->name('Mprefix.Log');
 
-        Route::post('prename-search-table', 'prename_search_table')->name('prename-search-table');
-        Route::post('prename-paginate-table', 'prename_paginate_table')->name('prename-paginate-table');
-
-        Route::post('prename-Log-search-table', 'prename_search_table_paginate_log');
-        Route::post('prename-Log-paginate-table', 'prename_paginate_log_table');
 
 
     });
@@ -982,14 +932,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
         Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
 
-
-
-        //   //--------------------------LogPdf-----------
-        // Route::post('billing-Logre-search-table', 'search_table_paginate_log_pdf');
-        // Route::post('billing-Logre-paginate-table', 'paginate_log_pdf_table_billing');
-        // //--------------------------LogDoc-----------
-        // Route::post('billing-LogDocre-search-table', 'search_table_paginate_log_doc');
-        // Route::post('billing-LogDocre-paginate-table', 'paginate_log_doc_table_billing');
     });
 
 

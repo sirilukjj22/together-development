@@ -29,4 +29,8 @@ class document_invoices extends Model
     {
         return $this->hasOne(Guest::class, 'Profile_ID', 'company');
     }
+    public function  userOperated()
+    {
+        return $this->hasOne(User::class, 'id','Operated_by');
+    }
 }

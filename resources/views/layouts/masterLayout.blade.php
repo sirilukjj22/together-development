@@ -340,7 +340,9 @@
                                             <ul class="sub-menu collapse" id="menu-report-Document-level-2">
 
                                                     <li><a class="ms-link" href="{{ route('report-proposal-index') }}">Proposal Report</a></li>
-
+                                                    <li><a class="ms-link" href="{{ route('report-invoice-index') }}">Proforma Invoice Report</a></li>
+                                                    <li><a class="ms-link" href="{{ route('report-additional-index') }}">Additional Charge Report</a></li>
+                                                    <li><a class="ms-link" href="{{ route('report-billingfolio-index') }}">Billing Folio Report</a></li>
                                             </ul>
                                         </li>
                                     </ul>

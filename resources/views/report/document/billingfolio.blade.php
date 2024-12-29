@@ -133,7 +133,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Document Proposal Report</div>
+                    <div class="span3">Document Additional Charge Report</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="bt-tg-normal export-pdf" id="download-pdf"> Print <img src="/image/front/pdf.png" width="30px" alt=""></button>
@@ -170,7 +170,7 @@
                     <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
                         <!-- Form Container -->
                         <div class="form-container mb-3 mb-md-0">
-                            <form action="{{ route('report-proposal-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
+                            <form action="{{ route('report-billingfolio-search') }}" method="POST" enctype="multipart/form-data" id="form-search" class="row g-3">
                                 @csrf
                                 <div class="col-md-12">
                                     <h3>Search</h3>
@@ -187,17 +187,17 @@
                                     </div>
                                 </div>
                                 <div id="box-start-date" class="col-md-6" hidden>
-                                    <label for="startDate" class="form-label label-startDate">Check In / Out Date</label>
+                                    <label for="startDate" class="form-label label-startDate">Payment Date</label>
                                     <input type="text" class="form-control" id="startDate" name="startDate"
                                         value="{{ isset($search_date) ? $search_date : date('d/m/Y d/m/Y') }}" required>
                                 </div>
                                 <div id="box-month" class="col-md-6">
-                                    <label for="month" class="form-label label-month">Check In / Out Month</label>
+                                    <label for="month" class="form-label label-month">Payment Month</label>
                                     <input type="month" class="form-control" id="month" name="month"
                                         value="{{ isset($startDate) ? $startDate : date('m/Y') }}" required>
                                 </div>
                                 <div id="box-start-year" class="col-md-6" hidden>
-                                    <label for="startYear" class="form-label label-startYear">Check In / Out Year</label>
+                                    <label for="startYear" class="form-label label-startYear">Payment Year</label>
                                     <select class="form-select" name="startDate" id="startYear">
                                         @for ($i = 2024; $i <= date('Y', strtotime('+1 year')); $i++)
                                             <option value="{{ $i }}" {{ isset($filter_by) && $filter_by == 'year' && $i == $search_date ? 'selected' : '' }}>{{ $i }}</option>
@@ -206,38 +206,22 @@
                                 </div>
                                 <style>
                                     .d-al-center div {
-                                      display: flex;
-                                      align-items: center;
+                                        display: flex;
+                                        align-items: center;
 
                                     }
                                     .d-al-center label {
-                                      margin: 0px;
+                                        margin: 0px;
                                     }
-                                  </style>
+                                </style>
                                 <div class="col-md-12 d-flex flex-row gap-3 mt-4 d-al-center">
                                     <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusPending" value="Pending" {{ isset($status) && $status == 'Pending'? 'checked' : '' }}>
-                                        <label class="btn  " for="statusPending" style="pointer-events: none;background-color: #FF6633;color:white">Pending</label>
+                                        <input class="form-check-input " type="radio" name="statusinput" id="statusApproved" value="1" {{ isset($status) && $status == '1' ? 'checked' : '' }}>
+                                        <label class="btn btn-success " for="statusApproved" style="pointer-events: none;">Confirm</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusAwaiting" value="2" {{ isset($status) && $status == '2'? 'checked' : ''  }}>
-                                        <label class="btn btn-warning " for="statusAwaiting" style="pointer-events: none; color:white">Awaiting Approval</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusApproved" value="11" {{ isset($status) && $status == '11' ? 'checked' : '' }}>
-                                        <label class="btn btn-success " for="statusApproved" style="pointer-events: none;">Approved</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusReject" value="4" {{ isset($status) && $status == '4' ? 'checked' : '' }}>
-                                        <label class="btn " for="statusReject" style="pointer-events: none;background-color:#1d4ed8; color:white">Reject</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusComplete" value="9" {{ isset($status) && $status == '9' ? 'checked' : ''}}>
+                                        <input class="form-check-input " type="radio" name="statusinput" id="statusComplete" value="2" {{ isset($status) && $status == '2' ? 'checked' : ''}}>
                                         <label class="btn " for="statusComplete" style="pointer-events: none;background-color:#2C7F7A; color:white">Complete</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusCancel" value="0" {{ isset($status) && $status == '0'? 'checked' : '' }}>
-                                        <label class="btn " for="statusCancel" style="pointer-events: none;background-color:red; color:white">Cancel</label>
                                     </div>
                                 </div>
 
@@ -258,7 +242,7 @@
                         </div>
                         <div class="text-capitalize d-grid gap-0" style="height: max-content;">
                             <span class="f-semi">Together Resort Kaengkrachan</span>
-                            <span>Document Proposal</span>
+                            <span>Document Billing Folio</span>
                             <span>Date On : {{ $search_date }}</span>
                         </div>
                     </div>
@@ -273,14 +257,13 @@
                             <table id="ProposalTable" class="table-together table-style" >
                                 <thead>
                                     <tr>
-                                        <th style="text-align: center;" data-priority="1">#</th>
+                                        <th style="text-align: center;" data-priority="1">No</th>
+                                        <th style="text-align: center;" data-priority="1">Receipt ID</th>
                                         <th style="text-align: center;" data-priority="1">Proposal ID</th>
                                         <th style="text-align: center;" data-priority="1">Company / Individual</th>
-                                        <th style="text-align: center;">Check IN</th>
-                                        <th style="text-align: center;">Check OUT</th>
-                                        <th style="text-align: center;">Issue Date</th>
-                                        <th style="text-align: center;">Creatd By</th>
+                                        <th style="text-align: center;">Payment Date</th>
                                         <th style="text-align: center;">Amount</th>
+                                        <th style="text-align: center;">Creatd By</th>
                                         <th style="text-align: center;">Status</th>
                                         <th style="text-align: center;">Action</th>
                                     </tr>
@@ -289,48 +272,27 @@
                                     @foreach ($data_query as $key => $item)
                                     <tr>
                                         <td class="td-content-center">{{ $key + 1 }}</td>
+                                        <td class="td-content-center">{{ $item->Receipt_ID}}</td>
                                         <td class="td-content-center">{{ $item->Quotation_ID}}</td>
-                                        @if ($item->type_Proposal == 'Company')
-                                            <td class="td-content-center target-class text-start">{{ @$item->company->Company_Name}}</td>
-                                        @else
-                                            <td class="td-content-center target-class text-start">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                        @endif
+                                        <td style="text-align: left;">{{ $item->fullname}}</td>
                                         <td class="td-content-center">
-                                            {{ $item->checkin}}
+                                            {{ $item->paymentDate}}
                                         </td>
-                                        <td class="td-content-center">
-                                            {{ $item->checkout}}
-                                        </td>
-                                        <td class="td-content-center">{{ $item->issue_date }}</td>
+
+                                        <td class="td-content-center">{{ number_format($item->document_amount) }}</td>
                                         <td class="td-content-center">{{ @$item->userOperated->name }}</td>
-                                        <td class="td-content-center  target-class text-end">{{ number_format($item->Nettotal, 2) }}</td>
                                         <td class="td-content-center">
-                                            @if($item->status_guest == 1 && $item->status_document !== 0 && $item->status_document !== 9)
-                                                <span class="badge rounded-pill bg-success" >Approved</span>
-                                            @else
-                                                @if($item->status_document == 0)
-                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                @elseif ($item->status_document == 1)
-                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                @elseif ($item->status_document == 2)
-                                                    <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                @elseif ($item->status_document == 3)
-                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                @elseif ($item->status_document == 4)
-                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                @elseif ($item->status_document == 6)
-                                                    <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                @elseif ($item->status_document == 9)
-                                                    <span class="badge rounded-pill "style="background-color: #2C7F7A">Complete</span>
-                                                @endif
+                                            @if($item->document_status == 1)
+                                                <span class="badge rounded-pill bg-success">Confirm</span>
+                                            @elseif ($item->document_status == 2)
+                                                <span class="badge rounded-pill" style="background-color:#2C7F7A;">Complete</span>
                                             @endif
                                         </td>
                                         <td class="td-content-center">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                 <ul class="dropdown-menu border-0 shadow p-3">
-                                                    <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                    <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
                                                 </ul>
                                             </div>
                                         </td>
