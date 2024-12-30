@@ -478,8 +478,7 @@
                                                 <span style="display: flex"><p id="Adultpo" class="m-0">{{$Quotation->adult}} Adult </p><p id="Childrenpo" class="m-0">{{' , '.$Quotation->children}}  Children</p></span>
                                             </li>
                                             <li>
-                                                <b>Valid</b>
-                                                <span id="valid">{{$valid}}</span>
+
                                             </li>
                                             </ul>
                                         </div>
@@ -540,8 +539,7 @@
                                                 <span style="display: flex"><p id="Adultpoguest" class="m-0"> {{$Quotation->adult}} Adult </p><p id="Childrenpoguest" class="m-0">{{' , '.$Quotation->children}}  Children </p></span>
                                             </li>
                                             <li>
-                                                <b>Valid</b>
-                                                <span id="valid">{{$valid}}</span>
+
                                             </li>
                                             </ul>
 

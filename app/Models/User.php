@@ -65,7 +65,14 @@ class User extends Authenticatable
 
         return $permission;
     }
+    public function rolePermission($user_id)
+    {
+        $check = User::where('id', $user_id)->first();
 
+        $permission = !empty($check) ? $check->permission: 0;
+
+        return $permission;
+    }
     public function roleMenu()
     {
         return $this->hasOne(Role_permission_menu::class, 'user_id', 'id');

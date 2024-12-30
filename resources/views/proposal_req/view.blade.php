@@ -253,8 +253,8 @@
                                                     <div class="col-lg-6 col-md-6 col-sm-6 ">
                                                         <div class="d-grid-2column" >
                                                             <div class="" >
-                                                                {{-- <span id="Subtotal">Subtotal : </span><br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
+                                                                    <span id="Subtotal">Subtotal : </span><br>
                                                                     <span id="Special">Special Discount : </span><br>
                                                                     <span id="less">Subtotal less Discount : </span><br>
                                                                 @endif
@@ -265,8 +265,9 @@
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
                                                             <div class="">
-                                                                {{-- {{ number_format($price50, 2, '.', ',') }} <br> --}}
+
                                                                 @if ($itemdata->SpecialDiscountBath)
+                                                                {{ number_format($price50, 2, '.', ',') }} <br>
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
                                                                 {{ number_format($sp50, 2, '.', ',') }}<br>
                                                                 @endif
@@ -561,8 +562,8 @@
                                                     <div class="col-lg-6 col-md-6 col-sm-6 ">
                                                         <div class="d-grid-2column" >
                                                             <div class="" >
-                                                                {{-- <span id="Subtotal">Subtotal : </span><br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
+                                                                    <span id="Subtotal">Subtotal : </span><br>
                                                                     <span id="Special">Special Discount : </span><br>
                                                                     <span id="less">Subtotal less Discount : </span><br>
                                                                 @endif
@@ -573,8 +574,9 @@
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
                                                             <div class="">
-                                                                {{-- {{ number_format($price50, 2, '.', ',') }} <br> --}}
+
                                                                 @if ($itemdata->SpecialDiscountBath)
+                                                                {{ number_format($price50, 2, '.', ',') }} <br>
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
                                                                 {{ number_format($sp50, 2, '.', ',') }}<br>
                                                                 @endif
@@ -618,7 +620,7 @@
                                                 <div class="col-lg-6 col-md-6 col-sm-6">
                                                     <div class="d-grid-2column">
                                                         <div class="">
-                                                                {{-- <span id="Subtotal">Subtotal : </span><br> --}}
+                                                                <span id="Subtotal">Subtotal : </span><br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 <span id="Special">Special Discount : </span><br>
                                                                 <span id="less">Subtotal less Discount : </span><br>
@@ -629,7 +631,7 @@
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
                                                             <div class="">
-                                                                {{-- {{ number_format($price52, 2, '.', ',') }} <br> --}}
+                                                                {{ number_format($price52, 2, '.', ',') }} <br>
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
                                                                 {{ number_format($sp52, 2, '.', ',') }} <br>

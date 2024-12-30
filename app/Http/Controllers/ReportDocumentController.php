@@ -21,6 +21,7 @@ use App\Exports\AdditionalExport;
 use App\Exports\BillingfolioExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\receive_payment;
+use App\Models\dummy_quotation;
 class ReportDocumentController extends Controller
 {
     //Dummy Proposal
@@ -28,11 +29,11 @@ class ReportDocumentController extends Controller
     public function dummy_today()
     {
         $userid = Auth::user()->id;
-        $filter_by = "date";
+        $filter_by = "all";
         $status = '';
         $search_date = date('d/m/Y');
         $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')->get();
-        return view('report.document.dummy_today',compact('filter_by','search_date','data_query'));
+        return view('report.document.dummy_proposal.day_by_date',compact('filter_by','search_date','data_query'));
     }
     //Proposal
     public function proposal()

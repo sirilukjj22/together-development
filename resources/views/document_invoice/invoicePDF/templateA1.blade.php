@@ -311,8 +311,6 @@
                             {{$Adult}} Adult , {{$Children}} Children
                         @endif
                     </span><br>
-                    <b style="margin-left: 10px">Valid :</b>
-                    <span style="margin-left: 10px;">{{$valid}}</span>
                 </span>
                 <div style="border: 1px solid #2D7F7B"></div>
                 <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
@@ -524,8 +522,6 @@
                             {{$Adult}} Adult , {{$Children}} Children
                         @endif
                     </span><br>
-                    <b style="margin-left: 10px">Valid :</b>
-                    <span style="margin-left: 10px;">{{$valid}}</span>
                 </span>
                 <div style="border: 1px solid #2D7F7B"></div>
                 <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >

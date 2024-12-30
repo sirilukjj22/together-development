@@ -346,7 +346,8 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <label for=""><b>Method of Payment</b></label>
+                                    <div class="col-lg-6">
                                         <b for="Payment">Payment by (%) Remaining 100%</b>
                                         <div class="input-group">
                                             <div class="input-group-text">
@@ -392,7 +393,7 @@
                                             }
                                         </script>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <b for="Payment by (THB)">Payment by (THB)</b>
                                         <div class="input-group">
                                             <div class="input-group-text">
@@ -438,10 +439,6 @@
                                                 $('#sum').val(Subtotal);
                                             }
                                         </script>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <b>Valid</b>
-                                        <input type="text" name="valid" id="valid" class="form-control "required>
                                     </div>
                                 </div>
                             </div>
@@ -749,10 +746,8 @@
                                         <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                             Cancel
                                         </button>
-                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
-                                            Preview
-                                        </button>
-                                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave()">save</button>
+
+                                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave()">Save</button>
                                     </div>
                                     <div class="col-4"></div>
                                 </div>

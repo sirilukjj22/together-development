@@ -538,10 +538,10 @@
                                         <div class="lek" >
                                             <div class="proposal-number-cutomer-detail" id="PRICE_INCLUDE_VAT">
                                                 <ul>
-                                                    <li class="mt-3">
+                                                    {{-- <li class="mt-3">
                                                         <b>Subtotal</b>
                                                         <span id="total-amount"></span>
-                                                    </li>
+                                                    </li> --}}
                                                     <li class="mt-3">
                                                         <b>Price Before Tax</b>
                                                         <span id="Net-price"></span>
@@ -1839,7 +1839,7 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",

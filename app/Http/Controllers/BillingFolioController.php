@@ -65,7 +65,24 @@ class BillingFolioController extends Controller
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
         ->get();
-        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount'));
+        $create = Quotation::query()
+        ->where('quotation.status_guest', 1)
+        ->where('quotation.status_receive', 1)
+        ->get();
+
+        $ProposalCount = Quotation::query()
+        ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+        ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+        ->where('quotation.status_guest', 1)
+        ->where('quotation.status_receive', 1)
+        ->select(
+            'quotation.*',
+            'proposal_overbill.Nettotal as Adtotal',
+            DB::raw('SUM(document_receive.document_amount) as receive_amount'),
+        )
+        ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
+        ->count();
+        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount','ProposalCount','create'));
     }
     //---------------------------------table-----------------
 

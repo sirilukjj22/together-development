@@ -777,10 +777,10 @@
                                     <div class="lek" >
                                         <div class="proposal-number-cutomer-detail" id="PRICE_INCLUDE_VAT">
                                             <ul>
-                                                <li class="mt-3">
+                                                {{-- <li class="mt-3">
                                                     <b>Subtotal</b>
                                                     <span id="total-amount"></span>
-                                                </li>
+                                                </li> --}}
                                                 <li class="mt-3">
                                                     <b>Price Before Tax</b>
                                                     <span id="Net-price"></span>
@@ -929,9 +929,7 @@
                                         <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                             Cancel
                                         </button>
-                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
-                                            Preview
-                                        </button>
+
                                         <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                     </div>
                                     <div class="col-4"></div>

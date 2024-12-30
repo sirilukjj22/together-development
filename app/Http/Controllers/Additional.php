@@ -51,11 +51,18 @@ class Additional extends Controller
     public function index(){
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Proposal = Quotation::query()
-        ->select('quotation.*')
         ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+        ->select(
+            'quotation.*',
+            DB::raw('COUNT(proposal_overbill.Quotation_ID) as ADD_count'),
+            DB::raw('SUM(proposal_overbill.Nettotal) as ADD_amount')
+        )
+        ->whereIn('quotation.status_document', [1,3,6])
         ->where('quotation.status_guest', 1)
-        ->whereNull('proposal_overbill.Quotation_ID') // กรองเฉพาะที่ไม่มีใน proposal_overbill
+        ->whereNull('proposal_overbill.Quotation_ID')
+        ->groupBy('quotation.Quotation_ID') // จัดกลุ่มข้อมูลตาม Quotation_ID
         ->get();
+
         $Proposalcount = Quotation::query()
         ->select('quotation.*')
         ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
@@ -73,8 +80,10 @@ class Additional extends Controller
         $Cancel = proposal_overbill::query()->where('status_document',0)->get();
         $Cancelcount = proposal_overbill::query()->where('status_document',0)->count();
 
+        $Complete = proposal_overbill::query()->where('status_guest',1)->get();
+        $Completecount = proposal_overbill::query()->where('status_guest',1)->count();
         return view('additional_charge.index',compact('Proposal','Pending','Proposalcount','Pendingcount','Awaiting','Awaitingcount','Approved','Approvedcount','Reject','Rejectcount',
-                    'Cancel','Cancelcount'));
+                    'Cancel','Cancelcount','Complete','Completecount'));
     }
     public function create($id){
         $currentDate = Carbon::now();
@@ -175,6 +184,7 @@ class Additional extends Controller
         $preview = $request->preview;
         $Quotation_ID=$request->Quotation_ID;
         $Quotationid = $Quotation->id;
+        $Mvat = $Quotation->vat_type;
         $userid = Auth::user()->id;
         $data = $request->all();
         $Additional_ID=$request->Additional_ID;
@@ -460,15 +470,47 @@ class Additional extends Controller
                     $totalguest = $datarequest['Adult'] + $datarequest['Children'];
                     $guest =  $datarequest['Adult'] + $datarequest['Children'];
 
-                    foreach ($productItems as $item) {
-                        $totalPrice += $item['Amount'];
-                        $subtotal = $totalPrice;
-                        $beforeTax = $subtotal/1.07;
-                        $AddTax = $subtotal-$beforeTax;
-                        $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
-                        $totalAmount = $totalPrice;
+                    if ($Mvat == 50) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['Amount'];
+                            $subtotal = $totalPrice;
+                            $beforeTax = $subtotal/1.07;
+                            $AddTax = $subtotal-$beforeTax;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$totalguest;
+                            $totalAmount = $totalPrice;
+
+                        }
                     }
+                    elseif ($Mvat == 51) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['Amount'];
+                            $subtotal = $totalPrice;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$totalguest;
+
+                        }
+                    }
+                    elseif ($Mvat == 52) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['Amount'];
+                            $subtotal = $totalPrice;
+                            $AddTax = $subtotal*7/100;
+                            $Nettotal = $subtotal+$AddTax;
+                            $totalaverage =$Nettotal/$totalguest;
+                        }
+                    }else
+                    {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['Amount'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $beforeTax = $subtotal/1.07;
+                            $AddTax = $subtotal-$beforeTax;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+                        }
+                    }
+
 
                     $pagecount = count($productItems);
                     $page = $pagecount/10;
@@ -871,6 +913,7 @@ class Additional extends Controller
         $userid = Auth::user()->id;
         $data = $request->all();
         $Additional_ID=$request->Additional_ID;
+        $Mvat = $Quotation->vat_type;
         $additional_type =  $Quotation->additional_type;
         $datarequest = [
             'Proposal_ID' => $data['Quotation_ID'] ?? null,
@@ -957,15 +1000,47 @@ class Additional extends Controller
                 $totalguest = $datarequest['Adult'] + $datarequest['Children'];
                 $guest =  $datarequest['Adult'] + $datarequest['Children'];
 
-                foreach ($productItems as $item) {
-                    $totalPrice += $item['Amount'];
-                    $subtotal = $totalPrice;
-                    $beforeTax = $subtotal/1.07;
-                    $AddTax = $subtotal-$beforeTax;
-                    $Nettotal = $subtotal;
-                    $totalaverage =$Nettotal/$totalguest;
-                    $totalAmount = $totalPrice;
+                if ($Mvat == 50) {
+                    foreach ($productItems as $item) {
+                        $totalPrice += $item['Amount'];
+                        $subtotal = $totalPrice;
+                        $beforeTax = $subtotal/1.07;
+                        $AddTax = $subtotal-$beforeTax;
+                        $Nettotal = $subtotal;
+                        $totalaverage =$Nettotal/$totalguest;
+                        $totalAmount = $totalPrice;
+
+                    }
                 }
+                elseif ($Mvat == 51) {
+                    foreach ($productItems as $item) {
+                        $totalPrice += $item['Amount'];
+                        $subtotal = $totalPrice;
+                        $Nettotal = $subtotal;
+                        $totalaverage =$Nettotal/$totalguest;
+
+                    }
+                }
+                elseif ($Mvat == 52) {
+                    foreach ($productItems as $item) {
+                        $totalPrice += $item['Amount'];
+                        $subtotal = $totalPrice;
+                        $AddTax = $subtotal*7/100;
+                        $Nettotal = $subtotal+$AddTax;
+                        $totalaverage =$Nettotal/$totalguest;
+                    }
+                }else
+                {
+                    foreach ($productItems as $item) {
+                        $totalPrice += $item['Amount'];
+                        $subtotal = $totalAmount-$SpecialDis;
+                        $beforeTax = $subtotal/1.07;
+                        $AddTax = $subtotal-$beforeTax;
+                        $Nettotal = $subtotal;
+                        $totalaverage =$Nettotal/$guest;
+                    }
+                }
+
             }
         }
         try {

@@ -404,7 +404,7 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                                                 @endphp
@@ -431,7 +431,9 @@
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                                 @endif
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @if (!$item->status_document == 1 || !$item->status_document == 3  && !$item->status_guest == 1)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
@@ -566,7 +568,7 @@
                                                     <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                 </td>
                                                 @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                                                     $CreateBy = Auth::user()->id;
@@ -719,7 +721,7 @@
                                                     @endif
                                                 </td>
                                                 @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                 @endphp
                                                 <td style="text-align: center;">
@@ -818,7 +820,7 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                                                 @endphp
@@ -837,9 +839,12 @@
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            @if (!$item->status_document == 1 || !$item->status_document == 3  && !$item->status_guest == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
                                                                     @endif
+
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
@@ -951,7 +956,7 @@
                                                     <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
                                                 </td>
                                                 @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                                                     $CreateBy = Auth::user()->id;
@@ -1077,7 +1082,7 @@
                                                     <span class="badge rounded-pill bg-danger">Cancel</span>
                                                 </td>
                                                 @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                                                     $CreateBy = Auth::user()->id;

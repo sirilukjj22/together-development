@@ -732,7 +732,7 @@
                                     <div class="lek" >
                                         <div class="proposal-number-cutomer-detail" id="PRICE_INCLUDE_VAT">
                                             <ul>
-                                                <li class="mt-3">
+                                                <li class="mt-3"id="Special" style="display: none;">
                                                     <b>Subtotal</b>
                                                     <span id="total-amount"></span>
                                                 </li>
@@ -909,9 +909,9 @@
                                         <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                             Cancel
                                         </button>
-                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" id="Preview" onclick="submitPreview()">
+                                        {{-- <button type="button" class="btn btn-primary lift btn_modal btn-space" id="Preview" onclick="submitPreview()">
                                             Preview
-                                        </button>
+                                        </button> --}}
                                         <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                     </div>
                                     <div class="col-4"></div>
@@ -1830,6 +1830,7 @@
                                 });
                                 let table = $('#mainselecttwo').DataTable();  // เรียก DataTable ที่ต้องการ
                                 table.clear().draw();
+                                $('#Add_discount').prop('readonly', true);
                         });
                     }
                 },
@@ -1854,6 +1855,10 @@
                     // เปลี่ยนเลขลำดับใหม่
                     $(this).find('td:first').text(index+1);
                 });
+                if ($('#display-selected-items tbody tr').length === 0) {
+                    // เงื่อนไขที่ต้องการเมื่อไม่มี <tr>
+                        $('#Add_discount').prop('readonly', false);
+                }
                 renumberRows();
                 totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
 

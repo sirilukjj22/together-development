@@ -253,7 +253,7 @@
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">
-
+                                    <img src="{{$settingCompany->image}}" style="width: 50%;">
                                 </td>
                                 <td>
                                     <br>
@@ -350,7 +350,6 @@
                         </span>
                         <div style="border: 1px solid #2D7F7B"></div>
                         <div  style="line-height:15px;">
-                            <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                             @if ($page_item > 1)
                             <span style="font-weight: bold; float: right;color:#afafaf">Page {{ $i }}/{{$page_item}}</span>
                             @endif
@@ -358,8 +357,8 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
-                                <th style="text-align:right;font-weight: bold;">AMOUNT</th>
+                                <th style="text-align:center;font-weight: bold;">DESCRIPTION</th>
+                                <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
@@ -375,14 +374,53 @@
                             @endforeach
                         </table>
                         @if ($page_item == $i )
+                            @if ($Mvat == 50)
+                                <table  id="customers" class="table" style="width: 28%;float:right;" >
+                                    {{-- <tr>
+                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                    </tr> --}}
+                                    <tr>
+                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                    </tr>
+                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                    <tr style="background-color: #ffffff">
+                                        <td colspan="2" style="text-align:center;">
+                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                                <b style="font-size: 16px;">Net Total </b>
+                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            @elseif ($Mvat == 51)
                             <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                 </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            @elseif ($Mvat == 52)
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
-                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
@@ -398,22 +436,8 @@
                                         </div>
                                     </td>
                                 </tr>
-
-                                <br>
-                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                </tr>
-
                             </table>
+                            @endif
                         @endif
                         <b>Notes or Special Comment : </b><br>
                         <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
@@ -422,22 +446,12 @@
                         <div style="line-height:10px;">
                         </div>
                         <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
-                        @if ($Mevent == '43')
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 50% deposit within 7 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @else
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 100% deposit within 3 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @endif
-
+                        <span style="line-height:10px;font-size: 13px;">
+                            <br>
+                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                        </span>
                         <div style="margin-top: 15px">
                             <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
                             <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">
@@ -539,7 +553,7 @@
                                     <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                                 </td>
                                 <td  style="text-align: center;">
-                                    <img src="{{$settingCompany->image}}" style="width: 50%;">
+
                                 </td>
                                 <td>
                                     <br>
@@ -636,7 +650,6 @@
                         </span>
                         <div style="border: 1px solid #2D7F7B"></div>
                         <div  style="line-height:15px;">
-                            <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                             @if ($page_item > 1)
                             <span style="font-weight: bold; float: right;color:#afafaf">Page {{ $i }}/{{$page_item}}</span>
                             @endif
@@ -644,8 +657,8 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
-                                <th style="text-align:right;font-weight: bold;">AMOUNT</th>
+                                <th style="text-align:center;font-weight: bold;">DESCRIPTION</th>
+                                <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
@@ -661,11 +674,12 @@
                             @endforeach
                         </table>
                         @if ($page_item == $i )
+                        @if ($Mvat == 50)
                             <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                <tr>
+                                {{-- <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
@@ -684,22 +698,46 @@
                                         </div>
                                     </td>
                                 </tr>
-
-                                <br>
-                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
-                                </tr>
-                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                </tr>
-
                             </table>
+                        @elseif ($Mvat == 51)
+                        <table  id="customers" class="table" style="width: 28%;float:right;" >
+                            <tr>
+                                <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                            </tr>
+                            <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                            <tr style="background-color: #ffffff">
+                                <td colspan="2" style="text-align:center;">
+                                    <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                        <b style="font-size: 16px;">Net Total </b>
+                                        <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        @elseif ($Mvat == 52)
+                        <table  id="customers" class="table" style="width: 28%;float:right;" >
+                            <tr>
+                                <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                            </tr>
+                            <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                            <tr style="background-color: #ffffff">
+                                <td colspan="2" style="text-align:center;">
+                                    <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                        <b style="font-size: 16px;">Net Total </b>
+                                        <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        @endif
                         @endif
                         <b>Notes or Special Comment : </b><br>
                         <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
@@ -708,22 +746,12 @@
                         <div style="line-height:10px;">
                         </div>
                         <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
-                        @if ($Mevent == '43')
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 50% deposit within 7 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @else
-                            <span style="line-height:10px;font-size: 13px;">
-                                Please make a 100% deposit within 3 days after confirmed. <br>
-                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                                pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                            </span>
-                        @endif
-
+                        <span style="line-height:10px;font-size: 13px;">
+                            <br>
+                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                        </span>
                         <div style="margin-top: 15px">
                             <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
                             <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">

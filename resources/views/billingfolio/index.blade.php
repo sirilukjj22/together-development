@@ -10,9 +10,7 @@
                     <div class="span3">Billing Folio</div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('BillingFolio.issuebill') }}'">
-                        <i class="fa fa-plus"></i> Issue Bill
-                    </button>
+
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -47,16 +45,92 @@
             <div class="row clearfix">
                 <div class="col-sm-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Receipt" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$ApprovedCount}}</span> Receipt</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-PD" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$ProposalCount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav3"><a class="nav-link " data-bs-toggle="tab" href="#nav-Receipt" role="tab" onclick="nav($id='nav3')"><span class="badge" style="background-color:#FF6633">{{$ApprovedCount}}</span> Receipt</a></li>{{--ประวัติการแก้ไข--}}
                         <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav2')" role="tab"><span class="badge bg-success">{{$ComplateCount}}</span> Complete</a></li>
 
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane fade  show active" id="nav-Receipt" role="tabpanel" rel="0">
+                                <div class="tab-pane fade  show active" id="nav-PD" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
 
+                                        <table id="billingTable" class="table-together table-style">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;"data-priority="1">No</th>
+                                                    <th data-priority="1">Proposal ID</th>
+                                                    <th data-priority="1">Company / Individual</th>
+                                                    <th>PI Doc.</th>
+                                                    <th>RE Doc.</th>
+                                                    <th class="text-center">PD Amount</th>
+                                                    <th class="text-center">AD Amount</th>
+                                                    <th class="text-center">Total Amount</th>
+                                                    <th class="text-center">RE Amount</th>
+                                                    <th class="text-center">Balance</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($create))
+                                                    @foreach ($create as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">
+                                                            {{$key +1}}
+                                                        </td>
+                                                        @php
+                                                            $receive_count =  DB::table('document_receive')->where('Quotation_ID',$item->Quotation_ID)
+                                                                ->count();
+                                                            $invoice_count =  DB::table('document_invoice')->where('Quotation_ID', $item->Quotation_ID)
+                                                                ->count();
+                                                            $Adtotal =  DB::table('proposal_overbill')->where('Quotation_ID', $item->Quotation_ID)
+                                                            ->sum('Nettotal');
+                                                        @endphp
+                                                        <td>{{ $item->Quotation_ID}}</td>
+                                                        @if ($item->type_Proposal == 'Company')
+                                                            <td style="text-align: left;">{{ @$item->companytwo->Company_Name}}</td>
+                                                        @else
+                                                            <td style="text-align: left;">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                        @endif
+
+                                                        <td>{{ $invoice_count }}</td>
+                                                        <td>{{ $receive_count }}</td>
+                                                        <td style="text-align: center;">
+                                                            {{ number_format($item->Nettotal) }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ number_format($Adtotal) }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ number_format($item->Nettotal + $Adtotal) }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            @if ($item->receive_amount == 0 )
+                                                                0
+                                                            @else
+                                                                {{ number_format($item->receive_amount) }}
+                                                            @endif
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ number_format($item->Nettotal + $item->Adtotal - $item->receive_amount) }}
+                                                        </td>
+
+                                                        <td style="text-align: center;">
+                                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}'">
+                                                                Select
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade " id="nav-Receipt" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" class="mt-2">
                                         <table id="billingTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
@@ -80,7 +154,7 @@
                                                         </td>
                                                         <td>{{ $item->Receipt_ID}}</td>
                                                         <td>{{ $item->Quotation_ID}}</td>
-                                                        <td>{{$item->fullname}}</td>
+                                                        <td style="text-align: left;">{{$item->fullname}}</td>
                                                         <td>{{ $item->paymentDate }}</td>
                                                         <td style="text-align: center;">
                                                             {{ number_format($item->document_amount) }}

@@ -374,14 +374,53 @@
                             @endforeach
                         </table>
                         @if ($page_item == $i )
+                            @if ($Mvat == 50)
+                                <table  id="customers" class="table" style="width: 28%;float:right;" >
+                                    {{-- <tr>
+                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                    </tr> --}}
+                                    <tr>
+                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                    </tr>
+                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                    <tr style="background-color: #ffffff">
+                                        <td colspan="2" style="text-align:center;">
+                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                                <b style="font-size: 16px;">Net Total </b>
+                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            @elseif ($Mvat == 51)
                             <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                 </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            @elseif ($Mvat == 52)
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
-                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
@@ -398,6 +437,7 @@
                                     </td>
                                 </tr>
                             </table>
+                            @endif
                         @endif
                         <b>Notes or Special Comment : </b><br>
                         <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
@@ -634,11 +674,12 @@
                             @endforeach
                         </table>
                         @if ($page_item == $i )
+                        @if ($Mvat == 50)
                             <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                <tr>
+                                {{-- <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
@@ -657,9 +698,46 @@
                                         </div>
                                     </td>
                                 </tr>
-
-                                <br>
                             </table>
+                        @elseif ($Mvat == 51)
+                        <table  id="customers" class="table" style="width: 28%;float:right;" >
+                            <tr>
+                                <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                            </tr>
+                            <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                            <tr style="background-color: #ffffff">
+                                <td colspan="2" style="text-align:center;">
+                                    <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                        <b style="font-size: 16px;">Net Total </b>
+                                        <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        @elseif ($Mvat == 52)
+                        <table  id="customers" class="table" style="width: 28%;float:right;" >
+                            <tr>
+                                <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                            </tr>
+                            <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                            <tr style="background-color: #ffffff">
+                                <td colspan="2" style="text-align:center;">
+                                    <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                        <b style="font-size: 16px;">Net Total </b>
+                                        <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        @endif
                         @endif
                         <b>Notes or Special Comment : </b><br>
                         <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
