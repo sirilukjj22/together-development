@@ -303,6 +303,15 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::controller(ReportDocumentController::class)->middleware('role:report')->group(function () {
+        //DummyProposal
+
+        Route::get('report-dummy-proposal-day', 'dummy_today')->name('report-dummy-proposal-day');
+        Route::get('report-dummy-proposal-cancellation', 'dummy_cancellation')->name('report-dummy-proposal-cancellation');
+        Route::get('report-dummy-proposal-approved', 'dummy_approved')->name('report-dummy-proposal-approved');
+        Route::get('report-dummy-proposal-reject', 'dummy_reject')->name('report-dummy-proposal-reject');
+        Route::get('report-dummy-proposal-generate', 'dummy_generate')->name('report-dummy-proposal-generate');
+        Route::post('report-proposal-search', 'search_proposal')->name('report-proposal-search');
+
         Route::get('report-proposal-index', 'proposal')->name('report-proposal-index');
         Route::post('report-proposal-search', 'search_proposal')->name('report-proposal-search');
 
@@ -732,7 +741,7 @@ Route::middleware(['auth'])->group(function () {
     #Proposal Request
     Route::controller(proposal_request::class)->middleware('role:document')->group(function () {
         Route::get('/Proposal/request/index', 'index')->name('ProposalReq.index');
-        Route::get('/Dummy/Proposal/Request/document/view/{id}/{Type}', 'view')->name('ProposalReq.view');
+        Route::get('/Dummy/Proposal/Request/document/view/{id}/{Type}/{createby}', 'view')->name('ProposalReq.view');
         Route::post('/Dummy/Proposal/Request/document/view/Approve/', 'Approve')->name('DummyQuotation.Approve');
         Route::post('/Dummy/Proposal/Request/document/view/Reject/', 'Reject')->name('DummyQuotation.Reject');
         Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');

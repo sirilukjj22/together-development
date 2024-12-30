@@ -1364,7 +1364,7 @@
                 $('#PRICE_EXCLUDE_VAT').css('display', 'none');
                 $('#PRICE_PLUS_VAT').css('display', 'none');
             }
-            totalAmost()
+            totalAmost();
         }
         $(document).ready(function() {
             var Mvat ={{$Quotation->vat_type}};

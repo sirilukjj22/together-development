@@ -540,10 +540,10 @@
                         @if ($page_item == $i )
                             @if ($Mvat == 50)
                                 <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
+                                    {{-- <tr>
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
+                                    </tr> --}}
                                     @if ($SpecialDistext)
                                     <tr>
 
@@ -1137,10 +1137,10 @@
                             @if ($Mvat == 50)
 
                                 <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
+                                    {{-- <tr>
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
+                                    </tr> --}}
                                     @if ($SpecialDistext)
                                     <tr>
 

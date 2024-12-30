@@ -333,18 +333,32 @@
                                         </li>
                                     </ul>
                                     <ul class="sub-menu collapse" id="menu-Report">
-                                        <li class="collapsed">
+
                                             <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-report-Document-level-2" href="#"><span>Document Report</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
 
                                             <!-- Menu: Sub menu level 3 -->
                                             <ul class="sub-menu collapse" id="menu-report-Document-level-2">
 
-                                                    <li><a class="ms-link" href="{{ route('report-proposal-index') }}">Proposal Report</a></li>
-                                                    <li><a class="ms-link" href="{{ route('report-invoice-index') }}">Proforma Invoice Report</a></li>
-                                                    <li><a class="ms-link" href="{{ route('report-additional-index') }}">Additional Charge Report</a></li>
-                                                    <li><a class="ms-link" href="{{ route('report-billingfolio-index') }}">Billing Folio Report</a></li>
+                                                        <li class="collapsed">
+                                                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-report-Document-level-3" href="#"><span>Dummy Proposal Report</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
+
+                                                            <!-- Menu: Sub menu level 3 -->
+                                                            <ul class="sub-menu collapse" id="menu-report-Document-level-3">
+
+                                                                    <li><a class="ms-link" href="{{ route('report-dummy-proposal-day') }}">Dummy Proposal Make Today by Date</a></li>
+                                                                    <li><a class="ms-link" href="{{ route('report-dummy-proposal-cancellation') }}">Cancellation Report</a></li>
+                                                                    <li><a class="ms-link" href="{{ route('report-dummy-proposal-approved') }}">Approved Report</a></li>
+                                                                    <li><a class="ms-link" href="{{ route('report-dummy-proposal-reject') }}">Reject Report</a></li>
+                                                                    <li><a class="ms-link" href="{{ route('report-dummy-proposal-generate') }}">Generate Report</a></li>
+                                                                    {{-- <li><a class="ms-link" href="{{ route('report-invoice-index') }}">Proforma Invoice Report</a></li>
+                                                                    <li><a class="ms-link" href="{{ route('report-additional-index') }}">Additional Charge Report</a></li>
+                                                                    <li><a class="ms-link" href="{{ route('report-billingfolio-index') }}">Billing Folio Report</a></li> --}}
+                                                            </ul>
+                                                        </li>
+
+
                                             </ul>
-                                        </li>
+
                                     </ul>
                                 </li>
                             @endif

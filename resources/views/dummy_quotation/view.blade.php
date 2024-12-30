@@ -748,10 +748,10 @@
                                     <div class="lek" >
                                         <div class="proposal-number-cutomer-detail" id="PRICE_INCLUDE_VAT">
                                             <ul>
-                                                <li class="mt-3">
+                                                {{-- <li class="mt-3">
                                                     <b>Subtotal</b>
                                                     <span id="total-amount"></span>
-                                                </li>
+                                                </li> --}}
                                                 <li class="mt-3">
                                                     <b>Price Before Tax</b>
                                                     <span id="Net-price"></span>

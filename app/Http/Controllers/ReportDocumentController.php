@@ -23,6 +23,17 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\receive_payment;
 class ReportDocumentController extends Controller
 {
+    //Dummy Proposal
+
+    public function dummy_today()
+    {
+        $userid = Auth::user()->id;
+        $filter_by = "date";
+        $status = '';
+        $search_date = date('d/m/Y');
+        $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')->get();
+        return view('report.document.dummy_today',compact('filter_by','search_date','data_query'));
+    }
     //Proposal
     public function proposal()
     {
@@ -41,6 +52,7 @@ class ReportDocumentController extends Controller
         $statusinput = $request->statusinput;
         $query = Quotation::query();
 
+
         if ($statusinput) {
 
             if ($statusinput== 'Pending') {
@@ -53,23 +65,18 @@ class ReportDocumentController extends Controller
                 $query->where('status_document', 4);
             } elseif ($statusinput == 9) {
                 $query->where('status_document', 9);
-            } elseif ($statusinput == 0) {
+            } elseif ($request->statusinput == 55) {
                 $query->where('status_document', 0);
             }
+
             $search_date = date('d/m/Y');
             $startDate = '';
             $status = $statusinput;
-
         }else{
             if ($filter_by == "date") {
                 $start = $request->startDate;
+
                 list($startDate, $endDate) = explode(' - ', $start);
-
-
-
-                // แยกวันที่
-
-
                 $startDate = \Carbon\Carbon::createFromFormat('d/m/Y', $startDate)->format('Y-m-d');
                 $endDate = \Carbon\Carbon::createFromFormat('d/m/Y', $endDate)->format('Y-m-d');
                 if ($startDate == $endDate) {
@@ -108,6 +115,7 @@ class ReportDocumentController extends Controller
             $status = '';
         }
         $data_query = $query->get();
+
         $total_quotation = $query->sum('quotation.Nettotal');
         if ($request->method_name == "search") {
             return view('report.document.proposal',compact('filter_by','search_date','data_query','startDate','status'));

@@ -205,40 +205,27 @@
                                     </select>
                                 </div>
                                 <style>
-                                    .d-al-center div {
-                                      display: flex;
-                                      align-items: center;
+                                .d-al-center div {
+                                    display: flex;
+                                    align-items: center;
 
-                                    }
-                                    .d-al-center label {
-                                      margin: 0px;
-                                    }
-                                  </style>
-                                <div class="col-md-12 d-flex flex-row gap-3 mt-4 d-al-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusPending" value="Pending" {{ isset($status) && $status == 'Pending'? 'checked' : '' }}>
-                                        <label class="btn  " for="statusPending" style="pointer-events: none;background-color: #FF6633;color:white">Pending</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusAwaiting" value="2" {{ isset($status) && $status == '2'? 'checked' : ''  }}>
-                                        <label class="btn btn-warning " for="statusAwaiting" style="pointer-events: none; color:white">Awaiting Approval</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusApproved" value="11" {{ isset($status) && $status == '11' ? 'checked' : '' }}>
-                                        <label class="btn btn-success " for="statusApproved" style="pointer-events: none;">Approved</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusReject" value="4" {{ isset($status) && $status == '4' ? 'checked' : '' }}>
-                                        <label class="btn " for="statusReject" style="pointer-events: none;background-color:#1d4ed8; color:white">Reject</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusComplete" value="9" {{ isset($status) && $status == '9' ? 'checked' : ''}}>
-                                        <label class="btn " for="statusComplete" style="pointer-events: none;background-color:#2C7F7A; color:white">Complete</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="statusinput" id="statusCancel" value="0" {{ isset($status) && $status == '0'? 'checked' : '' }}>
-                                        <label class="btn " for="statusCancel" style="pointer-events: none;background-color:red; color:white">Cancel</label>
-                                    </div>
+                                }
+                                .d-al-center label {
+                                    margin: 0px;
+                                }
+                                </style>
+                                <div class="col-md-6" ></div>
+                                <div class="col-md-6" >
+                                    <label for="statusinput" class="form-label">Select Status</label>
+                                    <select name="statusinput" id="statusinput" class="select2">
+                                        <option></option>
+                                        <option value="Pending" {{ isset($status) && $status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="2" {{ isset($status) && $status == '2' ? 'selected' : '' }}>Awaiting Approval</option>
+                                        <option value="11" {{ isset($status) && $status == '11' ? 'selected' : '' }}>Approved</option>
+                                        <option value="4" {{ isset($status) && $status == '4' ? 'selected' : '' }}>Reject</option>
+                                        <option value="9" {{ isset($status) && $status == '9' ? 'selected' : '' }}>Complete</option>
+                                        <option value="55" {{ isset($status) && $status == '55' ? 'selected' : '' }}>Cancel</option>
+                                    </select>
                                 </div>
 
                                 <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
@@ -352,7 +339,13 @@
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
+
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Please select an option"
+            });
+        });
         $(document).ready(function() {
             var filterBy = $('#filter-by').val();
             var startDate = document.getElementById("startDate");
@@ -394,9 +387,7 @@
                 }
             });
             $('#startDate').on('apply.daterangepicker', function(ev, picker) {
-                document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-                    radio.checked = false;
-                });
+                document.getElementById('statusinput').disabled = true;
             });
         });
 
@@ -406,6 +397,7 @@
             const startDate = document.getElementById("startDate");
             const MonthStart = document.getElementById("month");
             const startYear = document.getElementById("startYear");
+            var statusinput = document.getElementById("statusinput");
 
             const date = new Date();
             const year = date.getFullYear();
@@ -419,16 +411,12 @@
 
             // เมื่อเลือกค่าใน month (กรณีเดือน)
             MonthStart.addEventListener('input', function () {
-                document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-                            radio.checked = false;
-                        });
+                statusinput.disabled = true;
             });
 
             // เมื่อเลือกค่าใน startYear (กรณีปี)
             startYear.addEventListener('change', function () {
-                document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-                            radio.checked = false;
-                        });
+                statusinput.disabled = true;
             });
             filterButtons.forEach(button => {
                 button.addEventListener("click", function() {
@@ -478,14 +466,14 @@
             const startDate = document.getElementById("startDate");
             const MonthStart = document.getElementById("month");
             const startYear = document.getElementById("startYear");
-            $('#statusPending, #statusAwaiting ,#statusApproved , #statusReject , #statusComplete,#statusCancel').on('change', function() {
+            $('#statusinput').on('change', function() {
                 // เช็คว่า radio ถูกเลือกหรือไม่
-                if (this.checked) {
+
                     // ทำสิ่งที่ต้องการเมื่อ radio ถูกเลือก
                     startDate.disabled = true;
                     MonthStart.disabled = true;
                     startYear.disabled = true;
-                }
+
             });
 
         });

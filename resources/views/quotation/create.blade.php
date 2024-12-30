@@ -1349,6 +1349,7 @@
                 $('#PRICE_EXCLUDE_VAT').css('display', 'block');
                 $('#PRICE_PLUS_VAT').css('display', 'none');
             }
+            totalAmost();
         }
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {

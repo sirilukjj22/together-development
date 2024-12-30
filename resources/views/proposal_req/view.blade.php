@@ -8,7 +8,7 @@
         display: inline-block;  /* ทำให้ border-bottom มีความยาวเท่ากับข้อความ */
         border-bottom: 2px solid #2D7F7B;  /* กำหนดเส้นใต้ */
         padding-bottom: 5px;
-        font-size: 20px;
+
     }
     .styled-hr {
         border: none; /* เอาขอบออก */
@@ -75,7 +75,19 @@
                             <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                                 <div class='card-body'>
                                     <div class="row">
-                                        <h5 class="com">รหัสใบข้อเสนอ : {{ $item['Proposal'] }}</h5>
+                                        @if ($item['Type'] == 'DummyProposal')
+                                        <div class="col-lg-12 col-md-12 col-sm-12 com">
+                                            <h5  style="font-size: 20px">Dummy ID : {{ $item['Proposal'] }} <button style="float: right"type="button" class="btn btn-color-green lift btn_modal" target="_blank"  onclick="window.open('{{ url('/Dummy/Proposal/view/' . $item['id']) }}', '_blank')">View</button></h5>
+                                            <b>Vat Type : </b><label> {{$item['vat']}}</label><br>
+                                            <b>Date Type : </b><label> {{$item['Date_type']}}</label>
+                                        </div>
+                                        @else
+                                        <div class="col-lg-12 col-md-12 col-sm-12 com">
+                                            <h5 style="font-size: 20px">Proposal ID : {{ $item['Proposal'] }} <button style="float: right"type="button" class="btn btn-color-green lift btn_modal" target="_blank"  onclick="window.open('{{ url('/Proposal/view/' . $item['id']) }}', '_blank')">View</button></h5>
+                                            <b>Vat Type : </b><label> {{$item['vat']}}</label><br>
+                                            <b>Date Type : </b><label> {{$item['Date_type']}}</label>
+                                        </div>
+                                        @endif
                                         <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="">
                                         @if ($item['type_Proposal'] == 'Company')
                                             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -207,7 +219,7 @@
                                                             $sp52 = $price52 - $sp;
                                                             $Add52 = $sp52 * 0.07; // You can also write 7 / 100 as 0.07 directly
                                                             $pricebefore52 = $price52 + $Add52;
-
+                                                            $Net52 = $priceless50 + $Add50;
                                                             // Ensure pax and Unit are numeric
                                                             $pax += (float) @$itemproduct->pax * (float) @$itemproduct->Quantity;
 
@@ -216,7 +228,7 @@
 
                                                             $average += (float) @$itemproduct->totaldiscount ;
                                                             $averagetotal = $average- $sp;
-                                                            $allaverage = ($pax > 0) ? $averagetotal / $pax : 0; // Avoid division by zero
+                                                            // Avoid division by zero
                                                         @endphp
                                                 @endforeach
 
@@ -241,7 +253,7 @@
                                                     <div class="col-lg-6 col-md-6 col-sm-6 ">
                                                         <div class="d-grid-2column" >
                                                             <div class="" >
-                                                                <span id="Subtotal">Subtotal : </span><br>
+                                                                {{-- <span id="Subtotal">Subtotal : </span><br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                     <span id="Special">Special Discount : </span><br>
                                                                     <span id="less">Subtotal less Discount : </span><br>
@@ -253,7 +265,7 @@
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
                                                             <div class="">
-                                                                {{ number_format($price50, 2, '.', ',') }} <br>
+                                                                {{-- {{ number_format($price50, 2, '.', ',') }} <br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
                                                                 {{ number_format($sp50, 2, '.', ',') }}<br>
@@ -262,7 +274,7 @@
                                                                 {{ number_format($Add50, 2, '.', ',') }}<br>
                                                                 {{ number_format($Net50, 2, '.', ',') }}<br>
                                                                 {{ number_format($pax) }}<br>
-                                                                {{ number_format($allaverage,2, '.', ',') }}<br>
+                                                                {{ number_format(($pax > 0) ? $Net50 / $pax : 0,2, '.', ',') }}<br>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -288,7 +300,7 @@
                                                                 @endif
                                                                 {{ number_format($sp51, 2, '.', ',') }} <br>
                                                                 {{ number_format($pax) }}<br>
-                                                                {{ number_format($allaverage,2, '.', ',') }}<br>
+                                                                {{ number_format(($pax > 0) ? $sp51 / $pax : 0,2, '.', ',') }}<br>
                                                             </div>
                                                         </div>
 
@@ -317,7 +329,7 @@
                                                                 {{ number_format($Add52, 2, '.', ',') }} <br>
                                                                 {{ number_format($pricebefore52, 2, '.', ',') }} <br>
                                                                 {{ number_format($pax) }}<br>
-                                                                {{ number_format($allaverage,2, '.', ',') }}<br>
+                                                                {{ number_format(($pax > 0) ? $pricebefore52 / $pax : 0,2, '.', ',') }}<br>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -370,7 +382,19 @@
                             <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                                 <div class='card-body'>
                                     <div class="row">
-                                        <h5 class="com">รหัสใบข้อเสนอ : {{ $item['Proposal'] }}</h5>
+                                        @if ($item['Type'] == 'DummyProposal')
+                                        <div class="col-lg-12 col-md-12 col-sm-12 com">
+                                            <h5  style="font-size: 20px">Dummy ID : {{ $item['Proposal'] }} <button style="float: right"type="button" class="btn btn-color-green lift btn_modal" target="_blank"  onclick="window.open('{{ url('/Dummy/Proposal/view/' . $item['id']) }}', '_blank')">View</button></h5>
+                                            <b>Vat Type : </b><label> {{$item['vat']}}</label><br>
+                                            <b>Date Type : </b><label> {{$item['Date_type']}}</label>
+                                        </div>
+                                        @else
+                                        <div class="col-lg-12 col-md-12 col-sm-12 com">
+                                            <h5 style="font-size: 20px">Proposal ID : {{ $item['Proposal'] }} <button style="float: right"type="button" class="btn btn-color-green lift btn_modal" target="_blank"  onclick="window.open('{{ url('/Proposal/view/' . $item['id']) }}', '_blank')">View</button></h5>
+                                            <b>Vat Type : </b><label> {{$item['vat']}}</label><br>
+                                            <b>Date Type : </b><label> {{$item['Date_type']}}</label>
+                                        </div>
+                                        @endif
                                         <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="">
                                         @if ($item['type_Proposal'] == 'Company')
                                             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -537,7 +561,7 @@
                                                     <div class="col-lg-6 col-md-6 col-sm-6 ">
                                                         <div class="d-grid-2column" >
                                                             <div class="" >
-                                                                <span id="Subtotal">Subtotal : </span><br>
+                                                                {{-- <span id="Subtotal">Subtotal : </span><br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                     <span id="Special">Special Discount : </span><br>
                                                                     <span id="less">Subtotal less Discount : </span><br>
@@ -549,7 +573,7 @@
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
                                                             <div class="">
-                                                                {{ number_format($price50, 2, '.', ',') }} <br>
+                                                                {{-- {{ number_format($price50, 2, '.', ',') }} <br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
                                                                 {{ number_format($sp50, 2, '.', ',') }}<br>
@@ -594,7 +618,7 @@
                                                 <div class="col-lg-6 col-md-6 col-sm-6">
                                                     <div class="d-grid-2column">
                                                         <div class="">
-                                                                <span id="Subtotal">Subtotal : </span><br>
+                                                                {{-- <span id="Subtotal">Subtotal : </span><br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 <span id="Special">Special Discount : </span><br>
                                                                 <span id="less">Subtotal less Discount : </span><br>
@@ -605,7 +629,7 @@
                                                                 <span id="Net">Average per person : </span><br>
                                                             </div>
                                                             <div class="">
-                                                                {{ number_format($price52, 2, '.', ',') }} <br>
+                                                                {{-- {{ number_format($price52, 2, '.', ',') }} <br> --}}
                                                                 @if ($itemdata->SpecialDiscountBath)
                                                                 {{ number_format($sp, 2, '.', ',') }}<br>
                                                                 {{ number_format($sp52, 2, '.', ',') }} <br>

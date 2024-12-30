@@ -84,7 +84,7 @@
                                                         <td style="text-align: center;">{{ $item->COUNTDummyNo }}</td>
                                                         <td style="text-align: center;"><span class="badge rounded-pill bg-warning">Awaiting Approval</span></td>
                                                         <td style="text-align: center;">
-                                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Dummy/Proposal/Request/document/view/'.$item->Company_ID.'/'.$item->QuotationType) }}'">
+                                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Dummy/Proposal/Request/document/view/'.$item->Company_ID.'/'.$item->QuotationType.'/'.$item->Operated_by) }}'">
                                                                 <i class="fa fa-folder-open-o"></i> View
                                                             </button>
                                                         </td>

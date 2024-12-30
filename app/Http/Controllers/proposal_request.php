@@ -72,14 +72,14 @@ class proposal_request extends Controller
         $Additionalcount =proposal_overbill::query()->where('status_document',2)->count();
         return view('proposal_req.index',compact('proposal','proposalcount','requestcount','request','Additional','Additionalcount'));
     }
-    public function view($id,$Type)
+    public function view($id,$Type,$createby)
     {
         if ($Type == 'DummyProposal') {
-            $Data = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->get();
-            $Datacount = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->count();
+            $Data = dummy_quotation::where('Company_ID', $id)->where('Operated_by', $createby)->where('status_document', 2)->get();
+            $Datacount = dummy_quotation::where('Company_ID', $id)->where('Operated_by', $createby)->where('status_document', 2)->count();
         } else if ($Type == 'Proposal') {
-            $Data = Quotation::where('Company_ID', $id)->where('status_document', 2)->get();
-            $Datacount = Quotation::where('Company_ID', $id)->where('status_document', 2)->count();
+            $Data = Quotation::where('Company_ID', $id)->where('Operated_by', $createby)->where('status_document', 2)->get();
+            $Datacount = Quotation::where('Company_ID', $id)->where('Operated_by', $createby)->where('status_document', 2)->count();
         }
 
         $myData = [];
@@ -185,6 +185,15 @@ class proposal_request extends Controller
                 $DummyNo = $item->DummyNo;
                 $issue_date = $item->issue_date;
                 $Expirationdate = $item->Expirationdate;
+                $vat_type = $item->vat_type;
+                if ($vat_type == 50) {
+                    $vat ='Price Include Vat';
+                }elseif ($vat_type == 51) {
+                    $vat ='Price Exclude Vat';
+                }else{
+                    $vat = 'Price Plus Vat';
+                }
+                $Date_type = $item->Date_type;
                 $myData[] = [
                     'id' => $item->id,
                     'Proposal' => $DummyNo,
@@ -210,6 +219,10 @@ class proposal_request extends Controller
                     'children'=>$children,
                     'issue_date'=>$issue_date,
                     'Expirationdate'=>$Expirationdate,
+                    'vat'=>$vat,
+                    'Type'=>$Type,
+                    'Date_type'=>$Date_type,
+
                 ];
             }
             $datarequest = collect($myData);

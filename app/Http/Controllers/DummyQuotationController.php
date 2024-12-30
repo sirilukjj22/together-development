@@ -2930,7 +2930,7 @@ class DummyQuotationController extends Controller
             $save->Category = 'Create :: Proposal';
             $save->content =$datacompany;
             $save->save();
-            return redirect()->route('Proposal.viewproposal', ['id' => $ProposalIDS])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
         }
