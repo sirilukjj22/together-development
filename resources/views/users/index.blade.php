@@ -110,14 +110,12 @@
                                                 @endif
                                             </td>
                                             <td class="td-content-center">
-                                                <div class="dropdown">
-                                                    <button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
-                                                        Select <span class="caret"></span>
-                                                    </button>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                     @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
-                                                        <ul class="dropdown-menu">
-                                                            <li class="button-li" onclick="window.location.href='{{ route('user-edit', $item->id) }}'">Edit</li>
-                                                            <li class="button-li" onclick="btnChangeStatus({{ $item->id }})">{{ $item->status == 1 ? "No active" : "Active" }}</li>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ route('user-edit', $item->id) }}">Edit</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" href="#" onclick="btnChangeStatus({{ $item->id }})">{{ $item->status == 1 ? "No active" : "Active" }}</a></li>
                                                         </ul>
                                                     @endif
                                                 </div>
