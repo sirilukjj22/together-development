@@ -7,6 +7,7 @@ $(document).ready(function () {
   let selectedDate = null;
   let selectedMonth = null;
   let lastSelectedValue = $('#combined-selected-box').val(); // เก็บค่าล่าสุดที่เลือก
+  
 
   const monthNames = [
     "January",
@@ -325,12 +326,12 @@ $(document).ready(function () {
   });
 
   $("#prev-year").click(function () {
-    currentYear--;
+    // currentYear--;
     generateMonthRangePicker(currentYear);
   });
 
   $("#next-year").click(function () {
-    currentYear++;
+    // currentYear++;
     generateMonthRangePicker(currentYear);
   });
 
@@ -356,4 +357,7 @@ $(document).ready(function () {
     $("#date-picker-wrapper, #month-picker-wrapper").hide();
     // updateSelectedYearBox(); // Update combined box with latest year selection
   });
+
+  $("#next-year").attr("type", "button");
+  $("#prev-year").attr("type", "button");
 });
