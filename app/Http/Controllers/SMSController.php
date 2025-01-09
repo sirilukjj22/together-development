@@ -1639,7 +1639,6 @@ class SMSController extends Controller
                     'date' => $request->date . " " . $request->time  ?? null,
                     'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
-                    'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-" . $request->transfer_account. "-x",
                     'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
                     'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
@@ -1649,6 +1648,12 @@ class SMSController extends Controller
                     'remark' => Auth::user()->name,
                     'updated_by' => Auth::user()->id
                 ]);
+
+                if (isset($request->transfer_account)) {
+                    SMS_alerts::where('id', $request->id)->update([
+                        'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-x" . $request->transfer_account. "-x",
+                    ]);
+                }
     
                 return response()->json([
                     'status' => 200,
@@ -1659,7 +1664,7 @@ class SMSController extends Controller
                     'date' => $request->date . " " . $request->time  ?? null,
                     'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
-                    'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-" . $request->transfer_account. "-x",
+                    'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-x" . $request->transfer_account. "-x",
                     'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
                     'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,

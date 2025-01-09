@@ -1385,7 +1385,11 @@
                             <div class="wf-py2">
                                 <label for="">โอนจากเลขที่บัญชี<sup class="text-danger">*</sup></label>
                                 <br>
-                                <input type="number" class="form-control" name="transfer_account" id="transfer-account" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);" required>
+                                <div class="input-group">
+                                    <span class="input-group-text">xxx-x-x</span>
+                                    <input type="number" class="form-control" name="transfer_account" id="transfer-account" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
+                                    <span class="input-group-text">-x</span>
+                                </div>
                             </div>
                             <div class="wf-py2 ">
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
@@ -2297,6 +2301,8 @@
             $('#add_into_account').select2({
                 dropdownParent: $('#exampleModalCenter5')
             });
+
+            $('#transfer-account').prop('disabled', false);
         });
 
         function select_type() {
@@ -2371,6 +2377,8 @@
             $('#add_into_account').val(0).trigger('change');
             $('#amount').val('');
 
+            $('#transfer-account').prop('disabled', false);
+
             jQuery.ajax({
                 type: "GET",
                 url: "{!! url('sms-edit/"+$id+"') !!}",
@@ -2386,6 +2394,9 @@
 
                         if (response.data.transfer_form_account != null) {
                             var transfer_account = response.data.transfer_form_account.replace(/\D/g, '');
+                            if (transfer_account.length > 4) {
+                                $('#transfer-account').prop('disabled', true);
+                            }
                         } else {
                             var transfer_account = '';
                         }
