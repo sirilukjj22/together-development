@@ -26,9 +26,15 @@ class SMSController extends Controller
             if (count($data_forward) > 0) {
                 $exp_form = explode(" ", $value->messages);
                 if (count($exp_form) == 11) {
+
+                    if (isset($exp_form[1])) {
+                        $fromAccount = $exp_form[1].' '.$exp_form[2];
+                    }
+
                     SMS_alerts::create([
                         'date' => $value->created_at,
                         'transfer_from' => SMS_alerts::check_bank($exp_form[1]),
+                        'transfer_form_account' => $fromAccount,
                         'into_account' => SMS_alerts::check_account($exp_form[6]),
                         'amount' => str_replace(",", "", substr($exp_form[4], 3)),
                         'remark' => "Auto",
@@ -52,9 +58,15 @@ class SMSController extends Controller
                         'is_status' => 1
                     ]);
                 } elseif (count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช") {
+
+                    if (isset($exp_form[1])) {
+                        $fromAccount = $exp_form[1].' '.$exp_form[2].' '.$exp_form[3];
+                    }
+
                     SMS_alerts::create([
                         'date' => $value->created_at,
                         'transfer_from' => SMS_alerts::check_bank($exp_form[1]),
+                        'transfer_form_account' => $fromAccount,
                         'into_account' => SMS_alerts::check_account($exp_form[8]),
                         'amount' => str_replace(",", "", substr($exp_form[6], 3)),
                         'remark' => "Auto",
@@ -136,7 +148,7 @@ class SMSController extends Controller
                         SMS_forwards::where('id', $value->id)->update([
                             'is_status' => 1
                         ]);
-                    } else {
+                    } else { // SCBQRAlert
                         $data_qr = mb_substr($exp_form[4], 4);
                         $into = "none";
 
@@ -152,9 +164,26 @@ class SMSController extends Controller
                                 break;
                         }
 
+                        if (isset($exp_form[5]) && strpos($exp_form[5], '@') !== false) {
+                            $getTime = substr($exp_form[5], strpos($exp_form[5], '@') + 1);
+                        } else {
+                            $getTime = Carbon::parse($value->created_at)->format('H:i');
+                        }
+
+                        if (isset($exp_form[2]) && strpos($exp_form[2], 'X') !== false) {
+                            if ($exp_form[1] == "บ.จากGSBA") {
+                                $formAccount = "xxx-" . strtolower($exp_form[2][0]) . "-xx" . $exp_form[2][1] . "-" . substr($exp_form[2], 2, 4) . "-" . $exp_form[2][-1];
+                            } else {
+                                $formAccount = "xxx-{$exp_form[2][1]}-" . substr($exp_form[2], 2, 4) . "-{$exp_form[2][-1]}";
+                            }
+                        } else {
+                            $formAccount = '';
+                        }
+
                         SMS_alerts::create([
-                            'date' => $value->created_at,
+                            'date' => Carbon::parse($value->created_at)->format('Y-m-d').' '.Carbon::createFromFormat('H:i', $getTime)->format('H:i:s'),
                             'transfer_from' => SMS_alerts::check_bank(mb_substr($exp_form[1], 5)),
+                            'transfer_form_account' => $formAccount ?? '',
                             'into_account' => $into,
                             'into_qr' => $data_qr,
                             'amount' => str_replace(",", "", $exp_form[0]),
@@ -612,7 +641,7 @@ class SMSController extends Controller
                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
                 }
 
-                $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+                $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.' '.@$value->transfer_form_account.'</div>';
 
                 // เข้าบัญชี
                 $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
@@ -1003,7 +1032,7 @@ class SMSController extends Controller
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
                     }
     
-                    $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+                    $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.' '.@$value->transfer_form_account.'</div>';
     
                     // เข้าบัญชี
                     $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
@@ -1573,11 +1602,11 @@ class SMSController extends Controller
             $to_3 = date('Y-m-' . $day . ' 21:00:00');
         }
 
-        $to_3_date = date_create($to_3);
-        $to_3_fm = date_format($to_3_date, "Y-m-d");
+        // $to_3_date = date_create($to_3);
+        // $to_3_fm = date_format($to_3_date, "Y-m-d");
 
         $total_month = SMS_alerts::whereBetween('date', [$from_3, $to_3])->WhereNull('transfer_remark')->where('split_status', 0)
-            ->orWhereDate('date_into', $to_3_fm)->orderBy('date', 'asc')->sum('amount');
+            ->orWhereBetween(DB::raw('DATE(date)'), [date('Y-m-d', strtotime($date)), date('Y-m-d', strtotime($to_3))])->orderBy('date', 'asc')->sum('amount');
         $forcast = $total_month / date('j');
 
         return response()->json([
@@ -1610,6 +1639,7 @@ class SMSController extends Controller
                     'date' => $request->date . " " . $request->time  ?? null,
                     'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
+                    'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-" . $request->transfer_account. "-x",
                     'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
                     'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
@@ -1629,6 +1659,7 @@ class SMSController extends Controller
                     'date' => $request->date . " " . $request->time  ?? null,
                     'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
+                    'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-" . $request->transfer_account. "-x",
                     'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
                     'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,

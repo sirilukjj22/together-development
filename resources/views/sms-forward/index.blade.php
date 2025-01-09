@@ -543,8 +543,8 @@
                                                     <th style="text-align: center;" data-priority="1">#</th>
                                                     <th style="text-align: center;" data-priority="1">Date</th>
                                                     <th style="text-align: center;">Time</th>
-                                                    <th style="text-align: center;">Bank</th>
-                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;">From Bank Account</th>
+                                                    <th style="text-align: center;">To Bank Account</th>
                                                     <th style="text-align: center;" data-priority="1">Amount</th>
                                                     <th style="text-align: center;">Creatd By</th>
                                                     <th style="text-align: center;">Income Type</th>
@@ -574,7 +574,7 @@
                                                             @elseif (file_exists($filename2))
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                             @endif
-                                                            {{ @$item->transfer_bank->name_en }}
+                                                            {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                         </div>
                                                     </td>
                                                     <td class="td-content-center">
@@ -745,8 +745,8 @@
                                                     <th style="text-align: center;" data-priority="1">#</th>
                                                     <th style="text-align: center;" data-priority="1">Date</th>
                                                     <th style="text-align: center;">Time</th>
-                                                    <th style="text-align: center;">Bank</th>
-                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;">From Bank Account</th>
+                                                    <th style="text-align: center;">To Bank Account</th>
                                                     <th style="text-align: center;" data-priority="1">Amount</th>
                                                     <th style="text-align: center;">Creatd By</th>
                                                     <th style="text-align: center;">Income Type</th>
@@ -776,7 +776,7 @@
                                                                 @elseif (file_exists($filename2))
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                                 @endif
-                                                                {{ @$item->transfer_bank->name_en }}
+                                                                {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                             </div>
                                                         </td>
                                                         <td class="td-content-center">
@@ -949,8 +949,8 @@
                                                     <th style="text-align: center;" data-priority="1">#</th>
                                                     <th style="text-align: center;" data-priority="1">Date</th>
                                                     <th style="text-align: center;">Time</th>
-                                                    <th style="text-align: center;">Bank</th>
-                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;">From Bank Account</th>
+                                                    <th style="text-align: center;">To Bank Account</th>
                                                     <th style="text-align: center;" data-priority="1">Amount</th>
                                                     <th style="text-align: center;">Creatd By</th>
                                                     <th style="text-align: center;">Income Type</th>
@@ -975,7 +975,7 @@
                                                                 @elseif (file_exists($filename2))
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                                 @endif
-                                                                {{ @$item->transfer_bank->name_en }}
+                                                                {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                             </div>
                                                         </td>
                                                         <td class="td-content-center">
@@ -1381,6 +1381,11 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="wf-py2">
+                                <label for="">โอนจากเลขที่บัญชี<sup class="text-danger">*</sup></label>
+                                <br>
+                                <input type="number" class="form-control" name="transfer_account" id="transfer-account" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);" required>
                             </div>
                             <div class="wf-py2 ">
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
@@ -2352,6 +2357,7 @@
             $('#sms-date').css('border-color', '#f0f0f0');
             $('#sms-time').css('border-color', '#f0f0f0');
             $('#error-transfer').css('border-color', '#f0f0f0');
+            $('#transfer-account').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
             $('#status').val(0).trigger('change');
@@ -2359,6 +2365,7 @@
             $('#sms-time').val('');
             $('#booking_id').val('');
             $('#transfer_from').val(0).trigger('change');
+            $('#transfer-account').val('');
             $('#add_into_account').val(0).trigger('change');
             $('#amount').val('');
 
@@ -2375,11 +2382,18 @@
                             var myArray2 = response.data.date_into.split(" ");
                         }
 
+                        if (response.data.transfer_form_account != '') {
+                            var transfer_account = response.data.transfer_form_account.replace(/\D/g, '');
+                        } else {
+                            var transfer_account = '';
+                        }
+
                         $('#status').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
                         $('#sms-time').val(myArray[1]);
                         $('#booking_id').val(response.data.booking_id);
                         $('#transfer_from').val(response.data.transfer_from).trigger('change');
+                        $('#transfer-account').val(transfer_account);
                         $('#add_into_account').val(response.data.into_account).trigger('change');
                         $('#amount').val(response.data.amount);
                         if (response.data.date_into != null) {

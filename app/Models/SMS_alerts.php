@@ -16,6 +16,7 @@ class SMS_alerts extends Model
         'date',
         'date_into',
         'transfer_from',
+        'transfer_form_account',
         'into_account',
         'amount',
         'amount_before_split',

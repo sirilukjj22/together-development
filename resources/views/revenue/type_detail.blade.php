@@ -38,8 +38,8 @@
                                         <th style="text-align: center;" data-priority="1">#</th>
                                         <th style="text-align: center;" data-priority="1">Date</th>
                                         <th style="text-align: center;">Time</th>
-                                        <th style="text-align: center;">Bank</th>
-                                        <th style="text-align: center;">Bank Account</th>
+                                        <th style="text-align: center;">From Bank Account</th>
+                                        <th style="text-align: center;">To Bank Account</th>
                                         <th style="text-align: center;" data-priority="1">Amount</th>
                                         <th style="text-align: center;">Creatd By</th>
                                         <th style="text-align: center;">Income Type</th>
@@ -63,7 +63,7 @@
                                                     @elseif (file_exists($filename2))
                                                         <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
                                                     @endif
-                                                    {{ @$item->transfer_bank->name_en }}
+                                                    {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                 </div>
                                             </td>
                                             <td class="td-content-center">
