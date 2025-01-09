@@ -2274,6 +2274,7 @@
             $('#sms-date').css('border-color', '#f0f0f0');
             $('#sms-time').css('border-color', '#f0f0f0');
             $('#error-transfer').css('border-color', '#f0f0f0');
+            $('#transfer-account').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
 
@@ -2283,6 +2284,7 @@
             $('#sms-time').val('');
             $('#booking_id').val('');
             $('#transfer_from').val(0).trigger('change');
+            $('#transfer-account').val('');
             $('#add_into_account').val(0).trigger('change');
             $('#amount').val('');
 
@@ -2382,7 +2384,7 @@
                             var myArray2 = response.data.date_into.split(" ");
                         }
 
-                        if (response.data.transfer_form_account != '') {
+                        if (response.data.transfer_form_account != null) {
                             var transfer_account = response.data.transfer_form_account.replace(/\D/g, '');
                         } else {
                             var transfer_account = '';
