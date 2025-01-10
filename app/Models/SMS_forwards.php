@@ -12,6 +12,8 @@ class SMS_forwards extends Model
     protected $table = 'sms_forward';
     protected $fillable = [
         'messages',
+        'sender',
+        'chanel',
         'is_status',
         'created_at',
         'updated_at',

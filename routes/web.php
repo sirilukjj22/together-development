@@ -32,6 +32,7 @@ use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
+use App\Http\Controllers\GmailController;
 use App\Http\Controllers\LinkPDFProposal;
 use App\Http\Controllers\ReportAgodaAccountReceivableController;
 use App\Http\Controllers\ReportAgodaOutstandingController;
@@ -70,6 +71,11 @@ Route::get('sms-forward', [SMSController::class, 'forward'])->name('sms-forward'
 Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-forward');
 Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
 Route::get('/Invoice/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
+
+// Test Gmail
+Route::get('/google/redirect', [GmailController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('/google/callback', [GmailController::class, 'handleGoogleCallback']);
+Route::get('/gmail/messages', [GmailController::class, 'listMessages'])->name('gmail.messages');
 
 Route::middleware(['auth'])->group(function () {
 
