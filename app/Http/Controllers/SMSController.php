@@ -19,7 +19,7 @@ class SMSController extends Controller
 
     public function index()
     {
-        // dd(explode(" ", "เงินโอนจาก MISS EI EI MA ยอด THB5,850.00 เข้าบ/ช x267913 ผ่าน ENET ใช้ได้ THB1,276,868.42"));
+        // dd(explode(" ", "25.00 บ.จากKBNK X881558 ชำระผ่านQR เข้า076355900016901 14/01@09:21"));
         $data_forward = SMS_forwards::where('is_status', 0)->get();
 
         foreach ($data_forward as $key => $value) {
@@ -148,7 +148,7 @@ class SMSController extends Controller
                         SMS_forwards::where('id', $value->id)->update([
                             'is_status' => 1
                         ]);
-                    } else { // SCBQRAlert
+                    } elseif (isset($exp_form[3]) && $exp_form[3] == "ชำระผ่านQR") { // SCBQRAlert
                         $data_qr = mb_substr($exp_form[4], 4);
                         $into = "none";
 
@@ -179,7 +179,7 @@ class SMSController extends Controller
                         } else {
                             $formAccount = '';
                         }
-
+                        
                         SMS_alerts::create([
                             'date' => Carbon::parse($value->created_at)->format('Y-m-d').' '.Carbon::createFromFormat('H:i', $getTime)->format('H:i:s'),
                             'transfer_from' => SMS_alerts::check_bank(mb_substr($exp_form[1], 5)),
@@ -188,7 +188,7 @@ class SMSController extends Controller
                             'into_qr' => $data_qr,
                             'amount' => str_replace(",", "", $exp_form[0]),
                             'remark' => "Auto",
-                            'status' => $into == "708-227357-4" ? 3 : 0
+                            'status' => $into == "708-2-27357-4" ? 3 : 0
                         ]);
 
                         SMS_forwards::where('id', $value->id)->update([
@@ -1639,9 +1639,9 @@ class SMSController extends Controller
                     'date' => $request->date . " " . $request->time  ?? null,
                     'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
-                    'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
+                    'into_account' => $request->into_account == "076355900016902" ? "708-2-26791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
-                    'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
+                    'into_qr' => $request->into_account == "076355900016902" ? "708-2-26791-3" : null,
                     'status' => $request->status == 0 ? 0 : $request->status,
                     'transfer_status' => !empty($request->date_transfer) ? 1 : 0,
                     'split_status' => 0,
@@ -1665,9 +1665,9 @@ class SMSController extends Controller
                     'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
                     'transfer_form_account' => $request->transfer_from == 14 ? "xxx-x-xxx-" . $request->transfer_account . "-x" : "xxx-x-x" . $request->transfer_account. "-x",
-                    'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
+                    'into_account' => $request->into_account == "076355900016902" ? "708-2-26791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
-                    'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
+                    'into_qr' => $request->into_account == "076355900016902" ? "708-2-26791-3" : null,
                     'booking_id' => $request->status == 5 ? $request->booking_id : NULL,
                     'status' => $request->status == 0 ? 0 : $request->status,
                     'transfer_status' => !empty($request->date_transfer) ? 1 : 0,
