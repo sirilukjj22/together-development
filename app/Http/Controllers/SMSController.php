@@ -103,7 +103,7 @@ class SMSController extends Controller
                                 $into = "708-226791-3";
                                 break;
                             case '076355900016911':
-                                $into = "708-226792-1";
+                                $into = "708-2-26792-1";
                                 break;
                         }
 
@@ -160,7 +160,7 @@ class SMSController extends Controller
                                 $into = "708-226791-3";
                                 break;
                             case '076355900016911':
-                                $into = "708-226792-1";
+                                $into = "708-2-26792-1";
                                 break;
                         }
 
@@ -267,7 +267,7 @@ class SMSController extends Controller
         $total_wp = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 3)
             ->sum('amount');
-        $total_credit = SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "708-226792-1")
+        $total_credit = SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "708-2-26792-1")
             ->where('status', 4)->sum('amount');
         $total_agoda = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 5)
@@ -284,8 +284,8 @@ class SMSController extends Controller
         $total_ev = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 8)
             ->sum('amount');
-        $total_credit = SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
-        $total_credit_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit = SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "708-2-26792-1")->where('status', 4)->sum('amount');
+        $total_credit_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-2-26792-1")->where('status', 4)->count();
         $total_transfer = SMS_alerts::where('date_into', [$from, $to])->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->count();
         $total_split = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('split_status', 1)->sum('amount');
@@ -919,7 +919,7 @@ class SMSController extends Controller
                 $query_sms->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('transfer_status', 1);
             } else {
                 if ($request->status == "credit_card_hotel_transfer_transaction") {
-                    $query_sms->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->where('status', 4);
+                    $query_sms->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4);
                 } elseif ($request->status == "total_transaction") {
                     $query_sms->whereBetween('date', [$smsFromDate, $smsToDate])->whereNull('date_into')->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate]);
                 } elseif ($request->status == "transfer_transaction") {
@@ -2336,15 +2336,15 @@ class SMSController extends Controller
 
         $total_fb = $query_fb->sum('amount');
 
-        ## Total All Outlet
+        ## Total Credit Card
         $query_credit = SMS_alerts::query();
 
             if ($request->status != '') { 
-                $query_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 4);
-                $query_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', $request->status)->where('status', 4);
+                $query_credit->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $FromFormatDate])->where('into_account', "708-2-26792-1")->where('status', $request->status)->where('transfer_status', 1);
+                $query_credit->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate]);
             } else {
-                $query_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', 4);
-                $query_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4);
+                $query_credit->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $FromFormatDate])->where('into_account', "708-2-26792-1")->where('transfer_status', 1)->where('status', 4);
+                $query_credit->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate]);
             }
 
         $total_credit = $query_credit->sum('amount');
@@ -2399,11 +2399,11 @@ class SMSController extends Controller
         $query_wp_credit = SMS_alerts::query();
 
             if ($request->status != '') { 
-                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 7);
-                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', $request->status)->where('status', 7);
+                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 7);
+                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', $request->status)->where('status', 7);
             } else {
-                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', 7);
-                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 7);
+                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->whereNull('date_into')->where('status', 7);
+                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 7);
             }
 
         $total_wp_credit = $query_wp_credit->sum('amount');
@@ -2478,7 +2478,7 @@ class SMSController extends Controller
         $total_transfer = $query_transfer_revenue->sum('amount');
 
         ## Credit Transaction
-        $query_credit_transaction = SMS_alerts::query()->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->where('status', 4);
+        $query_credit_transaction = SMS_alerts::query()->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4);
         $total_credit_transaction = $query_credit_transaction->count();
 
         ## Transfer Revenue2
@@ -2804,10 +2804,10 @@ class SMSController extends Controller
             $status = 2;
 
         } elseif ($request->revenue_type == "credit") {
-            $data_sms = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')
-                ->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)->orderBy('date', 'asc')->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')
-                ->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('transfer_status', 1)->where('status', 4)
+                ->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->orderBy('date', 'asc')->paginate(10);
+            $total_sms = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('transfer_status', 1)->where('status', 4)
+                ->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->sum('amount');
             $title = "Credit Card Hotel Revenue";
             $status = 4;
 
@@ -2856,8 +2856,8 @@ class SMSController extends Controller
             $status = 'transfer_transaction';
 
         } elseif ($request->revenue_type == "credit_transaction") {
-            $data_sms = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->where('status', 4)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4)->sum('amount');
             $title = "Credit Card Hotel Transfer Transaction";
             $status = 'credit_card_hotel_transfer_transaction';
 

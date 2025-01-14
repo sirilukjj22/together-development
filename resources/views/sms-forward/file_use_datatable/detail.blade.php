@@ -393,9 +393,9 @@
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
-                                    <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
-                                    <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
+                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
+                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
+                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
                                     <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
                                 </select>
                             </div>

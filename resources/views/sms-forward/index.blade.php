@@ -1396,9 +1396,9 @@
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
-                                    <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
-                                    <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
+                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
+                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
+                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
                                 </select>
                             </div>
                             <div class="wf-py2 ">
@@ -1452,9 +1452,9 @@
                             <div class="center w-100" style="gap:0.3rem;">
                                 <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
                                     <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
-                                    <option value="708-226791-3" {{ isset($into_account) && $into_account == '708-226791-3' ? 'selected' : '' }}>SCB 708-226791-3</option>
-                                    <option value="708-226792-1" {{ isset($into_account) && $into_account == '708-226792-1' ? 'selected' : '' }}>SCB 708-226792-1</option>
-                                    <option value="708-227357-4" {{ isset($into_account) && $into_account == '708-227357-4' ? 'selected' : '' }}>SCB 708-227357-4</option>
+                                    <option value="708-2-26791-3" {{ isset($into_account) && $into_account == '708-2-26791-3' ? 'selected' : '' }}>SCB 708-2-26791-3</option>
+                                    <option value="708-2-26792-1" {{ isset($into_account) && $into_account == '708-2-26792-1' ? 'selected' : '' }}>SCB 708-2-26792-1</option>
+                                    <option value="708-2-27357-4" {{ isset($into_account) && $into_account == '708-2-27357-4' ? 'selected' : '' }}>SCB 708-2-27357-4</option>
                                 </select>
 
                                 <!-- tooltip -->
@@ -2316,7 +2316,7 @@
 
             if (type == 4) {
                 $('#transfer_from').val(15).trigger('change');
-                $('#add_into_account').val("708-226792-1").trigger('change');
+                $('#add_into_account').val("708-2-26792-1").trigger('change');
             } else {
                 $('#transfer_from').val(0).trigger('change');
                 $('#add_into_account').val(0).trigger('change');
@@ -2339,7 +2339,7 @@
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue">');
             }
 
-            if (account == "708-226792-1") {
+            if (account == "708-2-26792-1") {
                 $('#bank-note').append('Credit Card Hotel Revenue');
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Credit Card Hotel Revenue">');
             }
