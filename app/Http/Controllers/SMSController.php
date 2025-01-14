@@ -97,10 +97,10 @@ class SMSController extends Controller
 
                         switch ($data_qr) {
                             case '076355900016901':
-                                $into = "708-227357-4";
+                                $into = "708-2-27357-4";
                                 break;
                             case '076355900016902':
-                                $into = "708-226791-3";
+                                $into = "708-2-26791-3";
                                 break;
                             case '076355900016911':
                                 $into = "708-2-26792-1";
@@ -154,10 +154,10 @@ class SMSController extends Controller
 
                         switch ($data_qr) {
                             case '076355900016901':
-                                $into = "708-227357-4";
+                                $into = "708-2-27357-4";
                                 break;
                             case '076355900016902':
-                                $into = "708-226791-3";
+                                $into = "708-2-26791-3";
                                 break;
                             case '076355900016911':
                                 $into = "708-2-26792-1";

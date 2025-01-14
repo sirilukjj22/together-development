@@ -2334,7 +2334,7 @@
             var account = $('#into_account').val();
             $('#bank-note').html("");
 
-            if (account == "708-226791-3") {
+            if (account == "708-2-26791-3") {
                 $('#bank-note').append('Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue');
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue">');
             }
@@ -2344,7 +2344,7 @@
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Credit Card Hotel Revenue">');
             }
 
-            if (account == "708-227357-4") {
+            if (account == "708-2-27357-4") {
                 $('#bank-note').append('Warter Park & Credit Card Water Park Revenue');
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Warter Park & Credit Card Water Park Revenue">');
             }
