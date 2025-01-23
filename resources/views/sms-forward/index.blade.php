@@ -543,8 +543,8 @@
                                                     <th style="text-align: center;" data-priority="1">#</th>
                                                     <th style="text-align: center;" data-priority="1">Date</th>
                                                     <th style="text-align: center;">Time</th>
-                                                    <th style="text-align: center;">Bank</th>
-                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;">From Bank Account</th>
+                                                    <th style="text-align: center;">To Bank Account</th>
                                                     <th style="text-align: center;" data-priority="1">Amount</th>
                                                     <th style="text-align: center;">Creatd By</th>
                                                     <th style="text-align: center;">Income Type</th>
@@ -574,7 +574,7 @@
                                                             @elseif (file_exists($filename2))
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                             @endif
-                                                            {{ @$item->transfer_bank->name_en }}
+                                                            {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                         </div>
                                                     </td>
                                                     <td class="td-content-center">
@@ -745,8 +745,8 @@
                                                     <th style="text-align: center;" data-priority="1">#</th>
                                                     <th style="text-align: center;" data-priority="1">Date</th>
                                                     <th style="text-align: center;">Time</th>
-                                                    <th style="text-align: center;">Bank</th>
-                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;">From Bank Account</th>
+                                                    <th style="text-align: center;">To Bank Account</th>
                                                     <th style="text-align: center;" data-priority="1">Amount</th>
                                                     <th style="text-align: center;">Creatd By</th>
                                                     <th style="text-align: center;">Income Type</th>
@@ -776,7 +776,7 @@
                                                                 @elseif (file_exists($filename2))
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                                 @endif
-                                                                {{ @$item->transfer_bank->name_en }}
+                                                                {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                             </div>
                                                         </td>
                                                         <td class="td-content-center">
@@ -949,8 +949,8 @@
                                                     <th style="text-align: center;" data-priority="1">#</th>
                                                     <th style="text-align: center;" data-priority="1">Date</th>
                                                     <th style="text-align: center;">Time</th>
-                                                    <th style="text-align: center;">Bank</th>
-                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;">From Bank Account</th>
+                                                    <th style="text-align: center;">To Bank Account</th>
                                                     <th style="text-align: center;" data-priority="1">Amount</th>
                                                     <th style="text-align: center;">Creatd By</th>
                                                     <th style="text-align: center;">Income Type</th>
@@ -975,7 +975,7 @@
                                                                 @elseif (file_exists($filename2))
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                                 @endif
-                                                                {{ @$item->transfer_bank->name_en }}
+                                                                {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                             </div>
                                                         </td>
                                                         <td class="td-content-center">
@@ -1382,14 +1382,23 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="wf-py2">
+                                <label for="">โอนจากเลขที่บัญชี<sup class="text-danger">*</sup></label>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-text">xxx-x-x</span>
+                                    <input type="number" class="form-control" name="transfer_account" id="transfer-account" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
+                                    <span class="input-group-text">-x</span>
+                                </div>
+                            </div>
                             <div class="wf-py2 ">
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
-                                    <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
-                                    <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
+                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
+                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
+                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
                                 </select>
                             </div>
                             <div class="wf-py2 ">
@@ -1443,9 +1452,9 @@
                             <div class="center w-100" style="gap:0.3rem;">
                                 <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
                                     <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
-                                    <option value="708-226791-3" {{ isset($into_account) && $into_account == '708-226791-3' ? 'selected' : '' }}>SCB 708-226791-3</option>
-                                    <option value="708-226792-1" {{ isset($into_account) && $into_account == '708-226792-1' ? 'selected' : '' }}>SCB 708-226792-1</option>
-                                    <option value="708-227357-4" {{ isset($into_account) && $into_account == '708-227357-4' ? 'selected' : '' }}>SCB 708-227357-4</option>
+                                    <option value="708-2-26791-3" {{ isset($into_account) && $into_account == '708-2-26791-3' ? 'selected' : '' }}>SCB 708-2-26791-3</option>
+                                    <option value="708-2-26792-1" {{ isset($into_account) && $into_account == '708-2-26792-1' ? 'selected' : '' }}>SCB 708-2-26792-1</option>
+                                    <option value="708-2-27357-4" {{ isset($into_account) && $into_account == '708-2-27357-4' ? 'selected' : '' }}>SCB 708-2-27357-4</option>
                                 </select>
 
                                 <!-- tooltip -->
@@ -2269,6 +2278,7 @@
             $('#sms-date').css('border-color', '#f0f0f0');
             $('#sms-time').css('border-color', '#f0f0f0');
             $('#error-transfer').css('border-color', '#f0f0f0');
+            $('#transfer-account').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
 
@@ -2278,6 +2288,7 @@
             $('#sms-time').val('');
             $('#booking_id').val('');
             $('#transfer_from').val(0).trigger('change');
+            $('#transfer-account').val('');
             $('#add_into_account').val(0).trigger('change');
             $('#amount').val('');
 
@@ -2290,6 +2301,8 @@
             $('#add_into_account').select2({
                 dropdownParent: $('#exampleModalCenter5')
             });
+
+            $('#transfer-account').prop('disabled', false);
         });
 
         function select_type() {
@@ -2303,7 +2316,7 @@
 
             if (type == 4) {
                 $('#transfer_from').val(15).trigger('change');
-                $('#add_into_account').val("708-226792-1").trigger('change');
+                $('#add_into_account').val("708-2-26792-1").trigger('change');
             } else {
                 $('#transfer_from').val(0).trigger('change');
                 $('#add_into_account').val(0).trigger('change');
@@ -2321,17 +2334,17 @@
             var account = $('#into_account').val();
             $('#bank-note').html("");
 
-            if (account == "708-226791-3") {
+            if (account == "708-2-26791-3") {
                 $('#bank-note').append('Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue');
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue">');
             }
 
-            if (account == "708-226792-1") {
+            if (account == "708-2-26792-1") {
                 $('#bank-note').append('Credit Card Hotel Revenue');
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Credit Card Hotel Revenue">');
             }
 
-            if (account == "708-227357-4") {
+            if (account == "708-2-27357-4") {
                 $('#bank-note').append('Warter Park & Credit Card Water Park Revenue');
                 $('#bank-note').append('<input type="hidden" name="bank_note" value="Warter Park & Credit Card Water Park Revenue">');
             }
@@ -2352,6 +2365,7 @@
             $('#sms-date').css('border-color', '#f0f0f0');
             $('#sms-time').css('border-color', '#f0f0f0');
             $('#error-transfer').css('border-color', '#f0f0f0');
+            $('#transfer-account').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
             $('#status').val(0).trigger('change');
@@ -2359,8 +2373,11 @@
             $('#sms-time').val('');
             $('#booking_id').val('');
             $('#transfer_from').val(0).trigger('change');
+            $('#transfer-account').val('');
             $('#add_into_account').val(0).trigger('change');
             $('#amount').val('');
+
+            $('#transfer-account').prop('disabled', false);
 
             jQuery.ajax({
                 type: "GET",
@@ -2375,11 +2392,21 @@
                             var myArray2 = response.data.date_into.split(" ");
                         }
 
+                        if (response.data.transfer_form_account != null) {
+                            var transfer_account = response.data.transfer_form_account.replace(/\D/g, '');
+                            if (transfer_account.length > 4) {
+                                $('#transfer-account').prop('disabled', true);
+                            }
+                        } else {
+                            var transfer_account = '';
+                        }
+
                         $('#status').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
                         $('#sms-time').val(myArray[1]);
                         $('#booking_id').val(response.data.booking_id);
                         $('#transfer_from').val(response.data.transfer_from).trigger('change');
+                        $('#transfer-account').val(transfer_account);
                         $('#add_into_account').val(response.data.into_account).trigger('change');
                         $('#amount').val(response.data.amount);
                         if (response.data.date_into != null) {

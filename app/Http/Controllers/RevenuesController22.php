@@ -75,7 +75,7 @@ class RevenuesController extends Controller
                         ];
                     }
                     // Credit Card Hotel
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
@@ -184,7 +184,7 @@ class RevenuesController extends Controller
                         ];
                     }
                     // Credit Card Hotel
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
@@ -376,7 +376,7 @@ class RevenuesController extends Controller
         $total_split_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('split_status', 1)->count();
         $total_not_type = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->count();
         $total_not_type_revenue = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->sum('amount');
-        $total_credit_transaction = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-2-26792-1")->where('status', 4)->count();
 
         $total_agoda_outstanding = Revenues::getManualTotalAgoda();
         $total_ev_outstanding = Revenues::getManualTotalEv();
@@ -619,7 +619,7 @@ class RevenuesController extends Controller
                         ];
                     }
                     // Credit Card Hotel
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
@@ -728,7 +728,7 @@ class RevenuesController extends Controller
                         ];
                     }
                     // Credit Card Hotel
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
@@ -1141,7 +1141,7 @@ class RevenuesController extends Controller
                             ];
                         }
                         // Credit Card Hotel
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                             $credit_array[$i] = [
                                 'total_credit' => $check_sms[$key]['total_amount'],
                             ];
@@ -1249,7 +1249,7 @@ class RevenuesController extends Controller
                             ];
                         }
                         // Credit Card Hotel
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                             $credit_array[$i] = [
                                 'total_credit' => $check_sms[$key]['total_amount'],
                             ];
@@ -1450,7 +1450,7 @@ class RevenuesController extends Controller
         $total_not_type_revenue = SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('status', 0)->whereNull('date_into')->sum('amount');
 
         ### Credit Transaction ### // Date, Month, Year
-        $total_credit_transaction = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 4)->count();
 
         $total_agoda_outstanding = Revenues::getManualTotalAgoda();
         $total_ev_outstanding = Revenues::getManualTotalEv();
@@ -2347,8 +2347,8 @@ class RevenuesController extends Controller
             $revenue_name = "type";
 
         } if ($request->revenue_type == "credit_hotel_transfer") {
-            $data_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)->get();
-            $total_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)->count();
+            $data_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 4)->get();
+            $total_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 4)->count();
             $title = "Credit Card Hotel Transfer Transaction";
             $status = 'credit_hotel_transfer';
             $revenue_name = "type";
@@ -2629,7 +2629,7 @@ class RevenuesController extends Controller
                     }
 
                 } if ($request->status == "credit_hotel_transfer") {
-                    $query_sms = SMS_alerts::query()->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4);
+                    $query_sms = SMS_alerts::query()->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 4);
     
                     if ($perPage == 10) {
                         $data_query = $query_sms->limit($request->page.'0')->get();
@@ -3222,12 +3222,12 @@ class RevenuesController extends Controller
 
                 }  if ($request->status == "credit_hotel_transfer") {
                     if (!empty($request->search_value)) {
-                        $data_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)
+                        $data_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 4)
                             ->where(function($query) use ($search) {
                                 $query->where('amount', 'like', '%' . $search . '%');
                             })->get();
                     } else {
-                        $data_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-226792-1")->where('status', 4)->get();
+                        $data_query = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 4)->get();
                     } 
 
                 } if ($request->status == "split_hotel_revenue") {

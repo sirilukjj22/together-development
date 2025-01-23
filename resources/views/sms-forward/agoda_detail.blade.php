@@ -40,8 +40,8 @@
                                 <th style="text-align: center;" data-priority="1">#</th>
                                 <th style="text-align: center;" data-priority="1">Date</th>
                                 <th style="text-align: center;">Time</th>
-                                <th style="text-align: center;">Bank</th>
-                                <th style="text-align: center;">Bank Account</th>
+                                <th style="text-align: center;">From Bank Account</th>
+                                <th style="text-align: center;">To Bank Account</th>
                                 <th style="text-align: center;" data-priority="1">Amount</th>
                                 <th style="text-align: center;">Creatd By</th>
                                 <th style="text-align: center;">Income Type</th>
@@ -68,7 +68,7 @@
                                         @elseif (file_exists($filename2))
                                             <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
                                         @endif
-                                        {{ @$item->transfer_bank->name_en }}
+                                        {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                     </div>
                                 </td>
                                 <td class="td-content-center">
@@ -376,14 +376,19 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="wf-py2">
+                                <label for="">โอนจากเลขที่บัญชี<sup class="text-danger">*</sup></label>
+                                <br>
+                                <input type="number" class="form-control" name="transfer_account" id="transfer-account" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
+                            </div>
                             <div class="wf-py2 ">
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
-                                    <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
-                                    <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
+                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
+                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
+                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
                                     <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
                                 </select>
                             </div>
@@ -420,8 +425,6 @@
         <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
-
-    
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
@@ -692,20 +695,25 @@
         }
 
         function edit($id) {
+
             $('#exampleModalCenter5').modal('show');
             $('#id').val($id);
             $('#sms-date').css('border-color', '#f0f0f0');
             $('#sms-time').css('border-color', '#f0f0f0');
             $('#error-transfer').css('border-color', '#f0f0f0');
+            $('#transfer-account').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
-            $('#status').val(0).trigger('change');
+            $('#status_type').val(0).trigger('change');
             $('#sms-date').val('');
             $('#sms-time').val('');
             $('#booking_id').val('');
             $('#transfer_from').val(0).trigger('change');
+            $('#transfer-account').val('');
             $('#add_into_account').val(0).trigger('change');
             $('#amount').val('');
+
+            $('#transfer-account').prop('disabled', false);
 
             jQuery.ajax({
                 type: "GET",
@@ -715,13 +723,32 @@
                 success: function(response) {
                     if (response.data) {
                         var myArray = response.data.date.split(" ");
-                        $('#status').val(response.data.status).trigger('change');
+
+                        if (response.data.date_into != null) {
+                            var myArray2 = response.data.date_into.split(" ");
+                        }
+
+                        if (response.data.transfer_form_account != '') {
+                            var transfer_account = response.data.transfer_form_account.replace(/\D/g, '');
+                            if (transfer_account.length > 4) {
+                                $('#transfer-account').prop('disabled', true);
+                            }
+                        } else {
+                            var transfer_account = '';
+                        }
+
+                        var myArray = response.data.date.split(" ");
+                        $('#status_type').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
                         $('#sms-time').val(myArray[1]);
                         $('#booking_id').val(response.data.booking_id);
                         $('#transfer_from').val(response.data.transfer_from).trigger('change');
+                        $('#transfer-account').val(transfer_account);
                         $('#add_into_account').val(response.data.into_account).trigger('change');
                         $('#amount').val(response.data.amount);
+                        if (response.data.date_into != null) {
+                            $('#sms-date-transfer').val(myArray2[0]);
+                        }
                     }
                 },
             });
