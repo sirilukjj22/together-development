@@ -231,6 +231,7 @@ class Document_invoice extends Controller
     public function save(Request $request){
         try {
             $data = $request->all();
+
             $userid = Auth::user()->id;
             $preview = $request->preview;
             $save = $request->save;
@@ -238,7 +239,7 @@ class Document_invoice extends Controller
 
                 $balance = $request->balance;
                 $sum = $request->sum;
-                if ($sum &&$balance  == null) {
+                if ($sum== null) {
                     return redirect()->back()->with('error', 'กรุณากรอกข้อมูลให้ครบ');
                 }
                 $datarequest = [
@@ -407,7 +408,7 @@ class Document_invoice extends Controller
                 $Children = $Quotation->children;
                 $Checkin = $checkin;
                 $Checkout = $checkout;
-                $valid = $valid;
+
                 $Deposit = $datarequest['Deposit'];
                 $payment=$datarequest['Sum'];
                 $Nettotal = floatval(str_replace(',', '', $datarequest['amount']));

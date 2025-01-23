@@ -66,8 +66,16 @@ class BillingFolioController extends Controller
         ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
         ->get();
         $create = Quotation::query()
+        ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
         ->where('quotation.status_guest', 1)
         ->where('quotation.status_receive', 1)
+        ->select(
+            'quotation.*',
+            DB::raw('document_receive.fullname as fullname'),
+            DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
+            DB::raw('SUM(document_receive.document_amount) as receive_amount')
+        )
+        ->groupBy('quotation.Quotation_ID')
         ->get();
 
         $ProposalCount = Quotation::query()

@@ -197,7 +197,7 @@
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Valid</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">List</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -230,11 +230,10 @@
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Proforma Invoice ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Category</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">List</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -243,7 +242,6 @@
                                             <tr>
                                                 <th style="text-align:left;">{{$item3->Receipt_ID}}</th>
                                                 <th style="text-align:left;">{{$item3->Invoice_ID}}</th>
-                                                <th style="text-align:center;">{{ $item3->category}}</th>
                                                 <th style="text-align:center;">{{$item3->paymentDate}}</th>
                                                 <th style="text-align:center;">
                                                     <span class="badge rounded-pill bg-success">Approved</span>
@@ -268,11 +266,10 @@
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Additional ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Category</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">List</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -281,7 +278,6 @@
                                             <tr>
                                                 <th style="text-align:left;">{{$item4->Receipt_ID}}</th>
                                                 <th style="text-align:left;">{{$item4->Quotation_ID}}</th>
-                                                <th style="text-align:center;">{{ $item4->category}}</th>
                                                 <th style="text-align:center;">{{$item4->paymentDate}}</th>
                                                 <th style="text-align:center;">
                                                     <span class="badge rounded-pill bg-success">Approved</span>

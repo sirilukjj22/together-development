@@ -1568,14 +1568,17 @@
             });
         });
         function CheckDateAdditional() {
-            var CheckinNew = document.getElementById('CheckinNew').value;
-            var CheckoutNew = document.getElementById('CheckoutNew').value;
+            var CheckinNew = document.getElementById('Checkin').value;
+            var CheckoutNew = document.getElementById('Checkout').value;
             var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
             var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
             const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
+
+            console.log(CheckoutNew);
+
             if (checkoutDate > checkinDate) {
                 const timeDiff = checkoutDate - checkinDate;
                 const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -2178,8 +2181,6 @@
                 totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
             });
         function renumberRows() {
-            console.log(1);
-
             $('#product-list-select tr:visible').each(function(index) {
                 $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
             });
@@ -2188,11 +2189,8 @@
             });
         }
         $(document).on('click', '.remove-button', function() {
-            console.log(1);
             let table = $('#mainselecttwo').DataTable();
             var product = $(this).val();
-            console.log(product);
-
             let row = $('#tr-select-add' + product);
             $('#product-list-select tr.child').remove();
             table.row(row).remove().draw();

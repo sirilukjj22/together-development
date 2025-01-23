@@ -96,7 +96,7 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                 @endphp
@@ -222,7 +222,7 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                 @endphp
@@ -325,7 +325,7 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                 @endphp

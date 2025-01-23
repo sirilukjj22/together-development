@@ -526,7 +526,7 @@
                                                                 </div>
                                                                 <div>
                                                                     <label for="chequeAmount">Amount</label>
-                                                                    <input type="text" class="form-control chequeamount" id="chequeamount" name="chequeamount" readonly />
+                                                                    <input type="text" class="form-control chequeamountAmount" id="Amount" name="chequeamount" readonly />
                                                                 </div>
                                                                 <div>
                                                                     <label for="chequeBank">To Account</label>
@@ -744,6 +744,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" name="totalamount" id="totalamount">
     </div>
 
 
@@ -944,13 +945,13 @@
                     parentContainer.find(`#cashAmount_${counter}, #bankTransferAmount_${counter}, #creditCardAmount_${counter}, #chequeamount_${counter} ,#chequedate_${counter},#chequebank_${counter},#cheque_${counter}`).val('');
                     if (selectedType === 'bankTransfer') {
                         parentContainer.find('.bankTransferInput').show();
-                        Total();
+
                     } else if (selectedType === 'creditCard') {
                         parentContainer.find('.creditCardInput').show();
-                        Total();
+
                     } else if (selectedType === 'cheque') {
                         parentContainer.find('.chequeInput').show();
-                        Total();
+
                     }
                 });
                 $(document).on('change', '#cheque_'+ (counter), function () {
@@ -969,6 +970,7 @@
                             $('#chequedate_' + (counter - 1)).val(issue_date);
                             $('#chequebank_' + (counter - 1)).val(bank);
                             $('#chequeamount_' + (counter - 1)).val(amount);
+
                             Total();
                         },
                         error: function(xhr, status, error) {
@@ -979,6 +981,7 @@
                 $(document).on('keyup', `[id^='creditCardAmount_${counter}']`, function() {
 
                 var cash =  Number($(this).val());
+
                 console.log(cash);
                 Total();
                 });
@@ -1009,7 +1012,7 @@
 
                         $('#chequedate').val(issue_date);
                         $('#chequebank').val(bank);
-                        $('#chequeamount').val(amount);
+                        $('.chequeamountAmount').val(amount);
                         Total();
                     },
                     error: function(xhr, status, error) {
@@ -1021,6 +1024,7 @@
 
 
             $(document).on('change', '#paymentType', function () {
+
                 var selectedType = $(this).val();
                 var cashInputDiv = document.querySelector(".cashInput"); // ใช้ class
                 var cashAmountInput = document.querySelector(".cashAmount"); // ใช้ class
@@ -1036,65 +1040,104 @@
                 var chequeDiv = document.querySelector("#chequeInput");
                 var ToAccount = document.querySelector(".ToAccount");
                 var deposit_date = document.querySelector(".deposit_date");
+                var chequebank = document.querySelector("#chequebank");
+                var chequeamount = document.querySelector("#chequeamountAmount");
+                var chequedate = document.querySelector("#chequedate");
+                var cheque = document.getElementById('cheque');
+                console.log(cheque);
+
+
                 //-----------------------------
                 var NoShowInputDiv = document.querySelector(".NoShowInput"); // ใช้ class
                 var NoShowAmount = document.querySelector(".NoShowAmount"); // ใช้ class
+
                 if (selectedType === 'cash') {
                     cashInputDiv.style.display = "Block";
                     cashAmountInput.disabled = false;
                     bankTransferDiv.style.display = "none"; // แสดง div
                     bankTransferAmount.disabled = true;
+                    bankTransferAmount.value = null;
                     creditCardDiv.style.display = "none"; // แสดง div
                     creditCardAmount.disabled = true;
+                    creditCardAmount.value = null;
                     expiryDate.disabled = true;
                     chequeDiv.style.display = "none";
                     ToAccount.disabled = true;
                     deposit_date.disabled = true;
+                    ToAccount.value = null;
+                    cheque.value = "";
+                    chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
+                    $('.chequeamountAmount').val('');
+                    chequedate.value = "";
                     NoShowInputDiv.style.display = "none";
                     NoShowAmount.disabled = true;
-                    Total();
+                    $('#total').text('0.00');
+                    document.querySelector('.modal_but').disabled = true;
                 } else if (selectedType === 'bankTransfer') {
                     cashInputDiv.style.display = "none";
                     cashAmountInput.disabled = true;
+                    cashAmountInput.value = null;
                     bankTransferDiv.style.display = "block"; // แสดง div
                     bankTransferAmount.disabled = false;
                     creditCardDiv.style.display = "none"; // แสดง div
                     creditCardAmount.disabled = true;
+                    creditCardAmount.value = null;
                     expiryDate.disabled = true;
                     chequeDiv.style.display = "none";
                     ToAccount.disabled = true;
                     deposit_date.disabled = true;
+                    ToAccount.value = null;
+                    cheque.value = "";
+                    $('.chequeamountAmount').val('');
+                    chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
+                    // รีเซ็ตค่า chequeamount เป็นค่าว่าง
+                    chequedate.value = "";
                     NoShowInputDiv.style.display = "none";
                     NoShowAmount.disabled = true;
-                    Total();
+                    $('#total').text('0.00');
+                    document.querySelector('.modal_but').disabled = true;
                 } else if (selectedType === 'creditCard') {
                     cashInputDiv.style.display = "none";
                     cashAmountInput.disabled = true;
+                    cashAmountInput.value = null;
                     bankTransferDiv.style.display = "none"; // แสดง div
                     bankTransferAmount.disabled = true;
+                    bankTransferAmount.value = null;
                     creditCardDiv.style.display = "block"; // แสดง div
                     creditCardAmount.disabled = false;
                     expiryDate.disabled = false;
                     chequeDiv.style.display = "none";
                     ToAccount.disabled = true;
                     deposit_date.disabled = true;
+                    ToAccount.value = null;
+                    cheque.value = "";
+                    chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
+                    $('.chequeamountAmount').val('');
+                    chequedate.value = "";
                     NoShowInputDiv.style.display = "none";
                     NoShowAmount.disabled = true;
-                    Total();
+                    $('#total').text('0.00');
+                    document.querySelector('.modal_but').disabled = true;
                 } else if (selectedType === 'cheque') {
                     cashInputDiv.style.display = "none";
                     cashAmountInput.disabled = true;
+                    cashAmountInput.value = null;
                     bankTransferDiv.style.display = "none"; // แสดง div
                     bankTransferAmount.disabled = true;
+                    bankTransferAmount.value = null;
                     creditCardDiv.style.display = "none"; // แสดง div
                     creditCardAmount.disabled = true;
+                    creditCardAmount.value = null;
                     expiryDate.disabled = true;
                     chequeDiv.style.display = "block";
                     ToAccount.disabled = false;
                     deposit_date.disabled = false;
+                    $('#total').text('0.00');
+                    cheque.value = "";
+                    $('.chequeamountAmount').val('');
                     NoShowInputDiv.style.display = "none";
                     NoShowAmount.disabled = true;
-                    Total();
+                    document.querySelector('.modal_but').disabled = true;
                 }else{
                     cashInputDiv.style.display = "none";
                     cashAmountInput.disabled = true;
@@ -1106,9 +1149,14 @@
                     chequeDiv.style.display = "none";
                     ToAccount.disabled = true;
                     deposit_date.disabled = true;
+                    ToAccount.value = null;
+                    cheque.value = "";
+                    chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
+                    $('.chequeamountAmount').val('');
+                    chequedate.value = "";
                     NoShowInputDiv.style.display = "Block";
                     NoShowAmount.disabled = false;
-                    Total();
+                    $('#total').text('0.00');
                 }
 
             });
@@ -1123,26 +1171,40 @@
             $(document).on('keyup', '#Amount', function() {
 
                 var cash =  Number($(this).val());
+                $('#totalamount').val(cash);
+
                 Total();
             });
             function Total() {
                 const checkbox = document.getElementById('flexSwitchCheckChecked');
 
-                var chequeamount = parseFloat($('#chequeamount').val().replace(/,/g, '')) || 0; // แปลงค่า chequeamount
+                var cash = parseFloat($('#totalamount').val()) || 0;
                 var NoShowAmount = document.querySelector(".NoShowAmount");
-
+                var cashAmountInput = document.querySelector(".cashAmount"); // ใช้ class
+                var bankTransferAmount = document.querySelector(".bankTransferAmount");
+                var creditCardAmount = document.querySelector(".creditCardAmount");
                  // แปลงค่า Amount
                 if (!NoShowAmount.disabled) { // ถ้า NoShowAmount ไม่ถูกปิดการใช้งาน
                     console.log(0);
                     var Amount = parseFloat($('#sumpayment').val()) || 0; // ดึงค่าจาก #sumpayment
                 } else {
                     console.log(1);
-                    var Amount = parseFloat($('#Amount').val()) || 0; // ดึงค่าจาก #Amount
+                    if (cash == null) {
+
+                        const Amount = parseFloat($('.chequeamountAmount').val().replace(/,/g, ''));
+                    }else{
+                        var Amount = cash || 0;
+                    }
+
+                   // ดึงค่าจาก #Amount
+                    // var Amount = Amountlist;
+                    // console.log(Amount);
+
                 }
-                // console.log(Amount);
 
                 var sumpayment = parseFloat($('#sumpayment').val()) || 0; // แปลงค่า Amount
                 var Complimentary = parseFloat($('#Complimentary').val()) || 0;
+                // var Amount = parseFloat($('#Amount').val()) || 0;
                 var amountsArray = [];
                 var cashArray = [];  // สร้างอาเรย์เพื่อเก็บค่าทั้งหมด
                 var creditCardArray = [];
@@ -1200,10 +1262,10 @@
                 var credit = creditCardArray.reduce((sum, current) => sum + current, 0);
                 var bank = bankTransferArray.reduce((sum, current) => sum + current, 0);
                 if (checkbox.checked == false) {
-                    var sum = cash+amounts+bank+credit+chequeamount+Amount;
+                    var sum = cash+amounts+bank+credit+Amount;
                     var Outstanding = sumpayment-sum;
                 }else{
-                    var sum = cash+amounts+bank+credit+chequeamount+Amount+Complimentary;
+                    var sum = cash+amounts+bank+credit+Amount+Complimentary;
                     var Outstanding = sumpayment-sum;
                 }
 
