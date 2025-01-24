@@ -1847,12 +1847,15 @@
                 let priceArray = [];
                 let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
                 let PaxToTalall=0;
+
+
                 $('#display-selected-items tr').each(function() {
                     let priceCell = $(this).find('.Amount').val();
                     let pricetotal = parseFloat(priceCell) || 0;
                     let priceCellMain = $(this).find('.quantity-input').val();
                     let pricetotalMain = parseFloat(priceCellMain) || 0;
                     if (typevat == '50') {
+                        console.log(pricetotal);
                         allprice += pricetotal+pricetotalMain;
 
                         beforetax = allprice/1.07;
@@ -1861,7 +1864,6 @@
                         $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
                     }else if(typevat == '51')
                     {
                         allprice += pricetotal+pricetotalMain;
@@ -1869,16 +1871,15 @@
 
                         $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
                     } else if(typevat == '52'){
                         allprice += pricetotal+pricetotalMain;
 
-                        beforetax = allprice/1.07;
-                        addedtax = allprice-allprice/1.07;
+
+                        addedtax = allprice*7/100;
+                        Nettotal = allprice+addedtax;
                         $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
+                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     }
                 });
                 var rowCount = $('#display-selected-items tr').not(':first').length;
@@ -1915,7 +1916,6 @@
                 }
             });
         }
-        totalAmost();
     </script>
     <script>
         function BACKtoEdit(){

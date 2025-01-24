@@ -54,8 +54,10 @@ class QuotationController extends Controller
         $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
         $Awaiting = Quotation::query()->where('status_document',2)->get();
         $Awaitingcount = Quotation::query()->where('status_document',2)->count();
-        $Approved = Quotation::query()->where('status_guest',1)->whereIn('status_document',[1,3])->get();
-        $Approvedcount = Quotation::query()->where('status_guest',1)->whereIn('status_document',[1,3])->count();
+        $AwaitingDeposit = Quotation::query()->where('status_guest',1)->where('status_receive',0)->whereIn('status_document',[1,3])->get();
+        $AwaitingDepositcount = Quotation::query()->where('status_guest',1)->where('status_receive',0)->whereIn('status_document',[1,3])->count();
+        $Deposit = Quotation::query()->where('status_receive',1)->get();
+        $Depositcount = Quotation::query()->where('status_receive',1)->count();
         $Reject = Quotation::query()->where('status_document',4)->get();
         $Rejectcount = Quotation::query()->where('status_document',4)->count();
         $Cancel = Quotation::query()->where('status_document',0)->get();
@@ -65,7 +67,9 @@ class QuotationController extends Controller
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2,3])->get();
         $oldestYear = Quotation::query()->orderBy('created_at', 'asc')->value('created_at')->year ?? now()->year;
         $newestYear = Quotation::query()->orderBy('created_at', 'desc')->value('created_at')->year ?? now()->year;
-        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount','Complete'));
+        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Deposit',
+        'Depositcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount','Complete'
+        ,'AwaitingDepositcount','AwaitingDeposit'));
     }
     public function SearchAll(Request $request){
 

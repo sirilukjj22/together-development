@@ -86,6 +86,9 @@
                                                                 ->count();
                                                             $Adtotal =  DB::table('proposal_overbill')->where('Quotation_ID', $item->Quotation_ID)
                                                             ->sum('Nettotal');
+                                                            $addtotal = $item->Nettotal + $Adtotal;  // Perform the addition first
+                                                            $receive = $item->receive_amount;
+
                                                         @endphp
                                                         <td>{{ $item->Quotation_ID}}</td>
                                                         @if ($item->type_Proposal == 'Company')
@@ -97,23 +100,23 @@
                                                         <td>{{ $invoice_count }}</td>
                                                         <td>{{ $receive_count }}</td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($item->Nettotal) }}
+                                                            {{ number_format($item->Nettotal, 2) }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($Adtotal) }}
+                                                            {{ number_format($Adtotal, 2) }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($item->Nettotal + $Adtotal) }}
+                                                            {{$addtotal}}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             @if ($item->receive_amount == 0 )
                                                                 0
                                                             @else
-                                                                {{ number_format($item->receive_amount) }}
+                                                                {{ number_format($item->receive_amount, 2) }}
                                                             @endif
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($item->Nettotal + $item->Adtotal - $item->receive_amount) }}
+                                                            {{ number_format($addtotal - $receive, 2) }}
                                                         </td>
 
                                                         <td style="text-align: center;">

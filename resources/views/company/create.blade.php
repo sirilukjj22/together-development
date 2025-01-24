@@ -948,7 +948,7 @@
             // Check if Company_Name or Branch is empty
             if (!Company_Name || !Branch || !Company_type || !booking_channel || !address
                 || !Mmarket || !addressAgent || !EmailAgent || !Lastest_Introduce_By || !contract_rate_end_date || !contract_rate_start_date
-                || !Discount_Contract_Rate || !Taxpayer_Identification || !Company_Website || !Company_Email
+                || !Discount_Contract_Rate || !Company_Email
             ) {
                 // Display error message using Swal
                 Swal.fire({

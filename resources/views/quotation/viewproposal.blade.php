@@ -2067,7 +2067,7 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",

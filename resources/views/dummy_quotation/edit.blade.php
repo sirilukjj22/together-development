@@ -927,7 +927,7 @@
                                     <div class="col-4"></div>
                                     <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                                         <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                            Cancel
+                                            Back
                                         </button>
 
                                         <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
@@ -1533,10 +1533,9 @@
                 $('#nightpoguest').text('0 คืน');
             } else {
                 if (CheckoutNew) {
-                    alert('วัน Check-out ต้องมากกว่าวัน Check-in');
                     $('#Day').val('0');
                     $('#Night').val('0');
-                    $('#Checkin').val('');
+                    $('#Checkin').val(moment(checkinDateValue).format('DD/MM/YYYY'));
                     $('#Checkout').val('');
                 }
             }
@@ -2053,38 +2052,10 @@
                                 if (valpax == null) {
                                     valpax = 0;
                                 }
-                                if (roleMenuDiscount == 1) {
-                                    if (maximum_discount > 0) {
-                                        if (Add_discount > 0) {
-                                            if (SpecialDiscount > 0 ) {
-                                                if (SpecialDiscount > maximum_discount) {
-                                                    discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + maximum_discount + ') this.value = ' + maximum_discount + ';">' +
+                                discountInput = '<div class="input-group">' +
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;">' +
                                                         '<span class="input-group-text">%</span>' +
                                                         '</div>';
-                                                }else{
-                                                    discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + ') this.value = ' + SpecialDiscount + ';">' +
-                                                        '<span class="input-group-text">%</span>' +
-                                                        '</div>';
-                                                }
-                                            }
-                                        }else{
-                                            discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + User_discount + ') this.value = ' + User_discount + ';">' +
-                                                        '<span class="input-group-text">%</span>' +
-                                                        '</div>';
-                                        }
-                                    }else{
-                                        discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;"' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '</div>';
-                                    }
-                                }
 
                                 quantity = '<div class="input-group">' +
                                             '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
@@ -2102,7 +2073,7 @@
                                     '<tr id="tr-select-main' + val.Product_ID + '">' +
                                     '<td style="text-align:center;"><input type="hidden" id="productid" name="productid" value="' + val.id + '">' + rowNumbemain + '</td>' +
                                     '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +
-                                    '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span></td>' +
+                                    '<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount + '%"></span><input type="hidden" id="maxdiscount' + number + '" value="' + val.maximum_discount + '"></td>' +
                                     '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal-' + number + '">' + valpax + '</span></td>' +
                                     '<td style="text-align:center;width:12%;">' + quantity + '</td>' +
                                     '<td style="text-align:center;width:12%;">' + unit + '</td>' +
@@ -2264,7 +2235,11 @@
                             }
                         }
                     }
-                    $(this).val(value);
+                    if (value !== 0) {
+                        $(this).val(value);
+                    } else {
+                        $(this).val(''); // Clears the input if discountmain is 0
+                    }
                     var discountmain =  Number($(this).val());
 
                     var quantitymain =  $('#quantitymain'+number_ID).val();
@@ -2607,7 +2582,7 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",

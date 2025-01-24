@@ -450,7 +450,7 @@
                                                     @elseif ($item->status_document == 1)
                                                         <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                     @elseif ($item->status_document == 2)
-                                                        <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
                                                     @elseif ($item->status_document == 3)
                                                         <span class="badge rounded-pill bg-success">Approved</span>
                                                     @elseif ($item->status_document == 4)

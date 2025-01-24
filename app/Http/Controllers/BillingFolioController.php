@@ -146,10 +146,14 @@ class BillingFolioController extends Controller
             $subtotal = $totalAmount;
             $Nettotal = $subtotal;
         }elseif ($vat == 52) {
+            // $total =  $totalAmount;
+            // $subtotal = $totalAmount;
+            // $AddTax =$subtotal*7/100;
+            // $Nettotal = $subtotal+$AddTax;
             $total =  $totalAmount;
             $subtotal = $totalAmount;
-            $AddTax =$subtotal*7/100;
-            $Nettotal = $subtotal+$AddTax;
+            $AddTax = $subtotal/1.07;
+            $Nettotal = $subtotal;
         }
         $parts = explode('-', $nameid);
         $firstPart = $parts[0];
@@ -705,7 +709,7 @@ class BillingFolioController extends Controller
     }
     public function savere(Request $request) {
         $data = $request->all();
-
+        // dd( $data);
         $requestData = $request->all();
 
         $groupedData = []; // ตัวแปรสำหรับจัดเก็บข้อมูลที่ใช้ index
@@ -828,7 +832,7 @@ class BillingFolioController extends Controller
             $cashnoshow += isset($value['NoShowAmount']) ? (float)$value['NoShowAmount'] : 0;
         }
         $Amountall = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow;
-        $Amount = intval($Amountall);
+        $Amount = floatval($Amountall);
 
         $guest = $request->Guest;
         $reservationNo = $request->reservationNo;

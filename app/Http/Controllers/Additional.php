@@ -440,7 +440,7 @@ class Additional extends Controller
                 $Code = $datarequest['Code'];
                 $Amount = $datarequest['Amount'];
                 $productItems = [];
-
+                $Mvat = $datarequest['Mvat'];
                 if (count($Code) === count($Amount)) {
                     foreach ($Code as $index => $productID) {
                         // Retrieve the product details based on Code
@@ -818,7 +818,7 @@ class Additional extends Controller
                 $log->Category = 'Send documents :: Additional';
                 $log->content = 'Send Document Additional : ' . $Additional_ID;
                 $log->save();
-            } catch (\Throwable $th) {
+            } catch (\Throwable $e) {
                 return redirect()->route('Additional.create', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
             return redirect()->route('Additional.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');

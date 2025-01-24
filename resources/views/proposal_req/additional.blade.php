@@ -219,32 +219,7 @@
     }
 </style>
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
-        <div class="container-xl">
-            <div class="row align-items-center">
-                <div class="col sms-header">
-                    <small class="text-muted">Welcome to Additional.</small>
-                    @if ($additional_type == 'H/G')
-                        <div class=""><span class="span1">Additional (H/G Online)</span></div>
-                    @else
-                        <div class=""><span class="span1">Additional (Cash + Complimentary)</span></div>
-                    @endif
-                </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                        Back
-                    </button>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
-                        <ul class="dropdown-menu border-0 shadow p-3">
-                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Appovel</a></li>
-                            <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div> <!-- .row end -->
-        </div>
-    </div>
+
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
@@ -262,7 +237,7 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                         <ul class="dropdown-menu border-0 shadow p-3">
-                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Appovel</a></li>
+                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Approved</a></li>
                             <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
                         </ul>
                     </div>

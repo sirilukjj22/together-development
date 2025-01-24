@@ -1283,12 +1283,15 @@
                     } else if(typevat == '52'){
                         allprice += pricetotal;
 
-                        beforetax = allprice/1.07;
-                        addedtax = allprice-allprice/1.07;
+
+                        addedtax = pricetotal*7/100;
+                        Nettotal = allprice+addedtax;
+                        console.log(Nettotal);
+
                         $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('#NettotalCheck').val(isNaN(allprice) ? '0' : allprice);
+                        $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        $('#NettotalCheck').val(isNaN(Nettotal) ? '0' : Nettotal);
                     }
                 });
                 var rowCount = $('#display-selected-items tr').not(':first').length;

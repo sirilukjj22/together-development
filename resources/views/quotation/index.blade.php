@@ -303,13 +303,15 @@
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> proposal</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>{{--QUOTAION--}}
-                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge bg-success" >{{$Approvedcount}}</span> Approved</a></li>{{--Doc. number--}}
-                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav5')" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav6')" role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" onclick="nav($id='nav7')" role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab"><span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> proposal</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  role="tab"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>{{--QUOTAION--}}
+                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-AwaitingDeposit" role="tab"><span class="badge" style="background-color:#996633">{{$AwaitingDepositcount}}</span> Awaiting Deposit</a></li>{{--Doc. number--}}
+                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Deposit"  role="tab"><span class="badge "style="background-color:#9900FF" >{{$Depositcount}}</span> Deposit</a></li>{{--Doc. number--}}
+                    <li class="nav-item" id="nav6"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge bg-success">{{0}}</span> Approve=d</a></li>{{--Doc. number--}}
+                    <li class="nav-item" id="nav7"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject"  role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav8"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav9"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
@@ -382,23 +384,25 @@
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
-                                                    @if($item->status_guest == 1 && $item->status_document !== 0 && $item->status_document !== 9)
-                                                        <span class="badge rounded-pill bg-success" >Approved</span>
+                                                    @if($item->status_guest == 1 && $item->status_document !== 0 && $item->status_document !== 9&& $item->status_receive !== 1)
+                                                        <span class="badge rounded-pill bg-success" >Await Deposit</span>
                                                     @else
                                                         @if($item->status_document == 0)
                                                             <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                        @elseif ($item->status_document == 1)
+                                                        @elseif ($item->status_document == 1 && $item->status_receive !== 1)
                                                             <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                         @elseif ($item->status_document == 2)
                                                             <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                        @elseif ($item->status_document == 3)
-                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 3 && $item->status_receive !== 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
                                                         @elseif ($item->status_document == 4)
                                                             <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                        @elseif ($item->status_document == 6)
+                                                        @elseif ($item->status_document == 6 && $item->status_receive !== 1)
                                                             <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
                                                         @elseif ($item->status_document == 9)
                                                             <span class="badge rounded-pill "style="background-color: #2C7F7A">Complete</span>
+                                                        @elseif ($item->status_receive == 1)
+                                                            <span class="badge rounded-pill "style="background-color:#9900FF">Deposit</span>
                                                         @endif
                                                     @endif
                                                 </td>
@@ -747,7 +751,6 @@
                         </div>
                         <div class="tab-pane fade" id="nav-Approved" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-
                                 <table id="proposalApprovedTable" class="table-together table-style">
                                     <thead>
                                         <tr>
@@ -768,8 +771,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(!empty($Approved))
-                                            @foreach ($Approved as $key => $item)
+                                        @if(!empty($AwaitingDeposit))
+                                            @foreach ($AwaitingDeposit as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
                                                     {{$key +1}}
@@ -816,7 +819,143 @@
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
-                                                    <span class="badge rounded-pill bg-success">Approved</span>
+                                                    <span class="badge rounded-pill bg-success">Await Deposit</span>
+                                                </td>
+                                                @php
+                                                    $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                @endphp
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($rolePermission > 0)
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                    @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            @if (!$item->status_document == 1 || !$item->status_document == 3  && !$item->status_guest == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                    @endif
+
+                                                                @elseif ($rolePermission == 2)
+                                                                    @if ($item->Operated_by == $CreateBy)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
+                                                                        @endif
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @elseif ($rolePermission == 3)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            @else
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Deposit" role="tabpanel" rel="0">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <table id="proposalApprovedTable" class="table-together table-style">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center"data-priority="1">No</th>
+                                            <th class="text-center">Dummy</th>
+                                            <th class="text-center" data-priority="1">Proposal ID</th>
+                                            <th class="text-center" data-priority="1">Company / Individual</th>
+                                            <th class="text-center">Issue Date</th>
+                                            <th class="text-center">Day Type</th>
+                                            <th class="text-center">Check In</th>
+                                            <th class="text-center">Check Out</th>
+                                            <th class="text-center">Period</th>
+                                            <th class="text-center">Add.Dis</th>
+                                            <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Create By</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Deposit))
+                                            @foreach ($Deposit as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    {{$key +1}}
+                                                    <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                    <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
+                                                </td>
+                                                <td  style="text-align: center;">
+                                                    @if ($item->DummyNo == $item->Quotation_ID )
+                                                        -
+                                                    @else
+                                                        {{ $item->DummyNo }}
+                                                    @endif
+                                                </td>
+                                                <td>{{ $item->Quotation_ID }}</td>
+                                                @if ($item->type_Proposal == 'Company')
+                                                    <td>{{ @$item->company->Company_Name}}</td>
+                                                @else
+                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                @endif
+
+                                                <td>{{ $item->issue_date }}</td>
+                                                <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ $item->checkin}}</td>
+                                                <td style="text-align: center;">{{ $item->checkout }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
+                                                <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->additional_discount == 0)
+                                                        -
+                                                    @else
+                                                        <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->SpecialDiscountBath	== 0)
+                                                        -
+                                                    @else
+                                                        <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td >{{ @$item->userOperated->name }}</td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill" style="background: #9900FF">Deposit</span>
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;

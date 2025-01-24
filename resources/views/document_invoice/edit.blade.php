@@ -348,7 +348,7 @@
                                 <label for=""><b>Method of Payment</b></label>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <b for="Payment">Payment by (%) Remaining 100%</b>
+                                        <b for="Payment">Payment by (%) Remaining 100% <span id="Subtotalview">0.00</span> THB</b>
                                         <div class="input-group">
                                             <div class="input-group-text">
                                                 <input class="custom-radio mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
@@ -382,7 +382,7 @@
                                                     before = Subtotal-addtax;
                                                     balance = amount-Subtotal;
                                                 }
-
+                                                $('#Subtotalview').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -870,7 +870,7 @@
                 before = Subtotal-addtax;
                 balance = Nettotal-Subtotal;
             }
-
+            $('#Subtotalview').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
