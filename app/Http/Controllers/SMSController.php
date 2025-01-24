@@ -19,7 +19,6 @@ class SMSController extends Controller
 
     public function index()
     {
-        // dd(explode(" ", "25.00 บ.จากKBNK X881558 ชำระผ่านQR เข้า076355900016901 14/01@09:21"));
         $data_forward = SMS_forwards::where('is_status', 0)->get();
 
         foreach ($data_forward as $key => $value) {
@@ -286,8 +285,8 @@ class SMSController extends Controller
             ->sum('amount');
         $total_credit = SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "708-2-26792-1")->where('status', 4)->sum('amount');
         $total_credit_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-2-26792-1")->where('status', 4)->count();
-        $total_transfer = SMS_alerts::where('date_into', [$from, $to])->where('transfer_status', 1)->sum('amount');
-        $total_transfer2 = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->count();
+        $total_transfer = SMS_alerts::where('date_into', [$from, $to])->where('transfer_status', 1)->sum('amount'); // ยอดที่ Transfer เข้าของวันนี้
+        $total_transfer2 = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->count(); // จำนวนที่ Transfer ไปวันอื่น
         $total_split = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('split_status', 1)->sum('amount');
         $total_split_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('split_status', 1)->select(DB::raw("SUM(amount) as amount, COUNT(id) as transfer_transaction"))->first();
         $total_not_type_revenue = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->sum('amount');
@@ -2850,8 +2849,8 @@ class SMSController extends Controller
             $status = 'split_revenue';
 
         } elseif ($request->revenue_type == "transfer_transaction") {
-            $data_sms = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('transfer_status', 1)->orderBy('date', 'asc')->paginate(10);
-            $total_sms = SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('transfer_status', 1)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween(DB::raw('DATE(date)'), [$FromFormatDate, $ToFormatDate])->where('transfer_status', 1)->orderBy('date', 'asc')->paginate(10);
+            $total_sms = SMS_alerts::whereBetween(DB::raw('DATE(date)'), [$FromFormatDate, $ToFormatDate])->where('transfer_status', 1)->sum('amount');
             $title = "Transfer Transaction";
             $status = 'transfer_transaction';
 
