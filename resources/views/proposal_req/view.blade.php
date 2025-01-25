@@ -43,7 +43,7 @@
                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                         <ul class="dropdown-menu border-0 shadow p-3">
                             @foreach($Data as $key =>$itemdataid)
-                                <li><a class="dropdown-item py-2 rounded" onclick="Approve('{{ $itemdataid->DummyNo }}')">Approve ID {{$itemdataid->DummyNo}}</a></li>
+                                <li><a class="dropdown-item py-2 rounded" onclick="Approve('{{ $itemdataid->DummyNo }}')">Approval ID {{$itemdataid->DummyNo}}</a></li>
                             @endforeach
                             <li><a class="dropdown-item py-2 rounded" onclick="Reject()">Reject</a></li>
                             <li><a class="dropdown-item py-2 rounded" onclick="Back()">Back</a></li>
@@ -699,7 +699,7 @@
             document.getElementById('approved_id').value = id; // ตั้งค่า id
             console.log("Approved ID:", document.getElementById('approved_id').value);
             Swal.fire({
-                title: `คุณต้องการ Approve รหัส ${id} เอกสารใช่หรือไม่?`,
+                title: `คุณต้องการอนุมัติรหัส ${id} เอกสารใช่หรือไม่?`,
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "บันทึกข้อมูล",

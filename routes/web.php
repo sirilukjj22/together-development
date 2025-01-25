@@ -653,6 +653,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Proposal/Search/All', 'SearchAll')->name('Proposal.Search');
 
         Route::get('/Proposal/viewproposal/{id}','viewproposal')->name('Proposal.viewproposal');
+
+        Route::get('/Proposal/Request/document/noshow/{id}', 'noshow')->name('Proposal.noshow');
         //----------------------------
         Route::post('Proposal-search-table', 'search_table_proposal');
         Route::post('Proposal-paginate-table', 'paginate_table_proposal');

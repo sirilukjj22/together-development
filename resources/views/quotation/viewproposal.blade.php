@@ -2120,7 +2120,7 @@
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",
                 cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#28a745",
+                confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) { // ตรวจสอบว่าเลือก "ตกลง" ก่อนที่จะเปลี่ยนเส้นทาง

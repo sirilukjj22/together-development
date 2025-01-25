@@ -736,7 +736,7 @@
                                                     <b>Subtotal</b>
                                                     <span id="total-amount"></span>
                                                 </li>
-                                                <li class="mt-3"id="Special" style="display: none;">
+                                                <li  class="mt-3" id="Specialtotal" style="display: none;">
                                                     <b>Special Discount</b>
                                                     <span id="sp"></span>
                                                 </li>
@@ -1745,10 +1745,15 @@
                                 if (valpax == null) {
                                     valpax = 0;
                                 }
-                                discountInput = '<div class="input-group">' +
+                                if (maximum_discount > 0) {
+                                    discountInput = '<div class="input-group">' +
                                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;">' +
                                                         '<span class="input-group-text">%</span>' +
                                                         '</div>';
+                                }else{
+                                    discountInput ='<input type="hidden" class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;">';
+                                }
+
                                 quantity = '<div class="input-group">' +
                                             '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
                                             'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
@@ -1996,15 +2001,7 @@
             });
             $(document).on('keyup', '.DiscountAmount', function() {
                 var DiscountAmount =  Number($(this).val());
-                if (DiscountAmount) {
-                    $('#Special').css('display', 'grid');
-                    $('#Subtotal').css('display', 'grid');
-                    document.getElementById('Preview').disabled = true;
-                }else{
-                    $('#Special').css('display', 'none');
-                    $('#Subtotal').css('display', 'none');
-                    document.getElementById('Preview').disabled = false;
-                }
+
                 totalAmost();
             });
 
@@ -2043,6 +2040,7 @@
 
                         if (Discount) {
                             $('#Special').css('display', 'grid');
+                            $('#Specialtotal').css('display', 'grid');
                             $('#Subtotal').css('display', 'grid');
                         }
                         $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -2174,7 +2172,7 @@
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",
                 cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#28a745",
+                confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {

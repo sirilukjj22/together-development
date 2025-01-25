@@ -474,7 +474,7 @@ class Document_invoice extends Controller
                 $template = master_template::query()->latest()->first();
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('document_invoice.invoicePDF.'.$view,$data);
-                $path = 'Log_PDF/invoice/';
+                $path = 'PDF/invoice/';
                 $pdf->save($path . $InvoiceID . '.pdf');
 
                 $currentDateTime = Carbon::now();
@@ -1040,7 +1040,7 @@ class Document_invoice extends Controller
                 $template = master_template::query()->latest()->first();
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('document_invoice.invoicePDF.'.$view,$data);
-                $path = 'Log_PDF/invoice/';
+                $path = 'PDF/invoice/';
                 $pdf->save($path . $InvoiceID.'-'.$correctup . '.pdf');
                 $currentDateTime = Carbon::now();
                 $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
@@ -1426,7 +1426,7 @@ class Document_invoice extends Controller
         $document = document_invoices::where('id',$id)->first();
         $Quotation_ID = $document->Invoice_ID;
         $Quotation = $document->Quotation_ID;
-        $path = 'Log_PDF/invoice/';
+        $path = 'PDF/invoice/';
 
         $delete = log::where('Quotation_ID',$Quotation_ID)->get();
         foreach ($delete as $value) {
@@ -1461,7 +1461,7 @@ class Document_invoice extends Controller
         }
 
         $log = log::where('Quotation_ID',$InvoiceID)->get();
-        $path = 'Log_PDF/invoice/';
+        $path = 'PDF/invoice/';
         $loginvoice = log_company::where('Company_ID', $InvoiceID)
             ->orderBy('updated_at', 'desc')
             ->get();
@@ -1850,7 +1850,7 @@ class Document_invoice extends Controller
             $QuotationID = $quotation->Invoice_ID;
             $correct = $quotation->correct;
             $type_Proposal = $quotation->type_Proposal;
-            $path = 'Log_PDF/invoice/';
+            $path = 'PDF/invoice/';
             if ($correct > 0) {
                 $pdf = $path.$QuotationID.'-'.$correct;
                 $pdfPath = $path.$QuotationID.'-'.$correct.'.pdf';

@@ -237,7 +237,7 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                         <ul class="dropdown-menu border-0 shadow p-3">
-                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Approved</a></li>
+                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Approval</a></li>
                             <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
                         </ul>
                     </div>
@@ -1094,7 +1094,7 @@
         function Appovel(id) {
             var Additional_ID = $('#Additional_ID').val();
             Swal.fire({
-                title: `คุณต้องการ Approve รหัส ${Additional_ID} เอกสารใช่หรือไม่?`,
+                title: `คุณต้องการอนุมัติรหัส ${Additional_ID} เอกสารใช่หรือไม่?`,
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "บันทึกข้อมูล",

@@ -218,7 +218,7 @@
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;

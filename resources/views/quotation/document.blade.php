@@ -120,7 +120,7 @@
                             <div class="col-12 row mt-5">
                                 <div class="col-4"></div>
                                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('Proposal.index') }}'">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                         Back
                                     </button>
                                 </div>
@@ -149,6 +149,24 @@
             .tables({ visible: true, api: true })
             .columns.adjust()
             .responsive.recalc();
+        }
+        function BACKtoEdit(){
+            event.preventDefault();
+            Swal.fire({
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "ตกลง",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#2C7F7A",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(1);
+                    // If user confirms, submit the form
+                    window.location.href = "{{ route('Proposal.index') }}";
+                }
+            });
         }
     </script>
 
