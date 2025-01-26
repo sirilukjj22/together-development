@@ -62,6 +62,8 @@ class QuotationController extends Controller
         $Cancelcount = Quotation::query()->where('status_document',0)->count();
         $noshow = Quotation::query()->where('status_document',5)->get();
         $noshowcount = Quotation::query()->where('status_document',5)->count();
+        $Generate = Quotation::query()->where('status_document',5)->get();
+        $Generatecount = Quotation::query()->where('status_document',5)->count();
         $Completecount = Quotation::query()->where('status_document',9)->count();
         $Complete = Quotation::query()->where('status_document',9)->get();
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2,3])->get();
@@ -69,7 +71,7 @@ class QuotationController extends Controller
         $newestYear = Quotation::query()->orderBy('created_at', 'desc')->value('created_at')->year ?? now()->year;
         return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount',
         'Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount','Complete'
-        ,'Approved','Approvedcount','noshow','noshowcount'));
+        ,'Approved','Approvedcount','noshow','noshowcount','Generate','Generatecount'));
     }
     public function SearchAll(Request $request){
 
