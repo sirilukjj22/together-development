@@ -369,7 +369,7 @@
                                                 @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
@@ -487,7 +487,6 @@
                                                             @else
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -590,26 +589,25 @@
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Generate</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Generate</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Generate</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
@@ -618,7 +616,6 @@
                                                             @else
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -837,7 +834,6 @@
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
@@ -942,7 +938,7 @@
                                                 @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
@@ -1014,7 +1010,6 @@
                                                             @else
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -1028,142 +1023,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="nav-Deposit" role="tabpanel" rel="0">
-                            <div style="min-height: 70vh;" class="mt-2">
-                                <table id="proposalApprovedTable" class="table-together table-style">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center"data-priority="1">No</th>
-                                            <th class="text-center">Dummy</th>
-                                            <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company / Individual</th>
-                                            <th class="text-center">Issue Date</th>
-                                            <th class="text-center">Day Type</th>
-                                            <th class="text-center">Check In</th>
-                                            <th class="text-center">Check Out</th>
-                                            <th class="text-center">Period</th>
-                                            <th class="text-center">Add.Dis</th>
-                                            <th class="text-center">Spe.Dis</th>
-                                            <th class="text-center">Create By</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(!empty($Deposit))
-                                            @foreach ($Deposit as $key => $item)
-                                            <tr>
-                                                <td style="text-align: center;">
-                                                    {{$key +1}}
-                                                    <input type="hidden" id="update_date" value="{{$item->created_at}}">
-                                                    <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
-                                                </td>
-                                                <td  style="text-align: center;">
-                                                    @if ($item->DummyNo == $item->Quotation_ID )
-                                                        -
-                                                    @else
-                                                        {{ $item->DummyNo }}
-                                                    @endif
-                                                </td>
-                                                <td>{{ $item->Quotation_ID }}</td>
-                                                @if ($item->type_Proposal == 'Company')
-                                                    <td>{{ @$item->company->Company_Name}}</td>
-                                                @else
-                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                                @endif
 
-                                                <td>{{ $item->issue_date }}</td>
-                                                <td style="text-align: center;">{{$item->Date_type}}</td>
-                                                @if ($item->checkin)
-                                                <td style="text-align: center;">{{ $item->checkin}}</td>
-                                                <td style="text-align: center;">{{ $item->checkout }}</td>
-                                                @else
-                                                <td style="text-align: center;">-</td>
-                                                <td style="text-align: center;">-</td>
-                                                @endif
-                                                <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
-                                                <td style="text-align: center;">
-                                                    @if ($item->additional_discount == 0)
-                                                        -
-                                                    @else
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    @if ($item->SpecialDiscountBath	== 0)
-                                                        -
-                                                    @else
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
-                                                <td >{{ @$item->userOperated->name }}</td>
-                                                <td style="text-align: center;">
-                                                    <span class="badge rounded-pill" style="background: #9900FF">Deposit</span>
-                                                </td>
-                                                @php
-                                                    $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
-                                                    $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                                @endphp
-                                                <td style="text-align: center;">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                                            @if ($rolePermission > 0)
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                @endif
-                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
-                                                                    @endif
-                                                                    @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if (!$item->status_document == 1 || !$item->status_document == 3  && !$item->status_guest == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                            @endif
-                                                                    @endif
-
-                                                                @elseif ($rolePermission == 2)
-                                                                    @if ($item->Operated_by == $CreateBy)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
-                                                                        @endif
-                                                                        @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                        @endif
-                                                                    @endif
-                                                                @elseif ($rolePermission == 3)
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
-                                                                    @endif
-                                                                    @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                    @endif
-                                                                @endif
-                                                            @else
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                @endif
-                                                            @endif
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
                         <div class="tab-pane fade" id="nav-Reject" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
 
@@ -1659,11 +1519,11 @@
 
         function Cancel(id){
             Swal.fire({
-            title: "คุณต้องการปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
+            title: "Do you want to cancel this offer?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "ตกลง",
-            cancelButtonText: "ยกเลิก",
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
             confirmButtonColor: "#2C7F7A",
             dangerMode: true
             }).then((result) => {
@@ -1677,11 +1537,11 @@
         }
         function Revice(id){
             Swal.fire({
-            title: "คุณต้องการเปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
+            title: "Do you want to activate this offer?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "ตกลง",
-            cancelButtonText: "ยกเลิก",
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
             confirmButtonColor: "#2C7F7A",
             dangerMode: true
             }).then((result) => {

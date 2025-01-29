@@ -2167,11 +2167,11 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
+                title: "Do you want to go back?",
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonText: "ตกลง",
-                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
                 confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {
@@ -2185,14 +2185,14 @@
         function confirmSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting
             var Quotation_ID = $('#Quotation_ID').val();
-            var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+            var title = `Do you want to save the code data ${Quotation_ID}?`;
             Swal.fire({
                 title: title,
                 // text: message,
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
                 confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {

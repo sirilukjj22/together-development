@@ -1001,12 +1001,12 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
-                icon: "info",
+                title: "Do you want to go back?",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "ตกลง",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#28a745",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {

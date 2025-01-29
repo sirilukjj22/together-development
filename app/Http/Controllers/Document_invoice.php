@@ -51,7 +51,7 @@ class Document_invoice extends Controller
         $Approved = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
-        ->where('quotation.status_guest', 1)
+        ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
             'document_invoice.Quotation_ID as QID',
@@ -59,23 +59,27 @@ class Document_invoice extends Controller
             'proposal_overbill.Nettotal as Adtotal',  // Separate this field for clarity
             DB::raw('1 as status'),
             DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-            DB::raw('COUNT(document_invoice.Quotation_ID) as invoice_count'),
+            DB::raw('SUM(CASE WHEN document_invoice.document_status = 2 THEN 1 ELSE 0 END) as invoice_count')
         )
-        ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
+        ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_document')
         ->get();
-        $Approvedcount = Quotation::query()->where('status_guest',1)->count();
+        $Approvedcount = Quotation::query()->where('status_document',6)->count();
+
+        $Cancel = document_invoices::query()->where('document_status',0)->get();
+        $Cancelcount = document_invoices::query()->where('document_status',0)->count();
 
         $invoice = document_invoices::query()->where('document_status',1)->get();
         $invoicecheck = document_invoices::query()->get();
        // ดึงข้อมูลจาก document_invoices รวมถึง Quotation_ID, total และ sumpayment
         $invoicecount = document_invoices::query()->where('document_status',1)->count();
-        $Generate = document_invoices::query()->where('document_status',2)->where('status_receive',1)->get();
+        $Generate = document_invoices::query()->where('document_status',2)->get();
 
-        $Generatecount = document_invoices::query()->where('document_status',2)->where('status_receive',1)->count();
-        $Complete = document_invoices::query()->where('document_status',2)->where('status_receive',2)->get();
+        $Generatecount = document_invoices::query()->where('document_status',2)->count();
+        $Complete = document_invoices::query()->where('document_status',3)->get();
 
-        $Completecount = document_invoices::query()->where('document_status',2)->where('status_receive',2)->count();
-        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','invoicecheck','Generate','Generatecount'));
+        $Completecount = document_invoices::query()->where('document_status',3)->count();
+        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','invoicecheck','Generate','Generatecount',
+        'Cancel','Cancelcount'));
     }
 
 
@@ -546,7 +550,7 @@ class Document_invoice extends Controller
                 $save->sumpayment = $datarequest['Sum'];
                 $save->total = $NettotalPD;
                 $save->save();
-                return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
             }
         } catch (\Throwable $e) {
             return redirect()->route('invoice.index')->with('error', $e->getMessage());
@@ -749,7 +753,7 @@ class Document_invoice extends Controller
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         return view('document_invoice.edit',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','Contact_Email','Contact_Name','Contact_phone','Fax_number'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','Contact_Email','Contact_Name','Contact_phone','Fax_number'));
     }
 
     public function update(Request $request ,$id){
@@ -1069,7 +1073,7 @@ class Document_invoice extends Controller
             }
 
 
-            return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('invoice.index')->with('error', $e->getMessage());
         }
@@ -1402,15 +1406,8 @@ class Document_invoice extends Controller
         $InvoiceID = $document->Invoice_ID;
         $correct = $document->correct;
         $save = document_invoices::find($id);
-        $save->status_receive = 1;
         $save->document_status = 2;
         $save->save();
-
-        $Approvedcount = Quotation::where('Quotation_ID',$Quotation_ID)->first();
-        $ids = $Approvedcount->id;
-        $saveQuotation = Quotation::find($ids);
-        $saveQuotation->status_receive = 1;
-        $saveQuotation->save();
 
         $userids = Auth::user()->id;
         $save = new log_company();
@@ -1420,32 +1417,32 @@ class Document_invoice extends Controller
         $save->Category = 'Generate :: Proforma Invoice ';
         $save->content = 'Document Proforma Invoice ID : '.$InvoiceID.' to Receipt Payment';
         $save->save();
-        return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
     }
     public function Delete($id){
         $document = document_invoices::where('id',$id)->first();
         $Quotation_ID = $document->Invoice_ID;
         $Quotation = $document->Quotation_ID;
-        $path = 'PDF/invoice/';
-
-        $delete = log::where('Quotation_ID',$Quotation_ID)->get();
-        foreach ($delete as $value) {
-            if ($value->correct == 0) {
-                unlink($path . $Quotation_ID . '.pdf');
-            } else {
-                unlink($path . $Quotation_ID . '-' . $value->correct . '.pdf');
-            }
-        }
+        $document_status = $document->document_status;
+        $userid = Auth::user()->id;
         $savelogin = new log_company();
         $savelogin->Created_by = $userid;
-        $savelogin->Company_ID = $Invoice_ID;
-        $savelogin->type = 'Delete';
-        $savelogin->Category = 'Delete :: Invoice';
-        $savelogin->content = 'Delete Document Invoice ID : '.$value->Invoice_ID.'+'.'Based on : '.$Quotation ;
+        $savelogin->Company_ID = $Quotation_ID;
+        $savelogin->type = 'Cancel';
+        $savelogin->Category = 'Cancel :: Invoice';
+        $savelogin->content = 'Cancel Document Invoice ID : '.$Quotation_ID.'+'.'Based on : '.$Quotation ;
         $savelogin->save();
-        $quotation = document_invoices::find($id);
-        $quotation->delete();
-        return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        if ($document_status == 1) {
+            $quotation = document_invoices::find($id);
+            $quotation->document_status = 0;
+            $quotation->save();
+        }elseif ($document_status == 2) {
+            $quotation = document_invoices::find($id);
+            $quotation->document_status = 1;
+            $quotation->save();
+        }
+
+        return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
     }
     public function LOG($id)
     {
@@ -1924,5 +1921,25 @@ class Document_invoice extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('invoice.index')->with('error', $e->getMessage());
         }
+    }
+    public function Revise($id){
+        try {
+            $data = document_invoices::where('id',$id)->first();
+            $Quotation_ID = $data->Quotation_ID;
+            $Quotation = document_invoices::find($id);
+            $Quotation->document_status = 1;
+            $Quotation->save();
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Quotation_ID;
+            $save->type = 'Revise';
+            $save->Category = 'Revise :: Proforma Invoice';
+            $save->content = 'Revise Document Proforma Invoice ID : '.$Quotation_ID;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('invoice.index')->with('error', $e->getMessage());
+        }
+        return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
     }
 }

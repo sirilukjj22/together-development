@@ -806,6 +806,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/invoice/view/list/{id}','viewList')->name('invoice.viewList');
         //-------------------------------------delete------------------------------------
         Route::get('/Document/invoice/delete/{id}','Delete')->name('invoice.delete');
+
+        Route::get(' /Document/invoice/Revise/{id}','Revise')->name('invoice.Revise');
         //--------------------------------------Re---------------------------------------
 
         Route::get('/Document/invoice/viewinvoice/{id}','viewinvoice')->name('invoice.viewinvoice');
@@ -816,28 +818,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get(' /Document/invoice/Generate/to/Re/{id}','GenerateRe')->name('invoice.GenerateRe');
 
-        Route::post('invoice-search-table', 'search_table_invoice');
-        Route::post('invoice-paginate-table', 'paginate_table_invoice');
-
-        Route::post('invoice-pendind-search-table', 'search_table_invoice_pending');
-        Route::post('invoice-pending-paginate-table', 'paginate_table_invoice_pending');
-
-        Route::post('invoice-generate-search-table', 'search_table_invoice_generate');
-        Route::post('invoice-generate-paginate-table', 'paginate_table_invoice_generate');
-
-        Route::post('invoice-select-search-table', 'search_table_invoice_select');
-        Route::post('invoice-select-paginate-table', 'paginate_table_invoice_select');
-
-        //--------------------------LogPdf-----------
-        Route::post('invoice-Log-search-table', 'search_table_paginate_log_pdf');
-        Route::post('invoice-Log-paginate-table', 'paginate_log_pdf_table_proposal');
-        //--------------------------LogDoc-----------
-        Route::post('invoice-LogDoc-search-table', 'search_table_paginate_log_doc');
-        Route::post('invoice-LogDoc-paginate-table', 'paginate_log_doc_table_proposal');
-
-
-        Route::post('invoice-Cancel-search-table', 'search_table_paginate_cancel');
-        Route::post('invoice-Cancel-paginate-table', 'paginate_cancel_table');
          //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
          Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
     });

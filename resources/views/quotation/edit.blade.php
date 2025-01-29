@@ -191,7 +191,6 @@
     }
 </style>
 @section('content')
-
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
@@ -306,12 +305,10 @@
                                     <div class="row mt-2" >
                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                             <label class="labelcontact" for="">Customer Company</label>
-                                            <button style="float: right;" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Company','index') }}'">
-                                                <i class="fa fa-plus"></i> เพิ่มบริษัท</button>
-                                            <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
+                                            <select name="Company" id="Company" class="select2" onchange="companyContact()">
                                                 <option value=""></option>
                                                 @foreach($Company as $item)
-                                                    <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
+                                                    <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}} >{{ $item->Company_Name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -1114,6 +1111,9 @@
                 Guest.disabled = false;
                 GuestContact();
             }
+            $("#Company").on("select2:opening", function (e) {
+                e.preventDefault(); // ป้องกันการเปิด dropdown
+            });
         });
         function showselectInput() {
             var select = document.getElementById("select");
@@ -2595,11 +2595,11 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
-                icon: "question",
+                title: "Do you want to go back?",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "ตกลง",
-                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
                 confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {
@@ -2614,15 +2614,15 @@
             event.preventDefault(); // Prevent the form from submitting
             var Quotationold = $('#Quotationold').val();
             var Quotation_ID = $('#Quotation_ID').val();
-            var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
-            var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+            var message = `If the offer code data is saved as ${Quotationold}, the offer is cancelled`;
+            var title = `Do you want to save the ${Quotation_ID} data?`;
             Swal.fire({
                 title: title,
                 text: message,
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
                 confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {

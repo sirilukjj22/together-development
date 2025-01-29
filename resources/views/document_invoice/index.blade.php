@@ -44,16 +44,16 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$Approvedcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$invoicecount}}</span> Invoice</a></li>
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Generatecount}}</span> Generate</a></li>
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" onclick="nav($id='nav7')" role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" ><span class="badge" style="background-color:#64748b">{{$Approvedcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  role="tab"><span class="badge" style="background-color:#FF6633">{{$invoicecount}}</span> Invoice</a></li>
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved"  role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Generatecount}}</span> Generate</a></li>
+                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel"  role="tab"><span class="badge bg-danger">{{$Cancelcount}}</span> Cancel</a></li>
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
                         <div class="tab-pane fade  show active" id="nav-Dummy" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-
                                 <table id="invoiceTable" class="table-together table-style">
                                     <thead>
                                         <tr>
@@ -232,7 +232,6 @@
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($canViewProposal == 1)
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
                                                             @endif
                                                             @if ($rolePermission > 0)
@@ -241,7 +240,7 @@
                                                                         <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Delete</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
@@ -249,7 +248,7 @@
                                                                             <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Delete</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
@@ -257,13 +256,12 @@
                                                                         <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Delete</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                     @endif
                                                                 @endif
                                                             @else
                                                                 @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -325,7 +323,7 @@
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $rolePermission = @Auth::user()->rolePermission(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                 @endphp
@@ -334,9 +332,11 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                            @if ($canEditProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -404,7 +404,6 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                         </ul>
@@ -416,6 +415,80 @@
                                     </tbody>
                                 </table>
 
+                            </div>
+                        </div>
+                        <div class="tab-pane fade "id="nav-Cancel" role="tabpanel" rel="0">
+                            <div style="min-height: 70vh;" >
+
+                                <table id="invoicePendingTable" class="table-together table-style">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th data-priority="1">Invoice ID</th>
+                                            <th data-priority="1">Proposal ID</th>
+                                            <th data-priority="1">Company / Individual</th>
+                                            <th class="text-center">Issue Date</th>
+
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Operated By</th>
+                                            <th class="text-center">Document status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Cancel))
+                                            @foreach ($Cancel as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                {{$key +1}}
+                                                </td>
+                                                <td>{{ $item->Invoice_ID}}</td>
+                                                <td>{{ $item->Quotation_ID}}</td>
+                                                @if ($item->type_Proposal == 'Company')
+                                                    <td>{{ @$item->company00->Company_Name}}</td>
+                                                @else
+                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                @endif
+                                                <td style="text-align: center;">{{ $item->IssueDate }}</td>
+
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->sumpayment, 2) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if (@$item->userOperated->name == null)
+                                                        Auto
+                                                    @else
+                                                        {{ @$item->userOperated->name }}
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                </td>
+                                                @php
+                                                    $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+                                                @endphp
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
+                                                            @endif
+                                                            @if ($canEditProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -443,16 +516,31 @@
         }
         function Delete(id){
             Swal.fire({
-            title: "คุณต้องการลบรายการนี้ใช่หรือไม่?",
+            title: "Do you want to cancel this item?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "ตกลง",
-            cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#28a745",
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#2C7F7A",
             dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = "{{ url('/Document/invoice/delete/') }}/" + id;
+                }
+            });
+        }
+        function Revise(id){
+            Swal.fire({
+            title: "Do you want to enable this item?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#2C7F7A",
+            dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url('/Document/invoice/Revise/') }}/" + id;
                 }
             });
         }

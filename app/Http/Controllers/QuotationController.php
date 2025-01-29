@@ -62,8 +62,8 @@ class QuotationController extends Controller
         $Cancelcount = Quotation::query()->where('status_document',0)->count();
         $noshow = Quotation::query()->where('status_document',5)->get();
         $noshowcount = Quotation::query()->where('status_document',5)->count();
-        $Generate = Quotation::query()->where('status_document',5)->get();
-        $Generatecount = Quotation::query()->where('status_document',5)->count();
+        $Generate = Quotation::query()->where('status_document',6)->get();
+        $Generatecount = Quotation::query()->where('status_document',6)->count();
         $Completecount = Quotation::query()->where('status_document',9)->count();
         $Complete = Quotation::query()->where('status_document',9)->get();
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2,3])->get();
@@ -1145,9 +1145,9 @@ class QuotationController extends Controller
         $check = $dataproposal->SpecialDiscountBath;
         $Adcheck = $dataproposal->additional_discount;
         if ($check || $Adcheck) {
-            return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.index')->with('success', 'Data has been successfully saved.');
         }else{
-            return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'Data has been successfully saved.');
         }
     }
     //------------------------------แก้ไข--------------------
@@ -2191,9 +2191,9 @@ class QuotationController extends Controller
         $check = $request->Add_discount;
         $Adcheck = $request->DiscountAmount;
         if ($check || $Adcheck) {
-            return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.index')->with('success', 'Data has been successfully saved.');
         }else{
-            return redirect()->route('Proposal.viewproposal', ['id' => $Quotationid])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.viewproposal', ['id' => $Quotationid])->with('success', 'Data has been successfully saved.');
         }
 
     }
@@ -2559,6 +2559,7 @@ class QuotationController extends Controller
         $Quotation_ID = $data->Quotation_ID;
         $userid = Auth::user()->id;
         try {
+
             if ($data->status_document == 1) {
                 $Quotation = Quotation::find($id);
                 $Quotation->status_document = 0;
@@ -2612,6 +2613,10 @@ class QuotationController extends Controller
             $data = Quotation::where('id',$id)->first();
             $Quotation_ID = $data->Quotation_ID;
             if ($data->status_document == 5) {
+                $Quotation = Quotation::find($id);
+                $Quotation->status_document = 3;
+                $Quotation->save();
+            }elseif ($data->additional_discount > 0 || $data->SpecialDiscountBath > 0) {
                 $Quotation = Quotation::find($id);
                 $Quotation->status_document = 3;
                 $Quotation->save();
