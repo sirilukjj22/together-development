@@ -99,8 +99,11 @@
                                                             <option value="1">Pending</option>
                                                             <option value="2">Awaiting Approval</option>
                                                             <option value="3">Approved</option>
+                                                            <option value="6">Generate</option>
                                                             <option value="4">Reject</option>
                                                             <option value="0">Cancel</option>
+                                                            <option value="5">No Show</option>
+                                                            <option value="9">Complete</option>
                                                         </select>
                                                     </div>
                                                     <div class="modal-footer">
