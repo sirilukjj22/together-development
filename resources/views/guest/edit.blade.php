@@ -260,8 +260,8 @@
                             <div class="row mt-3">
                                 <div class="col-lg-3 col-sm-12"></div>
                                 <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                    <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('guest','index') }}'">{{ __('ย้อนกลับ') }}</button>
-                                    <button type="submit" class="btn btn-color-green lift ">บันทึกข้อมูล</button>
+                                    <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('guest','index') }}'">{{ __('Back') }}</button>
+                                    <button type="submit" class="btn btn-color-green lift ">Save</button>
                                 </div>
                                 <div class="col-lg-3 col-sm-12"></div>
                             </div>
@@ -571,8 +571,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
-                                                        <button type="submit" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
+                                                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-color-green lift" id="btn-save">Save</button>
                                                     </div>
                                                 </form>
                                             </div>

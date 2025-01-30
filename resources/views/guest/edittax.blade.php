@@ -194,8 +194,8 @@
                             <div class="row mt-3">
                                 <div class="col-lg-3 col-sm-12"></div>
                                 <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                    <button type="button" class="btn btn-secondary lift  btn-space" onclick="window.location.href='{{url('/guest/edit/'.$ID)}}'">{{ __('ย้อนกลับ') }}</button>
-                                    <button type="submit" class="btn btn-color-green lift ">บันทึกข้อมูล</button>
+                                    <button type="button" class="btn btn-secondary lift  btn-space" onclick="window.location.href='{{url('/guest/edit/'.$ID)}}'">{{ __('Back') }}</button>
+                                    <button type="submit" class="btn btn-color-green lift ">Save</button>
                                 </div>
                                 <div class="col-lg-3 col-sm-12"></div>
                             </div>
