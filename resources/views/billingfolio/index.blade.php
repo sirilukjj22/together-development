@@ -82,8 +82,7 @@
                                                         @php
                                                             $receive_count =  DB::table('document_receive')->where('Quotation_ID',$item->Quotation_ID)
                                                                 ->count();
-                                                            $invoice_count =  DB::table('document_invoice')->where('Quotation_ID', $item->Quotation_ID)
-                                                                ->count();
+
                                                             $Adtotal =  DB::table('proposal_overbill')->where('Quotation_ID', $item->Quotation_ID)
                                                             ->sum('Nettotal');
                                                             $addtotal = $item->Nettotal + $Adtotal;  // Perform the addition first
@@ -97,7 +96,7 @@
                                                             <td style="text-align: left;">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                         @endif
 
-                                                        <td>{{ $invoice_count }}</td>
+                                                        <td>{{ $item->invoice_count }}</td>
                                                         <td>{{ $receive_count }}</td>
                                                         <td style="text-align: center;">
                                                             {{ number_format($item->Nettotal, 2) }}

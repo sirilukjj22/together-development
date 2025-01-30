@@ -66,29 +66,39 @@ class BillingFolioController extends Controller
         ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
         ->get();
         $create = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
-        ->where('quotation.status_guest', 1)
-        ->where('quotation.status_receive', 1)
+        ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+        ->where('document_invoice.document_status', 2)
+        ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
+            'proposal_overbill.Nettotal as Adtotal',
             DB::raw('document_receive.fullname as fullname'),
             DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
-            DB::raw('SUM(document_receive.document_amount) as receive_amount')
+            DB::raw('SUM(document_receive.document_amount) as receive_amount'),
+            DB::raw('COUNT(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.Quotation_ID END) as invoice_count')
+
         )
         ->groupBy('quotation.Quotation_ID')
         ->get();
 
         $ProposalCount = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
         ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
-        ->where('quotation.status_guest', 1)
-        ->where('quotation.status_receive', 1)
+        ->where('document_invoice.document_status', 2)
+        ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
             'proposal_overbill.Nettotal as Adtotal',
+            DB::raw('document_receive.fullname as fullname'),
+            DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
             DB::raw('SUM(document_receive.document_amount) as receive_amount'),
+            DB::raw('COUNT(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.Quotation_ID END) as invoice_count')
+
         )
-        ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
+        ->groupBy('quotation.Quotation_ID')
         ->count();
         return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount','ProposalCount','create'));
     }
@@ -194,7 +204,7 @@ class BillingFolioController extends Controller
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
             $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }
-        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('Paid',0)->get();
+        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('document_status',2)->where('Paid',0)->get();
         $totalinvoices = 0;
         foreach ($invoices as $item) {
             $totalinvoices +=  $item->sumpayment;

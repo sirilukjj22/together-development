@@ -331,9 +331,9 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -370,11 +370,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -387,6 +383,11 @@
                                                         -
                                                     @else
                                                         <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -414,8 +415,6 @@
                                                     $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                                    $invoice_count =  DB::table('document_invoice')->where('Quotation_ID', $item->Quotation_ID)
-                                                    ->count();
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
@@ -440,11 +439,15 @@
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                                 @endif
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 1 || $item->status_receive == 0 || $invoice_count == 0)
+                                                                                @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 6 && $item->status_receive > 0 )
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                                 @endif
                                                                             @endif
                                                                         @endif
+
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
@@ -460,8 +463,11 @@
                                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                                     @endif
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                    @if ($item->status_document == 1 || $item->status_receive == 0 || $invoice_count == 0)
+                                                                                    @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
                                                                                         <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                    @endif
+                                                                                    @if ($item->status_document == 6 && $item->status_receive > 0 )
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                                     @endif
                                                                                 @endif
                                                                             @endif
@@ -480,8 +486,11 @@
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/viewproposal/'.$item->id) }}">Send Email</a></li>
                                                                                 @endif
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 1 || $item->status_receive == 0 || $invoice_count == 0)
+                                                                                @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 6 && $item->status_receive > 0 )
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                                 @endif
                                                                             @endif
                                                                         @endif
@@ -517,9 +526,9 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -556,11 +565,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -573,6 +578,11 @@
                                                         -
                                                     @else
                                                         <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -647,9 +657,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Period</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -687,7 +698,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -700,6 +711,11 @@
                                                         -
                                                     @else
                                                         <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -760,9 +776,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -799,11 +816,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -816,6 +829,11 @@
                                                         -
                                                     @else
                                                         <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -900,9 +918,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -939,11 +958,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -958,6 +973,11 @@
                                                         <i class="bi bi-check-lg text-green" ></i>
                                                     @endif
                                                 </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                    @endif
+                                                </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
                                                     <span class="badge rounded-pill" style="background-color: #0ea5e9">Generate</span>
@@ -967,8 +987,8 @@
                                                     $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                                    $invoice_count =  DB::table('document_invoice')->where('Quotation_ID', $item->Quotation_ID)
-                                                    ->count();
+
+
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
@@ -983,8 +1003,10 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
-                                                                            @if ($item->status_receive == 0 || $invoice_count == 0)
+                                                                            @if ($item->status_receive > 0 )
+                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
@@ -993,8 +1015,10 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
-                                                                            @if ($item->status_receive == 0 || $invoice_count == 0)
+                                                                            @if ($item->status_receive > 0 )
+                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
@@ -1003,8 +1027,10 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
-                                                                            @if ($item->status_receive == 0 || $invoice_count == 0)
+                                                                            @if ($item->status_receive > 0 )
+                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
@@ -1041,9 +1067,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -1081,11 +1108,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -1098,6 +1121,11 @@
                                                         -
                                                     @else
                                                         <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -1166,9 +1194,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -1206,11 +1235,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -1225,7 +1250,11 @@
                                                         <i class="bi bi-check-lg text-green" ></i>
                                                     @endif
                                                 </td>
-
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                    @endif
+                                                </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
                                                     <span class="badge rounded-pill bg-danger">Cancel</span>
@@ -1288,9 +1317,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Deposit</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                             <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -1328,11 +1358,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;">
-                                                    @if ($item->status_receive)
-                                                        <i class="bi bi-check-lg text-green" ></i>
-                                                    @endif
-                                                </td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -1347,7 +1373,11 @@
                                                         <i class="bi bi-check-lg text-green" ></i>
                                                     @endif
                                                 </td>
-
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                    @endif
+                                                </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
                                                     <span class="badge rounded-pill " style="background: #FF0066">No Show</span>
@@ -1411,9 +1441,10 @@
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
                                             <th class="text-center">Check Out</th>
-                                            <th class="text-center">Period</th>
+
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
+                                            <th class="text-center">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -1451,7 +1482,7 @@
                                                 <td style="text-align: center;">-</td>
                                                 <td style="text-align: center;">-</td>
                                                 @endif
-                                                <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
+
                                                 <td style="text-align: center;">
                                                     @if ($item->additional_discount == 0)
                                                         -
@@ -1464,6 +1495,11 @@
                                                         -
                                                     @else
                                                         <i class="bi bi-check-lg text-green" ></i>
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->status_receive)
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>

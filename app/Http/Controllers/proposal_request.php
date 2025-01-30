@@ -614,7 +614,7 @@ class proposal_request extends Controller
                 $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
                 $formattedTime = $currentDateTime->format('H:i:s');
                 if ($status == 2) {
-                    $proposal->status_document = 1;
+                    $proposal->status_document = 3;
                     $proposal->Confirm_by = $userid;
                     $proposal->Approve_at = $currentDateTime;
                     $proposal->save();

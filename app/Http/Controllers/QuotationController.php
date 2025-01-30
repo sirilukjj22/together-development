@@ -49,7 +49,14 @@ class QuotationController extends Controller
         $Quotation_IDs = Quotation::query()->pluck('Quotation_ID');
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Proposalcount = Quotation::query()->count();
-        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->get();
+        $Proposal = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->select(
+            'quotation.*',
+            DB::raw('COUNT(CASE WHEN document_invoice.document_status IN (1,2) THEN document_invoice.Quotation_ID END) as invoice_count')
+        )
+        ->groupBy('quotation.Quotation_ID')
+        ->orderBy('created_at', 'desc')->get();
         $Pending = Quotation::query()->where('status_document',1)->get();
         $Pendingcount = Quotation::query()->where('status_document',1)->count();
         $Awaiting = Quotation::query()->where('status_document',2)->get();
@@ -62,7 +69,15 @@ class QuotationController extends Controller
         $Cancelcount = Quotation::query()->where('status_document',0)->count();
         $noshow = Quotation::query()->where('status_document',5)->get();
         $noshowcount = Quotation::query()->where('status_document',5)->count();
-        $Generate = Quotation::query()->where('status_document',6)->get();
+        $Generate = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->select(
+            'quotation.*',
+            DB::raw('COUNT(CASE WHEN document_invoice.document_status IN (1,2) THEN document_invoice.Quotation_ID END) as invoice_count')
+        )
+        ->where('status_document',6)
+        ->groupBy('quotation.Quotation_ID')
+        ->get();
         $Generatecount = Quotation::query()->where('status_document',6)->count();
         $Completecount = Quotation::query()->where('status_document',9)->count();
         $Complete = Quotation::query()->where('status_document',9)->get();

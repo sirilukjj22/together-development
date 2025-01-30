@@ -818,6 +818,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get(' /Document/invoice/Generate/to/Re/{id}','GenerateRe')->name('invoice.GenerateRe');
 
+        Route::post('/Document/invoice/cancel/{id}','cancel')->name('Proposal.cancel');
          //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
          Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
     });
