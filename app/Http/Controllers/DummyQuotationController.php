@@ -1264,13 +1264,13 @@ class DummyQuotationController extends Controller
                 }else{
                     $delete = dummy_quotation::find($id);
                     $delete->delete();
-                    return redirect()->route('DummyQuotation.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
+                    return redirect()->route('DummyQuotation.index')->with('success', 'The quotation has not been created yet.');
                 }
             } catch (\Exception $e) {
                 return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
             }
         }
-        return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('DummyQuotation.index')->with('success', 'Data has been successfully saved.');
     }
     //-----------------------------edit-----------------------
     public function edit($id)
@@ -2295,7 +2295,7 @@ class DummyQuotationController extends Controller
                     $Quotation->AddTax = $AddTax;
                     $Quotation->Nettotal = $Nettotal;
                     $Quotation->save();
-                    return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                    return redirect()->route('DummyQuotation.index')->with('success', 'Data has been successfully saved.');
                 }
             } catch (\Throwable $e) {
                 return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
@@ -2930,7 +2930,7 @@ class DummyQuotationController extends Controller
             $save->Category = 'Create :: Proposal';
             $save->content =$datacompany;
             $save->save();
-            return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.index')->with('success', 'Data has been successfully saved.แล้ว');
         } catch (\Throwable $e) {
             return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
         }
@@ -3295,7 +3295,7 @@ class DummyQuotationController extends Controller
         }
         $dummy->save();
 
-        return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('DummyQuotation.index')->with('success', 'Data has been successfully saved.');
     }
     public function Revice($id){
         $Quotation = dummy_quotation::find($id);
@@ -3311,7 +3311,7 @@ class DummyQuotationController extends Controller
         $save->Category = 'Revice Reject :: Dummy Proposal';
         $save->content = 'Revice Reject Document Dummy Proposal ID : '.$Quotation_ID;
         $save->save();
-        return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('DummyQuotation.index')->with('success', 'Data has been successfully saved.');
     }
     public function addProduct($Quotation_ID) {
         $value = $Quotation_ID;

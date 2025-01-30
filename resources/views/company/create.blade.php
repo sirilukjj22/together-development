@@ -65,14 +65,14 @@
             <div class="row align-items-center mb-2" >
                 @if (session("success"))
                     <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                        <h4 class="alert-heading">Save successful.</h4>
                         <hr>
                         <p class="mb-0">{{ session('success') }}</p>
                     </div>
                 @endif
                 @if (session("error"))
                     <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">ERROR 500!</h4>
+                        <h4 class="alert-heading">Save failed!</h4>
                         <hr>
                         <p class="mb-0">{{ session('error') }}</p>
                     </div>
@@ -382,6 +382,8 @@
     @include('script.script')
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.select2').select2({
@@ -823,7 +825,10 @@
                     var Branch = $('#Branch').val();
                     if (Company_Name.trim() === '') {
 
-                        alert('กรุณากรอกข้อมูล Company Name ก่อน');
+                        Swal.fire({
+                            title: "Please enter the Company Name first.",
+                            icon: "warning",
+                        });
                         // ยกเลิกการเลือก checkbox ในกรณีที่ไม่มีค่าใน Company_Name
                         $(this).prop('checked', false);
                         return;
@@ -952,24 +957,24 @@
             ) {
                 // Display error message using Swal
                 Swal.fire({
-                    title: "ข้อมูลไม่ครบถ้วน",
-                    text: "กรุณากรอกข้อมูลบริษัทและสาขาให้ครบถ้วน",
+                    title: "Incomplete information.",
+                    text: "Please enter the complete company and branch information.",
                     icon: "error",
-                    confirmButtonText: "ตกลง",
-                    confirmButtonColor: "#dc3545"
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#2C7F7A"
                 });
                 return; // Stop further execution
             }
 
-            var message = `หากบันทึกข้อมูลบริษัท ${Company_Name} สาขา ${Branch} หรือไม่`;
+            var message = `Do you want to save the company data for ${Company_Name}, branch ${Branch}?`;
             Swal.fire({
-                title: "คุณต้องการบันทึกใช่หรือไม่?",
+                title: "Do you want to save the data?",
                 text: message,
-                icon: "question",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#28a745",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {

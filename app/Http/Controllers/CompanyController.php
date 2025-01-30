@@ -98,7 +98,7 @@ class CompanyController extends Controller
                         ->where('status', '1')->first();
         if ($Company_Name) {
             if ($Company_Name->status === 1) {
-                return redirect()->route('Company.create')->with('error', 'ชื่อบริษัทและสาขาซ้ำกรุณากรอกใหม่');
+                return redirect()->route('Company.create')->with('error', 'Company name and branch name are duplicated, please fill in again.');
             }
         } else {
             $data = $request->all();
@@ -223,7 +223,7 @@ class CompanyController extends Controller
                 $save->Booking_Channel = $request->booking_channel;
                 if ($CountryOther != "Thailand") {
                     if ($city === null) {
-                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                        return redirect()->back()->with('error', 'Please enter your country.');
                     }else {
                         $save->Country = $CountryOther;
                         $save->City = $city;
@@ -414,7 +414,7 @@ class CompanyController extends Controller
                 return redirect()->route('Company','index')->with('error', $e->getMessage());
             }
         }
-        return redirect()->route('Company','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('Company','index')->with('success', 'Data has been successfully saved.');
     }
 
     public function view($id)
@@ -798,7 +798,7 @@ class CompanyController extends Controller
             return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
 
-        return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'Data has been successfully saved.');
     }
 
     //--------------------------------- reporn------------------------
@@ -1105,7 +1105,7 @@ class CompanyController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('Company','index')->with('error', $e->getMessage());
         }
-        return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'Data has been successfully saved.');
     }
     public function viewTax($id){
 
@@ -1458,7 +1458,7 @@ class CompanyController extends Controller
             return redirect()->route('Company.edit', ['id' => $ids])->with('error', $e->getMessage());
         }
 
-        return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'Data has been successfully saved.');
     }
     public function changeStatustax($id)
     {
@@ -1620,7 +1620,7 @@ class CompanyController extends Controller
                 }
             }
             $saveC->save();
-            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('Company.edit', ['id' => $ids])->with('error', $e->getMessage());
         }
@@ -1880,7 +1880,7 @@ class CompanyController extends Controller
                         $savephoneA->save();
                 }
             }
-            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('Company.edit', ['id' => $ids])->with('error', $e->getMessage());
         }

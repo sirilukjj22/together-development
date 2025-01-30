@@ -21,7 +21,7 @@
             <div class="row align-items-center mb-2" >
                 @if (session("success"))
                 <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                    <h4 class="alert-heading">Save successful.</h4>
                     <hr>
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="col-md-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$proposalcount}}</span> Proposal Request</a></li>{{--ประวัติการแก้ไข--}}
-                        <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$requestcount}}</span> Request OverBill</a></li>{{--QUOTAION--}}
+                        {{-- <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$requestcount}}</span> Request OverBill</a></li>QUOTAION --}}
                         <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><span class="badge bg-warning" >{{$Additionalcount}}</span> Additional</a></li>{{--เอกสารออกบิล--}}
                     </ul>
                     <div class="card mb-3">
@@ -53,8 +53,6 @@
                                         <div class="flex-end">
                                             <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ProposalReq.log') }}'">LOG</button>
                                         </div>
-
-
                                         <table id="proposalTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
@@ -96,7 +94,7 @@
 
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
+                                {{-- <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
                                         <table id="requestTable" class="table-together table-style">
                                             <thead>
@@ -129,7 +127,7 @@
                                         </table>
 
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="tab-pane fade" id="nav-Awaiting" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
                                         <div class="flex-end">
@@ -183,8 +181,6 @@
                                                             @php
                                                                 $CreateBy = Auth::user()->id;
                                                                 $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                                $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
-                                                                $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                                                             @endphp
                                                             <td style="text-align: center;">
                                                                 <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Proposal/request/document/Additional/view/'.$item->id) }}'">

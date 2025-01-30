@@ -599,7 +599,7 @@ class proposal_request extends Controller
                     $dummyldID = dummy_quotation::where('DummyNo',$Quotation_ID)->delete();
                     $documentQuotationoldID = document_quotation::where('Quotation_ID',$Quotation_ID)->delete();
                 }
-                return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                return redirect()->route('ProposalReq.index')->with('success', 'Data has been successfully saved.');
             }
             if($QuotationType == 'Proposal'){
                 $proposal = Quotation::where('Quotation_ID',$id)->first();
@@ -627,7 +627,7 @@ class proposal_request extends Controller
                     $save->content = 'Approval Document Dummy Proposal ID : '.$id;
                     $save->save();
                 }
-                return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                return redirect()->route('ProposalReq.index')->with('success', 'Data has been successfully saved.');
             }
         } catch (\Throwable $e) {
             return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
@@ -682,7 +682,7 @@ class proposal_request extends Controller
                     $save->save();
                 }
             }
-            return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('ProposalReq.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
         }
@@ -1014,7 +1014,7 @@ class proposal_request extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
         }
-        return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('ProposalReq.index')->with('success', 'Data has been successfully saved.');
     }
     public function Additional_Reject(Request $request){
         try {
@@ -1035,7 +1035,7 @@ class proposal_request extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
         }
-        return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('ProposalReq.index')->with('success', 'Data has been successfully saved.');
     }
     public function Additional_LOG()
     {

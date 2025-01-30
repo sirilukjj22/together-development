@@ -68,14 +68,14 @@
             <div class="row align-items-center mb-2" >
                 @if (session("success"))
                     <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                        <h4 class="alert-heading">Save successful.</h4>
                         <hr>
                         <p class="mb-0">{{ session('success') }}</p>
                     </div>
                 @endif
                 @if (session("error"))
                     <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
+                        <h4 class="alert-heading">Save failed!</h4>
                         <hr>
                         <p class="mb-0">{{ session('error') }}</p>
                     </div>
@@ -1567,15 +1567,15 @@
         event.preventDefault(); // Prevent the form from submitting
         var Company_Name = $('#Company_Name').val();
         var Branch = $('#Branch').val();
-        var message = `หากบันทึกข้อมูลบริษัท ${Company_Name} สาขา ${Branch} หรือไม่`;
+        var message = `Do you want to save the company data for ${Company_Name}, branch ${Branch}?`;
         Swal.fire({
-            title: "คุณต้องการบันทึกใช่หรือไม่?",
+            title: "Do you want to save the data?",
             text: message,
-            icon: "question",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "บันทึกข้อมูล",
-            cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#28a745",
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#2C7F7A",
             dangerMode: true
         }).then((result) => {
             if (result.isConfirmed) {
@@ -1719,7 +1719,7 @@
                 datatype: "JSON",
                 async: false,
                 success: function(result) {
-                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    Swal.fire('Data has been successfully saved!', '', 'success');
                     location.reload();
                 },
             });
@@ -1731,7 +1731,7 @@
                 datatype: "JSON",
                 async: false,
                 success: function(result) {
-                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    Swal.fire('Data has been successfully saved!', '', 'success');
                     location.reload();
                 },
             });

@@ -237,7 +237,7 @@
             <div class="row align-items-center mb-2" >
                 @if (session("success"))
                 <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                    <h4 class="alert-heading">Save successful.</h4>
                     <hr>
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
