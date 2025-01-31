@@ -74,12 +74,12 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" ><span class="badge" style="background-color:#64748b">{{$Approvedcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all"  role="tab"><span class="badge bg-success" >{{$invoicecount}}</span> Invoice</a></li>
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  role="tab"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved"  role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Generatecount}}</span> Generate</a></li>
-                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel"  role="tab"><span class="badge bg-danger">{{$Cancelcount}}</span> Cancel</a></li>
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" ><span class="badge" style="background-color:#64748b">{{0}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all"  role="tab"><span class="badge bg-success" >{{0}}</span> Invoice</a></li>
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  role="tab"><span class="badge" style="background-color:#FF6633">{{0}}</span> Pending</a></li>
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved"  role="tab"><span class="badge" style="background-color: #0ea5e9" >{{0}}</span> Generate</a></li>
+                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel"  role="tab"><span class="badge bg-danger">{{0}}</span> Cancel</a></li>
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  role="tab"><span class="badge "style="background-color:#2C7F7A" >{{0}}</span> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
@@ -226,12 +226,11 @@
                                 <table id="allTable" class="table-together table-style">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">#</th>
+                                            <th class="text-center">No</th>
                                             <th data-priority="1">Invoice ID</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
-
                                             <th class="text-center">Amount</th>
                                             <th class="text-center">Operated By</th>
                                             <th class="text-center">Document status</th>
@@ -290,13 +289,18 @@
                                                             @if ($rolePermission > 0)
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                    @if ($item->document_status == 0)
-                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
-                                                                    @endif
-                                                                        <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
+                                                                        @if ($item->document_status == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
+                                                                        @endif
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                                        @endif
+                                                                        @if ($item->document_status == 2)
+                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                                        @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
@@ -304,10 +308,15 @@
                                                                             @if ($item->document_status == 0)
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
                                                                             @endif
-                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
+                                                                            @if ($item->document_status == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                                            @endif
+                                                                            @if ($item->document_status == 2)
+                                                                                <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
@@ -317,9 +326,13 @@
                                                                         @endif
                                                                         @if ($item->document_status == 1)
                                                                             <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
-                                                                        <li   li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         @endif
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                                        @if ($item->document_status == 2)
+                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
+                                                                        @endif
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                     @endif
                                                                 @endif
@@ -512,12 +525,10 @@
                                         @endif
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                         <div class="tab-pane fade "id="nav-Complete" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-
                                 <table id="CompleteTable" class="table-together table-style">
                                     <thead>
                                         <tr>
@@ -729,37 +740,118 @@
                 }
             });
         }
+
         $(document).ready(function () {
             $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
                 reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
+                setTimeout(function () {
+                    if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
+                        $(targetTab + ' table').DataTable().columns.adjust().draw();
+                    }
+                }, 200);
             });
+
+            function initializeDataTable(tableId, url, columns) {
+                if ($.fn.DataTable.isDataTable(tableId)) {
+                    $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
+                }
+                $(tableId).DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: url,
+                        method: 'GET',
+                        dataSrc: function (json) {
+                            return json.data;
+                        }
+                    },
+                    columns: columns,
+                    responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+                    autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
+                    dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
+                    className: 'table-together table-style'
+                });
+            }
 
             function reloadTable(target) {
                 console.log(1);
-
-                let tableId = '';
-
-                // กำหนด ID ของ DataTable ตามแท็บที่เลือก
                 if (target === '#nav-Dummy') {
-                    tableId = '#invoiceTable';
+                    initializeDataTable('#invoiceTable', '/invoice/get/proposal', [
+                        { data: 'no', title: 'No' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company / Individual' },
+                        { data: 'pi_doc', title: 'PI Doc.' },
+                        { data: 'pd_amount', title: 'PD Amount' },
+                        { data: 'pi_amount', title: 'PI Amount' },
+                        { data: 'balance', title: 'Balance' },
+                        { data: 'status', title: 'Status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 } else if (target === '#nav-all') {
-                    tableId = '#allTable';
+                    initializeDataTable('#allTable', '/invoice/get/allTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'invoice_id', title: 'Invoice ID' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company / Individual' },
+                        { data: 'pi_doc', title: 'Issue Date' },
+                        { data: 'pd_amount', title: 'Amount' },
+                        { data: 'pi_amount', title: 'Operated By' },
+                        { data: 'status', title: 'Document status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 } else if (target === '#nav-Pending') {
-                    tableId = '#PendingTable';
+                    initializeDataTable('#PendingTable', '/invoice/get/PendingTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'invoice_id', title: 'Invoice ID' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company / Individual' },
+                        { data: 'pi_doc', title: 'Issue Date' },
+                        { data: 'pd_amount', title: 'Amount' },
+                        { data: 'pi_amount', title: 'Operated By' },
+                        { data: 'status', title: 'Document status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 } else if (target === '#nav-Approved') {
-                    tableId = '#ApprovedTable';
-                } else if (target === '#nav-Cancel') {
-                    tableId = '#CancelTable';
+                    initializeDataTable('#ApprovedTable', '/invoice/get/ApprovedTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'invoice_id', title: 'Invoice ID' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company / Individual' },
+                        { data: 'pi_doc', title: 'Issue Date' },
+                        { data: 'pd_amount', title: 'Amount' },
+                        { data: 'pi_amount', title: 'Operated By' },
+                        { data: 'status', title: 'Document status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 } else if (target === '#nav-Complete') {
-                    tableId = '#CompleteTable';
+                    initializeDataTable('#CompleteTable', '/invoice/get/CompleteTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'invoice_id', title: 'Invoice ID' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company / Individual' },
+                        { data: 'pi_doc', title: 'Issue Date' },
+                        { data: 'pd_amount', title: 'Amount' },
+                        { data: 'pi_amount', title: 'Operated By' },
+                        { data: 'status', title: 'Document status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 }
-                console.log($(tableId).DataTable());
-                if (tableId !== '') {
-                    // รีโหลด DataTable ใหม่
-                    $(tableId).DataTable().ajax.reload();
+                else if (target === '#nav-Cancel') {
+                    initializeDataTable('#CancelTable', '/invoice/get/CancelTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'invoice_id', title: 'Invoice ID' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company / Individual' },
+                        { data: 'pi_doc', title: 'Issue Date' },
+                        { data: 'pd_amount', title: 'Amount' },
+                        { data: 'pi_amount', title: 'Operated By' },
+                        { data: 'status', title: 'Document status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 }
             }
         });
+
     </script>
 @endsection

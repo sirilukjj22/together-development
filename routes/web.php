@@ -820,7 +820,14 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/Document/invoice/cancel/{id}','cancel')->name('Proposal.cancel');
          //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
-         Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
+        Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
+
+        Route::get('/invoice/get/proposal','getproposal');
+        Route::get('/invoice/get/allTable','getallTable');
+        Route::get('/invoice/get/PendingTable','PendingTable');
+        Route::get('/invoice/get/ApprovedTable','ApprovedTable');
+        Route::get('/invoice/get/CancelTable','CancelTable');
+        Route::get('/invoice/get/CompleteTable','CompleteTable');
     });
 
     ##-------------------------------document receipt-----------------

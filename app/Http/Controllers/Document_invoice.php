@@ -1996,4 +1996,475 @@ class Document_invoice extends Controller
         }
         return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
     }
+    public function getproposal(Request $request){
+        $Approved = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
+        ->where('quotation.status_document', 6)
+        ->select(
+            'quotation.*',
+            'document_invoice.Quotation_ID as QID',
+            'document_invoice.document_status',
+            'proposal_overbill.Nettotal as Adtotal',  // Separate this field for clarity
+            DB::raw('1 as status'),
+            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
+            DB::raw('SUM(CASE WHEN document_invoice.document_status >= 1 THEN 1 ELSE 0 END) as invoice_count')
+        )
+        ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_document')
+        ->get();
+        $invoicecheck = document_invoices::all(); // ดึงข้อมูลทั้งหมดจาก table document_invoices
+        $Pending = document_invoices::query()->where('document_status',1)->get();
+        $data = $Approved->map(function($item, $key) use ($invoicecheck,$Pending) {
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($rolePermission > 0) {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/list/' . $item->id) . '">View Invoice</a></li>';
+                }
+
+                if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1) {
+                    if (!empty($Pending) && $Pending->count() == 0) {
+                        if ($item->Nettotal - $item->total_payment != 0 && $item->Nettotal + $item->Adtotal - $item->total_payment != 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $item->id) . '">Create</a></li>';
+                        }
+                        if ($item->invoice_count == 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $item->id . ')">Cancel</a></li>';
+                        }
+                    } else {
+                        $hasStatusReceiveZero = false;
+                        foreach ($invoicecheck as $key2 => $item2) {
+                            if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0) {
+                                $hasStatusReceiveZero = true;
+                                break;
+                            }
+                        }
+                        if (!$hasStatusReceiveZero && $item->Nettotal - $item->total_payment != 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $item->id) . '">Create</a></li>';
+                        }
+                    }
+                } elseif ($rolePermission == 2 || $rolePermission == 3 && $canEditProposal == 1) {
+                    if (!empty($Pending) && $Pending->count() == 0) {
+                        if ($item->Nettotal - $item->total_payment != 0 && $item->Nettotal + $item->Adtotal - $item->total_payment != 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $item->id) . '">Create</a></li>';
+                        }
+                        if ($item->invoice_count == 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $item->id . ')">Cancel</a></li>';
+                        }
+                    } else {
+                        $hasStatusReceiveZero = false;
+                        foreach ($invoicecheck as $key2 => $item2) {
+                            if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0) {
+                                $hasStatusReceiveZero = true;
+                                break;
+                            }
+                        }
+                        if (!$hasStatusReceiveZero && $item->Nettotal - $item->total_payment != 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $item->id) . '">Create</a></li>';
+                        }
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/list/' . $item->id) . '">View Invoice</a></li>';
+                }
+            }
+
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+            if ($item->invoice_count == 0) {
+                $btn_status = '<span class="badge rounded-pill "style="background-color: #64748b">Create Invoice</span>';
+            }else{
+                $btn_status = '<span class="badge rounded-pill " style="background-color: #64748b">Pending</span>';
+            }
+            return [
+                'no' => $key + 1,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'pi_doc' => $item->invoice_count,
+                'pd_amount' => number_format($item->Nettotal + $item->Adtotal, 2),
+                'pi_amount' => $item->total_payment == 0 ? 0 : number_format($item->total_payment, 2),
+                'balance' => number_format($item->Nettotal + $item->Adtotal - $item->total_payment, 2),
+                'status' => $btn_status,
+                'action' => $btn_action
+            ];
+        });
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+    public function getallTable(Request $request){
+        $invoice = document_invoices::query()->get();
+
+        $data = $invoice->map(function($item, $key){
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($canViewProposal == 1) {
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+            }
+
+            if ($rolePermission > 0) {
+                if ($rolePermission == 1 && $item->Operated_by == $CreateBy) {
+                    if ($canEditProposal == 1) {
+                        if ($item->document_status == 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revise(' . $item->id . ')">Revise</a></li>';
+                        }
+                        if ($item->document_status == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                        }
+                        if ($item->document_status == 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                        }
+
+
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($item->Operated_by == $CreateBy) {
+                        if ($canEditProposal == 1) {
+                            if ($item->document_status == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revise(' . $item->id . ')">Revise</a></li>';
+                            }
+                            if ($item->document_status == 1) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                            }
+                            if ($item->document_status == 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                            }
+
+                        }
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal == 1) {
+                        if ($item->document_status == 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revise(' . $item->id . ')">Revise</a></li>';
+                        }
+                        if ($item->document_status == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                        }
+                        if ($item->document_status == 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                        }
+
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+                }
+            }
+
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+            if ($item->document_status == 1) {
+                $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+            }elseif ($item->document_status == 2) {
+                $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+            }elseif ($item->document_status == 0) {
+                $btn_status = '<span class="badge rounded-pill  bg-danger" >Cancel</span>';
+            }
+            return [
+                'no' => $key + 1,
+                'invoice_id' => $item->Invoice_ID,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company00->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'pi_doc' => $item->IssueDate,
+                'pd_amount' =>  number_format($item->sumpayment, 2),
+                'pi_amount' => $item->userOperated->name ?? 'Auto',
+                'status' =>  $btn_status,
+                'action' => $btn_action
+            ];
+        });
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+    public function PendingTable(Request $request){
+        $Pending = document_invoices::query()->where('document_status',1)->get();
+
+        $data = $Pending->map(function($item, $key){
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($canViewProposal == 1) {
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+            }
+
+            if ($rolePermission > 0) {
+                if ($rolePermission == 1 && $item->Operated_by == $CreateBy) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+                }
+            }
+
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+            if ($item->document_status == 1) {
+                $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+            }
+            return [
+                'no' => $key + 1,
+                'invoice_id' => $item->Invoice_ID,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company00->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'pi_doc' => $item->IssueDate,
+                'pd_amount' =>  number_format($item->sumpayment, 2),
+                'pi_amount' => $item->userOperated->name ?? 'Auto',
+                'status' =>  $btn_status,
+                'action' => $btn_action
+            ];
+        });
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+    public function ApprovedTable(Request $request){
+        $Generate = document_invoices::query()->where('document_status',2)->get();
+
+        $data = $Generate->map(function($item, $key){
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($canViewProposal == 1) {
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+            }
+
+            if ($rolePermission > 0) {
+                if ($rolePermission == 1 && $item->Operated_by == $CreateBy) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+                }
+            }
+
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+
+            $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+
+            return [
+                'no' => $key + 1,
+                'invoice_id' => $item->Invoice_ID,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company00->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'pi_doc' => $item->IssueDate,
+                'pd_amount' =>  number_format($item->sumpayment, 2),
+                'pi_amount' => $item->userOperated->name ?? 'Auto',
+                'status' =>  $btn_status,
+                'action' => $btn_action
+            ];
+        });
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+    public function CancelTable(Request $request){
+        $Cancel = document_invoices::query()->where('document_status',0)->get();
+
+        $data = $Cancel->map(function($item, $key){
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($canViewProposal == 1) {
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+            }
+
+            if ($rolePermission > 0) {
+                if ($rolePermission == 1 && $item->Operated_by == $CreateBy) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revise(' . $item->id . ')">Revise</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revise(' . $item->id . ')">Revise</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revise(' . $item->id . ')">Revise</a></li>';
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+                }
+            }
+
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+
+            $btn_status = '<span class="badge rounded-pill  bg-danger" >Cancel</span>';
+
+            return [
+                'no' => $key + 1,
+                'invoice_id' => $item->Invoice_ID,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company00->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'pi_doc' => $item->IssueDate,
+                'pd_amount' =>  number_format($item->sumpayment, 2),
+                'pi_amount' => $item->userOperated->name ?? 'Auto',
+                'status' =>  $btn_status,
+                'action' => $btn_action
+            ];
+        });
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+    public function CompleteTable(Request $request){
+        $Complete = document_invoices::query()->where('document_status',3)->get();
+
+        $data = $Complete->map(function($item, $key){
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($canViewProposal == 1) {
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+            }
+
+            if ($rolePermission > 0) {
+                if ($rolePermission == 1 && $item->Operated_by == $CreateBy) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $item->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $item->id) . '">LOG</a></li>';
+                }
+            }
+
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+
+            $btn_status = '<span class="badge rounded-pill  bg-danger" >Cancel</span>';
+
+            return [
+                'no' => $key + 1,
+                'invoice_id' => $item->Invoice_ID,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company00->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'pi_doc' => $item->IssueDate,
+                'pd_amount' =>  number_format($item->sumpayment, 2),
+                'pi_amount' => $item->userOperated->name ?? 'Auto',
+                'status' =>  $btn_status,
+                'action' => $btn_action
+            ];
+        });
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }
