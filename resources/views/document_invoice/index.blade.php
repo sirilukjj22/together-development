@@ -745,11 +745,12 @@
             $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
                 reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
-                setTimeout(function () {
-                    if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
-                        $(targetTab + ' table').DataTable().columns.adjust().draw();
-                    }
-                }, 200);
+                // setTimeout(function () {
+                //     if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
+                //         // $(targetTab + ' table').DataTable().columns.adjust().draw();
+                //     }
+                // }, 200);
+
             });
             // function hideLabel() {
             //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
@@ -759,31 +760,36 @@
             //         var text = searchID.split('-');
             //         var number = text[2];
 
-            //         $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
+            function hideLabel() {
+                // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+                $('input[type="search"]').each(function () {
+                    $(this).attr("placeholder", "Type to search...");
+                    var searchID = $(this).attr('id');
+                    var text = searchID.split('-');
+                    var number = text[2];
 
-            //     });
+                    $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
 
-            //     $(window).on("resize", function () {
-            //         $.fn.dataTable
-            //         .tables({ visible: true, api: true })
-            //         .columns.adjust()
-            //         .responsive.recalc();
-            //     });
-            // }
+                });
+
+                $(window).on("resize", function () {
+                    $.fn.dataTable
+                    .tables({ visible: true, api: true })
+                    .columns.adjust()
+                    .responsive.recalc();
+                });
+            }
+
             function initializeDataTable(tableId, url, columns) {
-                if ($.fn.DataTable.isDataTable(tableId)) {
-                    $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
-                }
+                // if ($.fn.DataTable.isDataTable(tableId)) {
+                //     // $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
+                // }
                 $(tableId).dataTable({
-                    paging: false,
-                    searching: true,
-                    ordering: false,
-                    language: {
-                        info: "Showing START to END of TOTAL entries",
-                        infoFiltered: ""
-                    },
                     processing: true,
                     serverSide: true,
+                    searching: true,
+                    // paging: true,
+                    destroy: true,
                     ajax: {
                         url: url,
                         method: 'GET',
@@ -792,11 +798,13 @@
                         }
                     },
                     columns: columns,
-                    // responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+                    responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
                     // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
-                    dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
-                    className: 'table-together table-style'
+                    // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
+                    // className: 'table-together table-style'
                 });
+
+                hideLabel();
             }
 
             function reloadTable(target) {
