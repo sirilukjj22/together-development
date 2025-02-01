@@ -74,12 +74,12 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" ><span class="badge" style="background-color:#64748b">{{0}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all"  role="tab"><span class="badge bg-success" >{{0}}</span> Invoice</a></li>
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  role="tab"><span class="badge" style="background-color:#FF6633">{{0}}</span> Pending</a></li>
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved"  role="tab"><span class="badge" style="background-color: #0ea5e9" >{{0}}</span> Generate</a></li>
-                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel"  role="tab"><span class="badge bg-danger">{{0}}</span> Cancel</a></li>
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  role="tab"><span class="badge "style="background-color:#2C7F7A" >{{0}}</span> Complete</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active"  data-bs-toggle="tab" href="#nav-Dummy"onclick="nav($id='nav1')" role="tab" ><span class="badge" style="background-color:#64748b">{{0}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><span class="badge bg-success" >{{0}}</span> Invoice</a></li>
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><span class="badge" style="background-color:#FF6633">{{0}}</span> Pending</a></li>
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{0}}</span> Generate</a></li>
+                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><span class="badge bg-danger">{{0}}</span> Cancel</a></li>
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  onclick="nav($id='nav6')"role="tab"><span class="badge "style="background-color:#2C7F7A" >{{0}}</span> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
@@ -751,12 +751,37 @@
                     }
                 }, 200);
             });
+            // function hideLabel() {
+            //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+            //     $('input[type="search"]').each(function () {
+            //         $(this).attr("placeholder", "Type to search...");
+            //         var searchID = $(this).attr('id');
+            //         var text = searchID.split('-');
+            //         var number = text[2];
 
+            //         $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
+
+            //     });
+
+            //     $(window).on("resize", function () {
+            //         $.fn.dataTable
+            //         .tables({ visible: true, api: true })
+            //         .columns.adjust()
+            //         .responsive.recalc();
+            //     });
+            // }
             function initializeDataTable(tableId, url, columns) {
                 if ($.fn.DataTable.isDataTable(tableId)) {
                     $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
                 }
-                $(tableId).DataTable({
+                $(tableId).dataTable({
+                    paging: false,
+                    searching: true,
+                    ordering: false,
+                    language: {
+                        info: "Showing START to END of TOTAL entries",
+                        infoFiltered: ""
+                    },
                     processing: true,
                     serverSide: true,
                     ajax: {
@@ -767,8 +792,8 @@
                         }
                     },
                     columns: columns,
-                    responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
-                    autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
+                    // responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+                    // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
                     dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
                     className: 'table-together table-style'
                 });
@@ -776,7 +801,9 @@
 
             function reloadTable(target) {
                 console.log(1);
+
                 if (target === '#nav-Dummy') {
+
                     initializeDataTable('#invoiceTable', '/invoice/get/proposal', [
                         { data: 'no', title: 'No' },
                         { data: 'quotation_id', title: 'Proposal ID' },
@@ -788,6 +815,7 @@
                         { data: 'status', title: 'Status' },
                         { data: 'action', title: 'Action' }
                     ]);
+
                 } else if (target === '#nav-all') {
                     initializeDataTable('#allTable', '/invoice/get/allTable', [
                         { data: 'no', title: 'No' },
@@ -800,6 +828,7 @@
                         { data: 'status', title: 'Document status' },
                         { data: 'action', title: 'Action' }
                     ]);
+
                 } else if (target === '#nav-Pending') {
                     initializeDataTable('#PendingTable', '/invoice/get/PendingTable', [
                         { data: 'no', title: 'No' },
