@@ -306,15 +306,15 @@
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab"><span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  role="tab"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>{{--QUOTAION--}}
-                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge bg-success">{{$Approvedcount}}</span> Approved</a></li>{{--Doc. number--}}
-                    <li class="nav-item" id="nav9"><a class="nav-link " data-bs-toggle="tab" href="#nav-Generate" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Generatecount}}</span> Generate</a></li>
-                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject"  role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-noshow" role="tab"><span class="badge "style="background-color:#FF0066" >{{$noshowcount}}</span> No Show </a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav8"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy"onclick="nav($id='nav1')"  role="tab"><span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')"  role="tab"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>{{--QUOTAION--}}
+                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting"onclick="nav($id='nav3')"  role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge bg-success">{{$Approvedcount}}</span> Approved</a></li>{{--Doc. number--}}
+                    <li class="nav-item" id="nav9"><a class="nav-link " data-bs-toggle="tab" href="#nav-Generate" onclick="nav($id='nav5')" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Generatecount}}</span> Generate</a></li>
+                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav6')"  role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel"onclick="nav($id='nav7')"  role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-noshow" onclick="nav($id='nav8')" role="tab"><span class="badge "style="background-color:#FF0066" >{{$noshowcount}}</span> No Show </a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav8"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  onclick="nav($id='nav9')" role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
@@ -515,7 +515,7 @@
                         <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
 
-                                <table id="proposalPendingTable" class="table-together table-style">
+                                <table id="PendingTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -1052,7 +1052,6 @@
                                 </table>
                             </div>
                         </div>
-
                         <div class="tab-pane fade" id="nav-Reject" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
 
@@ -1629,44 +1628,109 @@
                 }
             });
         }
-    </script>
-    {{-- <script>
-        $(document).ready(function() {
-            // รายการ ID ของตารางทั้งหมด
-            const tableNames = ['proposalTable','proposalPendingTable','proposalAwaitingTable','proposalApprovedTable','proposalRejectTable','proposalCancelTable'];
-            tableNames.forEach(function (tableName) {
-                const table = document.getElementById(tableName);
-                if (table) {
-                    // ดึงข้อมูลทุกแถวที่มีวันที่ออกมาในแต่ละตาราง
-                    table.querySelectorAll('#update_date').forEach(function (input) {
-                        const row = input.closest('tr');
+        $(document).ready(function () {
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
+                reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
+                // setTimeout(function () {
+                //     if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
+                //         // $(targetTab + ' table').DataTable().columns.adjust().draw();
+                //     }
+                // }, 200);
 
-                        // ตรวจสอบว่าแถวมี `approve_date` อยู่หรือไม่
-                        const approveDateInput = row.querySelector('#approve_date');
-                        const updateDate = new Date(input.value);
-                        const approveDate = approveDateInput && approveDateInput.value ? new Date(approveDateInput.value) : new Date();
+            });
+            // function hideLabel() {
+            //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+            //     $('input[type="search"]').each(function () {
+            //         $(this).attr("placeholder", "Type to search...");
+            //         var searchID = $(this).attr('id');
+            //         var text = searchID.split('-');
+            //         var number = text[2];
 
-                        // ตั้งค่าเวลาเป็น 00:00 ของวันที่เพื่อความแม่นยำในการคำนวณ
-                        updateDate.setHours(0, 0, 0, 0);
-                        approveDate.setHours(0, 0, 0, 0);
+            function hideLabel() {
+                // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+                $('input[type="search"]').each(function () {
+                    $(this).attr("placeholder", "Type to search...");
+                    var searchID = $(this).attr('id');
+                    var text = searchID.split('-');
+                    var number = text[2];
 
-                        // คำนวณความแตกต่างของเวลาในหน่วยวัน
-                        const timeDifference = approveDate - updateDate;
-                        const daysPassed = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                    $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
 
-                        console.log(daysPassed);
+                });
 
-                        // แสดงผลลัพธ์ใน `<span>` ที่อยู่ในแถวเดียวกัน
-                        const daysCountSpan = row.querySelector('.days-count');
-                        if (daysCountSpan) {
-                            daysCountSpan.innerText = daysPassed;
-                        } else {
-                            console.error('ไม่พบ .days-count ในแถวเดียวกัน');
+                $(window).on("resize", function () {
+                    $.fn.dataTable
+                    .tables({ visible: true, api: true })
+                    .columns.adjust()
+                    .responsive.recalc();
+                });
+            }
+
+            function initializeDataTable(tableId, url, columns) {
+                // if ($.fn.DataTable.isDataTable(tableId)) {
+                //     // $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
+                // }
+                $(tableId).dataTable({
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    // paging: true,
+                    destroy: true,
+                    info: true,
+                    ajax: {
+                        url: url,
+                        method: 'GET',
+                        dataSrc: function (json) {
+                            return json.data;
                         }
-                    });
+                    },
+                    columns: columns,
+                    responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+                    info: true,
+                    // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
+                    // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
+                    // className: 'table-together table-style'
+                });
+
+                hideLabel();
+            }
+
+            function reloadTable(target) {
+                console.log(1);
+
+                if (target === '#nav-Dummy') {
+                    initializeDataTable('#proposalTable', '/Proposal/get/proposalTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'dummy_id', title: 'Dummy' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company' },
+                        { data: 'Issue', title: 'Issue Date' },
+                        { data: 'Day', title: 'Day Type' },
+                        { data: 'Checkin', title: 'Check In' },
+                        { data: 'Checkout', title: 'Check Out' },
+                        { data: 'Add.Dis', title: 'Add.Dis' },
+                        { data: 'Spe.Dis', title: 'Spe.Dis' },
+                        { data: 'Deposit', title: 'Deposit' },
+                        { data: 'Create', title: 'Create By' },
+                        { data: 'status', title: 'Status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
+                } else if (target === '#nav-all') {
+
+
+                } else if (target === '#nav-Pending') {
+
+                } else if (target === '#nav-Approved') {
+
+                } else if (target === '#nav-Complete') {
 
                 }
-            });
+                else if (target === '#nav-Cancel') {
+
+                }
+            }
         });
-    </script> --}}
+    </script>
+
 @endsection

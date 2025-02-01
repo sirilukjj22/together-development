@@ -682,6 +682,13 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('Proposal-Complete-search-table', 'search_table_paginate_complete');
         Route::post('Proposal-Complete-paginate-table', 'paginate_complete_table_proposal');
+
+        Route::get('/Proposal/get/proposalTable','getproposalTable');
+        // Route::get('/invoice/get/allTable','getallTable');
+        // Route::get('/invoice/get/PendingTable','PendingTable');
+        // Route::get('/invoice/get/ApprovedTable','ApprovedTable');
+        // Route::get('/invoice/get/CancelTable','CancelTable');
+        // Route::get('/invoice/get/CompleteTable','CompleteTable');
     });
 
     #DummyQuotaion

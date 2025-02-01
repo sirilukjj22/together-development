@@ -2137,8 +2137,6 @@ class Document_invoice extends Controller
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
                         }
-
-
                     }
                 } elseif ($rolePermission == 2) {
                     if ($item->Operated_by == $CreateBy) {
@@ -2157,7 +2155,6 @@ class Document_invoice extends Controller
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="Delete(' . $item->id . ')">Cancel</a></li>';
                             }
-
                         }
                     }
                 } elseif ($rolePermission == 3) {

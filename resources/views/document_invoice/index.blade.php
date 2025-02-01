@@ -790,6 +790,7 @@
                     searching: true,
                     // paging: true,
                     destroy: true,
+                    info: true,
                     ajax: {
                         url: url,
                         method: 'GET',
@@ -799,6 +800,7 @@
                     },
                     columns: columns,
                     responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+                    info: true,
                     // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
                     // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
                     // className: 'table-together table-style'

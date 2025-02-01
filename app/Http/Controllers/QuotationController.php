@@ -3030,4 +3030,150 @@ class QuotationController extends Controller
 
 
     }
+    public function getproposalTable(Request $request){
+        $Proposal = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->select(
+            'quotation.*',
+            DB::raw('COUNT(CASE WHEN document_invoice.document_status IN (1,2) THEN document_invoice.Quotation_ID END) as invoice_count')
+        )
+        ->groupBy('quotation.Quotation_ID')
+        ->orderBy('created_at', 'desc')->get();
+
+        $data = $Proposal->map(function($item, $key){
+            $CreateBy = Auth::user()->id;
+            $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+            $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+            $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+
+            // สร้างปุ่ม Action
+            $btn_action = '<div class="dropdown">';
+            $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+            $btn_action .= '<ul class="dropdown-menu">';
+
+            if ($canViewProposal == 1) {
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $item->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $item->id) . '">LOG</a></li>';
+            }
+
+            if ($rolePermission > 0) {
+                if ($rolePermission == 1 && $item->Operated_by == $CreateBy) {
+                    if ($canEditProposal == 1) {
+                        if ($item->status_document !== 2) {
+                            if ($item->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $item->id . ')">Revise</a></li>';
+                            }
+                            if ($item->status_document == 1) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $item->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $item->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $item->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $item->id . ')">Cancel</a></li>';
+                            }
+                            if ($item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $item->id . ')">Cancel</a></li>';
+                            }
+                            if ($item->status_document == 6 && $item->status_receive > 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow(' . $item->id . ')">No Show</a></li>';
+                            }
+                        }
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($item->Operated_by == $CreateBy) {
+                        if ($canEditProposal == 1) {
+                            if ($item->status_document !== 2) {
+                                if ($item->status_document == 1) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $item->id . ')">Generate</a></li>';
+                                }
+                                if ($item->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $item->id . ')">Revise</a></li>';
+                                } else {
+                                    if ($item->status_document == 1 || $item->status_document == 3) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/viewproposal/' . $item->id) . '">Send Email</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $item->id) . '">Edit</a></li>';
+                                    if (in_array($item->status_document, [1, 3, 5, 4])) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $item->id . ')">Cancel</a></li>';
+                                    }
+                                    if ($item->status_document == 6 && $item->status_receive > 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow(' . $item->id . ')">No Show</a></li>';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal == 1) {
+                        if ($item->status_document !== 2) {
+                            if ($item->status_document == 1) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $item->id . ')">Generate</a></li>';
+                            }
+                            if ($item->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $item->id . ')">Revise</a></li>';
+                            } else {
+                                if ($item->status_document == 1 || $item->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/viewproposal/' . $item->id) . '">Send Email</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $item->id) . '">Edit</a></li>';
+                                if (in_array($item->status_document, [1, 3, 5, 4])) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $item->id . ')">Cancel</a></li>';
+                                }
+                                if ($item->status_document == 6 && $item->status_receive > 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow(' . $item->id . ')">No Show</a></li>';
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $item->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $item->id) . '">LOG</a></li>';
+                }
+            }
+            $btn_action .= '</ul>';
+            $btn_action .= '</div>';
+
+            $status_badge = '';
+
+            if ($item->status_document == 0) {
+                $status_badge = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+            } elseif ($item->status_document == 1) {
+                $status_badge = '<span class="badge rounded-pill" style="background-color: #FF6633">Pending</span>';
+            } elseif ($item->status_document == 2) {
+                $status_badge = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+            } elseif ($item->status_document == 3) {
+                $status_badge = '<span class="badge rounded-pill bg-success">Approved</span>';
+            } elseif ($item->status_document == 6) {
+                $status_badge = '<span class="badge rounded-pill" style="background-color: #0ea5e9">Generate</span>';
+            } elseif ($item->status_document == 4) {
+                $status_badge = '<span class="badge rounded-pill" style="background-color:#1d4ed8">Reject</span>';
+            } elseif ($item->status_document == 5) {
+                $status_badge = '<span class="badge rounded-pill" style="background-color: #FF0066">No Show</span>';
+            } elseif ($item->status_document == 9) {
+                $status_badge = '<span class="badge rounded-pill" style="background-color: #2C7F7A">Complete</span>';
+            }
+            if ($item->status_receive) {
+                $Deposit = '<img src="' . asset('assets/images/deposit.png') . '" style="width: 50%;">';
+            }
+            return [
+                'no' => $key + 1,
+                'dummy_id' => ($item->DummyNo == $item->Quotation_ID) ? '-' : $item->DummyNo,
+                'quotation_id' => $item->Quotation_ID,
+                'company_name' => $item->type_Proposal == 'Company' ? $item->company->Company_Name : $item->guest->First_name . ' ' . $item->guest->Last_name,
+                'Issue' => $item->issue_date ,
+                'Day' =>  $item->Date_type,
+                'Checkin' => $item->checkin ?? '-',
+                'Checkout' => $item->checkout  ?? '-',
+                'Add.Dis' => ($item->additional_discount == 0) ? '-' : '<i class="bi bi-check-lg text-green" ></i>',
+                'Spe.Dis' => ($item->SpecialDiscountBath == จ) ? '-' : '<i class="bi bi-check-lg text-green" ></i>',
+                'Deposit' => $Deposit,
+                'Create' => @$item->userOperated->name ?? 'Auto',
+                'status' =>  $status_badge,
+                'action' => $btn_action
+            ];
+        });
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }
