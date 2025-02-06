@@ -39,6 +39,7 @@ use App\Mail\QuotationEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\master_document_email;
 use App\Models\log_company;
+use App\Models\depositrevenue;
 use Illuminate\Pagination\LengthAwarePaginator;
 class LinkPDFProposal extends Controller
 {
@@ -563,5 +564,10 @@ class LinkPDFProposal extends Controller
         $view= $template->name;
         $pdf = FacadePdf::loadView('invoicePDF.'.$view,$data);
         return $pdf->stream();
+    }
+
+
+    public function Deposit(Request $request,$id){
+
     }
 }

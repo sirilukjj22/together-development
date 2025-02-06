@@ -32,6 +32,7 @@ use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
+use App\Http\Controllers\Deposit_Revenue;
 use App\Http\Controllers\GmailController;
 use App\Http\Controllers\LinkPDFProposal;
 use App\Http\Controllers\ReportAgodaAccountReceivableController;
@@ -71,7 +72,7 @@ Route::get('sms-forward', [SMSController::class, 'forward'])->name('sms-forward'
 Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-forward');
 Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
 Route::get('/Invoice/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
-
+Route::get('/Deposit/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'Deposit'])->name('Deposit.link');
 // Test Gmail
 Route::get('/google/redirect', [GmailController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('/google/callback', [GmailController::class, 'handleGoogleCallback']);
@@ -684,13 +685,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Proposal-Complete-paginate-table', 'paginate_complete_table_proposal');
 
         Route::get('/Proposal/get/proposalTable','getproposalTable');
-        // Route::get('/invoice/get/allTable','getallTable');
+        Route::get('/Proposal/get/PendingTable','PendingTable');
         // Route::get('/invoice/get/PendingTable','PendingTable');
         // Route::get('/invoice/get/ApprovedTable','ApprovedTable');
         // Route::get('/invoice/get/CancelTable','CancelTable');
         // Route::get('/invoice/get/CompleteTable','CompleteTable');
     });
 
+    Route::controller(Deposit_Revenue::class)->middleware('role:document')->group(function () {
+        Route::get('/Deposit/index', 'index')->name('Deposit.index');
+        Route::get('/Deposit/create/{id}', 'create')->name('Deposit.create');
+        Route::get('/Document/deposit_revenue/Data/{id}', 'deposit');
+        Route::get('/Document/deposit_revenue/cheque/{id}','cheque');
+        Route::post('/Deposit/save', 'save')->name('Deposit.save');
+    });
     #DummyQuotaion
     Route::controller(DummyQuotationController::class)->middleware('role:document')->group(function () {
         Route::get('/Dummy/Proposal/index', 'index')->name('DummyQuotation.index');

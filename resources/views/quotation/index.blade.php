@@ -442,6 +442,9 @@
                                                                                 @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
+                                                                                @if ($item->status_document == 6)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                                 @endif
@@ -466,6 +469,9 @@
                                                                                     @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
                                                                                         <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                     @endif
+                                                                                    @if ($item->status_document == 6)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                    @endif
                                                                                     @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                                     @endif
@@ -488,6 +494,9 @@
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 6)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -1003,6 +1012,7 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                             @endif
@@ -1015,6 +1025,7 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                             @endif
@@ -1027,6 +1038,7 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                             @endif
@@ -1716,11 +1728,23 @@
                         { data: 'status', title: 'Status' },
                         { data: 'action', title: 'Action' }
                     ]);
-                } else if (target === '#nav-all') {
-
-
-                } else if (target === '#nav-Pending') {
-
+                }  else if (target === '#nav-Pending') {
+                    initializeDataTable('#PendingTable', '/Proposal/get/PendingTable', [
+                        { data: 'no', title: 'No' },
+                        { data: 'dummy_id', title: 'Dummy' },
+                        { data: 'quotation_id', title: 'Proposal ID' },
+                        { data: 'company_name', title: 'Company' },
+                        { data: 'Issue', title: 'Issue Date' },
+                        { data: 'Day', title: 'Day Type' },
+                        { data: 'Checkin', title: 'Check In' },
+                        { data: 'Checkout', title: 'Check Out' },
+                        { data: 'Add.Dis', title: 'Add.Dis' },
+                        { data: 'Spe.Dis', title: 'Spe.Dis' },
+                        { data: 'Deposit', title: 'Deposit' },
+                        { data: 'Create', title: 'Create By' },
+                        { data: 'status', title: 'Status' },
+                        { data: 'action', title: 'Action' }
+                    ]);
                 } else if (target === '#nav-Approved') {
 
                 } else if (target === '#nav-Complete') {
