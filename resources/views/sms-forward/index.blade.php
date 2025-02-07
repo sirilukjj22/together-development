@@ -2378,7 +2378,7 @@
             $('#amount').val('');
 
             $('#transfer-account').prop('disabled', false);
-
+ 
             jQuery.ajax({
                 type: "GET",
                 url: "{!! url('sms-edit/"+$id+"') !!}",
