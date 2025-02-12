@@ -223,7 +223,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Generate Deposit Revenue</div>
+                    <div class="span3">Edit Deposit Revenue</div>
                 </div>
                 <div class="col-auto">
                 </div>
@@ -249,8 +249,8 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <form id="myForm"action="{{ route('Deposit.save') }}" method="POST">
-        @csrf
+        <form id="myForm" action="{{url('/Deposit/update/'.$deposit->id)}}" method="POST">
+            @csrf
             <div class="container-xl">
                 <div class="row clearfix">
                     <div class="col-sm-12 col-12">
@@ -261,14 +261,57 @@
                                         <div class="col-sm-8 col-ml-12 col-12">
                                             <label for="" class="star-red">Guest Name</label>
                                             <select name="Guest" id="Guest" class="select2" onchange="data()" required>
-                                                <option value="{{$name_ID}}">{{$name}}</option> @foreach($datasub as $item) @if ($type == 'Company') <option value="{{ $item->ComTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name; } else { $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
-                                                </option> @else <option value="{{ $item->GuestTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Company_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name; } else { $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
-                                                </option> @endif @endforeach
+                                                <option value="{{$name_ID}}">{{$name}}</option>
+                                                @foreach($datasub as $item)
+                                                    @if ($type == 'Company')
+                                                        <option value="{{ $item->ComTax_ID }}" {{$company == $item->ComTax_ID ? 'selected' : ''}}>
+                                                            @php
+                                                                $comtype = DB::table('master_documents')
+                                                                    ->where('id', $item->Company_type)
+                                                                    ->first();
+
+                                                                if ($comtype) {
+                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
+                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด";
+                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
+                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
+                                                                    } else {
+                                                                        $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name));
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            {{ $name }}
+                                                        </option>
+                                                    @else
+                                                        <option value="{{ $item->GuestTax_ID }}"{{$company == $item->GuestTax_ID ? 'selected' : ''}}>
+                                                            @php
+                                                                $comtype = DB::table('master_documents')
+                                                                    ->where('id', $item->Company_type)
+                                                                    ->first();
+
+                                                                if ($comtype) {
+                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
+                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด";
+                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
+                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
+                                                                    } else {
+                                                                        $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name));
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            {{ $name }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
                                             </select>
                                         </div>
                                         <div class="col-sm-4 col-ml-12 col-12">
                                             <label for="cashAmount">Amount</label>
-                                            <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')"  value="{{$Payment}}">
                                         </div>
                                     </div>
 
@@ -315,7 +358,7 @@
                                                             <span>Issue Date:</span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;"readonly>
+                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{ $Issue_date }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -325,7 +368,7 @@
                                                             <span>Expiration Date:</span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"readonly>
+                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;" value="{{ $ExpirationDate }}"readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -404,7 +447,7 @@
                                                 <td style="text-align:left">
                                                     กรุณาชำระเงินเงินมัดจำ อ้างอิงเอกสาร : {{$QuotationID}} </span> ครั้งที่ {{$Deposit}}
                                                 </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span> {{number}} THB </td>
+                                                <td style="text-align:right"><span id="Subtotal"></span>   THB </td>
                                             </tr>
                                             <tr>
                                                 <td><br></td>
@@ -414,7 +457,7 @@
                                             <tr>
                                                 <td><br></td>
                                                 <td style="text-align:right">Price Before Tax :</td>
-                                                <td style="text-align:right"><span id="Before"></span> THB</td>
+                                                <td style="text-align:right"><span id="Before"></span>THB</td>
                                             </tr>
                                             <tr>
                                                 <td><br></td>
@@ -424,7 +467,7 @@
                                             <tr>
                                                 <td><br></td>
                                                 <td style="text-align:right">Net Total :</td>
-                                                <td style="text-align:right"><span id="Total"></span> THB</td>
+                                                <td style="text-align:right"><span id="Total"></span>  THB</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -534,6 +577,35 @@
         $('.select2Com').select2({
             placeholder: "Please select an option"
         });
+
+        var cashamount = parseFloat(document.getElementById('Amount').value);
+        var vat_type = parseFloat(document.getElementById('vat_type').value);
+        let Subtotal =0;
+        let total =0;
+        let addtax = 0;
+        let before = 0;
+        let balance =0;
+        if (vat_type == 51) {
+            Subtotal =  cashamount;
+            total = Subtotal;
+            addtax = 0;
+            before = Subtotal;
+
+        }else{
+            Subtotal =  cashamount;
+            total = Subtotal/1.07;
+            addtax = Subtotal-total;
+            before = Subtotal-addtax;
+
+        }
+
+        $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+        $('#sum').val(Subtotal);
     });
     $(function() {
         var start = moment();
@@ -645,7 +717,7 @@
             if (result.isConfirmed) {
                 console.log(1);
                 // If user confirms, submit the form
-                window.location.href = "{{ route('Proposal.index') }}";
+                window.location.href = "{{ route('Deposit.index') }}";
             }
         });
     }

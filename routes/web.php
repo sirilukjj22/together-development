@@ -695,9 +695,16 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(Deposit_Revenue::class)->middleware('role:document')->group(function () {
         Route::get('/Deposit/index', 'index')->name('Deposit.index');
         Route::get('/Deposit/create/{id}', 'create')->name('Deposit.create');
+        Route::get('/Deposit/edit/{id}', 'edit')->name('Deposit.edit');
         Route::get('/Document/deposit_revenue/Data/{id}', 'deposit');
         Route::get('/Document/deposit_revenue/cheque/{id}','cheque');
         Route::post('/Deposit/save', 'save')->name('Deposit.save');
+        Route::get('/Deposit/view/{id}', 'view')->name('Deposit.view');
+        Route::get('/Deposit/LOG/{id}', 'log')->name('Deposit.log');
+        Route::post('/Deposit/update/{id}', 'update')->name('Deposit.update');
+        Route::get('/Deposit/Send/Email/{id}', 'email')->name('Deposit.email');
+        Route::post('/Document/deposit/send/detail/email/{id}', 'sendemail')->name('Deposit.sendemail');
+        Route::get('/Document/deposit/cover/document/PDF/{id}', 'sheetpdf')->name('Deposit.sheet');
     });
     #DummyQuotaion
     Route::controller(DummyQuotationController::class)->middleware('role:document')->group(function () {

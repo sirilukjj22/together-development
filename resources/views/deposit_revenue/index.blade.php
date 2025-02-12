@@ -73,16 +73,116 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Deposit Revenue</a></li>
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Receipt / Deposit Revenue</a></li>
                     <li class="nav-item" id="nav3"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;"></i> Pending</a></li>
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;"></i> Generate</a></li>
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;"></i> Success</a></li>
                     <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;"></i> Cancel</a></li>
                     <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  onclick="nav($id='nav6')"role="tab"><i class="fa fa-circle fa-xs"style="color: #2C7F7A;"></i> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
                         <div class="tab-pane fade  show active" id="nav-Dummy" role="tabpanel" rel="0">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <table id="invoiceTable" class="table-together table-style">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;"data-priority="1">No</th>
+                                            <th data-priority="1">Deposit Revenue ID</th>
+                                            <th data-priority="1">Proposal ID</th>
+                                            <th data-priority="1">Company / Individual</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Issue Date</th>
+                                            <th class="text-center">Expiration Date</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($diposit))
+                                            @foreach ($diposit as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    {{$key +1}}
+                                                </td>
+                                                <td>{{ $item->Deposit_ID}}</td>
+                                                <td>{{ $item->Quotation_ID}}</td>
+                                                <td style="text-align: left;">{{ $item->fullname}}</td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->amount, 2) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ $item->Issue_date}}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ $item->ExpirationDate}}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->document_status == 1)
+                                                        <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
+                                                    @elseif ($item->document_status == 2)
+                                                        <span class="badge rounded-pill "style="background-color: #0ea5e9"> Success</span>
+                                                    @endif
+                                                </td>
+                                                @php
+                                                    $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Deposit Revenue', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Deposit Revenue', Auth::user()->id);
+                                                @endphp
 
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($rolePermission > 0)
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Success</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @elseif ($rolePermission == 2)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Success</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @elseif ($rolePermission == 3)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Success</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @endif
+                                                            @else
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="nav-all" role="tabpanel" rel="0">
 

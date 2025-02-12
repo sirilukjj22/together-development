@@ -17,4 +17,12 @@ class depositrevenue extends Model
         'amount',
         'fullname',
     ];
+    public function  company()
+    {
+        return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
+    }
+    public function  guest()
+    {
+        return $this->hasOne(Guest::class, 'Profile_ID', 'Company_ID');
+    }
 }

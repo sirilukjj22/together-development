@@ -3027,8 +3027,6 @@ class QuotationController extends Controller
         $view= $template->name;
         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
         return $pdf->stream();
-
-
     }
     public function getproposalTable(Request $request){
         $Proposal = Quotation::query()

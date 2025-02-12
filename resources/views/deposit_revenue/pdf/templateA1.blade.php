@@ -191,7 +191,7 @@
 
                 <div  style="text-align: center">
 
-                    <b style="font-size:18px;color:#ffffff;font-weight: bold;">DEPOSIT REVENUE</b>
+                    <b style="font-size:18px;color:#ffffff;font-weight: bold;">INVOICE / DEPOSIT</b>
 
                 </div>
 
@@ -235,7 +235,7 @@
             </table>
         </footer>
         <main>
-            <b class="com" style="font-size:18px">Deposit Revenue</b>
+            <b class="com" style="font-size:18px">Invoice / Deposit</b>
             <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
                 <table style="line-height:12px;" >
                     <tr>
@@ -243,7 +243,7 @@
                         <td>{{$fullname}}</td>
                         <td></td>
                     </tr>
-                     <tr>
+                    <tr>
                         <td><b style="margin-left: 10px;">Address :</b></td>
                         <td>{{$Address}}
                             @if ($TambonID)
@@ -304,7 +304,7 @@
                 </span><br>
             </span>
             <div style="border: 1px solid #2D7F7B"></div>
-            {{-- <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
+            <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                 <thead style="background-color: rgba(45, 127, 123, 1);  color:#fff;">
                     <tr style="">
                         <th style="width:1px;color:rgb(61, 150, 145);">.</th>
@@ -345,7 +345,7 @@
                         <td style="text-align:right"><span id="Total">{{ number_format($Subtotal, 2) }}</span> THB</td>
                     </tr>
                 </tbody>
-            </table> --}}
+            </table>
             <div style="line-height:10px;">
             </div>
             <div>
