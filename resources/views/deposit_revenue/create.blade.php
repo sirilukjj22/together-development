@@ -223,7 +223,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Generate Deposit Revenue</div>
+                    <div class="span3">Create Invoice / Deposit</div>
                 </div>
                 <div class="col-auto">
                 </div>
