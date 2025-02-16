@@ -45,7 +45,11 @@ class Deposit_Revenue extends Controller
     public function index()
     {
         $diposit= depositrevenue::query()->get();
-        return view('deposit_revenue.index',compact('diposit'));
+        $pening= depositrevenue::where('document_status',1)->get();
+        $success= depositrevenue::where('document_status',2)->get();
+        $cancel= depositrevenue::where('document_status',0)->get();
+
+        return view('deposit_revenue.index',compact('diposit','pening','success','cancel'));
     }
     public function create($id)
     {
@@ -2464,6 +2468,58 @@ class Deposit_Revenue extends Controller
             return redirect()->route('Deposit.index')->with('error', $e->getMessage());
         }
     }
+    public function Revise($id){
+        try {
+            $data = depositrevenue::where('id',$id)->first();
+            $Quotation_ID = $data->Deposit_ID;
+            $Quotation = depositrevenue::find($id);
+            $Quotation->document_status = 1;
+            $Quotation->save();
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Quotation_ID;
+            $save->type = 'Revise';
+            $save->Category = 'Revise :: Invoice / Deposit';
+            $save->content = 'Revise Document Invoice / Deposit ID : '.$Quotation_ID;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('Deposit.index')->with('error', $e->getMessage());
+        }
+        return redirect()->route('Deposit.index')->with('success', 'Data has been successfully saved.');
+    }
+    public function cancel(Request $request ,$id){
+        $data = depositrevenue::where('id',$id)->first();
+        $Quotation_ID = $data->Deposit_ID;
+        $userid = Auth::user()->id;
+        try {
 
-
+            if ($data->status_document == 1) {
+                $Quotation = depositrevenue::find($id);
+                $Quotation->status_document = 0;
+                $Quotation->remark = $request->note;
+                $Quotation->save();
+            }elseif ($data->status_document == 2) {
+                $Quotation = depositrevenue::find($id);
+                $Quotation->status_document = 1;
+                $Quotation->remark = $request->note;
+                $Quotation->save();
+            }
+            return redirect()->route('Deposit.index')->with('success', 'Data has been successfully saved.');
+        } catch (\Throwable $e) {
+            return redirect()->route('Deposit.index')->with('error', $e->getMessage());
+        }
+        try {
+            $savelog = new log_company();
+            $savelog->Created_by = $userid;
+            $savelog->Company_ID = $Quotation_ID;
+            $savelog->type = 'Cancel';
+            $savelog->Category = 'Cancel :: Invoice / Deposit';
+            $savelog->content = 'Cancel Document Invoice / Deposit ID : '.$Quotation_ID.'+'.$request->note;
+            $savelog->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('Deposit.index')->with('error', $e->getMessage());
+        }
+        return redirect()->route('Deposit.index')->with('success', 'Data has been successfully saved.');
+    }
 }

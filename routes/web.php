@@ -707,6 +707,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/deposit/cover/document/PDF/{id}', 'sheetpdf')->name('Deposit.sheet');
         Route::get('/Deposit/generate/Revenue/{id}', 'generate')->name('Deposit.generate');
         Route::post('/Deposit/generate/Revenue/save/{id}', 'generate_dr')->name('Deposit.generate_dr');
+        Route::post('/Document/Deposit/cancel/{id}','cancel')->name('Deposit.cancel');
+        Route::get(' /Document/Deposit/Revise/{id}','Revise')->name('Deposit.Revise');
     });
     #DummyQuotaion
     Route::controller(DummyQuotationController::class)->middleware('role:document')->group(function () {
