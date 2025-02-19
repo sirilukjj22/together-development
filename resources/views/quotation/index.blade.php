@@ -1640,121 +1640,121 @@
                 }
             });
         }
-        $(document).ready(function () {
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
-                reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
-                // setTimeout(function () {
-                //     if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
-                //         // $(targetTab + ' table').DataTable().columns.adjust().draw();
-                //     }
-                // }, 200);
+        // $(document).ready(function () {
+        //     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        //         var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
+        //         reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
+        //         // setTimeout(function () {
+        //         //     if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
+        //         //         // $(targetTab + ' table').DataTable().columns.adjust().draw();
+        //         //     }
+        //         // }, 200);
 
-            });
-            // function hideLabel() {
-            //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
-            //     $('input[type="search"]').each(function () {
-            //         $(this).attr("placeholder", "Type to search...");
-            //         var searchID = $(this).attr('id');
-            //         var text = searchID.split('-');
-            //         var number = text[2];
+        //     });
+        //     // function hideLabel() {
+        //     //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+        //     //     $('input[type="search"]').each(function () {
+        //     //         $(this).attr("placeholder", "Type to search...");
+        //     //         var searchID = $(this).attr('id');
+        //     //         var text = searchID.split('-');
+        //     //         var number = text[2];
 
-            function hideLabel() {
-                // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
-                $('input[type="search"]').each(function () {
-                    $(this).attr("placeholder", "Type to search...");
-                    var searchID = $(this).attr('id');
-                    var text = searchID.split('-');
-                    var number = text[2];
+        //     function hideLabel() {
+        //         // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+        //         $('input[type="search"]').each(function () {
+        //             $(this).attr("placeholder", "Type to search...");
+        //             var searchID = $(this).attr('id');
+        //             var text = searchID.split('-');
+        //             var number = text[2];
 
-                    $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
+        //             $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
 
-                });
+        //         });
 
-                $(window).on("resize", function () {
-                    $.fn.dataTable
-                    .tables({ visible: true, api: true })
-                    .columns.adjust()
-                    .responsive.recalc();
-                });
-            }
+        //         $(window).on("resize", function () {
+        //             $.fn.dataTable
+        //             .tables({ visible: true, api: true })
+        //             .columns.adjust()
+        //             .responsive.recalc();
+        //         });
+        //     }
 
-            function initializeDataTable(tableId, url, columns) {
-                // if ($.fn.DataTable.isDataTable(tableId)) {
-                //     // $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
-                // }
-                $(tableId).dataTable({
-                    processing: true,
-                    serverSide: true,
-                    searching: true,
-                    // paging: true,
-                    destroy: true,
-                    info: true,
-                    ajax: {
-                        url: url,
-                        method: 'GET',
-                        dataSrc: function (json) {
-                            return json.data;
-                        }
-                    },
-                    columns: columns,
-                    responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
-                    info: true,
-                    // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
-                    // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
-                    // className: 'table-together table-style'
-                });
+        //     function initializeDataTable(tableId, url, columns) {
+        //         // if ($.fn.DataTable.isDataTable(tableId)) {
+        //         //     // $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
+        //         // }
+        //         $(tableId).dataTable({
+        //             processing: true,
+        //             serverSide: true,
+        //             searching: true,
+        //             // paging: true,
+        //             destroy: true,
+        //             info: true,
+        //             ajax: {
+        //                 url: url,
+        //                 method: 'GET',
+        //                 dataSrc: function (json) {
+        //                     return json.data;
+        //                 }
+        //             },
+        //             columns: columns,
+        //             responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+        //             info: true,
+        //             // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
+        //             // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
+        //             // className: 'table-together table-style'
+        //         });
 
-                hideLabel();
-            }
+        //         hideLabel();
+        //     }
 
-            function reloadTable(target) {
-                console.log(1);
+        //     function reloadTable(target) {
+        //         console.log(1);
 
-                if (target === '#nav-Dummy') {
-                    initializeDataTable('#proposalTable', '/Proposal/get/proposalTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'dummy_id', title: 'Dummy' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company' },
-                        { data: 'Issue', title: 'Issue Date' },
-                        { data: 'Day', title: 'Day Type' },
-                        { data: 'Checkin', title: 'Check In' },
-                        { data: 'Checkout', title: 'Check Out' },
-                        { data: 'Add.Dis', title: 'Add.Dis' },
-                        { data: 'Spe.Dis', title: 'Spe.Dis' },
-                        { data: 'Deposit', title: 'Deposit' },
-                        { data: 'Create', title: 'Create By' },
-                        { data: 'status', title: 'Status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
-                }  else if (target === '#nav-Pending') {
-                    initializeDataTable('#PendingTable', '/Proposal/get/PendingTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'dummy_id', title: 'Dummy' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company' },
-                        { data: 'Issue', title: 'Issue Date' },
-                        { data: 'Day', title: 'Day Type' },
-                        { data: 'Checkin', title: 'Check In' },
-                        { data: 'Checkout', title: 'Check Out' },
-                        { data: 'Add.Dis', title: 'Add.Dis' },
-                        { data: 'Spe.Dis', title: 'Spe.Dis' },
-                        { data: 'Deposit', title: 'Deposit' },
-                        { data: 'Create', title: 'Create By' },
-                        { data: 'status', title: 'Status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
-                } else if (target === '#nav-Approved') {
+        //         if (target === '#nav-Dummy') {
+        //             initializeDataTable('#proposalTable', '/Proposal/get/proposalTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'dummy_id', title: 'Dummy' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company' },
+        //                 { data: 'Issue', title: 'Issue Date' },
+        //                 { data: 'Day', title: 'Day Type' },
+        //                 { data: 'Checkin', title: 'Check In' },
+        //                 { data: 'Checkout', title: 'Check Out' },
+        //                 { data: 'Add.Dis', title: 'Add.Dis' },
+        //                 { data: 'Spe.Dis', title: 'Spe.Dis' },
+        //                 { data: 'Deposit', title: 'Deposit' },
+        //                 { data: 'Create', title: 'Create By' },
+        //                 { data: 'status', title: 'Status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
+        //         }  else if (target === '#nav-Pending') {
+        //             initializeDataTable('#PendingTable', '/Proposal/get/PendingTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'dummy_id', title: 'Dummy' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company' },
+        //                 { data: 'Issue', title: 'Issue Date' },
+        //                 { data: 'Day', title: 'Day Type' },
+        //                 { data: 'Checkin', title: 'Check In' },
+        //                 { data: 'Checkout', title: 'Check Out' },
+        //                 { data: 'Add.Dis', title: 'Add.Dis' },
+        //                 { data: 'Spe.Dis', title: 'Spe.Dis' },
+        //                 { data: 'Deposit', title: 'Deposit' },
+        //                 { data: 'Create', title: 'Create By' },
+        //                 { data: 'status', title: 'Status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
+        //         } else if (target === '#nav-Approved') {
 
-                } else if (target === '#nav-Complete') {
+        //         } else if (target === '#nav-Complete') {
 
-                }
-                else if (target === '#nav-Cancel') {
+        //         }
+        //         else if (target === '#nav-Cancel') {
 
-                }
-            }
-        });
+        //         }
+        //     }
+        // });
     </script>
 
 @endsection

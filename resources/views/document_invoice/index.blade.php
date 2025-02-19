@@ -741,156 +741,156 @@
             });
         }
 
-        $(document).ready(function () {
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
-                reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
-                // setTimeout(function () {
-                //     if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
-                //         // $(targetTab + ' table').DataTable().columns.adjust().draw();
-                //     }
-                // }, 200);
+        // $(document).ready(function () {
+        //     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        //         var targetTab = $(e.target).attr('href'); // ดึงค่า href ของแท็บที่คลิก
+        //         reloadTable(targetTab); // เรียกฟังก์ชันโหลดข้อมูลใหม่
+        //         // setTimeout(function () {
+        //         //     if ($.fn.DataTable.isDataTable(targetTab + ' table')) {
+        //         //         // $(targetTab + ' table').DataTable().columns.adjust().draw();
+        //         //     }
+        //         // }, 200);
 
-            });
-            // function hideLabel() {
-            //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
-            //     $('input[type="search"]').each(function () {
-            //         $(this).attr("placeholder", "Type to search...");
-            //         var searchID = $(this).attr('id');
-            //         var text = searchID.split('-');
-            //         var number = text[2];
+        //     });
+        //     // function hideLabel() {
+        //     //     // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+        //     //     $('input[type="search"]').each(function () {
+        //     //         $(this).attr("placeholder", "Type to search...");
+        //     //         var searchID = $(this).attr('id');
+        //     //         var text = searchID.split('-');
+        //     //         var number = text[2];
 
-            function hideLabel() {
-                // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
-                $('input[type="search"]').each(function () {
-                    $(this).attr("placeholder", "Type to search...");
-                    var searchID = $(this).attr('id');
-                    var text = searchID.split('-');
-                    var number = text[2];
+        //     function hideLabel() {
+        //         // เปลี่ยน placeholder สำหรับฟิลด์ค้นหาทั้งหมดในทุก DataTable
+        //         $('input[type="search"]').each(function () {
+        //             $(this).attr("placeholder", "Type to search...");
+        //             var searchID = $(this).attr('id');
+        //             var text = searchID.split('-');
+        //             var number = text[2];
 
-                    $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
+        //             $('label[for="dt-length-'+ number +'"], label[for="'+ searchID +'"]').hide();
 
-                });
+        //         });
 
-                $(window).on("resize", function () {
-                    $.fn.dataTable
-                    .tables({ visible: true, api: true })
-                    .columns.adjust()
-                    .responsive.recalc();
-                });
-            }
+        //         $(window).on("resize", function () {
+        //             $.fn.dataTable
+        //             .tables({ visible: true, api: true })
+        //             .columns.adjust()
+        //             .responsive.recalc();
+        //         });
+        //     }
 
-            function initializeDataTable(tableId, url, columns) {
-                // if ($.fn.DataTable.isDataTable(tableId)) {
-                //     // $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
-                // }
-                $(tableId).dataTable({
-                    processing: true,
-                    serverSide: true,
-                    searching: true,
-                    // paging: true,
-                    destroy: true,
-                    info: true,
-                    ajax: {
-                        url: url,
-                        method: 'GET',
-                        dataSrc: function (json) {
-                            return json.data;
-                        }
-                    },
-                    columns: columns,
-                    responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
-                    info: true,
-                    // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
-                    // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
-                    // className: 'table-together table-style'
-                });
+        //     function initializeDataTable(tableId, url, columns) {
+        //         // if ($.fn.DataTable.isDataTable(tableId)) {
+        //         //     // $(tableId).DataTable().clear().destroy(); // ล้าง DataTable เก่าก่อนโหลดใหม่
+        //         // }
+        //         $(tableId).dataTable({
+        //             processing: true,
+        //             serverSide: true,
+        //             searching: true,
+        //             // paging: true,
+        //             destroy: true,
+        //             info: true,
+        //             ajax: {
+        //                 url: url,
+        //                 method: 'GET',
+        //                 dataSrc: function (json) {
+        //                     return json.data;
+        //                 }
+        //             },
+        //             columns: columns,
+        //             responsive: true, // รองรับการเปลี่ยนขนาดอัตโนมัติ
+        //             info: true,
+        //             // autoWidth: false  ,  // ป้องกันตารางกว้างผิดปกติ
+        //             // dom: '<"top"l>rt<"bottom"ip><"clear">', // กำหนดโครงสร้างของ DOM ของ DataTable
+        //             // className: 'table-together table-style'
+        //         });
 
-                hideLabel();
-            }
+        //         hideLabel();
+        //     }
 
-            function reloadTable(target) {
-                console.log(1);
+        //     function reloadTable(target) {
+        //         console.log(1);
 
-                if (target === '#nav-Dummy') {
+        //         if (target === '#nav-Dummy') {
 
-                    initializeDataTable('#invoiceTable', '/invoice/get/proposal', [
-                        { data: 'no', title: 'No' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company / Individual' },
-                        { data: 'pi_doc', title: 'PI Doc.' },
-                        { data: 'pd_amount', title: 'PD Amount' },
-                        { data: 'pi_amount', title: 'PI Amount' },
-                        { data: 'balance', title: 'Balance' },
-                        { data: 'status', title: 'Status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
+        //             initializeDataTable('#invoiceTable', '/invoice/get/proposal', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company / Individual' },
+        //                 { data: 'pi_doc', title: 'PI Doc.' },
+        //                 { data: 'pd_amount', title: 'PD Amount' },
+        //                 { data: 'pi_amount', title: 'PI Amount' },
+        //                 { data: 'balance', title: 'Balance' },
+        //                 { data: 'status', title: 'Status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
 
-                } else if (target === '#nav-all') {
-                    initializeDataTable('#allTable', '/invoice/get/allTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'invoice_id', title: 'Invoice ID' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company / Individual' },
-                        { data: 'pi_doc', title: 'Issue Date' },
-                        { data: 'pd_amount', title: 'Amount' },
-                        { data: 'pi_amount', title: 'Operated By' },
-                        { data: 'status', title: 'Document status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
+        //         } else if (target === '#nav-all') {
+        //             initializeDataTable('#allTable', '/invoice/get/allTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'invoice_id', title: 'Invoice ID' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company / Individual' },
+        //                 { data: 'pi_doc', title: 'Issue Date' },
+        //                 { data: 'pd_amount', title: 'Amount' },
+        //                 { data: 'pi_amount', title: 'Operated By' },
+        //                 { data: 'status', title: 'Document status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
 
-                } else if (target === '#nav-Pending') {
-                    initializeDataTable('#PendingTable', '/invoice/get/PendingTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'invoice_id', title: 'Invoice ID' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company / Individual' },
-                        { data: 'pi_doc', title: 'Issue Date' },
-                        { data: 'pd_amount', title: 'Amount' },
-                        { data: 'pi_amount', title: 'Operated By' },
-                        { data: 'status', title: 'Document status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
-                } else if (target === '#nav-Approved') {
-                    initializeDataTable('#ApprovedTable', '/invoice/get/ApprovedTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'invoice_id', title: 'Invoice ID' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company / Individual' },
-                        { data: 'pi_doc', title: 'Issue Date' },
-                        { data: 'pd_amount', title: 'Amount' },
-                        { data: 'pi_amount', title: 'Operated By' },
-                        { data: 'status', title: 'Document status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
-                } else if (target === '#nav-Complete') {
-                    initializeDataTable('#CompleteTable', '/invoice/get/CompleteTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'invoice_id', title: 'Invoice ID' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company / Individual' },
-                        { data: 'pi_doc', title: 'Issue Date' },
-                        { data: 'pd_amount', title: 'Amount' },
-                        { data: 'pi_amount', title: 'Operated By' },
-                        { data: 'status', title: 'Document status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
-                }
-                else if (target === '#nav-Cancel') {
-                    initializeDataTable('#CancelTable', '/invoice/get/CancelTable', [
-                        { data: 'no', title: 'No' },
-                        { data: 'invoice_id', title: 'Invoice ID' },
-                        { data: 'quotation_id', title: 'Proposal ID' },
-                        { data: 'company_name', title: 'Company / Individual' },
-                        { data: 'pi_doc', title: 'Issue Date' },
-                        { data: 'pd_amount', title: 'Amount' },
-                        { data: 'pi_amount', title: 'Operated By' },
-                        { data: 'status', title: 'Document status' },
-                        { data: 'action', title: 'Action' }
-                    ]);
-                }
-            }
-        });
+        //         } else if (target === '#nav-Pending') {
+        //             initializeDataTable('#PendingTable', '/invoice/get/PendingTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'invoice_id', title: 'Invoice ID' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company / Individual' },
+        //                 { data: 'pi_doc', title: 'Issue Date' },
+        //                 { data: 'pd_amount', title: 'Amount' },
+        //                 { data: 'pi_amount', title: 'Operated By' },
+        //                 { data: 'status', title: 'Document status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
+        //         } else if (target === '#nav-Approved') {
+        //             initializeDataTable('#ApprovedTable', '/invoice/get/ApprovedTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'invoice_id', title: 'Invoice ID' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company / Individual' },
+        //                 { data: 'pi_doc', title: 'Issue Date' },
+        //                 { data: 'pd_amount', title: 'Amount' },
+        //                 { data: 'pi_amount', title: 'Operated By' },
+        //                 { data: 'status', title: 'Document status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
+        //         } else if (target === '#nav-Complete') {
+        //             initializeDataTable('#CompleteTable', '/invoice/get/CompleteTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'invoice_id', title: 'Invoice ID' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company / Individual' },
+        //                 { data: 'pi_doc', title: 'Issue Date' },
+        //                 { data: 'pd_amount', title: 'Amount' },
+        //                 { data: 'pi_amount', title: 'Operated By' },
+        //                 { data: 'status', title: 'Document status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
+        //         }
+        //         else if (target === '#nav-Cancel') {
+        //             initializeDataTable('#CancelTable', '/invoice/get/CancelTable', [
+        //                 { data: 'no', title: 'No' },
+        //                 { data: 'invoice_id', title: 'Invoice ID' },
+        //                 { data: 'quotation_id', title: 'Proposal ID' },
+        //                 { data: 'company_name', title: 'Company / Individual' },
+        //                 { data: 'pi_doc', title: 'Issue Date' },
+        //                 { data: 'pd_amount', title: 'Amount' },
+        //                 { data: 'pi_amount', title: 'Operated By' },
+        //                 { data: 'status', title: 'Document status' },
+        //                 { data: 'action', title: 'Action' }
+        //             ]);
+        //         }
+        //     }
+        // });
 
     </script>
 @endsection

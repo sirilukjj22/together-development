@@ -42,6 +42,9 @@ use App\Models\Guest;
 use App\Mail\QuotationEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\master_document_email;
+use App\Models\document_deposit_revenue;
+use App\Models\depositrevenue;
+
 class Document_invoice extends Controller
 {
     public function index()
@@ -230,8 +233,32 @@ class Document_invoice extends Controller
             $Deposit =$Dinvoice->deposit+ 1;
         }
         $user = Auth::user();
+        $deposit = depositrevenue::where('Quotation_ID',$QuotationID)->get();
+        foreach ($deposit as $item) {
+            $depositID = $item->Quotation_ID;
+            $Deposit_ID = document_deposit_revenue::where('Quotation_ID',$depositID)->get();
+        }
         return view('document_invoice.create',compact('InvoiceID','fullName','Identification','address','Quotation','Selectdata','QuotationID','Additional_ID','Additional_Nettotal','settingCompany','invoices','totalinvoice',
-                    'phone','Contact_phone','Fax_number','Email','Contact_Name','Deposit','vat_type','user','Contact_Email'));
+                    'phone','Contact_phone','Fax_number','Email','Contact_Name','Deposit','vat_type','user','Contact_Email','deposit','Deposit_ID'));
+    }
+    public function deposit($id){
+        $idArray = explode(',', $id);
+        $deposit = []; // กำหนดให้เป็นอาร์เรย์ก่อนใช้
+
+        foreach ($idArray as $item) {
+            $data = document_deposit_revenue::whereIn('id', $idArray)->get();
+
+            $deposit = $data->map(function ($item) {
+                return [
+                    'Deposit_ID' => $item->Deposit_ID,
+                    'detail'     => $item->detail,
+                    'Amount'     => $item->Amount,
+                ];
+            });
+        }
+        return response()->json([
+            'deposit'=>$deposit,
+        ]);
     }
     public function save(Request $request){
         try {

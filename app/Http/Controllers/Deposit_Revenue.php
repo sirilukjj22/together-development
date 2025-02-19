@@ -1536,8 +1536,8 @@ class Deposit_Revenue extends Controller
 
     public function email($id){
         $deposit = depositrevenue::where('id',$id)->first();
-
         $Quotation_ID= $deposit->Quotation_ID;
+        $document_status= $deposit->document_status;
         $Deposit_ID= $deposit->Deposit_ID;
         $comtypefullname = null;
         $userid = Auth::user()->id;
@@ -1684,7 +1684,7 @@ class Deposit_Revenue extends Controller
             $promotions[] = 'Link : ' . $promo->name;
         }
         return view('deposit_revenue.email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day','promotions',
-        'quotation','type_Proposal','nameuser','teluser','Deposit_ID','deposit','emailCon'));
+        'quotation','type_Proposal','nameuser','teluser','Deposit_ID','deposit','emailCon','document_status'));
     }
     public function sendemail(Request $request,$id){
         try {
@@ -1759,14 +1759,18 @@ class Deposit_Revenue extends Controller
     }
     public function sheetpdf(Request $request ,$id) {
         $deposit = depositrevenue::where('id',$id)->first();
-        $Deposit = depositrevenue::where('id',$id)->count();
+        $correct = $deposit->correct;
+        $Deposit = $deposit->count;
         $Proposal_ID = $deposit->Quotation_ID;
         $IssueDate = 	$deposit->Issue_date;
         $Expiration = $deposit->ExpirationDate;
         $companyid = $deposit->Company_ID;
-        $Payment = $deposit->amount;
+        $document_status = $deposit->document_status;
+        $Amount = $deposit->amount;
         $fullnamemain = $deposit->fullname;
         $DepositID = 	$deposit->Deposit_ID;
+        $paymentDate = $deposit->date;
+        $Payment = $deposit->payment;
         $parts = explode('-', $companyid);
         $firstPart = $parts[0];
         if ($firstPart == 'C') {
@@ -1939,6 +1943,17 @@ class Deposit_Revenue extends Controller
                 $balance = $Subtotal;
             }
         }
+        $groupedData = document_deposit_revenue::where('Deposit_ID',$DepositID)->get();
+        $productItems  = document_deposit_revenue::where('Deposit_ID',$DepositID)->get();
+        $productItems = [];
+        foreach ($groupedData as $value) {
+
+            $productItems[] = [
+                'detail' => $value['detail'],
+                'amount' => $value['Amount'],
+            ];
+        }
+        $count = count($productItems);
         $data= [
             'settingCompany'=>$settingCompany,
             'DepositID'=>$DepositID,
@@ -1968,10 +1983,20 @@ class Deposit_Revenue extends Controller
             'balance'=>$balance,
             'Children'=>$Children,
             'Quotation'=>$Quotation,
+            'paymentDate'=>$paymentDate,
+            'Amount'=>$Amount,
+            'count'=>$count,
+            'productItems'=>$productItems,
         ];
         $template = master_template::query()->latest()->first();
         $view= $template->name;
-        $pdf = FacadePdf::loadView('deposit_revenue.pdf.' . $view, $data);
+        if ($document_status == 1) {
+            if ($correct > 0 ) {
+                $pdf = FacadePdf::loadView('deposit_revenue.pdf.' . $view, $data);
+            }
+        }else {
+            $pdf = FacadePdf::loadView('deposit_revenue.pdf_generate.' . $view, $data);
+        }
         $path = 'PDF/Deposit_Revenue/';
         return $pdf->stream();
     }
@@ -2463,6 +2488,12 @@ class Deposit_Revenue extends Controller
                     $savedoc->save();
                 }
             }
+            $Quotation = Quotation::where('Quotation_ID', $QuotationID)->first();
+            $Quotationid = $Quotation->id;
+
+            $savequ = Quotation::find($Quotationid);
+            $savequ->status_receive = 1;
+            $savequ->save();
             return redirect()->route('Deposit.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('Deposit.index')->with('error', $e->getMessage());

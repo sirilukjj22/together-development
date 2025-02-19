@@ -848,6 +848,9 @@ Route::middleware(['auth'])->group(function () {
          //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
 
+
+        Route::get('/Document/invoice/data/{id}','deposit')->name('invoice.deposit');
+
         Route::get('/invoice/get/proposal','getproposal');
         Route::get('/invoice/get/allTable','getallTable');
         Route::get('/invoice/get/PendingTable','PendingTable');

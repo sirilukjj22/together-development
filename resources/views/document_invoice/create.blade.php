@@ -442,6 +442,16 @@
                                         </script>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <label for=""><b>Deposit Revenue</b></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <select id="deposit" name="deposit[]" multiple class="select2" >
+                                            @foreach ($Deposit_ID as $key => $item)
+                                                <option value="{{ $item->id }}">Deposit ID : {{ $item->Deposit_ID }} {{ $item->detail }} Amount : {{ $item->Amount }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -658,26 +668,8 @@
                                                 </td>
                                                 <td style="text-align:right"><span id="Subtotal"></span> THB </td>
                                             </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Subtotal :</td>
-                                                <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Price Before Tax :</td>
-                                                <td style="text-align:right"><span id="Before"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Value Added Tax :</td>
-                                                <td style="text-align:right"><span id="Added"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Net Total :</td>
-                                                <td style="text-align:right"><span id="Total"></span> THB</td>
-                                            </tr>
+                                        </tbody>
+                                        <tbody id="display-deposit">
                                         </tbody>
                                     </table>
                                 </div>
@@ -776,6 +768,58 @@
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Please select an option"
+            });
+            $('.select2Com').select2({
+                placeholder: "Please select an option"
+            });
+            $('#deposit').on('change', function() {
+                let id = $(this).val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "{!! url('/Document/invoice/data/" + id + "') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(response) {
+                        var depost = response.deposit;
+                        $('#display-deposit tbody').html('');
+                            depost = depost.filter((value, index, self) =>
+                            index === self.findIndex((t) => (
+                                t.Deposit_ID === value.Deposit_ID && t.detail === value.detail && t.Amount === value.Amount
+                            ))
+                        );
+
+                        // ตรวจสอบข้อมูลที่ได้รับหลังจากกรองแล้ว
+                        console.log(depost);
+                        depost.forEach((depost, index) => {
+                            let newRow = `
+                                <tr>
+                                    <td style="text-align: center;">${index + 2}</td> <!-- ลำดับแถว -->
+                                    <td>
+                                        Deposit ID: ${depost.Deposit_ID} ${depost.detail}
+                                    </td>
+                                    <td style="text-align: right;">
+                                        ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
+                                    </td>
+                                </tr>
+                            `;
+
+                            $('#display-deposit').append(newRow);  // เพิ่มแถวใน tbody
+                        });
+                        if (depost.length === 0) {
+                            $('#display-deposit tbody').html('<tr><td colspan="3" style="text-align:center;">No data available</td></tr>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed: ", status, error);
+                    }
+                });
+            });
+        });
+
 
         $(function() {
             var start = moment();

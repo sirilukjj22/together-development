@@ -73,14 +73,14 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Receipt / Deposit Revenue</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Receipt / Deposit Revenue</a></li>
                     <li class="nav-item" id="nav3"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;"></i> Pending</a></li>
                     <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;"></i> Success</a></li>
                     <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;"></i> Cancel</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">
-                        <div class="tab-pane fade show active" id="nav-all" role="tabpanel" rel="0">
+                        <div class="tab-pane fade  show active" id="nav-all" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
                                 <table id="invoiceTable" class="table-together table-style">
                                     <thead>

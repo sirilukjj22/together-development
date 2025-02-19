@@ -43,8 +43,13 @@
                                         <label for="ถึง">เรื่อง : </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        <input type="text" class="form-control" value="Invoice / Deposit เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
-                                        <input type="hidden" name="tital" value="Invoice / Deposit เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
+                                        @if ($document_status == 1)
+                                            <input type="text" class="form-control" value="Invoice / Deposit เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
+                                            <input type="hidden" name="tital" value="Invoice / Deposit เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
+                                        @else
+                                            <input type="text" class="form-control" value="Deposit Revenue เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
+                                            <input type="hidden" name="tital" value="Deposit Revenue เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -96,7 +101,11 @@
                                         <label for="ถึง">สิ่งที่แนบมาด้วย: </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        Invoice / Deposit เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
+                                        @if ($document_status == 1)
+                                            Invoice / Deposit เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
+                                        @else
+                                            Deposit Revenue เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
+                                        @endif
                                         <input type="file" name="files[]" class="form-control" multiple>
                                     </div>
                                 </div>

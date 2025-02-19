@@ -404,7 +404,7 @@
                                                 <td style="text-align:left">
                                                     กรุณาชำระเงินเงินมัดจำ อ้างอิงเอกสาร : {{$QuotationID}} </span> ครั้งที่ {{$Deposit}}
                                                 </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span> {{number}} THB </td>
+                                                <td style="text-align:right"><span id="Subtotal"></span>  THB </td>
                                             </tr>
                                             <tr>
                                                 <td><br></td>

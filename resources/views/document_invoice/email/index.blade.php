@@ -95,7 +95,7 @@
                                         <label for="ถึง">สิ่งที่แนบมาด้วย: </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        Proforma Invoice เลขที่ {{$Quotation_ID}} <a href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
+                                        Proforma Invoice เลขที่ {{$Quotation_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
                                         <input type="file" name="files[]" class="form-control" multiple>
                                     </div>
                                 </div>
