@@ -345,6 +345,16 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                <div class="row my-3">
+                                    <label for=""><b>Deposit Revenue</b></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <select id="deposit" name="deposit[]" multiple class="select2" >
+                                            @foreach ($Deposit_ID as $key => $item)
+                                                <option value="{{ $item->id }}">Deposit ID : {{ $item->Deposit_ID }}  Amount : {{ $item->amount }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <label for=""><b>Method of Payment</b></label>
                                     <div class="col-lg-6">
@@ -364,6 +374,7 @@
                                                     input.value = 100;
                                                 }
                                                 var vat_type = parseFloat(document.getElementById('vat_type').value);
+                                                var Deposit_all = parseFloat(document.getElementById('Deposit_all').value) || 0;
                                                 let Subtotal =0;
                                                 let total =0;
                                                 let addtax = 0;
@@ -371,26 +382,29 @@
                                                 let balance =0;
                                                 if (vat_type == 51) {
                                                     Subtotal = (amount*input.value)/100;
-                                                    total = Subtotal;
+                                                    depost = Subtotal-Deposit_all;
+                                                    total = depost;
                                                     addtax = 0;
-                                                    before = Subtotal;
-                                                    balance = Subtotal;
+                                                    before = depost;
+                                                    balance = depost;
                                                 }else{
                                                     Subtotal = (amount*input.value)/100;
-                                                    total = Subtotal/1.07;
-                                                    addtax = Subtotal-total;
-                                                    before = Subtotal-addtax;
-                                                    balance = amount-Subtotal;
+                                                    depost = Subtotal-Deposit_all;
+                                                    total = depost/1.07;
+                                                    addtax = depost-total;
+                                                    before = depost-addtax;
+                                                    balance = Nettotal-depost;
                                                 }
 
                                                 $('#Subtotalview').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                                                $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                                                $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Subtotal').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#SubtotalAll').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                                                $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Total').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#balance').val(balance);
-                                                $('#sum').val(Subtotal);
+                                                $('#sum').val(depost);
+                                                $('#totalamout_total').val(Subtotal);
                                             }
                                         </script>
                                     </div>
@@ -412,6 +426,7 @@
                                                     }
                                                 }
                                                 var vat_type = parseFloat(document.getElementById('vat_type').value);
+                                                var Deposit_all = parseFloat(document.getElementById('Deposit_all').value) || 0;
                                                 let Subtotal =0;
                                                 let total =0;
                                                 let addtax = 0;
@@ -419,37 +434,31 @@
                                                 let balance =0;
                                                 if (vat_type == 51) {
                                                     Subtotal =  parseFloat(input.value);
-                                                    total = Subtotal;
+                                                    depost = Subtotal-Deposit_all;
+                                                    total = depost;
                                                     addtax = 0;
-                                                    before = Subtotal;
-                                                    balance = Nettotal-Subtotal;
+                                                    before = depost;
+                                                    balance = Nettotal-depost;
                                                 }else{
                                                     Subtotal =  parseFloat(input.value);
-                                                    total = Subtotal/1.07;
-                                                    addtax = Subtotal-total;
-                                                    before = Subtotal-addtax;
-                                                    balance = Nettotal-Subtotal;
+                                                    depost = Subtotal-Deposit_all;
+                                                    total = depost/1.07;
+                                                    addtax = depost-total;
+                                                    before = depost-addtax;
+                                                    balance = Nettotal-depost;
                                                 }
 
                                                 $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                                                $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#SubtotalAll').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                                                $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Total').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#balance').val(balance);
-                                                $('#sum').val(Subtotal);
+                                                $('#sum').val(depost);
+                                                $('#totalamout_total').val(Subtotal);
+
                                             }
                                         </script>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <label for=""><b>Deposit Revenue</b></label>
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <select id="deposit" name="deposit[]" multiple class="select2" >
-                                            @foreach ($Deposit_ID as $key => $item)
-                                                <option value="{{ $item->id }}">Deposit ID : {{ $item->Deposit_ID }} {{ $item->detail }} Amount : {{ $item->Amount }}</option>
-                                            @endforeach
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -671,6 +680,28 @@
                                         </tbody>
                                         <tbody id="display-deposit">
                                         </tbody>
+                                        <tbody id="display-selected-itemsw">
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Subtotal :</td>
+                                                <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Price Before Tax :</td>
+                                                <td style="text-align:right"><span id="Before"></span> THB</td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Value Added Tax :</td>
+                                                <td style="text-align:right"><span id="Added"></span> THB</td>
+                                            </tr>
+                                            <tr>
+                                                <td><br></td>
+                                                <td style="text-align:right">Net Total :</td>
+                                                <td style="text-align:right"><span id="Total"></span> THB</td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="col-12 mt-3">
@@ -752,7 +783,9 @@
         </form>
 
     </div>
+    <input type="hidden" id="Deposit_all" name="Deposit_all[]" >
     <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
+    <input type="hidden" id="totalamout_total" >
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -777,6 +810,7 @@
                 placeholder: "Please select an option"
             });
             $('#deposit').on('change', function() {
+                $('#display-deposit').empty();
                 let id = $(this).val();
                 jQuery.ajax({
                     type: "GET",
@@ -785,33 +819,25 @@
                     async: false,
                     success: function(response) {
                         var depost = response.deposit;
+                        var totalAmount = depost.reduce((sum, item) => sum + parseFloat(item.Amount), 0);
+                        $('#Deposit_all').val(totalAmount);
                         $('#display-deposit tbody').html('');
-                            depost = depost.filter((value, index, self) =>
-                            index === self.findIndex((t) => (
-                                t.Deposit_ID === value.Deposit_ID && t.detail === value.detail && t.Amount === value.Amount
-                            ))
-                        );
-
-                        // ตรวจสอบข้อมูลที่ได้รับหลังจากกรองแล้ว
-                        console.log(depost);
                         depost.forEach((depost, index) => {
                             let newRow = `
                                 <tr>
                                     <td style="text-align: center;">${index + 2}</td> <!-- ลำดับแถว -->
                                     <td>
-                                        Deposit ID: ${depost.Deposit_ID} ${depost.detail}
+                                        Deposit Revenue ID : ${depost.Deposit_ID}
                                     </td>
                                     <td style="text-align: right;">
-                                        ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
+                                        - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
                                     </td>
                                 </tr>
                             `;
-
                             $('#display-deposit').append(newRow);  // เพิ่มแถวใน tbody
+
                         });
-                        if (depost.length === 0) {
-                            $('#display-deposit tbody').html('<tr><td colspan="3" style="text-align:center;">No data available</td></tr>');
-                        }
+                        total();
                     },
                     error: function(xhr, status, error) {
                         console.error("AJAX request failed: ", status, error);
@@ -866,6 +892,40 @@
                 }
             });
         });
+        function total() {
+            var sum = parseFloat(document.getElementById('totalamout_total').value);
+            var vat_type = parseFloat(document.getElementById('vat_type').value);
+            var Deposit_all = parseFloat(document.getElementById('Deposit_all').value);
+            var Nettotal = parseFloat(document.getElementById('amount').value.replace(/,/g, '')) || 0;
+            let Subtotal =0;
+            let total =0;
+            let addtax = 0;
+            let before = 0;
+            let balance =0;
+            if (vat_type == 51) {
+                Subtotal =  sum;
+                depost = Subtotal-Deposit_all;
+                total = depost;
+                addtax = 0;
+                before = depost;
+                balance = Nettotal-depost;
+            }else{
+                Subtotal =  sum;
+                depost = Subtotal-Deposit_all;
+                total = depost/1.07;
+                addtax = depost-total;
+                before = depost-addtax;
+                balance = Nettotal-depost;
+            }
+
+            $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#SubtotalAll').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Total').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#balance').val(balance);
+            $('#sum').val(depost);
+        }
     </script>
     <script>
         const table_name = ['main'];

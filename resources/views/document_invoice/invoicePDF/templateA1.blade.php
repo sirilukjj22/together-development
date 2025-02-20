@@ -329,11 +329,21 @@
                             <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
                             <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
+                        @if (!empty($deposit))
+                            @foreach($deposit as $key => $item)
+                            <tr>
+                                <td style="text-align:center"></td>
+                                <td style="text-align:center">{{$key + 2}}</td>
+                                <td style="text-align:left">Deposit Revenue ID : {{$item['Deposit_ID']}}</td>
+                                <td style="text-align:right"><span id="Subtotal"> - {{ number_format($item['Amount'], 2) }}</span> THB</td>
+                            </tr>
+                            @endforeach
+                        @endif
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Subtotal :</td>
-                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span> THB</td>
+                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($depositall, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
@@ -351,7 +361,7 @@
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Net Total :</td>
-                            <td style="text-align:right"><span id="Total">{{ number_format($Subtotal, 2) }}</span> THB</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($depositall, 2) }}</span> THB</td>
                         </tr>
                     </tbody>
                 </table>
@@ -537,14 +547,24 @@
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
-                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
                             <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span> THB</td>
                         </tr>
+                        @if (!empty($deposit))
+                            @foreach($deposit as $key => $item)
+                            <tr>
+                                <td style="text-align:center"></td>
+                                <td style="text-align:center">{{$key + 2}}</td>
+                                <td style="text-align:left">Deposit Revenue ID : {{$item['Deposit_ID']}}</td>
+                                <td style="text-align:right"><span id="Subtotal"> - {{ number_format($item['Amount'], 2) }}</span> THB</td>
+                            </tr>
+                            @endforeach
+                        @endif
                         <tr>
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Subtotal :</td>
-                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span> THB</td>
+                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($depositall, 2) }}</span> THB</td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
@@ -562,7 +582,7 @@
                             <td style="text-align:center"></td>
                             <td><br></td>
                             <td style="text-align:right">Net Total :</td>
-                            <td style="text-align:right"><span id="Total">{{ number_format($Subtotal, 2) }}</span> THB</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($depositall, 2) }}</span> THB</td>
                         </tr>
                     </tbody>
                 </table>

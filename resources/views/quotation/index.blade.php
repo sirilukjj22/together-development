@@ -415,6 +415,7 @@
                                                     $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    $invoice =  DB::table('document_invoice')->where('Quotation_ID',$item->Quotation_ID)->where('document_status', 1)->count();
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
@@ -444,6 +445,9 @@
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                    @if ($invoice !== 1)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                    @endif
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -471,6 +475,9 @@
                                                                                     @endif
                                                                                     @if ($item->status_document == 6)
                                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                        @if ($invoice !== 1)
+                                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                        @endif
                                                                                     @endif
                                                                                     @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -497,6 +504,9 @@
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                    @if ($invoice !== 1)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                    @endif
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -916,7 +926,7 @@
                         </div>
                         <div class="tab-pane fade" id="nav-Generate" role="tabpanel" rel="0">
                             <div style="min-height: 70vh;" class="mt-2">
-                                <table id="proposalTable" class="table-together table-style">
+                                <table id="GenerateTable" class="table-together table-style">
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
@@ -930,7 +940,7 @@
 
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
-                                            <th class="text-center">Deposit</th>
+                                            <th class="text-center" style="width: 6%">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -984,7 +994,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 40%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -996,8 +1006,7 @@
                                                     $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                     $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-
-
+                                                    $invoice =  DB::table('document_invoice')->where('Quotation_ID',$item->Quotation_ID)->where('document_status', 1)->count();
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
@@ -1013,12 +1022,16 @@
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                            @if ($invoice !== 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                            @endif
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                             @endif
-                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 )
+                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 && $item->status_receive < 0)
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
+
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
@@ -1026,10 +1039,13 @@
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                            @if ($invoice !== 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                            @endif
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                             @endif
-                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 )
+                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 && $item->status_receive < 0)
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
@@ -1039,10 +1055,13 @@
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                            @if ($invoice !== 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                            @endif
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
                                                                             @endif
-                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 )
+                                                                            @if ($item->status_document == 6 && $item->invoice_count == 0 && $item->status_receive < 0)
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
