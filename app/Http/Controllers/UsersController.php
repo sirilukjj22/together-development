@@ -151,6 +151,7 @@ class UsersController extends Controller
                 'document_request' => $request->menu_document_request ?? 0,
                 'banquet_event_order' => $request->menu_banquet_event_order ?? 0,
                 'proposal' => $request->menu_proposal ?? 0,
+                'deposit_revenue' => $request->menu_deposit_revenue ?? 0,
                 'hotel_contact_rate' => $request->menu_hotel_contact_rate ?? 0,
                 'proforma_invoice' => $request->menu_proforma_invoice ?? 0,
                 'receipt_payment' => $request->menu_receipt_payment ?? 0,
