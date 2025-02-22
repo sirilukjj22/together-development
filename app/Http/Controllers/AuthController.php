@@ -149,6 +149,7 @@ class AuthController extends Controller
             'document_request' => $data['menu_document_request'] ?? 0,
             'banquet_event_order' => $data['menu_banquet_event_order'] ?? 0,
             'proposal' => $data['menu_proposal'] ?? 0,
+            'deposit_revenue' => $data['menu_deposit_revenue'] ?? 0,
             'hotel_contact_rate' => $data['menu_hotel_contact_rate'] ?? 0,
             'proforma_invoice' => $data['menu_proforma_invoice'] ?? 0,
             'receipt_payment' => $data['menu_receipt_payment'] ?? 0,
