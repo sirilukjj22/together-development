@@ -34,7 +34,7 @@
                     </ol>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
+                    <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch" onclick="cheque()">
                         <i class="fa fa-plus"></i> Create Recevie Cheque
                     </button>
                     <div class="col-md-12 my-2">
@@ -51,6 +51,15 @@
                                             <div class="card-body">
                                                 <form action="{{route('ReceiveCheque.save')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                     @csrf
+                                                    <div class="col-sm-12 col-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-4 col-12 ml-auto">
+                                                                <b >Cheque ID : <span id="Cheque_id_Save"></span></b>
+                                                            </div>
+                                                            <input type="hidden" class="form-control" id="Cheque_IDsave" name="Cheque_ID" >
+
+                                                        </div>
+                                                    </div>
                                                     <div class="col-sm-12 col-12">
                                                         <label for="Status">Refer Proposal</label>
                                                         <select name="Refer" id="Refer" class="select2">
@@ -118,6 +127,25 @@
                             </div>
                         </div>
                     </div>
+                    <script>
+                        function cheque() {
+                            jQuery.ajax({
+                                type: "GET",
+                                url: "{!! url('/Document/ReceiveCheque/Number') !!}",
+                                datatype: "JSON",
+                                async: false,
+                                success: function(response) {
+                                    var Cheque = response.Cheque;
+                                    $('#Cheque_IDsave').val(Cheque);
+                                    $('#Cheque_id_Save').text(Cheque);
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("AJAX request failed: ", status, error);
+                                }
+                            });
+
+                        }
+                    </script>
                     <div class="col-md-12 my-2">
                         <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
                         style="display: none;" aria-hidden="true">
@@ -130,6 +158,13 @@
                                     <div class="modal-body">
                                         <div class="col-12">
                                             <div class="card-body">
+                                                <div class="col-sm-12 col-12">
+                                                    <div class="row">
+                                                        <div class="col-sm-4 col-12 ml-auto">
+                                                            <b >Cheque ID : <span id="Cheque_ID_View"></span></b>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="row">
                                                     <div class="col-sm-12 col-12">
                                                         <label for="Status">Refer Proposal</label>
@@ -198,6 +233,13 @@
                                             <div class="card-body">
                                                 <form action="{{route('ReceiveCheque.update')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                     @csrf
+                                                    <div class="col-sm-12 col-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-4 col-12 ml-auto">
+                                                                <b >Cheque ID : <span id="Cheque_ID_Update"></span></b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-sm-12 col-12">
                                                         <label for="Status">Refer Proposal</label>
                                                         <select name="Refer" id="Referedit" class="select2" >
@@ -272,7 +314,10 @@
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b;color:#64748b" >o</span> Recevie Cheque</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><i class="fa fa-circle fa-xs"style="color: #64748b;" ></i> Cheque</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;" ></i> Await Deduct</a></li>
+                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;" ></i> Deducted</a></li>
+                        <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;" ></i> Bounced Cheque</a></li>
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -324,12 +369,12 @@
                                                             {{ @$item->userOperated->name }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            @if ($item->status == 0)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @elseif ($item->status == 1)
-                                                                <span class="badge rounded-pill bg-success">Approved</span>
+                                                            @if ($item->status == 1)
+                                                                <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
                                                             @elseif ($item->status == 2)
-                                                                <span class="badge rounded-pill "style="background-color: #0ea5e9">Use</span>
+                                                                <span class="badge rounded-pill bg-success">Deducted</span>
+                                                            @elseif ($item->status == 0)
+                                                                <span class="badge rounded-pill "style="background-color: #red">Bounced Cheque</span>
                                                             @endif
                                                         </td>
                                                         {{-- Receive Cheque --}}
@@ -337,12 +382,13 @@
                                                             <div class="btn-group">
                                                                 <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
-                                                                    @if ($item->status == 1 || $item->status == 2)
+                                                                    @if ($item->status == 2)
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
                                                                     @endif
-                                                                    @if ($item->status == 0)
+                                                                    @if ($item->status == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Bounced Cheque</a></li>
                                                                     @endif
                                                                 </ul>
                                                             </div>
@@ -357,7 +403,210 @@
 
                                 </div>
                                 <!-- Modal -->
+                                <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" >
+                                        <table id="PendingTable" class="table-together table-style">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"data-priority="1">No</th>
+                                                    <th>Refer Proposal</th>
+                                                    <th data-priority="1">Bank Cheque</th>
+                                                    <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Amount</th>
+                                                    <th class="text-center">Receive Date</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Document status</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($chequepaind))
+                                                    @foreach ($chequepaind as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">
+                                                            {{$key +1}}
+                                                        </td>
 
+                                                        <td style="text-align: left;">
+                                                            {{$item->refer_proposal}}
+                                                        </td>
+                                                        <td style="text-align: left;">
+                                                            {{@$item->bank->name_th}} ({{@$item->bank->name_en}})
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->cheque_number}}
+                                                        </td>
+                                                        <td style="text-align: center;" class="target-class">
+                                                            {{$item->amount}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_date}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ @$item->userOperated->name }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
+                                                        </td>
+                                                        {{-- Receive Cheque --}}
+                                                        <td style="text-align: center;">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                                    @if ($item->status == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Bounced Cheque</a></li>
+                                                                    @endif
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade "id="nav-Approved" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" class="mt-2">
+
+                                        <table id="ApprovedTable" class="table-together table-style">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"data-priority="1">No</th>
+                                                    <th>Refer Proposal</th>
+                                                    <th data-priority="1">Bank Cheque</th>
+                                                    <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Amount</th>
+                                                    <th class="text-center">Receive Date</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Document status</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($chequeDedected))
+                                                    @foreach ($chequeDedected as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">
+                                                            {{$key +1}}
+                                                        </td>
+
+                                                        <td style="text-align: left;">
+                                                            {{$item->refer_proposal}}
+                                                        </td>
+                                                        <td style="text-align: left;">
+                                                            {{@$item->bank->name_th}} ({{@$item->bank->name_en}})
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->cheque_number}}
+                                                        </td>
+                                                        <td style="text-align: center;" class="target-class">
+                                                            {{$item->amount}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_date}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ @$item->userOperated->name }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
+                                                        </td>
+                                                        {{-- Receive Cheque --}}
+                                                        <td style="text-align: center;">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                                    <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade "id="nav-Cancel" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" >
+
+                                        <table id="CancelTable" class="table-together table-style">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"data-priority="1">No</th>
+                                                    <th>Refer Proposal</th>
+                                                    <th data-priority="1">Bank Cheque</th>
+                                                    <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Amount</th>
+                                                    <th class="text-center">Receive Date</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Document status</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($chequeBounced))
+                                                    @foreach ($chequeBounced as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">
+                                                            {{$key +1}}
+                                                        </td>
+
+                                                        <td style="text-align: left;">
+                                                            {{$item->refer_proposal}}
+                                                        </td>
+                                                        <td style="text-align: left;">
+                                                            {{@$item->bank->name_th}} ({{@$item->bank->name_en}})
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->cheque_number}}
+                                                        </td>
+                                                        <td style="text-align: center;" class="target-class">
+                                                            {{$item->amount}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_date}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ @$item->userOperated->name }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
+                                                        </td>
+                                                        {{-- Receive Cheque --}}
+                                                        <td style="text-align: center;">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                                    <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -430,7 +679,7 @@
                     var amount = response.amount;
                     var receive_date = response.receive_date;
                     var issue_date = response.issue_date;
-
+                    var Cheque_IDView = response.Cheque_ID;
                     var refer = 'อ้างอิงจาก Proposol : ' + proposal;
                     $('#Referview').val(refer);
                     $('#BankChequeview').val(bank_cheque);
@@ -440,6 +689,7 @@
                     $('#receive_dateview').val(receive_date);
                     $('#Issue_Dateview').val(issue_date);
                     $('#viewModal').modal('show');
+                    $('#Cheque_ID_View').text(Cheque_IDView);
                 },
                 error: function(xhr, status, error) {
 
@@ -463,7 +713,7 @@
                     var amount = response.amount;
                     var receive_date = response.receive_date;
                     var issue_date = response.issue_date;
-
+                    var Cheque_IDEdit = response.Cheque_ID;
                     console.log(proposal);
 
                     $('#ids').val(id);
@@ -475,6 +725,7 @@
                     $('#receive_dateedit').val(receive_date);
                     $('#Issue_Dateedit').val(issue_date);
                     $('#editModal').modal('show');
+                    $('#Cheque_ID_Update').text(Cheque_IDEdit);
                 },
                 error: function(xhr, status, error) {
 
@@ -497,122 +748,7 @@
                 }
             });
         }
-        // const table_name = ['chequeTable'];
-        // $(document).ready(function() {
-        //     for (let index = 0; index < table_name.length; index++) {
-        //         console.log();
 
-        //         new DataTable('#'+table_name[index], {
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             columnDefs: [{
-        //                 className: 'dtr-control',
-        //                 orderable: true,
-        //                 target: null,
-        //             }],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-        // function nav(id) {
-        //     for (let index = 0; index < table_name.length; index++) {
-        //         $('#'+table_name[index]).DataTable().destroy();
-        //         new DataTable('#'+table_name[index], {
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             columnDefs: [{
-        //                 className: 'dtr-control',
-        //                 orderable: true,
-        //                 target: null,
-        //             }],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             }
-        //         });
-        //     }
-        // }
-
-        // $(document).on('keyup', '.search-data', function () {
-        //     var id = $(this).attr('id');
-        //     var search_value = $(this).val();
-        //     var table_name = id+'Table';
-        //     var filter_by = $('#filter-by').val();
-        //     var type_status = $('#status').val();
-        //     var total = parseInt($('#get-total-'+id).val());
-        //     var getUrl = window.location.pathname;
-        //     console.log(search_value);
-
-        //         $('#'+table_name).DataTable().destroy();
-        //         var table = $('#'+table_name).dataTable({
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             ajax: {
-        //             url: '/cheque-search-table',
-        //             type: 'POST',
-        //             dataType: "json",
-        //             cache: false,
-        //             data: {
-        //                 search_value: search_value,
-        //                 table_name: table_name,
-        //                 filter_by: filter_by,
-        //                 status: type_status,
-        //             },
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         },
-        //         "initComplete": function (settings,json){
-
-        //             if ($('#'+id+'Table .dataTable_empty').length == 0) {
-        //                 var count = $('#'+id+'Table tr').length - 1;
-        //             }else{
-        //                 var count = 0;
-        //             }
-        //             if (search_value == '') {
-        //                 count_total = total;
-        //             }else{
-        //                 count_total = count;
-        //             }
-        //             $('#'+id+'-paginate').children().remove().end();
-        //             $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-        //             $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-        //         },
-        //             columnDefs: [
-        //                         { targets: [0,3,5,6,7,8,9], className: 'dt-center td-content-center' },
-        //             ],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             },
-        //             columns: [
-        //                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-        //                 { data: 'proposal' },
-        //                 { data: 'Bank' },
-        //                 { data: 'Cheque_Number' },
-        //                 { data: 'Amount' },
-        //                 { data: 'Receive_Date' },
-        //                 { data: 'Issue_Date' },
-        //                 { data: 'Operated' },
-        //                 { data: 'status' },
-        //                 { data: 'btn_action' },
-        //             ],
-        //         });
-        //     document.getElementById(id).focus();
-        // });
     </script>
     @include('script.script')
 

@@ -747,11 +747,17 @@ class Document_invoice extends Controller
     }
     public function edit($id){
         $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
+
         $Deposit = $invoice->deposit;
         $Quotation_ID = $invoice->Quotation_ID;
         $Invoice_IDold = $invoice->Invoice_ID;
         $InvoiceID = $invoice->Invoice_ID;
-
+        $Deposit_ID = $invoice->Deposit_ID;
+        $array = array_map('trim', explode(',', $Deposit_ID));
+        foreach ($array as $key => $item) {
+            $DepositID =  depositrevenue::whereIn('Deposit_ID',$array)->get();
+        }
+        dd($array,$DepositID);
         $IssueDate=$invoice->IssueDate;
         $Expiration=$invoice->Expiration;
         $sequence = $invoice->sequence;

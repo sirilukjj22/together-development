@@ -459,7 +459,7 @@
                     <div class="top-doc-saleman">
                         <div class="d-flex justify-content-around flex-wrap gap-1">
                             <div>Document No : {{$DepositID}}</div>
-                            <div>Reference No : {{$QuotationID}} </div>
+                            <div>Reference No : <span id="proposalid"></span> </div>
                         </div>
                         <div> User Account :
                             @if ($user->firstname)
@@ -474,11 +474,72 @@
                                     <li>
                                         <label for="customerNameInput" class="form-label text-nowrap m-0 rrr">Customer Name</label>
                                         <div class="d-flex align-items-center">
-                                        <input type="text" class="form-control" id="customerNameInput" placeholder="Select Customer" value="{{$name}}" readonly style="flex-grow: 1;" />
-                                        <!-- Search button -->
+                                            <input type="text" class="form-control" id="customerNameInput" placeholder="Select Customer" readonly style="flex-grow: 1;" />
+                                            <!-- Search button -->
+                                            <button type="button" class="btn p-0 px-1" data-bs-toggle="modal" data-bs-target="#customerSearchModal">
+                                              <i style="font-size:18px" class="fa">&#xf002;</i>
+                                            </button>
+                                            <div class="modal fade" id="customerSearchModal" tabindex="-1" aria-labelledby="customerSearchModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width: 70%;">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="customerSearchModalLabel">Select Customer</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="flex-end br" style="gap:0.3em;display: flex;justify-content: end;">
+                                                                <select id="filterCustomerType" class="bt-together m-0" style="height: 2.7em;  margin-right: 10px;width: max-content;">
+                                                                    <option value="all">All</option>
+                                                                    <option value="company">Company / Agent</option>
+                                                                    <option value="guest">Guest</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="dataTables_wrapper">
+                                                                <table class="table-together">
+                                                                <thead>
+                                                                    <tr>
+                                                                    <th data-priority="1">No</th>
+                                                                    <th data-priority="1">Customer Name</th>
+                                                                    <th data-priority="2">Customer ID </th>
+                                                                    <th data-priority="3">Customer Type</th>
+                                                                    <th data-priority="4">From</th>
+                                                                    <th data-priority="1">Select</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                    <td>1</td>
+                                                                    <td>หจก.รุ่งเรือง</td>
+                                                                    <td>XX22222</td>
+                                                                    <td>ลูกค้าเงินเชื่อ (Gold)</td>
+                                                                    <td>Factory</td>
+                                                                    <td>
+                                                                        <button class="btn bg-warning px-2" style="padding-top:2px;padding-bottom:2px;">Select</button>
+                                                                    </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                    <td>2</td>
+                                                                    <td>Jone</td>
+                                                                    <td>XX2223</td>
+                                                                    <td>ลูกค้าเงินสด (Gold)</td>
+                                                                    <td>Shop</td>
+                                                                    <td>
+                                                                        <button class="btn bg-warning px-2" style="padding-top:2px;padding-bottom:2px;">Select</button>
+                                                                    </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="bt-tg bt-grey bt-md" style="height: 2.4em;" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                             <span class="info-label">Additional Company</span>
                                             <select name="Guest" id="Guest" class="form-select" onchange="data()" required>
                                                 <option value="{{$name_ID}}">{{$name}}</option> @foreach($datasub as $item) @if ($type == 'Company') <option value="{{ $item->ComTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name; } else { $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
@@ -523,10 +584,10 @@
                                     <li class="border-top">
                                         <label for="customerName" class="form-label text-nowrap m-0">Deposit Amount</label>
                                         <input class="form-control bg-disable-grey" type="text" name="totaldeposit" id="totaldeposit" readonly/>
-                                    </li>
+                                    </li> --}}
                                 </div>
                             </fieldset>
-                            <fieldset class="fieldset">
+                            {{-- <fieldset class="fieldset">
                                 <ul class="info-list">
                                     <section class="bd">
                                         <div class="flex-grow-1">
@@ -553,9 +614,9 @@
                                         </div>
                                     </section>
                                 </ul>
-                            </fieldset>
+                            </fieldset> --}}
                         </div>
-                        <fieldset class="fieldset ">
+                        {{-- <fieldset class="fieldset ">
                             <ul class="info-list">
                                 <section class="bd">
                                     <div class="flex-grow-1">
@@ -574,253 +635,14 @@
                                     </div>
                                 </section>
                             </ul>
-                        </fieldset>
+                        </fieldset> --}}
                     </div>
                 </div>
-                <div class="row clearfix mt-5">
-                    <div class="col-sm-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-7 col-md-12 col-sm-12 image-container">
-                                        <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
-                                        <div class="info">
-                                            <p class="titleh1">{{$settingCompany->name}}</p>
-                                            <p>{{$settingCompany->address}}</p>
-                                            <p>Tel : {{$settingCompany->tel}}
-                                                @if ($settingCompany->fax)
-                                                    Fax : {{$settingCompany->fax}}
-                                                @endif
-                                            </p>
-                                            <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
-                                            <p></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5 col-md-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg-4"></div>
-                                            <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
-                                                <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Invoice / Deposit</b>
-                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$DepositID}}</b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-lg-4"></div>
-                                            <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
-                                                <div class="col-12 col-md-12 col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Proposal ID :</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <span>{{$QuotationID}}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Issue Date :</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <span id="datestarttext"style="text-align: left;"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Expiration Date :</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <span id="dateextext"   style="text-align: left;"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
 
-                                        <div class="proposal-cutomer-detail" id="companyTable" >
-                                            <ul>
-                                            <li class="mt-3">
-                                                <b>Guest Name</b>
-                                                <span id="namea4">{{$fullName}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Address</b>
-                                                <span id="Addressa4">{{$address}} </span>
-                                                <b></b>
-                                            </li>
-                                            <li>
-                                                <b>Email</b>
-                                                <span id="Emaila4">{{$Email}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Tax ID/Gst Pass</b>
-                                                <span id="Taxpayera4" >{{$Identification}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Phone Number</b>
-                                                <span id="Numbera4" >{{$phone->Phone_number}}</span>
-                                            </li>
-                                            <li> </li>
-                                            </ul>
-                                            <ul>
-                                            <li> </li>
-                                            <li></li>
-                                            <li> </li>
-                                            <li></li>
-
-                                            <li>
-                                                <b>Check In</b>
-                                                <span id="checkinpo">{{$Quotation->checkin ?? 'No Check In Date'}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Check Out</b>
-                                                <span id="checkoutpo">{{$Quotation->checkout ?? ' '}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Length of Stay</b>
-                                                <span style="display: flex"><p id="daypo" class="m-0">{{$Quotation->day}} วัน</p> <p id="nightpo" class="m-0"> {{' , '.$Quotation->night}} คืน </p></span>
-                                            </li>
-                                            <li>
-                                                <b>Number of Guests</b>
-                                                <span style="display: flex"><p id="Adultpo" class="m-0">{{$Quotation->adult}} Adult </p><p id="Childrenpo" class="m-0">{{' , '.$Quotation->children}}  Children</p></span>
-                                            </li>
-                                            <li></li>
-                                            </ul>
-                                        </div>
-
-                                </div>
-                                <div class="styled-hr"></div>
-                                <div class="row mt-4">
-                                    <table class=" table table-hover align-middle mb-0" style="width:100%">
-                                        <thead >
-                                            <tr>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;text-align:center">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="display-selected-items">
-                                            <tr>
-                                                <td style="text-align:center">1</td>
-                                                <td style="text-align:left">
-                                                    กรุณาชำระเงินเงินมัดจำ อ้างอิงเอกสาร : {{$QuotationID}} </span> ครั้งที่ {{$Deposit}}
-                                                </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span>  THB </td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Subtotal :</td>
-                                                <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Price Before Tax :</td>
-                                                <td style="text-align:right"><span id="Before"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Value Added Tax :</td>
-                                                <td style="text-align:right"><span id="Added"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Net Total :</td>
-                                                <td style="text-align:right"><span id="Total"></span> THB</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-12 mt-3">
-                                    <div class="col-lg-4 col-md-6 col-sm-12 my-1">
-                                        <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
-                                    </div>
-                                    <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                    </span>
-                                    <div class="row">
-                                        <div class="col-lg-8 col-md-6 col-sm-12">
-                                            <div class="col-12  mt-2">
-                                                <div class="row">
-                                                    <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
-                                                        <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
-                                                    </div>
-                                                    <div class="col-7 mt-2">
-                                                        <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="styled-hr mt-3"></div>
-                                <div class="col-12 mt-2">
-                                    <div class="col-12 my-4">
-                                        <div class="row">
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
-                                                @php
-                                                    use SimpleSoftwareIO\QrCode\Facades\QrCode;
-                                                @endphp
-                                                <div class="mt-3">
-                                                    {!! QrCode::size(90)->generate('No found'); !!}
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                                @if ($user->signature)
-                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
-                                                @endif
-                                                @if ($user->firstname)
-                                                    <span>{{$user->firstname}} {{$user->lastname}}</span>
-                                                @endif
-                                                <span id="issue_date_document"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 row mt-5">
-                                    <div class="col-4">
-
-                                        <input type="hidden" id="Deposit" name="Deposit" value="{{$Deposit}}">
-                                        <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
-                                        <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
-                                        <input type="hidden" name="sum"  id="sum">
-                                        <input type="hidden" id="total" name="total" >
-                                        <input type="hidden" class="form-control" id="fullname" name="fullname" value="{{$fullName}}" />
-                                        <input type="hidden" class="form-control" id="nameid" name="nameid" value="{{$name_ID}}"/>
-                                        <input type="hidden" id="DepositID" name="DepositID" value="{{$DepositID}}">
-                                    </div>
-                                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                            Back
-                                        </button>
-
-                                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave(event)">Save</button>
-                                    </div>
-                                    <div class="col-4"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </form>
     </div>
-    <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

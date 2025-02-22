@@ -333,7 +333,7 @@
                                             <th class="text-center">Check Out</th>
                                             <th class="text-center">Add.Dis</th>
                                             <th class="text-center">Spe.Dis</th>
-                                            <th class="text-center">Deposit</th>
+                                            <th class="text-center" style="width: 6%">Deposit</th>
                                             <th class="text-center">Create By</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -387,7 +387,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 35%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -430,7 +430,7 @@
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
-                                                                            @if ($item->status_document == 1)
+                                                                            @if ($item->status_document == 1 || $item->status_document == 3)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Generate</a></li>
                                                                             @endif
                                                                             @if ($item->status_document == 0)
@@ -444,9 +444,9 @@
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
                                                                                     @if ($invoice !== 1)
-                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                                     @endif
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
@@ -460,7 +460,7 @@
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
                                                                             @if ($item->status_document !== 2)
-                                                                                @if ($item->status_document == 1)
+                                                                                @if ($item->status_document == 1 || $item->status_document == 3)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Generate</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 0)
@@ -474,9 +474,9 @@
                                                                                         <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                     @endif
                                                                                     @if ($item->status_document == 6)
-                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
                                                                                         @if ($invoice !== 1)
-                                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                                         @endif
                                                                                     @endif
                                                                                     @if ($item->status_document == 6 && $item->status_receive > 0 )
@@ -489,7 +489,7 @@
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
-                                                                            @if ($item->status_document == 1)
+                                                                            @if ($item->status_document == 1 || $item->status_document == 3)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Generate</a></li>
                                                                             @endif
                                                                             @if ($item->status_document == 0)
@@ -503,9 +503,9 @@
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
                                                                                     @if ($invoice !== 1)
-                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                                     @endif
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
@@ -601,7 +601,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -734,7 +734,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -852,7 +852,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -994,7 +994,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 40%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 35%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -1021,9 +1021,9 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
                                                                             @if ($invoice !== 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                             @endif
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -1038,9 +1038,9 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
                                                                             @if ($invoice !== 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                             @endif
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -1054,9 +1054,9 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Generate Deposit Revenue</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
                                                                             @if ($invoice !== 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate Profoma Invoice</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                             @endif
                                                                             @if ($item->status_receive > 0 )
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -1155,7 +1155,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -1282,7 +1282,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -1405,7 +1405,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>
@@ -1529,7 +1529,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status_receive)
-                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 50%;">
+                                                        <img src="{{ asset('assets/images/deposit.png') }}" style="width: 25%;">
                                                     @endif
                                                 </td>
                                                 <td >{{ @$item->userOperated->name }}</td>

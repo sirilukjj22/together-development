@@ -74,12 +74,12 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active"  data-bs-toggle="tab" href="#nav-Dummy"onclick="nav($id='nav1')" role="tab" ><span class="badge" style="background-color:#64748b">{{0}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><span class="badge bg-success" >{{0}}</span> Invoice</a></li>
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><span class="badge" style="background-color:#FF6633">{{0}}</span> Pending</a></li>
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{0}}</span> Generate</a></li>
-                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><span class="badge bg-danger">{{0}}</span> Cancel</a></li>
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  onclick="nav($id='nav6')"role="tab"><span class="badge "style="background-color:#2C7F7A" >{{0}}</span> Complete</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active"  data-bs-toggle="tab" href="#nav-Dummy"onclick="nav($id='nav1')" role="tab" ><i class="fa fa-circle fa-xs"style="color: #64748b;" ></i> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Invoice</a></li>
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;" ></i> Pending</a></li>
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;" ></i> Generate</a></li>
+                    <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;" ></i> Cancel</a></li>
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete"  onclick="nav($id='nav6')"role="tab"><i class="fa fa-circle fa-xs"style="color: #2C7F7A;" ></i> Complete</a></li>
                 </ul>
                 <div class="card p-4 mb-4">
                     <div class="tab-content">

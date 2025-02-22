@@ -57,8 +57,8 @@ class Additional extends Controller
             DB::raw('COUNT(proposal_overbill.Quotation_ID) as ADD_count'),
             DB::raw('SUM(proposal_overbill.Nettotal) as ADD_amount')
         )
-        ->whereIn('quotation.status_document', [1,3,6])
-        ->where('quotation.status_guest', 1)
+        ->where('quotation.status_document', 6)
+
         ->whereNull('proposal_overbill.Quotation_ID')
         ->groupBy('quotation.Quotation_ID') // จัดกลุ่มข้อมูลตาม Quotation_ID
         ->get();
@@ -685,7 +685,7 @@ class Additional extends Controller
                 ];
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('additional_charge.additional_charge_pdf.'.$view,$data);
-                $path = 'Log_PDF/additional/';
+                $path = 'PDF/additional/';
                 $pdf->save($path . $Additional_ID . '.pdf');
             } catch (\Throwable $e) {
                 log_company::where('Category','Create :: Additional')->delete();
@@ -750,7 +750,7 @@ class Additional extends Controller
             } catch (\Throwable $e) {
 
                 log_company::where('Category','Create :: Additional')->delete();
-                $path = 'Log_PDF/additional/';
+                $path = 'PDF/additional/';
                 $file = $path . $Additional_ID . '.pdf';
                 if (is_file($file)) {
                     unlink($file); // ลบไฟล์
@@ -801,7 +801,7 @@ class Additional extends Controller
                 }
             } catch (\Throwable $e) {
                 log_company::where('Category','Create :: Additional')->delete();
-                $path = 'Log_PDF/additional/';
+                $path = 'PDF/additional/';
                 $file = $path . $Additional_ID . '.pdf';
                 if (is_file($file)) {
                     unlink($file); // ลบไฟล์
@@ -1457,7 +1457,7 @@ class Additional extends Controller
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('additional_charge.additional_charge_pdf.'.$view,$data);
-            $path = 'Log_PDF/additional/';
+            $path = 'PDF/additional/';
             $pdf->save($path . $Additional_ID.'-'.$correctup . '.pdf');
         } catch (\Throwable $e) {
             return redirect()->route('Additional.edit', ['id' => $Quotation->id])->with('error',$e->getMessage());
@@ -1524,7 +1524,7 @@ class Additional extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(1) // ลบข้อมูลล่าสุด 1 แถว
             ->delete();
-            $path = 'Log_PDF/additional/';
+            $path = 'PDF/additional/';
             $file = $path . $Additional_ID .'-'.$correctup.'.pdf';
             if (is_file($file)) {
                 unlink($file); // ลบไฟล์
@@ -1560,7 +1560,7 @@ class Additional extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(1) // ลบข้อมูลล่าสุด 1 แถว
             ->delete();
-            $path = 'Log_PDF/additional/';
+            $path = 'PDF/additional/';
             $file = $path . $Additional_ID .'-'.$correctup.'.pdf';
             if (is_file($file)) {
                 unlink($file); // ลบไฟล์
@@ -1586,7 +1586,7 @@ class Additional extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(1) // ลบข้อมูลล่าสุด 1 แถว
             ->delete();
-            $path = 'Log_PDF/additional/';
+            $path = 'PDF/additional/';
             $file = $path . $Additional_ID .'-'.$correctup.'.pdf';
             if (is_file($file)) {
                 unlink($file); // ลบไฟล์
@@ -1704,7 +1704,7 @@ class Additional extends Controller
 
         }
         $log = log::where('Quotation_ID', 'LIKE', $QuotationID . '%')->get();
-        $path = 'Log_PDF/additional/';
+        $path = 'PDF/additional/';
 
         $logproposal = log_company::where('Company_ID', $QuotationID)
             ->orderBy('updated_at', 'desc')
@@ -2236,7 +2236,7 @@ class Additional extends Controller
         }
 
         $log = log::where('Quotation_ID',$Receipt_ID)->get();
-        $path = 'Log_PDF/billingfolio/';
+        $path = 'PDF/billingfolio/';
         $logReceipt = log_company::where('Company_ID', $Receipt_ID)
             ->orderBy('updated_at', 'desc')
             ->get();
@@ -2507,7 +2507,7 @@ class Additional extends Controller
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
-            $path = 'Log_PDF/billingfolio/';
+            $path = 'PDF/billingfolio/';
             $pdf->save($path . $REID . '.pdf');
         } catch (\Throwable $th) {
             return redirect()->route('BillingFolioOver.index')->with('error',$e->getMessage());
@@ -3266,7 +3266,7 @@ class Additional extends Controller
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
-            $path = 'Log_PDF/billingfolio/';
+            $path = 'PDF/billingfolio/';
             $pdf->save($path . $REID.'-'.$correctup . '.pdf');
             $currentDateTime = Carbon::now();
             $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD

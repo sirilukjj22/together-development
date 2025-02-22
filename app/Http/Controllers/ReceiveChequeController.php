@@ -42,11 +42,36 @@ class ReceiveChequeController extends Controller
 {
     public function index()
     {
-        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $invoice = Quotation::query()->select('id','Quotation_ID')->where('status_document', 6)->get();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $cheque = receive_cheque::query()->orderBy('created_at', 'desc')->get();
-        return view('recevie_cheque.index',compact('invoice','data_bank','cheque'));
+        $chequepaind = receive_cheque::query()->where('status', 1)->get();
+        $chequeDedected = receive_cheque::query()->where('status', 2)->get();
+        $chequeBounced = receive_cheque::query()->where('status', 0)->get();
+        return view('recevie_cheque.index',compact('invoice','data_bank','cheque','chequepaind','chequeDedected','chequeBounced'));
+    }
+    public function NumberID(Request $request){
+        $currentDate = Carbon::now();
+        $ID = 'CQR-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = receive_cheque::latest()->first();
+        $nextNumber = 1;
+
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $NumberID = $ID.$year.$month.$newRunNumber;
+
+        return response()->json([
+            'Cheque'=>$NumberID,
+        ]);
     }
     public function save(Request $request)
     {
@@ -96,6 +121,7 @@ class ReceiveChequeController extends Controller
         try {
             $userid = Auth::user()->id;
             $save = new receive_cheque();
+            $save->Cheque_ID = $request->Cheque_ID;
             $save->refer_proposal = $request->Refer;
             $save->bank_cheque = $request->bank;
             $save->bank_received = $request->received;
@@ -105,14 +131,15 @@ class ReceiveChequeController extends Controller
             $save->issue_date = $request->Issue_Date;
             $save->Operated_by = $userid;
             $save->save();
-            return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('ReceiveCheque.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
     }
     public function view($id){
         $view = receive_cheque::where('id',$id)->first();
-        $invoice = $view->refer_invoice;
+        $Cheque_ID = $view->Cheque_ID;
+        $invoice = $view->Refer;
         $proposal = $view->refer_proposal;
         $bank_cheque = $view->bank_cheque;
         $data_bank = Masters::where('id',$bank_cheque)->first();
@@ -138,11 +165,13 @@ class ReceiveChequeController extends Controller
             'amount' => $amount,
             'receive_date' => $receive_date,
             'issue_date'=>$issue_date,
+            'Cheque_ID'=>$Cheque_ID,
+
         ]);
     }
     public function edit($id){
         $view = receive_cheque::where('id',$id)->first();
-
+        $Cheque_ID = $view->Cheque_ID;
         $proposal = $view->refer_proposal;
         $bank_cheque = $view->bank_cheque;
         $bank_receiveds = $view->bank_received;
@@ -159,6 +188,7 @@ class ReceiveChequeController extends Controller
             'amount' => $amount,
             'receive_date' => $receive_date,
             'issue_date'=>$issue_date,
+            'Cheque_ID'=>$Cheque_ID,
         ]);
     }
     public function amount($id){
@@ -295,23 +325,23 @@ class ReceiveChequeController extends Controller
             $save->issue_date = $request->Issue_Date;
             $save->Operated_by = $userid;
             $save->save();
-            return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('ReceiveCheque.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
     }
     public function Approved($id){
         $cheque = receive_cheque::where('id',$id)->first();
-        $cheque->status = 1;
+        $cheque->status = 0;
         $cheque->save();
         $chequeNumber = $cheque->cheque_number;
         $userid = Auth::user()->id;
         $save = new log_company();
         $save->Created_by = $userid;
         $save->Company_ID = $chequeNumber;
-        $save->type = 'Approved';
-        $save->Category = 'Approved :: Receive Cheque';
-        $save->content = 'Approved Receive Cheque Number: '.$chequeNumber;
+        $save->type = 'Bounced Cheque';
+        $save->Category = 'Bounced Cheque :: Cheque';
+        $save->content = 'Bounced Cheque  Cheque Number: '.$chequeNumber;
         $save->save();
     }
 }

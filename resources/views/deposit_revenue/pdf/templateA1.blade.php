@@ -204,6 +204,8 @@
 
                     <b >DEPOSIT ID : </b><span style="margin-left: 10px;">{{ $DepositID }}</span><br>
 
+                    <b >PROPOSAL ID : </b><span style="margin-left: 10px;">{{ $Quotation->Quotation_ID }}</span><br>
+
                     <b >Issue Date : </b><span >{{ $IssueDate }}</span><br>
 
                     <b>Expiration Date : </b><span>{{ $Expiration }}</span>
@@ -235,7 +237,6 @@
             </table>
         </footer>
         <main>
-            <b class="com" style="font-size:18px">Invoice / Deposit</b>
             <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
                 <table style="line-height:12px;" >
                     <tr>

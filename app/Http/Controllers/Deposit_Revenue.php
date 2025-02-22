@@ -166,10 +166,38 @@ class Deposit_Revenue extends Controller
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $data_cheque =receive_cheque::where('refer_proposal',$QuotationID)->where('status',1)->get();
         $Deposit = depositrevenue::where('Quotation_ID',$QuotationID)->count()+1;
-        return view('deposit_revenue.create',compact('DepositID','QuotationID','Nettotal','vat_type','fullName','Contact_Name','Contact_phone','Contact_Email','address','Fax_number','phone','Email',
-        'Identification','Selectdata','Quotation','settingCompany','user','datasub','name','name_ID','type','data_bank','data_cheque','Deposit'));
-    }
+        $amountdeposit = depositrevenue::where('Quotation_ID',$QuotationID)->get();
+        $amdeposit = 0;
+        foreach ($amountdeposit as $key => $value) {
+            $amdeposit += $value->amount;
+        }
+        $Mvat = master_document::select('name_th','id','lavel')->where('status', '1')->where('Category','Mvat')->get();
 
+        return view('deposit_revenue.create',compact('DepositID','QuotationID','Nettotal','vat_type','fullName','Contact_Name','Contact_phone','Contact_Email','address','Fax_number','phone','Email',
+        'Identification','Selectdata','Quotation','settingCompany','user','datasub','name','name_ID','type','data_bank','data_cheque','Deposit','amdeposit','Mvat'));
+    }
+    public function createnew(){
+        $currentDate = Carbon::now();
+        $ID = 'DR-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = depositrevenue::latest()->first();
+        $nextNumber = 1;
+
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $DepositID = $ID.$year.$month.$newRunNumber;
+        $user = Auth::user();
+
+        return view('deposit_revenue.createnew',compact('DepositID','user'));
+    }
     public function deposit($id)
     {
         $parts = explode('-', $id);
@@ -302,7 +330,6 @@ class Deposit_Revenue extends Controller
                 $email = $guestdata->Company_Email;
             }
         }
-
         return response()->json([
             'phone'=>$phone,
             'Selectdata'=>$Selectdata,
@@ -312,10 +339,11 @@ class Deposit_Revenue extends Controller
             'province'=>$provinceNames,
             'amphures'=>$amphuresID,
             'Tambon'=>$TambonID,
-            'email'=>$email
+            'email'=>$email,
+            'nameID'=>$id,
         ]);
     }
-    public function cheque ($id)
+    public function cheques($id)
     {
 
         $chequeRe =receive_cheque::where('cheque_number',$id)->first();
@@ -638,7 +666,10 @@ class Deposit_Revenue extends Controller
             $save->ExpirationDate = $Expiration;
             $save->count = $Deposit;
             $save->save();
-            return redirect()->route('Deposit.index')->with('success', 'Data has been successfully saved.');
+
+            $deposit = depositrevenue::where('Deposit_ID',$DepositID)->first();
+            $ids = $deposit->id;
+            return redirect()->route('Deposit.email', ['id' => $ids])->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('Proposal.index')->with('error', $e->getMessage());
         }
@@ -837,7 +868,6 @@ class Deposit_Revenue extends Controller
     }
     public function edit($id){
         $deposit = depositrevenue::where('id',$id)->first();
-
         $companyid = $deposit->Company_ID;
         $Issue_date = $deposit->Issue_date;
         $Payment = $deposit->amount;

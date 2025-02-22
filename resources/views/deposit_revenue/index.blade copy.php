@@ -10,10 +10,6 @@
                     <div class="span3">Deposit Revenue</div>
                 </div>
                 <div class="col-auto">
-                    @if (@Auth::user()->roleMenuAdd('Deposit Revenue',Auth::user()->id) == 1)
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Deposit.create_new') }}'">
-                        <i class="fa fa-plus"></i> Create Invoice / Deposit</button>
-                    @endif
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -139,14 +135,45 @@
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
-                                                            @if ($item->document_status == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Receipt Payment</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                            @if ($rolePermission > 0)
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Success</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                @elseif ($rolePermission == 2)
+                                                                    @if ($canEditProposal == 1)
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Success</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                @elseif ($rolePermission == 3)
+                                                                    @if ($canEditProposal == 1)
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Success</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            @else
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
                                                             @endif
-                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -211,18 +238,45 @@
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-
-
+                                                            @if ($rolePermission > 0)
+                                                                @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
-
+                                                                @endif
+                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
                                                                         @if ($item->document_status == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Receipt Payment</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Success</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
-
+                                                                    @endif
+                                                                @elseif ($rolePermission == 2)
+                                                                    @if ($canEditProposal == 1)
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Success</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                @elseif ($rolePermission == 3)
+                                                                    @if ($canEditProposal == 1)
+                                                                        @if ($item->document_status == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Success</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            @else
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -283,7 +337,7 @@
                                                     $canEditProposal = @Auth::user()->roleMenuEdit('Deposit Revenue', Auth::user()->id);
                                                 @endphp
 
-                                                {{-- <td style="text-align: center;">
+                                                <td style="text-align: center;">
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
@@ -326,26 +380,6 @@
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
-                                                        </ul>
-                                                    </div>
-                                                </td> --}}
-                                                <td style="text-align: center;">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                        <ul class="dropdown-menu border-0 shadow p-3">
-
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    @if ($item->document_status == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Receipt Payment</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                    @endif
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
-
-
-
-
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -406,12 +440,30 @@
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-
+                                                            @if ($rolePermission > 0)
+                                                                @if ($canViewProposal == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
-
-                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
-
+                                                                @endif
+                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
+                                                                    @endif
+                                                                @elseif ($rolePermission == 2)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
+                                                                    @endif
+                                                                @elseif ($rolePermission == 3)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            @else
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
+                                                                @endif
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 </td>

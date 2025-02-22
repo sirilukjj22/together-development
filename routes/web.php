@@ -695,6 +695,7 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(Deposit_Revenue::class)->middleware('role:document')->group(function () {
         Route::get('/Deposit/index', 'index')->name('Deposit.index');
         Route::get('/Deposit/create/{id}', 'create')->name('Deposit.create');
+        Route::get('/Deposit/new/create', 'createnew')->name('Deposit.create_new');
         Route::get('/Deposit/edit/{id}', 'edit')->name('Deposit.edit');
         Route::get('/Document/deposit_revenue/Data/{id}', 'deposit');
         Route::get('/Document/deposit_revenue/cheque/{id}','cheque');
@@ -976,9 +977,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/ReceiveCheque/edit/{id}', 'edit')->name('ReceiveCheque.edit');
         Route::get('/Document/ReceiveCheque/update', 'update')->name('ReceiveCheque.update');
         Route::get('/Document/ReceiveCheque/Approved/{id}', 'Approved')->name('ReceiveCheque.Approved');
-
-        Route::post('cheque-search-table', 'search_table_cheque');
-        Route::post('cheque-paginate-table', 'paginate_table_cheque');
+        Route::get('/Document/ReceiveCheque/Number', 'NumberID');
     });
     Route::controller(Master_Address_System::class)->middleware('role:document')->group(function () {
         Route::get('/Master/System/index', 'index')->name('System.index');
