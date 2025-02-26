@@ -1,33 +1,30 @@
 @extends('layouts.masterLayout')
 <style>
-@media screen and (max-width: 500px) {
-    .mobileHidden {
-    display: none;
-    }
+    @media screen and (max-width: 500px) {
+        .mobileHidden {
+        display: none;
+        }
 
-    .mobileLabelShow {
-    display: inline;
-    }
+        .mobileLabelShow {
+        display: inline;
+        }
 
-    #mobileshow {
-    margin-top: 60px;
+        #mobileshow {
+        margin-top: 60px;
+        }
     }
-}
-.table-revenue-detail {
-    display: none;
-    margin: 1rem 0;
-    padding: 1rem;
-    background-color: aliceblue;
-    border-radius: 7px;
-    color: white;
-    min-height: 20rem;
+    .table-revenue-detail {
+        display: none;
+        margin: 1rem 0;
+        padding: 1rem;
+        background-color: aliceblue;
+        border-radius: 7px;
+        color: white;
+        min-height: 20rem;
     }
     .modal-dialog-custom-90p {
         min-width: 50%;
     }
-
-</style>
-<style>
     .image-container {
         display: flex;
         flex-direction: row;
@@ -217,6 +214,212 @@
     td.today {
         background-color: transparent !important; /* ไม่ให้มีสีพื้นหลัง */
     }
+    .bg-together {
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        color: white;
+        background-color: rgb(73, 184, 179);
+        background-image: linear-gradient(
+            to right,
+            rgba(12, 67, 67, 0.862),
+            rgba(8, 97, 92, 0.685)
+        );
+        box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6),
+            inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .wrap-fieldSet-create {
+        margin-top: 1em;
+        border-radius: 10px;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+            rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        padding: 10px;
+        display: grid;
+        gap: 0.5em;
+        background: linear-gradient(to bottom, #2d6a67, #0f3b46);
+    }
+
+    .wrap-fieldSet-create .fieldset {
+        flex-grow: 1;
+        background: #f1f7f6;
+        border-radius: 7px;
+        max-width: 100%;
+    }
+
+    .wrap-fieldSet-create .info-list {
+        list-style: none;
+        padding: 0.5em;
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 0.3em;
+        margin-bottom: 0px;
+        height: 100%;
+    }
+
+    .wrap-fieldSet-create .info-list > section {
+        border-radius: 7px;
+        flex-grow: 1;
+    }
+
+    .wrap-fieldSet-create .info-list > section.bd {
+        border: 1px solid rgba(144, 214, 175, 0.375);
+        padding: 5px;
+    }
+
+    .wrap-fieldSet-create .info-list li {
+        font-size: 0.9rem;
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 3px;
+        width: 100%;
+        height: 45px;
+    }
+
+    .wrap-fieldSet-create .info-list li input,
+    .wrap-fieldSet-create .info-list li select {
+        height: 2em;
+    }
+
+    .wrap-fieldSet-create .info-list.neww li {
+        display: grid;
+        grid-template-columns: 115px 1fr;
+        /* border-bottom: 1px solid rgb(231, 235, 225); */
+        max-width: 100%;
+    }
+
+    .wrap-fieldSet-create .info-label,
+    .wrap-fieldSet-create .form-label {
+        font-weight: 550;
+        color: #2e2a2a;
+    }
+    .wrap-fieldSet-create .form-select,
+    .wrap-fieldSet-create .form-control {
+        padding: 2px 5px;
+        font-size: 0.9rem;
+    }
+
+    .wrap-fieldSet-create .info-label::after {
+        content: ":";
+        margin: 2px 0.3em;
+    }
+
+    .wrap-fieldSet-create .info-label.no-semi::after {
+        content: "";
+    }
+
+    .wrap-fieldSet-create .top-doc-saleman {
+        display: grid;
+        grid-template-columns: 7.5fr 3fr;
+        gap: 0.3em;
+        /* padding: 0.5em; */
+        /* background: linear-gradient(to bottom, white, white); */
+        /* background: linear-gradient(to bottom, #bac8c7, #e3ecee); */
+        /* background: linear-gradient(to bottom, #e7f0ef77, #e1e2e233); */
+
+        border-radius: 7px;
+    }
+
+    @media (max-width: 1400px) {
+        .wrap-fieldSet-create .top-doc-saleman {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .wrap-fieldSet-create .top-doc-saleman > div {
+        background-color: rgb(2, 41, 39);
+        background-image: linear-gradient(
+            to top,
+            rgba(12, 67, 67, 0.862),
+            rgba(8, 97, 92, 0.685)
+        );
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgb(240, 247, 245);
+        padding: 0.5em 0.5em;
+        font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+    .wrap-fieldSet-create .top-doc-saleman > div {
+        flex-grow: 1;
+    }
+    }
+
+    .wrap-fieldSet-create .top-doc-saleman > div:nth-child(1) {
+    flex-grow: 1;
+    }
+    @media (max-width: 800px) {
+    .sm-width-100 {
+        width: 100%;
+    }
+    }
+
+    .grid-sm-flex {
+        display: grid;
+        grid-template-columns: 3.5fr 4.7fr;
+        gap: 0.3em;
+    }
+    @media (max-width: 1200px) {
+    .grid-sm-flex {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    }
+
+    @media (min-width: 1400px) {
+    .wrap-dis {
+        display: grid;
+        grid-template-columns: 3fr 5fr 2fr;
+        width: 100%;
+    }
+    }
+
+    .wrap-dis {
+        display: grid;
+        grid-template-columns: 5fr 2fr;
+        gap: 0.3em;
+        padding: 0.5em;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
+    }
+
+    .wrap-dis li {
+    /* border: red 1px solid; */
+        display: flex;
+    }
+
+    @media (max-width: 1000px) {
+    .wrap-dis {
+        display: flex;
+        justify-content: end;
+        flex-wrap: wrap;
+    }
+
+    .wrap-dis > div:nth-child(1) {
+        min-width: 350px;
+    }
+
+    .wrap-dis > div:nth-child(1) > div {
+        min-width: 340px;
+        flex-grow: 1;
+    }
+    }
+    .bg-disable-grey {
+        background-color: rgb(237, 237, 237);
+        pointer-events: none;
+    }
+    img.rounded-avatar {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+        margin-right: 0.4em;
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
@@ -251,302 +454,406 @@
         </div> <!-- Row end  -->
         <form id="myForm" action="{{url('/Deposit/update/'.$deposit->id)}}" method="POST">
             @csrf
-            <div class="container-xl">
-                <div class="row clearfix">
-                    <div class="col-sm-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="col-sm-12 col-ml-12 col-12">
-                                    <div class="row">
-                                        <div class="col-sm-8 col-ml-12 col-12">
-                                            <label for="" class="star-red">Guest Name</label>
-                                            <select name="Guest" id="Guest" class="select2" onchange="data()" required>
-                                                <option value="{{$name_ID}}">{{$name}}</option>
-                                                @foreach($datasub as $item)
-                                                    @if ($type == 'Company')
-                                                        <option value="{{ $item->ComTax_ID }}" {{$company == $item->ComTax_ID ? 'selected' : ''}}>
-                                                            @php
-                                                                $comtype = DB::table('master_documents')
-                                                                    ->where('id', $item->Company_type)
-                                                                    ->first();
-
-                                                                if ($comtype) {
-                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
-                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด";
-                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                                                        $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
-                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
-                                                                    } else {
-                                                                        $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name));
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            {{ $name }}
-                                                        </option>
-                                                    @else
-                                                        <option value="{{ $item->GuestTax_ID }}"{{$company == $item->GuestTax_ID ? 'selected' : ''}}>
-                                                            @php
-                                                                $comtype = DB::table('master_documents')
-                                                                    ->where('id', $item->Company_type)
-                                                                    ->first();
-
-                                                                if ($comtype) {
-                                                                    if ($comtype->name_th == "บริษัทจำกัด") {
-                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด";
-                                                                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                                                        $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
-                                                                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                                                        $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
-                                                                    } else {
-                                                                        $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name));
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            {{ $name }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4 col-ml-12 col-12">
-                                            <label for="cashAmount">Amount</label>
-                                            <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')"  value="{{$Payment}}">
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+            <div class="wrap-fieldSet-create">
+                <div class="top-doc-saleman">
+                    <div class="d-flex justify-content-around flex-wrap gap-1">
+                        <div>Document No : {{$DepositID}}</div>
+                        <div>Reference No : {{$QuotationID}} </div>
+                    </div>
+                    <div> User Account :
+                        @if ($user->firstname)
+                            <span> {{$user->firstname}} {{$user->lastname}}</span>
+                        @endif
                     </div>
                 </div>
-                <div class="row clearfix">
-                    <div class="col-sm-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-7 col-md-12 col-sm-12 image-container">
-                                        <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
-                                        <div class="info">
-                                            <p class="titleh1">{{$settingCompany->name}}</p>
-                                            <p>{{$settingCompany->address}}</p>
-                                            <p>Tel : {{$settingCompany->tel}}
-                                                @if ($settingCompany->fax)
-                                                    Fax : {{$settingCompany->fax}}
-                                                @endif
-                                            </p>
-                                            <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
-                                            <p></p>
-                                        </div>
+                <div class="wrap-dis p-0">
+                    <div class="grid-sm-flex">
+                        <fieldset class="fieldset">
+                            <div class="info-list neww flex-column">
+                                <li>
+                                    <label for="customerNameInput" class="form-label text-nowrap m-0 rrr">Customer Name</label>
+                                    <div class="d-flex align-items-center">
+                                    <input type="text" class="form-control" id="customerNameInput" placeholder="Select Customer" value="{{$name}}" readonly style="flex-grow: 1;" />
+                                    <!-- Search button -->
                                     </div>
-                                    <div class="col-lg-5 col-md-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg-4"></div>
-                                            <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
-                                                <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Invoice / Deposit</b>
-                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$DepositID}}</b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-lg-4"></div>
-                                            <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
-                                                <div class="col-12 col-md-12 col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Issue Date:</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{ $Issue_date }}" readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Expiration Date:</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;" value="{{ $ExpirationDate }}"readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
+                                </li>
+                                <li>
+                                    <span class="info-label">Additional Company</span>
+                                    <select name="Guest" id="Guest" class="select2" onchange="data()" required>
+                                        <option value="{{$name_ID}}">{{$name}}</option>
+                                        @foreach($datasub as $item)
+                                            @if ($type == 'Company')
+                                                <option value="{{ $item->ComTax_ID }}" {{$company == $item->ComTax_ID ? 'selected' : ''}}>
+                                                    @php
+                                                        $comtype = DB::table('master_documents')
+                                                            ->where('id', $item->Company_type)
+                                                            ->first();
 
-                                        <div class="proposal-cutomer-detail" id="companyTable" >
-                                            <ul>
-                                            <b class="font-upper com">Invoice / Deposit</b>
-                                            <li class="mt-3">
-                                                <b>Guest Name</b>
-                                                <span id="name">{{$fullName}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Address</b>
-                                                <span id="Address">{{$address}} </span>
-                                                <b></b>
-                                            </li>
-                                            <li>
-                                                <b>Email</b>
-                                                <span id="Email">{{$Email}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Tax ID/Gst Pass</b>
-                                                <span id="Taxpayer" >{{$Identification}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Phone Number</b>
-                                                <span id="Number" >{{$phone->Phone_number}}</span>
-                                            </li>
-                                            <li> </li>
-                                            </ul>
-                                            <ul>
-                                            <li> </li>
-                                            <li></li>
-                                            <li> </li>
-                                            <li></li>
-                                            <li> </li>
-                                            <li></li>
-                                            <li>
-                                                <b>Check In</b>
-                                                <span id="checkinpo">{{$Quotation->checkin ?? 'No Check In Date'}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Check Out</b>
-                                                <span id="checkoutpo">{{$Quotation->checkout ?? ' '}}</span>
-                                            </li>
-                                            <li>
-                                                <b>Length of Stay</b>
-                                                <span style="display: flex"><p id="daypo" class="m-0">{{$Quotation->day}} วัน</p> <p id="nightpo" class="m-0"> {{' , '.$Quotation->night}} คืน </p></span>
-                                            </li>
-                                            <li>
-                                                <b>Number of Guests</b>
-                                                <span style="display: flex"><p id="Adultpo" class="m-0">{{$Quotation->adult}} Adult </p><p id="Childrenpo" class="m-0">{{' , '.$Quotation->children}}  Children</p></span>
-                                            </li>
-                                            </ul>
-                                        </div>
+                                                        if ($comtype) {
+                                                            if ($comtype->name_th == "บริษัทจำกัด") {
+                                                                $name = "บริษัท " . $item->Companny_name . " จำกัด";
+                                                            } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                                                $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
+                                                            } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                                                $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
+                                                            } else {
+                                                                $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name));
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    {{ $name }}
+                                                </option>
+                                            @else
+                                                <option value="{{ $item->GuestTax_ID }}"{{$company == $item->GuestTax_ID ? 'selected' : ''}}>
+                                                    @php
+                                                        $comtype = DB::table('master_documents')
+                                                            ->where('id', $item->Company_type)
+                                                            ->first();
 
-                                </div>
-                                <div class="styled-hr"></div>
-                                <div class="row mt-4">
-                                    <table class=" table table-hover align-middle mb-0" style="width:100%">
-                                        <thead >
-                                            <tr>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;text-align:center">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="display-selected-items">
-                                            <tr>
-                                                <td style="text-align:center">1</td>
-                                                <td style="text-align:left">
-                                                    กรุณาชำระเงินเงินมัดจำ อ้างอิงเอกสาร : {{$QuotationID}} </span> ครั้งที่ {{$Deposit}}
-                                                </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span>   THB </td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Subtotal :</td>
-                                                <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Price Before Tax :</td>
-                                                <td style="text-align:right"><span id="Before"></span>THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Value Added Tax :</td>
-                                                <td style="text-align:right"><span id="Added"></span> THB</td>
-                                            </tr>
-                                            <tr>
-                                                <td><br></td>
-                                                <td style="text-align:right">Net Total :</td>
-                                                <td style="text-align:right"><span id="Total"></span>  THB</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-12 mt-3">
-                                    <div class="col-lg-4 col-md-6 col-sm-12 my-1">
-                                        <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
+                                                        if ($comtype) {
+                                                            if ($comtype->name_th == "บริษัทจำกัด") {
+                                                                $name = "บริษัท " . $item->Company_name . " จำกัด";
+                                                            } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                                                $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
+                                                            } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                                                $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
+                                                            } else {
+                                                                $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name));
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    {{ $name }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </li>
+                                <li>
+                                    <label for="customerName" class="form-label text-nowrap m-0">Description</label>
+                                    <select class="form-select bg-disable-grey" id="customerName">
+                                    <option value="y" style="font-size: 0.9em">Deposit Revenue</option>
+                                    </select>
+                                </li>
+                                <li>
+                                    <label class="form-label">VAT Type</label>
+                                    <select name="Mvat" id="Mvat" class="select2 bg-disable-grey" disabled >
+                                        @foreach($Mvat as $item)
+                                            <option value="{{ $item->id }}"{{$vat_type_num == $item->id ? 'selected' : ''}} >{{ $item->name_th }} </option>
+                                        @endforeach
+                                    </select>
+                                </li>
+                                <li class="border-top">
+                                    <label for="customerName" class="form-label text-nowrap m-0">Total Amount</label>
+                                    <input class="form-control bg-disable-grey" type="text" value="{{ number_format($Nettotal - $amdeposit, 2) }}" readonly/>
+                                    <input class="form-control bg-disable-grey" type="hidden" id="amountPD" value="{{$Nettotal-$amdeposit}}" readonly/>
+                                    <input class="form-control bg-disable-grey" type="hidden" id="depositam" value="{{$amdeposit}}" readonly/>
+                                </li>
+                                <li>
+                                    <label for="customerName" class="form-label text-nowrap m-0">Payment</label>
+                                    <div class="d-flex gap-2">
+                                        <div class="discount-container" style="max-width:160px">
+                                            <input type="text" class="form-control" id="discount" value="{{$Payment}}" oninput="validateInput(this)">
+                                        </div>
+                                        <div class="discount-container flex-grow-1" style="min-width:75px">
+                                            <select id="discountType"  class="form-select" >
+                                                <option value="percent">%</option>
+                                                <option value="amount">THB</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                    </span>
+                                </li>
+                                <li class="border-top">
+                                    <label for="customerName" class="form-label text-nowrap m-0">Deposit Amount</label>
+                                    <input class="form-control bg-disable-grey" type="text" name="totaldeposit" id="totaldeposit"   value="{{ number_format($Payment, 2) }}" readonly/>
+                                </li>
+                            </div>
+                        </fieldset>
+                        <fieldset class="fieldset">
+                            <ul class="info-list">
+                                <section class="bd">
+                                    <div class="flex-grow-1">
+                                    <li>
+                                        <span class="info-label">Customer ID</span>
+                                        <span class="info-value" id="nameID">{{$name_ID}}</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-label">Customer Name</span>
+                                        <span class="info-value" id="name">{{$fullName}}</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-label">Address</span>
+                                        <span class="info-value" id="Address">{{$address}}</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-label">Telephone</span>
+                                        <span class="info-value" id="Number">{{$phone->Phone_number}}</span>
+                                    </li>
+                                    <li>
+                                        <span class="info-label">Tax ID</span>
+                                        <span class="info-value" id="Taxpayer">{{$Identification}}</span>
+                                    </li>
+                                    </div>
+                                </section>
+                            </ul>
+                        </fieldset>
+                    </div>
+                    <fieldset class="fieldset ">
+                        <ul class="info-list">
+                            <section class="bd">
+                                <div class="flex-grow-1">
+                                    <li>
+                                        <span class="info-label">Issue Date</span>
+                                        <span class="info-value" id="reportrange1"><input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{ $Issue_date }}"readonly></span>
+                                    </li>
+                                    <li>
+                                        <span class="info-label">Expire Date</span>
+                                        <span class="info-value"> <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"  value="{{ $ExpirationDate }}"readonly></span>
+                                    </li>
+                                    <li>
+                                        <span class="info-label">Payment Terms</span>
+                                        <span class="info-value" id="Terms"></span>
+                                    </li>
+                                </div>
+                            </section>
+                        </ul>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="row clearfix mt-5">
+                <div class="col-sm-12 col-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-7 col-md-12 col-sm-12 image-container">
+                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                    <div class="info">
+                                        <p class="titleh1">{{$settingCompany->name}}</p>
+                                        <p>{{$settingCompany->address}}</p>
+                                        <p>Tel : {{$settingCompany->tel}}
+                                            @if ($settingCompany->fax)
+                                                Fax : {{$settingCompany->fax}}
+                                            @endif
+                                        </p>
+                                        <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-md-12 col-sm-12">
                                     <div class="row">
-                                        <div class="col-lg-8 col-md-6 col-sm-12">
-                                            <div class="col-12  mt-2">
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
+                                            <div class="row">
+                                                <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Invoice / Deposit</b>
+                                                <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$DepositID}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
+                                            <div class="col-12 col-md-12 col-sm-12">
                                                 <div class="row">
-                                                    <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
-                                                        <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Proposal ID :</span>
                                                     </div>
-                                                    <div class="col-7 mt-2">
-                                                        <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <span>{{$QuotationID}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Issue Date :</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <span id="datestarttext"style="text-align: left;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Expiration Date :</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <span id="dateextext"   style="text-align: left;"></span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="styled-hr mt-3"></div>
-                                <div class="col-12 mt-2">
-                                    <div class="col-12 my-4">
-                                        <div class="row">
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content"></div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
-                                                @php
-                                                    use SimpleSoftwareIO\QrCode\Facades\QrCode;
-                                                @endphp
-                                                <div class="mt-3">
-                                                    {!! QrCode::size(90)->generate('No found'); !!}
+                            </div>
+                            <div class="row mt-3">
+
+                                    <div class="proposal-cutomer-detail" id="companyTable" >
+                                        <ul>
+                                        <li class="mt-3">
+                                            <b>Guest Name</b>
+                                            <span id="namea4">{{$fullName}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Address</b>
+                                            <span id="Addressa4">{{$address}} </span>
+                                            <b></b>
+                                        </li>
+                                        <li>
+                                            <b>Email</b>
+                                            <span id="Emaila4">{{$Email}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Tax ID/Gst Pass</b>
+                                            <span id="Taxpayera4" >{{$Identification}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Phone Number</b>
+                                            <span id="Numbera4" >{{$phone->Phone_number}}</span>
+                                        </li>
+                                        <li> </li>
+                                        </ul>
+                                        <ul>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpo">{{$Quotation->checkin ?? 'No Check In Date'}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpo">{{$Quotation->checkout ?? ' '}}</span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypo" class="m-0">{{$Quotation->day}} วัน</p> <p id="nightpo" class="m-0"> {{' , '.$Quotation->night}} คืน </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpo" class="m-0">{{$Quotation->adult}} Adult </p><p id="Childrenpo" class="m-0">{{' , '.$Quotation->children}}  Children</p></span>
+                                        </li>
+                                        <li></li>
+                                        </ul>
+                                    </div>
+
+                            </div>
+                            <div class="styled-hr"></div>
+                            <div class="row mt-4">
+                                <table class=" table table-hover align-middle mb-0" style="width:100%">
+                                    <thead >
+                                        <tr>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;text-align:center">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="display-selected-items">
+                                        <tr>
+                                            <td style="text-align:center">1</td>
+                                            <td style="text-align:left">
+                                                กรุณาชำระเงินเงินมัดจำ อ้างอิงเอกสาร : {{$QuotationID}} </span> ครั้งที่ {{$Deposit}}
+                                            </td>
+                                            <td style="text-align:right"><span id="Subtotal"></span>  THB </td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Subtotal :</td>
+                                            <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Price Before Tax :</td>
+                                            <td style="text-align:right"><span id="Before"></span> THB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Value Added Tax :</td>
+                                            <td style="text-align:right"><span id="Added"></span> THB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Net Total :</td>
+                                            <td style="text-align:right"><span id="Total"></span> THB</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="col-lg-4 col-md-6 col-sm-12 my-1">
+                                    <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
+                                </div>
+                                <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
+                                    Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                    If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+                                    pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                                </span>
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-6 col-sm-12">
+                                        <div class="col-12  mt-2">
+                                            <div class="row">
+                                                <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
+                                                    <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-2 centered-content">
-                                                <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                                @if ($user->signature)
-                                                    <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
-                                                @endif
-                                                @if ($user->firstname)
-                                                    <span>{{$user->firstname}} {{$user->lastname}}</span>
-                                                @endif
-                                                <span id="issue_date_document"></span>
+                                                <div class="col-7 mt-2">
+                                                    <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 row mt-5">
-                                    <div class="col-4">
-
-                                        <input type="hidden" id="Deposit" name="Deposit" value="{{$Deposit}}">
-                                        <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
-                                        <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
-                                        <input type="hidden" name="sum"  id="sum">
-                                        <input type="hidden" id="total" name="total" >
-                                        <input type="hidden" class="form-control" id="fullname" name="fullname" value="{{$fullName}}" />
-                                        <input type="hidden" class="form-control" id="nameid" name="nameid" value="{{$name_ID}}"/>
-                                        <input type="hidden" id="DepositID" name="DepositID" value="{{$DepositID}}">
+                            </div>
+                            <div class="styled-hr mt-3"></div>
+                            <div class="col-12 mt-2">
+                                <div class="col-12 my-4">
+                                    <div class="row">
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content">
+                                            <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
+                                            @php
+                                                use SimpleSoftwareIO\QrCode\Facades\QrCode;
+                                            @endphp
+                                            <div class="mt-3">
+                                                {!! QrCode::size(90)->generate('No found'); !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 centered-content">
+                                            <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
+                                            @if ($user->signature)
+                                                <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
+                                            @endif
+                                            @if ($user->firstname)
+                                                <span>{{$user->firstname}} {{$user->lastname}}</span>
+                                            @endif
+                                            <span id="issue_date_document"></span>
+                                        </div>
                                     </div>
-                                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                            Back
-                                        </button>
-
-                                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave(event)">Save</button>
-                                    </div>
-                                    <div class="col-4"></div>
                                 </div>
+                            </div>
+                            <div class="col-12 row mt-5">
+                                <div class="col-4">
+
+                                    <input type="hidden" id="Deposit" name="Deposit" value="{{$Deposit}}">
+                                    <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
+                                    <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
+                                    <input type="hidden" name="sum"  id="sum">
+                                    <input type="hidden" id="total" name="total" >
+                                    <input type="hidden" class="form-control" id="fullname" name="fullname" value="{{$fullName}}" />
+                                    <input type="hidden" class="form-control" id="nameid" name="nameid" value="{{$name_ID}}"/>
+                                    <input type="hidden" id="DepositID" name="DepositID" value="{{$DepositID}}">
+                                </div>
+                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                                        Back
+                                    </button>
+
+                                    <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave(event)">Save</button>
+                                </div>
+                                <div class="col-4"></div>
                             </div>
                         </div>
                     </div>
@@ -578,7 +885,7 @@
             placeholder: "Please select an option"
         });
 
-        var cashamount = parseFloat(document.getElementById('Amount').value);
+        var cashamount = parseFloat(document.getElementById('discount').value);
         var vat_type = parseFloat(document.getElementById('vat_type').value);
         let Subtotal =0;
         let total =0;
@@ -606,16 +913,33 @@
         $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
         $('#sum').val(Subtotal);
+        let Payment = {{ $Payment }}; // ดึงค่าตัวแปรจาก PHP
+        let discountType = document.getElementById("discountType");
+
+        if (Payment > 100) {
+            discountType.value = "amount"; // เลือก THB
+        } else {
+            discountType.value = "percent"; // เลือก %
+        }
     });
     $(function() {
         var start = moment();
+
+
         var end = moment().add(7, 'days');
         function cb(start, end) {
             $('#datestart').val(start.format('DD/MM/Y'));
             $('#dateex').val(end.format('DD/MM/Y'));
             $('#issue_date_document').text(start.format('DD/MM/Y'));
             $('#issue_date_document1').text(start.format('DD/MM/Y'));
+
+            var daysSelected = end.diff(start, 'days');
+            $('#Terms').text(daysSelected+' วัน');
+
+            $('#datestarttext').text(start.format('DD/MM/Y'));
+            $('#dateextext').text(end.format('DD/MM/Y'));
         }
+        console.log(1);
         $('#reportrange1').daterangepicker({
             startDate: start,
             endDate: end,
@@ -629,6 +953,49 @@
         cb);
         cb(start, end);
     });
+    function validateInput(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        var discount = $('#discountType').val();
+        var amountPD = $('#amountPD').val();
+        let amount = 0;
+        if (discount == 'amount') {
+            if (parseFloat(input.value) > amountPD) {
+                input.value = amountPD; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
+            }
+            amount =  parseFloat(input.value);
+        }else{
+            if (parseFloat(input.value) >= 100 ) {
+                input.value = 100;
+            }
+            amount = (amountPD*input.value)/100;
+        }
+        $('#totaldeposit').val(amount)
+        var vat_type = parseFloat(document.getElementById('vat_type').value);
+        let Subtotal =0;
+        let total =0;
+        let addtax = 0;
+        let before = 0;
+        let balance =0;
+        if (vat_type == 51) {
+            Subtotal =  amount;
+            total = Subtotal;
+            addtax = 0;
+            before = Subtotal;
+
+        }else{
+            Subtotal =  amount;
+            total = Subtotal/1.07;
+            addtax = Subtotal-total;
+            before = Subtotal-addtax;
+        }
+        $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+        $('#sum').val(Subtotal);
+    }
     function data() {
         var idcheck = $('#Guest').val();
         var nameID = document.getElementById('idfirst').value;
@@ -660,6 +1027,13 @@
                 $('#Number').text(phone);
 
                 $('#nameid').val(id);
+                $('#nameID').text(id);
+                $('#namea4').text(fullname);
+                $('#Addressa4').text(Address);
+                $('#Emaila4').text(email);
+                $('#Taxpayera4').text(TaxpayerIdentification);
+                $('#Numbera4').text(phone);
+
                 if (Selectdata == 'Company') {
                     companyTable.style.display = 'flex';
                     guestTable.style.display = 'none';

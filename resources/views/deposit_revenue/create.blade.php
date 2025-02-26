@@ -876,50 +876,50 @@
             });
         });
         function validateInput(input) {
-                input.value = input.value.replace(/[^0-9]/g, '');
-                var discount = $('#discountType').val();
-                var amountPD = $('#amountPD').val();
-                let amount = 0;
-                if (discount == 'amount') {
-                    if (parseFloat(input.value) > amountPD) {
-                        input.value = amountPD; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
-                    }
-                    amount =  parseFloat(input.value);
-                }else{
-                    if (parseFloat(input.value) >= 100 ) {
-                        input.value = 100;
-                    }
-                    amount = (amountPD*input.value)/100;
+            input.value = input.value.replace(/[^0-9]/g, '');
+            var discount = $('#discountType').val();
+            var amountPD = $('#amountPD').val();
+            let amount = 0;
+            if (discount == 'amount') {
+                if (parseFloat(input.value) > amountPD) {
+                    input.value = amountPD; // ถ้าค่าที่กรอกมากกว่า Nettotal ให้ใช้ Nettotal แทน
                 }
-                $('#totaldeposit').val(amount)
-                var vat_type = parseFloat(document.getElementById('vat_type').value);
-                let Subtotal =0;
-                let total =0;
-                let addtax = 0;
-                let before = 0;
-                let balance =0;
-                if (vat_type == 51) {
-                    Subtotal =  amount;
-                    total = Subtotal;
-                    addtax = 0;
-                    before = Subtotal;
-
-                }else{
-                    Subtotal =  amount;
-                    total = Subtotal/1.07;
-                    addtax = Subtotal-total;
-                    before = Subtotal-addtax;
-
+                amount =  parseFloat(input.value);
+            }else{
+                if (parseFloat(input.value) >= 100 ) {
+                    input.value = 100;
                 }
-
-                $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-
-                $('#sum').val(Subtotal);
+                amount = (amountPD*input.value)/100;
             }
+            $('#totaldeposit').val(amount)
+            var vat_type = parseFloat(document.getElementById('vat_type').value);
+            let Subtotal =0;
+            let total =0;
+            let addtax = 0;
+            let before = 0;
+            let balance =0;
+            if (vat_type == 51) {
+                Subtotal =  amount;
+                total = Subtotal;
+                addtax = 0;
+                before = Subtotal;
+
+            }else{
+                Subtotal =  amount;
+                total = Subtotal/1.07;
+                addtax = Subtotal-total;
+                before = Subtotal-addtax;
+
+            }
+
+            $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+            $('#sum').val(Subtotal);
+        }
         function data() {
             var idcheck = $('#Guest').val();
             var nameID = document.getElementById('idfirst').value;

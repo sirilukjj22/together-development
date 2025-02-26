@@ -420,6 +420,31 @@
         object-fit: cover;
         margin-right: 0.4em;
     }
+    .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    .paginate-btn {
+        border: 1px solid #2D7F7B;
+        background-color: white;
+        color: #2D7F7B;
+        padding: 8px 16px;
+        margin: 0 2px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .paginate-btn.active, .paginate-btn:hover {
+        background-color: #2D7F7B;
+        color: white;
+    }
+
+    .paginate-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
@@ -452,7 +477,7 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <form id="myForm"action="{{ route('Deposit.save') }}" method="POST">
+        <form id="myForm" action="{{ route('Deposit.save') }}" method="POST">
             @csrf
             <div class="container-xl">
                 <div class="wrap-fieldSet-create">
@@ -488,47 +513,30 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="flex-end br" style="gap:0.3em;display: flex;justify-content: end;">
-                                                                <select id="filterCustomerType" class="bt-together m-0" style="height: 2.7em;  margin-right: 10px;width: max-content;">
+                                                                <select id="filterCustomerType" class="bt-together form-select m-0 " style="height: 2.7em;  margin-right: 10px;width: max-content;" onchange="filterCustomer()">
                                                                     <option value="all">All</option>
                                                                     <option value="company">Company / Agent</option>
                                                                     <option value="guest">Guest</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="dataTables_wrapper">
-                                                                <table class="table-together">
-                                                                <thead>
-                                                                    <tr>
-                                                                    <th data-priority="1">No</th>
-                                                                    <th data-priority="1">Customer Name</th>
-                                                                    <th data-priority="2">Customer ID </th>
-                                                                    <th data-priority="3">Customer Type</th>
-                                                                    <th data-priority="4">From</th>
-                                                                    <th data-priority="1">Select</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                    <td>1</td>
-                                                                    <td>หจก.รุ่งเรือง</td>
-                                                                    <td>XX22222</td>
-                                                                    <td>ลูกค้าเงินเชื่อ (Gold)</td>
-                                                                    <td>Factory</td>
-                                                                    <td>
-                                                                        <button class="btn bg-warning px-2" style="padding-top:2px;padding-bottom:2px;">Select</button>
-                                                                    </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                    <td>2</td>
-                                                                    <td>Jone</td>
-                                                                    <td>XX2223</td>
-                                                                    <td>ลูกค้าเงินสด (Gold)</td>
-                                                                    <td>Shop</td>
-                                                                    <td>
-                                                                        <button class="btn bg-warning px-2" style="padding-top:2px;padding-bottom:2px;">Select</button>
-                                                                    </td>
-                                                                    </tr>
-                                                                </tbody>
+                                                            <div class="dataTables_wrapper mt-2">
+                                                                <table id="QuotationTable"  class="table-together table-style" style="width: 100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th data-priority="1"class="text-center">No</th>
+                                                                            <th data-priority="1"class="text-center">Customer Name</th>
+                                                                            <th data-priority="2"class="text-center">Customer ID </th>
+                                                                            <th data-priority="3"class="text-center">Customer Type</th>
+                                                                            <th data-priority="1"class="text-center">Select</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
                                                                 </table>
+                                                                <div id="paginationContainer" class="pagination-container">
+                                                                    <button class="paginate-btn" data-page="prev">&laquo;</button>
+                                                                    <!-- ปุ่ม pagination จะถูกแทรกที่นี่ -->
+                                                                    <button class="paginate-btn" data-page="next">&raquo;</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -539,14 +547,10 @@
                                             </div>
                                         </div>
                                     </li>
-                                    {{-- <li>
-                                            <span class="info-label">Additional Company</span>
-                                            <select name="Guest" id="Guest" class="form-select" onchange="data()" required>
-                                                <option value="{{$name_ID}}">{{$name}}</option> @foreach($datasub as $item) @if ($type == 'Company') <option value="{{ $item->ComTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name; } else { $name = $comtype->name_th . ($item->Companny_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
-                                                </option> @else <option value="{{ $item->GuestTax_ID }}"> @php $comtype = DB::table('master_documents') ->where('id', $item->Company_type) ->first(); if ($comtype) { if ($comtype->name_th == "บริษัทจำกัด") { $name = "บริษัท " . $item->Company_name . " จำกัด"; } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") { $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)"; } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") { $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name; } else { $name = $comtype->name_th . ($item->Company_name ?? ( $item->first_name . " " . $item->last_name)); } } @endphp {{ $name }}
-                                                </option> @endif @endforeach
-                                            </select>
-                                        </li>
+                                    <li>
+                                        <span class="info-label">Additional Company</span>
+                                        <div id="selectContainer"></div>
+                                    </li>
                                     <li>
                                         <label for="customerName" class="form-label text-nowrap m-0">Description</label>
                                         <select class="form-select bg-disable-grey" id="customerName">
@@ -555,17 +559,13 @@
                                     </li>
                                     <li>
                                         <label class="form-label">VAT Type</label>
-                                        <select name="Mvat" id="Mvat" class="select2 bg-disable-grey" disabled >
-                                            @foreach($Mvat as $item)
-                                                <option value="{{ $item->id }}"{{$vat_type == $item->id ? 'selected' : ''}} >{{ $item->name_th }} </option>
-                                            @endforeach
-                                        </select>
+                                        <span id="vat_type_proposal"></span>
                                     </li>
                                     <li class="border-top">
                                         <label for="customerName" class="form-label text-nowrap m-0">Total Amount</label>
-                                        <input class="form-control bg-disable-grey" type="text" value="{{ number_format($Nettotal - $amdeposit, 2) }}" readonly/>
-                                        <input class="form-control bg-disable-grey" type="hidden" id="amountPD" value="{{$Nettotal-$amdeposit}}" readonly/>
-                                        <input class="form-control bg-disable-grey" type="hidden" id="depositam" value="{{$amdeposit}}" readonly/>
+                                        <input class="form-control bg-disable-grey" type="text"  id="NettotalPD" readonly/>
+                                        <input class="form-control bg-disable-grey" type="hidden" id="amountPD"  readonly/>
+                                        <input class="form-control bg-disable-grey" type="hidden" id="depositam"  readonly/>
                                     </li>
                                     <li>
                                         <label for="customerName" class="form-label text-nowrap m-0">Payment</label>
@@ -584,39 +584,39 @@
                                     <li class="border-top">
                                         <label for="customerName" class="form-label text-nowrap m-0">Deposit Amount</label>
                                         <input class="form-control bg-disable-grey" type="text" name="totaldeposit" id="totaldeposit" readonly/>
-                                    </li> --}}
+                                    </li>
                                 </div>
                             </fieldset>
-                            {{-- <fieldset class="fieldset">
+                            <fieldset class="fieldset">
                                 <ul class="info-list">
                                     <section class="bd">
                                         <div class="flex-grow-1">
                                         <li>
                                             <span class="info-label">Customer ID</span>
-                                            <span class="info-value" id="nameID">{{$name_ID}}</span>
+                                            <span class="info-value" id="nameID"></span>
                                         </li>
                                         <li>
                                             <span class="info-label">Customer Name</span>
-                                            <span class="info-value" id="name">{{$fullName}}</span>
+                                            <span class="info-value" id="name"></span>
                                         </li>
                                         <li>
                                             <span class="info-label">Address</span>
-                                            <span class="info-value" id="Address">{{$address}}</span>
+                                            <span class="info-value" id="Address"></span>
                                         </li>
                                         <li>
                                             <span class="info-label">Telephone</span>
-                                            <span class="info-value" id="Number">{{$phone->Phone_number}}</span>
+                                            <span class="info-value" id="Number"></span>
                                         </li>
                                         <li>
                                             <span class="info-label">Tax ID</span>
-                                            <span class="info-value" id="Taxpayer">{{$Identification}}</span>
+                                            <span class="info-value" id="Taxpayer"></span>
                                         </li>
                                         </div>
                                     </section>
                                 </ul>
-                            </fieldset> --}}
+                            </fieldset>
                         </div>
-                        {{-- <fieldset class="fieldset ">
+                        <fieldset class="fieldset ">
                             <ul class="info-list">
                                 <section class="bd">
                                     <div class="flex-grow-1">
@@ -635,14 +635,253 @@
                                     </div>
                                 </section>
                             </ul>
-                        </fieldset> --}}
+                        </fieldset>
                     </div>
                 </div>
 
             </div>
+            <div class="row clearfix mt-5">
+                <div class="col-sm-12 col-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-7 col-md-12 col-sm-12 image-container">
+                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                    <div class="info">
+                                        <p class="titleh1">{{$settingCompany->name}}</p>
+                                        <p>{{$settingCompany->address}}</p>
+                                        <p>Tel : {{$settingCompany->tel}}
+                                            @if ($settingCompany->fax)
+                                                Fax : {{$settingCompany->fax}}
+                                            @endif
+                                        </p>
+                                        <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-md-12 col-sm-12">
+                                    <div class="row">
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
+                                            <div class="row">
+                                                <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Invoice / Deposit</b>
+                                                <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$DepositID}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
+                                            <div class="col-12 col-md-12 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Proposal ID :</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <span id="proposalid4"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Issue Date :</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <span id="datestarttext"style="text-align: left;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Expiration Date :</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <span id="dateextext"   style="text-align: left;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+
+                                    <div class="proposal-cutomer-detail" id="companyTable" >
+                                        <ul>
+                                        <li class="mt-3">
+                                            <b>Guest Name</b>
+                                            <span id="namea4"></span>
+                                        </li>
+                                        <li>
+                                            <b>Address</b>
+                                            <span id="Addressa4"></span>
+                                            <b></b>
+                                        </li>
+                                        <li>
+                                            <b>Email</b>
+                                            <span id="Emaila4"></span>
+                                        </li>
+                                        <li>
+                                            <b>Tax ID/Gst Pass</b>
+                                            <span id="Taxpayera4" ></span>
+                                        </li>
+                                        <li>
+                                            <b>Phone Number</b>
+                                            <span id="Numbera4" ></span>
+                                        </li>
+                                        <li> </li>
+                                        </ul>
+                                        <ul>
+                                        <li> </li>
+                                        <li></li>
+                                        <li> </li>
+                                        <li></li>
+
+                                        <li>
+                                            <b>Check In</b>
+                                            <span id="checkinpo"></span>
+                                        </li>
+                                        <li>
+                                            <b>Check Out</b>
+                                            <span id="checkoutpo"></span>
+                                        </li>
+                                        <li>
+                                            <b>Length of Stay</b>
+                                            <span style="display: flex"><p id="daypo" class="m-0"> </p> <p id="nightpo" class="m-0">  </p></span>
+                                        </li>
+                                        <li>
+                                            <b>Number of Guests</b>
+                                            <span style="display: flex"><p id="Adultpo" class="m-0">  </p><p id="Childrenpo" class="m-0"></p></span>
+                                        </li>
+                                        <li></li>
+                                        </ul>
+                                    </div>
+
+                            </div>
+                            <div class="styled-hr"></div>
+                            <div class="row mt-4">
+                                <table class=" table table-hover align-middle mb-0" style="width:100%">
+                                    <thead >
+                                        <tr>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;text-align:center">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="display-selected-items">
+                                        <tr>
+                                            <td style="text-align:center">1</td>
+                                            <td style="text-align:left">
+                                                กรุณาชำระเงินเงินมัดจำ อ้างอิงเอกสาร : <span id="quotation_ID"></span> ครั้งที่ <span id="deposit_number"></span>
+                                            </td>
+                                            <td style="text-align:right"><span id="Subtotal"></span>  THB </td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Subtotal :</td>
+                                            <td style="text-align:right"><span id="SubtotalAll"></span> THB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Price Before Tax :</td>
+                                            <td style="text-align:right"><span id="Before"></span> THB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Value Added Tax :</td>
+                                            <td style="text-align:right"><span id="Added"></span> THB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><br></td>
+                                            <td style="text-align:right">Net Total :</td>
+                                            <td style="text-align:right"><span id="Total"></span> THB</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="col-lg-4 col-md-6 col-sm-12 my-1">
+                                    <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
+                                </div>
+                                <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
+                                    Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                    If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+                                    pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                                </span>
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-6 col-sm-12">
+                                        <div class="col-12  mt-2">
+                                            <div class="row">
+                                                <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
+                                                    <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
+                                                </div>
+                                                <div class="col-7 mt-2">
+                                                    <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="styled-hr mt-3"></div>
+                            <div class="col-12 mt-2">
+                                <div class="col-12 my-4">
+                                    <div class="row">
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content"></div>
+                                        <div class="col-lg-2 centered-content">
+                                            <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
+                                            @php
+                                                use SimpleSoftwareIO\QrCode\Facades\QrCode;
+                                            @endphp
+                                            <div class="mt-3">
+                                                {!! QrCode::size(90)->generate('No found'); !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 centered-content">
+                                            <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
+                                            @if ($user->signature)
+                                                <img src="/upload/signature/{{$user->signature}}" style="width: 70%;"/>
+                                            @endif
+                                            @if ($user->firstname)
+                                                <span>{{$user->firstname}} {{$user->lastname}}</span>
+                                            @endif
+                                            <span id="issue_date_document"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row mt-5">
+                                <div class="col-4">
+                                    <input type="hidden" id="Deposit" name="Deposit" >
+
+                                    <input type="hidden" name="QuotationID" id="QuotationID">
+                                    <input type="hidden" name="sum"  id="sum">
+                                    <input type="hidden" id="total" name="total" >
+                                    <input type="hidden" class="form-control" id="fullname" name="fullname" />
+                                    <input type="hidden" class="form-control" id="nameid" name="nameid"/>
+                                    <input type="hidden" id="DepositID" name="DepositID" value="{{$DepositID}}">
+                                </div>
+                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                                        Back
+                                    </button>
+
+                                    <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave(event)">Save</button>
+                                </div>
+                                <div class="col-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
-
+    <input type="hidden" id="vat_type" name="vat_type" >
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -667,8 +906,6 @@
             });
             $(function() {
                 var start = moment();
-
-
                 var end = moment().add(7, 'days');
                 function cb(start, end) {
                     $('#datestart').val(start.format('DD/MM/Y'));
@@ -696,6 +933,7 @@
                 cb);
                 cb(start, end);
             });
+            filterCustomer();
         });
         function validateInput(input) {
                 input.value = input.value.replace(/[^0-9]/g, '');
@@ -744,14 +982,9 @@
             }
         function data() {
             var idcheck = $('#Guest').val();
-            var nameID = document.getElementById('idfirst').value;
-            var companyTable = document.getElementById('companyTable');
-            var guestTable = document.getElementById('guestTable');
-            if (idcheck) {
-                id = idcheck;
-            }else{
-                id = nameID;
-            }
+            console.log(idcheck);
+
+            id = idcheck;
             jQuery.ajax({
                 type: "GET",
                 url: "{!! url('/Document/deposit_revenue/Data/" + id + "') !!}",
@@ -820,5 +1053,228 @@
                 }
             });
         }
+        const table_name = ['QuotationTable'];
+        $(document).ready(function() {
+            $('#QuotationTable').DataTable().destroy();
+            for (let index = 0; index < table_name.length; index++) {
+                new DataTable('#'+table_name[index], {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ordering:false,
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: false,
+                        target: null,
+                    }],
+                    // order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    }
+                });
+            }
+        });
+        function filterCustomer(){
+            let status = $("#filterCustomerType").val();
+            var table = $('#QuotationTable').DataTable();
+            if (status == null) {
+                id = 'all';
+            }else{
+                id = status;
+            }
+            $.ajax({
+                url: '{{ route("Deposit.Quotation") }}',
+                method: 'GET',
+                data: { value: id },
+                success: function(response) {
+                    if (response.products.length > 0) {
+                        let table = $('#QuotationTable').DataTable();
+                        table.clear().draw();
+
+                        var num = 0;
+                        var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
+                        var currentPage = 1;
+                        var totalItems = response.products.length;
+                        var totalPages = Math.ceil(totalItems / pageSize);
+                        var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
+                        function renderPage(page) {
+                            table.clear();
+                            let num = (page - 1) * pageSize + 1;
+                            for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
+                                const data = response.products[i];
+                                const productId = data.id;
+                                const guestName = data.guest ? (data.guest.First_name + ' ' + data.guest.Last_name) : '-';
+                                const companyName = data.company ? data.company.Company_Name : '-';
+                                const displayName = data.type_Proposal == 'Company' ? companyName : guestName;
+                                table.row.add([
+                                    num++,
+                                    displayName,
+                                    data.Quotation_ID,
+                                    data.type_Proposal,
+                                    `<button type="button" class="btn bg-warning px-2" style="padding-top:2px;padding-bottom:2px;" onclick="dataPD(${productId})" >Select</button>`
+                                ]).node().id = `row-${productId}`;
+                            }
+                            table.draw(false);
+                            $('#QuotationTable').DataTable().columns.adjust().responsive.recalc();
+                            // Update active class for pagination buttons
+                            $('.paginate-btn').removeClass('active');
+                            $(`[data-page="${page}"]`).addClass('active');
+                        }
+
+                        function createPagination(totalPages, currentPage) {
+                            $('#paginationContainer').html(`
+                                <button class="paginate-btn" data-page="prev">&laquo;</button>
+                            `);
+
+                            var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                            var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+
+                            if (startPage > 1) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
+                                if (startPage > 2) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"  disabled>...</button>`);
+                                }
+                            }
+
+                            for (let i = startPage; i <= endPage; i++) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
+                            }
+
+                            if (endPage < totalPages) {
+                                if (endPage < totalPages - 1) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"disabled >...</button>`);
+                                }
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
+                            }
+
+                            $('#paginationContainer').append(`
+                                <button class="paginate-btn" data-page="next">&raquo;</button>
+                            `);
+                        }
+
+                        createPagination(totalPages, currentPage);
+                        renderPage(currentPage);
+
+                        // Handle page click
+                        $(document).on('click', '.paginate-btn', function() {
+                            var page = $(this).data('page');
+
+                            if (page === 'prev') {
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                }
+                            } else if (page === 'next') {
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                }
+                            } else {
+                                currentPage = parseInt(page);
+                            }
+
+                            createPagination(totalPages, currentPage);
+                            renderPage(currentPage);
+                        });
+                    }else{
+                        table.clear();
+                        table.draw();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+        function dataPD(productId) {
+            var id = productId;
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/Document/deposit_revenue/Data/createnew/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    console.log("AJAX Response:", response);
+
+                    var phone = response.phone.Phone_number;
+                    var fullname = response.fullname;
+                    var Address = response.Address + ' '+ 'ตำบล'+ response.Tambon.name_th + ' '+'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                    var TaxpayerIdentification = response.Identification;
+                    var nameID = response.nameID;
+                    var proposal_id = response.proposal_id;
+                    var vat_type = response.vat_type;
+                    var nettotal = response.nettotal;
+                    var amdeposit = response.amdeposit;
+                    var email = response.email;
+                    var vat = response.vat;
+                    var checkin = response.checkin;
+                    var checkout = response.checkout;
+                    var day = response.day;
+                    var night = response.night;
+                    var Adult = response.adult;
+                    var Children = response.children;
+                    $('#nameid').val(nameID);
+                    $('#fullname').val(fullname);
+                    $('#name').text(fullname);
+                    $('#Address').text(Address);
+                    $('#Taxpayer').text(TaxpayerIdentification);
+                    $('#Number').text(phone);
+                    $('#proposalid').text(proposal_id);
+
+                    $('#customerNameInput').val(fullname);
+                    $('#nameID').text(nameID);
+                    $('#vat_type_proposal').text(vat_type);
+                    $('#NettotalPD').val(Number(nettotal).toLocaleString());
+                    $('#amountPD').val(nettotal);
+                    $('#depositam').val(amdeposit);
+                    $('#vat_type').val(vat);
+
+                    $('#Deposit').val(response.Deposit);
+                    $('#proposalid4').text(proposal_id);
+                    $('#namea4').text(fullname);
+                    $('#Addressa4').text(Address);
+                    $('#Emaila4').text(email);
+                    $('#Taxpayera4').text(TaxpayerIdentification);
+                    $('#Numbera4').text(phone);
+
+                    $('#checkinpo').text(checkin);
+                    $('#checkoutpo').text(checkout);
+                    $('#daypo').text(day+' วัน');
+                    $('#nightpo').text(' , '+night+' วัน');
+                    $('#Adultpo').text(Adult +' Adult');
+                    $('#Childrenpo').text(' , '+Children+' Children');
+
+                    $('#QuotationID').val(proposal_id);
+                    $('#quotation_ID').text(proposal_id);
+                    $('#_number').text(response.Deposit);
+                    let selectHtml = `<select name="Guest" id="Guest" class="form-select" onchange="data()" required>`;
+                    selectHtml += `<option value="${nameID}">${fullname}</option>`;
+
+                    if (response.datasub && response.datasub.length > 0) {
+                        response.datasub.forEach(item => {
+                            let name = item.type_Proposal === "Company"
+                                ? `บริษัท ${item.company_name} จำกัด`
+                                : `${item.first_name} ${item.last_name}`;
+
+                            selectHtml += `<option value="${item.ComTax_ID ?? item.GuestTax_ID}">${name}</option>`;
+                        });
+                    }
+
+                    selectHtml += `</select>`;
+
+                    // เพิ่มลงใน DOM
+                    $("#selectContainer").empty().append(selectHtml);
+
+                    // ปิด Modal
+                    $('#customerSearchModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX request failed: ", status, error);
+                }
+            });
+        }
+
+
     </script>
 @endsection
