@@ -474,8 +474,6 @@
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     async: false,
                     success: function(response) {
-                        console.log(response);
-                        
                         if (response.status == 200) {
                             var status = "";
                             var table = $('#myDataTableOutstandingSelect').DataTable(
