@@ -137,7 +137,7 @@
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
@@ -170,7 +170,7 @@
                                                                 @endif
                                                             @else
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -240,7 +240,7 @@
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
@@ -273,7 +273,7 @@
                                                                 @endif
                                                             @else
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -343,7 +343,7 @@
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
@@ -376,7 +376,7 @@
                                                                 @endif
                                                             @else
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
@@ -442,7 +442,7 @@
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
@@ -460,7 +460,7 @@
                                                                 @endif
                                                             @else
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/view/invoice/deposit/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/LOG/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif

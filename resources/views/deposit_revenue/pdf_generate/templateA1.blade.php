@@ -406,21 +406,6 @@
                         </table>
                     </div>
                 </span>
-                <div  style="border: 1px solid #2D7F7B"></div>
-                <strong class="com" style="font-size: 14px;">FULL PAYMENT AFTER RESERVATION</strong><br>
-                <span style="line-height:10px;font-size: 13px;">
-                    Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                    If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                    pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                </span>
-                <div style="margin-top: 15px">
-                    <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
-                    <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">
-                        <strong  style="display: block; text-align: left;">The Siam Commercial Bank Public Company Limited</strong>
-                        <strong  style="display: block; text-align: left;">Bank Account No. 708-226791-3</strong>
-                        <strong  style="display: block; text-align: left;">Tha Yang - Phetchaburi Branch (Savings Account)</strong>
-                    </div>
-                </div>
             </div>
         </main>
     </body>

@@ -700,7 +700,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/deposit_revenue/Data/{id}', 'deposit');
         Route::get('/Document/deposit_revenue/cheque/{id}','cheque');
         Route::post('/Deposit/save', 'save')->name('Deposit.save');
-        Route::get('/Deposit/view/{id}', 'view')->name('Deposit.view');
+        Route::get('/Deposit/view/invoice/deposit/{id}', 'viewinvoicedeposit')->name('Deposit.viewinvoicedeposit');
+        Route::get('/Deposit/view/revenue/deposit/{id}', 'viewrevenuedeposit')->name('Deposit.viewrevenuedeposit');
         Route::get('/Deposit/LOG/{id}', 'log')->name('Deposit.log');
         Route::post('/Deposit/update/{id}', 'update')->name('Deposit.update');
         Route::get('/Deposit/Send/Email/{id}', 'email')->name('Deposit.email');

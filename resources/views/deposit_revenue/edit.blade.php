@@ -544,8 +544,8 @@
                                 </li>
                                 <li class="border-top">
                                     <label for="customerName" class="form-label text-nowrap m-0">Total Amount</label>
-                                    <input class="form-control bg-disable-grey" type="text" value="{{ number_format($Nettotal - $amdeposit, 2) }}" readonly/>
-                                    <input class="form-control bg-disable-grey" type="hidden" id="amountPD" value="{{$Nettotal-$amdeposit}}" readonly/>
+                                    <input class="form-control bg-disable-grey" type="text" value="{{ number_format($Nettotal, 2) }}" readonly/>
+                                    <input class="form-control bg-disable-grey" type="hidden" id="amountPD" value="{{$Nettotal}}" readonly/>
                                     <input class="form-control bg-disable-grey" type="hidden" id="depositam" value="{{$amdeposit}}" readonly/>
                                 </li>
                                 <li>

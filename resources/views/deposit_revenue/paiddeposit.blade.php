@@ -890,34 +890,6 @@
                                         </div>
                                     </ul>
                                 </div>
-
-
-
-                                <div class="styled-hr mt-3"></div>
-                                <div class="col-12 mt-3">
-                                    <div class="col-lg-4 col-md-6 col-sm-12 my-1">
-                                        <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
-                                    </div>
-                                    <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                    </span>
-                                    <div class="row">
-                                        <div class="col-lg-8 col-md-6 col-sm-12">
-                                            <div class="col-12  mt-2">
-                                                <div class="row">
-                                                    <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
-                                                        <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
-                                                    </div>
-                                                    <div class="col-7 mt-2">
-                                                        <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="styled-hr mt-3"></div>
                                 <div class="wrap-all-company-detail mt-2">
                                     <section class="body-bottom">
@@ -2742,7 +2714,7 @@
                 paymentData.cheque = $(this).find('.cheque').val();
                 paymentData.chequedate = $(this).find('.chequedate').val();
                 paymentData.chequebank = $(this).find('.chequebank').val();
-                paymentData.amount = $(this).find('.chequeamount').val().replace(/,/g, '').split('.')[0];
+                paymentData.amount = $(this).find('.chequeamountAmount').val().replace(/,/g, '').split('.')[0];
                 paymentData.datanamebank = `Cheque Bank ${paymentData.chequebank} Cheque Number ${paymentData.cheque}`;
             }else if (paymentType === 'cash') {
                 paymentData.amount = $(this).find('.cashAmount').val();
