@@ -255,15 +255,15 @@
     </div>
 </div>
 
-<input type="text" id="total_receive_payment" value="{{ round($total_debit, 2) }}"> <!-- ยอดรายการที่เลือกทั้งหมด -->
-<input type="text" id="total_revenue_amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}"> <!-- ยอดจาก SMS -->
-<input type="text" id="debit_amount" value="{{ $debit_amount }}">
-<input type="text" id="outstanding_amount" value="{{ $outstanding_amount }}">
+<input type="hidden" id="total_receive_payment" value="{{ round($total_debit, 2) }}"> <!-- ยอดรายการที่เลือกทั้งหมด -->
+<input type="hidden" id="total_revenue_amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}"> <!-- ยอดจาก SMS -->
+<input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
+<input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
 
 <!-- Total Selected, Total Selected Amount, Outstanding -->
-<input type="text" id="input-outstanding-amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
-<input type="text" id="input-selected-amount" value="0">
-<input type="text" id="input-selected-item" value="0">
+<input type="hidden" id="input-outstanding-amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
+<input type="hidden" id="input-selected-amount" value="0">
+<input type="hidden" id="input-selected-item" value="0">
 
 <form action="#" id="form-elexa">
     @csrf
