@@ -82,6 +82,95 @@ class ElexaController extends Controller
         ));
     }
 
+    public function get_outstanding(Request $request)
+    {
+        $search = $request->input('search.value');  // ค่าการค้นหาจาก DataTables
+        $start = $request->input('start');           // จุดเริ่มต้นของหน้า
+        $length = $request->input('length');         // จำนวนข้อมูลที่ต้องการแสดงในแต่ละหน้า
+
+        // สร้าง query สำหรับการค้นหา
+        $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 0);
+
+        if (isset($request->receiveID) && !empty($request->receiveID)) {
+            $query->whereNotIn('revenue_credit.id', $request->receiveID);
+        }
+
+        if (isset($request->year) && $request->year != "all") {
+            $query->whereYear('revenue.date', $request->year);
+        }
+
+        if (isset($request->month) && $request->month != "all") {
+            $query->whereMonth('revenue.date', $request->month);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('revenue_credit.date', 'like', "%{$search}%")
+                ->orWhere('revenue_credit.batch', 'like', "%{$search}%")
+                ->orWhere('revenue_credit.ev_charge', 'like', "%{$search}%")
+                ->orWhere('revenue_credit.ev_revenue', 'like', "%{$search}%");
+            });
+        }
+
+        // การนับจำนวนทั้งหมดและจำนวนที่กรองแล้ว
+        $recordsTotal = Revenue_credit::count();
+        $recordsFiltered = $query->count();
+
+        $query->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+        'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date');
+
+        $totalAmount = $query->sum('revenue_credit.ev_revenue');
+
+        $data_elexa = $query->orderBy('revenue.date', 'asc')->get();
+
+        $data = [];
+
+        if (count($data_elexa) > 0) {
+            foreach ($data_elexa as $key => $value) 
+            {
+                $btn_action = "";
+                if ($value->receive_payment == 0)
+                {
+                    $btn_action = '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
+                    onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')">Receive</button>';
+                } else {
+                    $btn_action = '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
+                    onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')" disabled>Receive</button>';
+                }
+
+                if (isset($request->select_all) && $request->select_all == 'true') {
+                    $btn_checkbox = '<div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="'.$value->id.'" id="checkboxReceive-'.$value->id.'" checked>
+                                        <label class="form-check-label" for="checkboxReceive-'.$value->id.'"></label>
+                                    </div>';
+                } else {
+                    $btn_checkbox = '<div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="'.$value->id.'" id="checkboxReceive-'.$value->id.'">
+                                        <label class="form-check-label" for="checkboxReceive-'.$value->id.'"></label>
+                                    </div>';
+                }
+
+                $data[] = [
+                    'id' => $value->id,
+                    'check_box' => $btn_checkbox,
+                    'date' => $value->date,
+                    'order_id' => $value->batch,
+                    'amount' => $value->ev_revenue,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+
+        return response()->json([
+            'draw' => $request->input('draw'),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data,
+            'totalAmount' => number_format($totalAmount, 2)
+        ]);
+    }
+
     // หน้าเลือกที่จะทำรายการ
     public function index_list_days()
     {
@@ -157,6 +246,40 @@ class ElexaController extends Controller
             return response()->json([
                 'data' => $elexa_outstanding,
                 'status' => 200,
+            ]);
+    }
+
+    public function select_all_elexa_outstanding(Request $request) {
+
+        $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.status', 8);
+
+        if (isset($request->year) && $request->year != "all") {
+            $query->whereYear('revenue.date', $request->year);
+        }
+
+        if (isset($request->month) && $request->month != "all") {
+            $query->whereMonth('revenue.date', $request->month);
+        }
+            
+        $query->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
+                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date');
+
+        $totalAmount = $query->sum('revenue_credit.ev_revenue');
+
+        $elexa_outstanding = $query->get();
+
+        if ($totalAmount > $request->total_revenue_amount) {
+            $elexa_outstanding = '';
+            $status = 500;
+        } else {
+            $status = 200;
+        }
+        
+
+            return response()->json([
+                'data' => $elexa_outstanding,
+                'status' => $status,
             ]);
     }
 

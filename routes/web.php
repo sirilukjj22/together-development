@@ -173,8 +173,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('debit-elexa-detail/{id}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด
         Route::post('debit-elexa-store', 'receive_payment')->name('debit-elexa-store');
         Route::get('debit-select-elexa-outstanding/{id}', 'select_elexa_outstanding')->name('debit-select-elexa-outstanding');
+        Route::post('debit-select-all-elexa-outstanding', 'select_all_elexa_outstanding')->name('debit-select-all-elexa-outstanding'); // เลือกมากกว่า 1 รายการ
         Route::post('debit-confirm-select-elexa-outstanding', 'confirm_select_elexa_outstanding')->name('debit-confirm-select-elexa-outstanding'); // Confirm รายการที่เลือก
         Route::get('debit-status-elexa-receive/{status}', 'status_elexa_receive')->name('debit-status-elexa-receive');
+
+        // Get Data
+        Route::post('debit-get-outstanding', 'get_outstanding')->name('debit-get-outstanding'); // Outstanding ทั้งหมด
 
         // Graph
         Route::get('debtor-elexa-graph-month-sales', 'graph_month_sales')->name('debtor-elexa-graph-month-sales');
