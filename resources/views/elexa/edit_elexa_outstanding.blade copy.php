@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="flex-end">
-                <button type="button" class="bt-tg-normal" id="btn-modal-add" data-bs-toggle="modal" data-bs-target="#ElexaRevenueList">Add </button>
+                <button type="button" class="bt-tg-normal" data-bs-toggle="modal" data-bs-target="#ElexaRevenueList">Add </button>
             </div>
         </div>
 
@@ -162,7 +162,7 @@
                 <div>
                     <span>Outstanding </span>
                     <br />
-                    <b id="txt-total-selected-outstanding">{{ number_format(isset($elexa_revenue) ? $elexa_revenue->amount : 0, 2) }}</b>
+                    <b id="txt-total-selected-outstanding">{{ number_format($total_elexa_outstanding_revenue, 2) }}</b>
                 </div>
             </div>
             <div class="wrap-table-together mt-3">
@@ -183,19 +183,7 @@
             <div class="wrap-table-together">
                 <div class="flex-end mt-2">
                     <div class="filter-section bd-select-cl d-flex" style="gap: 0.3em">
-                        <select id="elexaYearFilter" class="form-select" style="width: max-content" onchange="filterOutstanding()">
-                            <option value="all">All Years</option>
-                            <?php
-                                $startYear = 2024; // ปีเริ่มต้น
-                                $endYear = date("Y"); // ปีปัจจุบัน
-
-                                for ($year = $startYear; $year <= $endYear; $year++) {
-                                    echo "<option value=\"$year\">$year</option>";
-                                }
-                            ?>
-                        </select>
-
-                        <select id="elexaMonthFilter" class="form-select" style="width: max-content" onchange="filterOutstanding()">
+                        <select id="elexaRevenueDayMonthFilter" class="form-select" style="width: max-content" onchange="filterSearch()">
                             <option value="all">All Months</option>
                             <option value="1">January</option>
                             <option value="2">February</option>
@@ -212,35 +200,59 @@
                         </select>
                     </div>
                 </div>
-                <div class="flex-end">
-                    <button type="button" class="bt-tg-normal sm" id="btn-add-multi">Receive multiple payments</button>
-                </div>
                 <table id="myDataTableOutstanding" class="table-style table-together" style="width: 100%;">
                     <thead>
                         <tr class="text-capitalize">
+                            <th hidden></th>
                             <th data-priority="1">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="select-all-outstanding" id="select-all-outstanding">
-                                    <label class="form-check-label" for="select-all-outstanding">Select All</label>
-                                </div>                                
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">เลือกทั้งหมด</label>
+                                </div>
                             </th>
-                            <th data-priority="2">#</th>
                             <th data-priority="1">Date</th>
                             <th data-priority="1">Order ID</th>
                             <th data-priority="1">amount</th>
-                            <th data-priority="2">Action</th>
+                            <th data-priority="3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-
+                        <?php 
+                            $total_outstanding_amount = 0; 
+                            $outstanding_amount = 0;
+                        ?>
+                        @foreach ($elexa_outstanding as $key => $item)
+                            <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $outstanding_amount += 1 }}">
+                                <td hidden>{{ Carbon\Carbon::parse($item->date)->format('Y-m-d') }}</td>
+                                <td style="text-align: center;">
+                                    <div class="form-check" style="text-align: center;">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault"></label>
+                                    </div>
+                                </td>
+                                <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                <td>{{ $item->batch }}</td>
+                                <td class="target-class">{{ $item->ev_revenue }}</td>
+                                <td>
+                                    @if ($item->receive_payment == 0)
+                                        <button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-{{ $item->id }}" value="0"
+                                        onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_revenue }})">รับชำระ</button>
+                                    @else
+                                        <button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-{{ $item->id }}" value="0"
+                                        onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_revenue }})" disabled>รับชำระ</button>
+                                    @endif
+                                </td>
+                                <input type="hidden" name="" id="elexa_revenue{{ $item->id }}" value="{{ $item->ev_revenue }}">
+                            </tr>
+                            
+                            <?php $total_outstanding_amount += $item->ev_revenue; ?>
+                        @endforeach
                     </tbody>
                     <tfoot style="background-color: #d7ebe1; font-weight: bold">
                         <tr>
                             <td></td>
                             <td style="padding: 10px">Total</td>
-                            <td></td>
-                            <td></td>
-                            <td><span id="tfoot-total-outstanding">0.00</span></td>
+                            <td><span id="tfoot-total-outstanding">{{ $total_outstanding_amount }}</span></td>
                             <td></td>
                         </tr>
                     </tfoot>
@@ -261,7 +273,7 @@
 <input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
 
 <!-- Total Selected, Total Selected Amount, Outstanding -->
-<input type="hidden" id="input-outstanding-amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
+<input type="hidden" id="input-outstanding-amount" value="{{ $total_outstanding_amount }}">
 <input type="hidden" id="input-selected-amount" value="0">
 <input type="hidden" id="input-selected-item" value="0">
 
@@ -283,7 +295,7 @@
 </form>
 
 <style>
-    .table-together tr th {
+    .table-together tr th{
         text-align: center !important;
     }
 </style>
@@ -305,20 +317,10 @@
 
 <script>
 
-    // $("#ElexaRevenueList").on("shown.bs.modal", function () {
-    //     var table = $(".table-together").DataTable();
-    //     table.columns.adjust().responsive.recalc();     
-    // });
-
-    $(document).on('click', '#btn-modal-add', function () {
-        selectedItems = [];
-        getTableOutstanding();
+    $("#ElexaRevenueList").on("shown.bs.modal", function () {
+        var table = $(".table-together").DataTable();
+        table.columns.adjust().responsive.recalc();
     });
-
-    function filterOutstanding() {
-        selectedItems = [];
-        getTableOutstanding();
-    }
 
     // Number Format
     function currencyFormat(num) {
@@ -327,339 +329,11 @@
 
     // Function to adjust DataTable
     function adjustDataTable() {
-        $.fn.dataTable.tables({ visible: true, api: true, }).columns.adjust().responsive.recalc();
-    } 
-
-    var selectedItems = []; // ตัวแปรเก็บค่าที่เลือก
-    var selectAllChecked = false;
-
-    $(document).on('click', '#select-all-outstanding', function () {
-        var isChecked = $(this).prop('checked');
-        selectAllChecked = isChecked;  // บันทึกสถานะของ Select All
-
-        $('input[type="checkbox"]').each(function() {
-            var value = $(this).val();
-
-            if (isChecked) {
-                $(this).prop('checked', true);
-                if (!selectedItems.includes(value)) {
-                    selectedItems.push(value); // เพิ่มค่าใน selectedItems ถ้ายังไม่มี
-                }
-            } else {
-                $(this).prop('checked', false);
-                selectedItems = selectedItems.filter(item => item !== value); // ลบค่าจาก selectedItems
-            }
-        });
-
-        getTableOutstanding();
-    });
-
-    // ฟังก์ชันสำหรับโหลด DataTable
-    function getTableOutstanding() 
-    {
-        var year = $('#elexaYearFilter').val();
-        var month = $('#elexaMonthFilter').val();
-        var select_all = $('#select-all-outstanding').prop('checked');
-        var receiveID = $('[name="receive_select_id[]"]').map(function() { return $(this).val(); }).get();
-
-        var table = $("#myDataTableOutstanding").DataTable({
-            paging: true,
-            searching: true,
-            ordering: false,
-            info: true,
-            destroy: true, // ทำลายก่อนสร้างใหม่
-            serverSide: false,
-            responsive: {
-                details: {
-                    type: "column",
-                    target: "tr"
-                }
-            },
-            language: {
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                infoFiltered: "" 
-            },
-            ajax: {
-                url: '/debit-get-outstanding',
-                type: 'POST',
-                data: {
-                    year: year,
-                    month: month,
-                    receiveID: receiveID,
-                    select_all: select_all
-                },
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                dataSrc: function (json) {
-                    totalAmount = json.totalAmount;
-                    return json.data; // ส่งข้อมูลที่แสดงใน DataTable
-                }
-            },
-            initComplete: function (settings, json) {
-                $('#tfoot-total-outstanding').text(totalAmount);
-            },
-            columnDefs: [
-                { targets: [4], className: 'text-end' },
-                {
-                    targets: [4],
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        if ($.isNumeric(cellData)) {
-                            $(td).text(parseFloat(cellData).toLocaleString("en-US", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            }));
-                        }
-                    }
-                }
-            ],
-            columns: [
-                { data: 'check_box' },
-                { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                { data: 'date', "render": function (data, type, full) { return moment(data).format('DD/MM/YYYY') } },
-                { data: 'order_id' },
-                { data: 'amount' },
-                { data: 'btn_action' },
-            ],
-        });
-
-        // คืนค่าที่เลือกไว้หลังจากโหลดข้อมูลใหม่
-        table.on('draw', function() {
-            $('input[type="checkbox"]').each(function() {
-                var value = $(this).val();
-                if (selectedItems.includes(value)) {
-                    $(this).prop('checked', true); // ตั้งค่า checked ให้ตรงกับ selectedItems
-                }
-            });
-        });
-
-        $(window).on("resize", adjustDataTable);
-        $('input[type="search"]').attr("placeholder", "Type to search...");
-        $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+        $.fn.dataTable.tables({
+            visible: true,
+            api: true,
+        }).columns.adjust().responsive.recalc();
     }
-
-    // บันทึกค่า checkbox เมื่อมีการเปลี่ยนแปลง
-    $(document).on('change', 'input[type="checkbox"]', function() {
-        var value = $(this).val();
-        if ($(this).prop('checked')) {
-            if (!selectedItems.includes(value)) {
-                selectedItems.push(value);
-            }
-        } else {
-            selectedItems = selectedItems.filter(item => item !== value);
-        }
-    });
-
-    $(document).on('click', '#btn-add-multi', function () {
-        // ตรวจสอบว่ามีการเลือก checkbox ไหม
-        if (selectedItems.length === 0) {
-            alert('กรุณาเลือกอย่างน้อยหนึ่งรายการ');
-            return;
-        } else {
-            $('#myDataTableOutstandingSelect').DataTable().clear().draw();
-
-            if ($('#select-all-outstanding').prop('checked')) {
-                var year = $('#elexaYearFilter').val();
-                var month = $('#elexaMonthFilter').val();
-                var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด SMS
-                
-                jQuery.ajax({
-                    type: "POST",
-                    url: "{!! url('debit-select-all-elexa-outstanding') !!}",
-                    datatype: "JSON",
-                    data: { 
-                        total_revenue_amount: total_revenue_amount,
-                        selectedItems: selectedItems,
-                        year: year,
-                        month: month, 
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    async: false,
-                    success: function(response) {
-                        if (response.status == 200) {
-                            var status = "";
-                            var table = $('#myDataTableOutstandingSelect').DataTable(
-                                    {
-                                        searching: true,
-                                        paging: true,
-                                        info: true,
-                                        order: true,
-                                        serverSide: false,
-                                        destroy: true,
-                                        responsive: {
-                                        details: {
-                                                type: "column",
-                                                target: "tr",
-                                            },
-                                        },
-                                        initComplete: function () {
-                                            $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
-                                        },
-                                        columnDefs: [
-                                            { targets: [3], className: 'dt-center text-center', },
-                                            { targets: [2], className: 'text-end', },
-                                            {
-                                                targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
-                                                createdCell: function (td, cellData, rowData, row, col) {
-                                                    // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
-                                                    if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
-                                                        $(td).text(
-                                                        parseFloat(cellData).toLocaleString("en-US", {
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        })
-                                                        );
-                                                    }
-                                                },
-                                            },
-                                        ],
-                                    }
-                                );
-
-                            $(window).on("resize", adjustDataTable);
-
-                            $('input[type="search"]').attr("placeholder", "Type to search...");
-                            $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
-
-                            response.data.forEach(function(value) {
-                                // Update ยอดที่เลือก
-                                var elexa_revenue_outstanding = Number($('#input-outstanding-amount').val());
-                                var elexa_num = Number($('#input-selected-item').val());
-                                var elexa_revenue_amount = Number($('#input-selected-amount').val());
-                                // END
-
-                                table.rows.add(
-                                    [
-                                        [
-                                            moment(value.date).format('DD/MM/YYYY'),
-                                            value.batch,
-                                            currencyFormat(value.ev_revenue),
-                                            '<button type="button" class="btn" id="btn-receive-' + value.id + '" value="1"' +
-                                            'onclick="select_receive_payment(this, ' + value.id + ', ' + value.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
-                                        ]
-                                    ]
-                                ).draw();
-
-                                $('#form-elexa-select').append('<input type="hidden" id="receive-select-id-' + value.id + '" name="receive_select_id[]" value="' + value.id + '">');
-
-                                $('#input-selected-item').val(elexa_num + 1);
-                                $('#input-selected-amount').val(elexa_revenue_amount + value.ev_revenue);
-                                $('#input-outstanding-amount').val(elexa_revenue_outstanding - value.ev_revenue);
-
-                                $('#txt-total-selected').text(elexa_num + 1);
-                                $('#txt-total-selected-amount').text(currencyFormat(elexa_revenue_amount + value.ev_revenue));
-                                $('#txt-total-selected-outstanding').text(currencyFormat(elexa_revenue_outstanding - value.ev_revenue));
-                                $('#tfoot-total-outstanding').text(currencyFormat(elexa_revenue_outstanding - value.ev_revenue));
-                            });
-                        } else {
-                            return Swal.fire({
-                                icon: 'error',
-                                title: 'ไม่สามารถรับชำระได้!',
-                                text: 'ยอดที่รับชำระมากกว่ายอดคงเหลือ',
-                                customClass: {
-                                    title: 'swal-title-custom'
-                                },
-                            });
-                        }
-                    }
-                });
-
-                $('#select-all-outstanding').prop('checked', false);
-                selectedItems = [];
-            }
-
-            selectedItems.forEach(function(value) {
-                // Update ยอดที่เลือก
-                // var elexa_revenue = Number($('#elexa_revenue'+id).val());
-                var elexa_revenue_outstanding = Number($('#input-outstanding-amount').val());
-                var elexa_num = Number($('#input-selected-item').val());
-                var elexa_revenue_amount = Number($('#input-selected-amount').val());
-                // END
-
-                // ถ้าเลือกไว้ใน selectedItems ให้ append ค่าไปยังฟอร์ม
-                if (value != "select-all-outstanding") {
-                    $('#form-elexa-select').append('<input type="hidden" id="receive-select-id-' + value + '" name="receive_select_id[]" value="' + value + '">');
-
-                    jQuery.ajax({
-                        type: "GET",
-                        url: "{!! url('debit-select-elexa-outstanding/"+value+"') !!}",
-                        datatype: "JSON",
-                        async: false,
-                        success: function(response) {
-                            if (response.data) {
-                                var status = "";
-                                var table = $('#myDataTableOutstandingSelect').DataTable(
-                                        {
-                                            searching: true,
-                                            paging: true,
-                                            info: true,
-                                            order: true,
-                                            serverSide: false,
-                                            destroy: true,
-                                            responsive: {
-                                            details: {
-                                                    type: "column",
-                                                    target: "tr",
-                                                },
-                                            },
-                                            initComplete: function () {
-                                                $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
-                                            },
-                                            columnDefs: [
-                                                { targets: [3], className: 'dt-center text-center', },
-                                                { targets: [2], className: 'text-end', },
-                                                {
-                                                    targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
-                                                    createdCell: function (td, cellData, rowData, row, col) {
-                                                        // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
-                                                        if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
-                                                            $(td).text(
-                                                            parseFloat(cellData).toLocaleString("en-US", {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2,
-                                                            })
-                                                            );
-                                                        }
-                                                    },
-                                                },
-                                            ],
-                                        }
-                                    );
-
-                                $(window).on("resize", adjustDataTable);
-
-                                $('input[type="search"]').attr("placeholder", "Type to search...");
-                                $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
-
-                                table.rows.add(
-                                    [
-                                        [
-                                            moment(response.data.date).format('DD/MM/YYYY'),
-                                            response.data.batch,
-                                            currencyFormat(response.data.ev_revenue),
-                                            '<button type="button" class="btn" id="btn-receive-' + value + '" value="1"' +
-                                            'onclick="select_receive_payment(this, ' + value + ', ' + response.data.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
-                                        ]
-                                    ]
-                                ).draw();
-
-                                $('#input-selected-item').val(elexa_num + 1);
-                                $('#input-selected-amount').val(elexa_revenue_amount + response.data.ev_revenue);
-                                $('#input-outstanding-amount').val(elexa_revenue_outstanding - response.data.ev_revenue);
-
-                                $('#txt-total-selected').text(elexa_num + 1);
-                                $('#txt-total-selected-amount').text(currencyFormat(elexa_revenue_amount + response.data.ev_revenue));
-                                $('#txt-total-selected-outstanding').text(currencyFormat(elexa_revenue_outstanding - response.data.ev_revenue));
-                                $('#tfoot-total-outstanding').text(currencyFormat(elexa_revenue_outstanding - response.data.ev_revenue));
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        // เรียกใช้ getTableOutstanding() เพื่อรีเฟรช DataTable
-        getTableOutstanding();
-    });
-
 
     function select_receive_payment(ele, id, amount) 
     {
@@ -701,9 +375,12 @@
                 $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment').val()))); // ยอดคงเหลือ Dashboard
 
                 $('#form-elexa-select').append('<input type="hidden" id="receive-select-id-' + id + '" name="receive_select_id[]" value="' + id + '">');
+                // $('#form-elexa').append('<input type="hidden" id="receive-id-' + id + '" name="receive_id[]" value="' + id + '">');
 
-                getTableOutstanding();
-                selectedItems = [];
+                $('#tr_row_' + id).remove();
+                var tb_select = new DataTable('#myDataTableOutstanding');
+                var removingRow = $(ele).closest('tr');
+                tb_select.row(removingRow).remove().draw();
 
                 jQuery.ajax({
                     type: "GET",
@@ -810,8 +487,81 @@
                 var removingRow = $(ele).closest('tr');
                 tb_select.row(removingRow).remove().draw();
 
-                getTableOutstanding();
-                selectedItems = [];
+                jQuery.ajax({
+                    type: "GET",
+                    url: "{!! url('debit-select-elexa-outstanding/"+id+"') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(response) {
+                        if (response.data) {
+                            var status = "";
+                            $('#myDataTableOutstanding').DataTable().destroy();
+                            var table = $('#myDataTableOutstanding').DataTable(
+                                    {
+                                        searching: true,
+                                        paging: true,
+                                        info: true,
+                                        ordering: true,
+                                        serverSide: false,
+                                        responsive: {
+                                        details: {
+                                                type: "column",
+                                                target: "tr",
+                                            },
+                                        },
+                                        initComplete: function () {
+                                            $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+                                        },
+                                        columnDefs: [
+                                            { targets: 0, visible: false }, // ซ่อนคอลัมน์ที่เก็บข้อมูล ISO 8601
+                                            {
+                                                targets: [4], className: 'dt-center text-center',
+                                            },
+                                            {
+                                                targets: [3], className: 'text-end',
+                                            },
+                                            {
+                                                targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                                createdCell: function (td, cellData, rowData, row, col) {
+                                                    // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                                    if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                        $(td).text(
+                                                        parseFloat(cellData).toLocaleString("en-US", {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })
+                                                        );
+                                                    }
+                                                },
+                                            },
+                                        ],
+                                    }
+                                );
+
+                            $(window).on("resize", adjustDataTable);
+
+                            $('input[type="search"]').attr("placeholder", "Type to search...");
+                            $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+
+                            table.rows.add(
+                                [
+                                    [
+                                        response.data.date, // คอลัมน์ที่ซ่อน ใช้ ISO 8601 สำหรับการจัดเรียง
+                                        moment(response.data.date).format('DD/MM/YYYY'),
+                                        response.data.batch,
+                                        currencyFormat(response.data.ev_revenue),
+                                        '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-' + id + '" value="0"' +
+                                        'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_revenue + ')">รับชำระ</button>'
+                                    ]
+                                ]
+                            ).draw();
+                        }
+
+                        $('#btn-receive-' + id).val(0);
+                        table.order([0, 'asc']).draw();
+
+                    }
+                });
             }
         } else {
             Swal.fire({
