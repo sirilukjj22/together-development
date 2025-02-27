@@ -283,7 +283,7 @@
 </form>
 
 <style>
-    .table-together tr th{
+    .table-together tr th {
         text-align: center !important;
     }
 </style>
