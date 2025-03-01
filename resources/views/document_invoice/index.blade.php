@@ -114,7 +114,7 @@
                                                 @endif
                                                 <td>{{ $item->invoice_count }}</td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->Nettotal + $item->Adtotal, 2) }}
+                                                    {{ number_format($item->Nettotal, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->total_payment == 0 )
@@ -124,7 +124,7 @@
                                                     @endif
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->Nettotal+ $item->Adtotal - $item->total_payment, 2) }}
+                                                    {{ number_format($item->Nettotal - $item->total_payment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->invoice_count == 0)
@@ -254,7 +254,7 @@
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
 
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->sumpayment, 2) }}
+                                                    {{ number_format($item->payment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userOperated->name == null)
@@ -388,7 +388,7 @@
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
 
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->sumpayment, 2) }}
+                                                    {{ number_format($item->payment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userOperated->name == null)
@@ -490,7 +490,7 @@
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
 
-                                                <td style="text-align: center;"> {{ number_format($item->sumpayment , 2) }}</td>
+                                                <td style="text-align: center;"> {{ number_format($item->payment , 2) }}</td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userOperated->name == null)
                                                         Auto
@@ -560,7 +560,7 @@
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
 
-                                                <td style="text-align: center;"> {{ number_format($item->sumpayment , 2) }}</td>
+                                                <td style="text-align: center;"> {{ number_format($item->payment , 2) }}</td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userOperated->name == null)
                                                         Auto
@@ -630,7 +630,7 @@
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
 
                                                 <td style="text-align: center;">
-                                                    {{ number_format($item->sumpayment, 2) }}
+                                                    {{ number_format($item->payment, 2) }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userOperated->name == null)

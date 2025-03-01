@@ -53,15 +53,13 @@ class Document_invoice extends Controller
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
-        ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
         ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
             'document_invoice.Quotation_ID as QID',
-            'document_invoice.document_status',
-            'proposal_overbill.Nettotal as Adtotal',  // Separate this field for clarity
+            'document_invoice.document_status', // Separate this field for clarity
             DB::raw('1 as status'),
-            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
+            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.payment ELSE 0 END), 0) as total_payment'),
             DB::raw('SUM(CASE WHEN document_invoice.document_status >= 1 THEN 1 ELSE 0 END) as invoice_count')
         )
         ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_document')
@@ -85,8 +83,6 @@ class Document_invoice extends Controller
         return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','invoicecheck','Generate','Generatecount',
         'Cancel','Cancelcount','Pending','Pendingcount'));
     }
-
-
     public function viewList($id)
     {
             // Get the 'perPage' from query parameters, default to 10 if not present
@@ -233,7 +229,7 @@ class Document_invoice extends Controller
             $Deposit =$Dinvoice->deposit+ 1;
         }
         $user = Auth::user();
-        $Deposit_ID = depositrevenue::where('Quotation_ID',$QuotationID)->get();
+        $Deposit_ID = depositrevenue::where('Quotation_ID',$QuotationID)->where('document_status',2)->where('receipt',0)->get();
 
         return view('document_invoice.create',compact('InvoiceID','fullName','Identification','address','Quotation','Selectdata','QuotationID','Additional_ID','Additional_Nettotal','settingCompany','invoices','totalinvoice',
                     'phone','Contact_phone','Fax_number','Email','Contact_Name','Deposit','vat_type','user','Contact_Email','Deposit_ID'));
@@ -256,10 +252,28 @@ class Document_invoice extends Controller
             'deposit'=>$deposit,
         ]);
     }
+    public function deposit_edit($id){
+        $idArray = explode(',', $id);
+        $deposit = []; // กำหนดให้เป็นอาร์เรย์ก่อนใช้
+
+        foreach ($idArray as $item) {
+            $data = depositrevenue::whereIn('Deposit_ID', $idArray)->get();
+
+            $deposit = $data->map(function ($item) {
+                return [
+                    'Deposit_ID' => $item->Deposit_ID,
+                    'Amount'     => $item->amount,
+                ];
+            });
+        }
+        return response()->json([
+            'deposit'=>$deposit,
+        ]);
+    }
     public function save(Request $request){
         try {
             $data = $request->all();
-            // dd($data);
+
             $userid = Auth::user()->id;
             $preview = $request->preview;
             $save = $request->save;
@@ -273,6 +287,8 @@ class Document_invoice extends Controller
                 'Sum' => $data['sum'] ?? null,
                 'amount' => $data['amount'] ?? null,
                 'Payment'=> $data['Payment'] ?? null,
+                'paymentPercent'=> $data['PaymentPercent'] ?? null,
+
             ];
 
             $deposit = 0;
@@ -308,7 +324,7 @@ class Document_invoice extends Controller
                 $Nettotal = $datarequest['amount'] ?? null;
                 $Payment = $datarequest['Payment'] ?? null;
                 $Balance = $Nettotal-$Payment;
-                // dd($Payment);
+
                 $formattedProductData = [];
                 if ($deposit !== 0) {
                     foreach ($deposit as $item) {
@@ -469,6 +485,7 @@ class Document_invoice extends Controller
                 $Deposit = $datarequest['Deposit'];
                 $sum = $sum;
                 $payment=$Payment;
+
                 $Nettotal = floatval(str_replace(',', '', $datarequest['amount']));
                 if ($payment) {
                     $payment0 = number_format($payment);
@@ -481,6 +498,7 @@ class Document_invoice extends Controller
                     $deposit = 0;
                     if ($vattype == 51) {
                         $Subtotal = $payment;
+                        $SubtotalAll =$payment - $sum;
                         $depositall = $payment - $SubtotalAll;
                         $total = $depositall;
                         $addtax = 0;
@@ -495,7 +513,6 @@ class Document_invoice extends Controller
                         $before = $depositall-$addtax;
                         $balance = $SubtotalAll-$depositall;
                     }
-
                 }
                 // dd($deposit);
                 $user = User::where('id',$userid)->first();
@@ -585,6 +602,7 @@ class Document_invoice extends Controller
                     'Sum' => $data['sum'] ?? null,
                     'amount' => $data['amount'] ?? null,
                     'Payment'=> $data['Payment'] ?? null,
+                    'paymentPercent'=> $data['PaymentPercent'] ?? null,
                 ];
                 $deposit = 0;
                 if (!empty($idArray)) {
@@ -630,6 +648,7 @@ class Document_invoice extends Controller
                 $save->Invoice_ID=$InvoiceID;
                 $save->Quotation_ID =$Proposal_ID;
                 $save->Nettotal = $Nettotal;
+                $save->paymentPercent= $datarequest['paymentPercent'];
                 $save->IssueDate= $datarequest['IssueDate'];
                 $save->Expiration= $datarequest['Expiration'];
                 $save->Operated_by = $userid;
@@ -640,6 +659,8 @@ class Document_invoice extends Controller
                 $save->total = $NettotalPD;
                 $save->Deposit_ID = $formattedProductDataString;
                 $save->save();
+
+                depositrevenue::whereIn('id', $idArray)->update(['receipt' => 1]);
                 return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
             }
         } catch (\Throwable $e) {
@@ -738,12 +759,16 @@ class Document_invoice extends Controller
         $totalinvoice = 0;
         if ($invoices) {
             foreach ($invoices as $item) {
-                $totalinvoice +=  $item->sumpayment;
+                $totalinvoice +=  $item->payment;
             }
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Deposit_ID = $invoice->Deposit_ID;
+        $array = array_map('trim', explode(',', $Deposit_ID));
+        $DepositID = depositrevenue::whereIn('Deposit_ID', $array)->get();
+        $Deposittotal = depositrevenue::whereIn('Deposit_ID', $array)->sum('payment');
         return view('document_invoice.view',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','Fax_number','Contact_Name','Contact_phone','Contact_Email'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','Fax_number','Contact_Name','Contact_phone','Contact_Email','DepositID','Deposittotal'));
     }
     public function edit($id){
         $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
@@ -754,10 +779,10 @@ class Document_invoice extends Controller
         $InvoiceID = $invoice->Invoice_ID;
         $Deposit_ID = $invoice->Deposit_ID;
         $array = array_map('trim', explode(',', $Deposit_ID));
-        foreach ($array as $key => $item) {
-            $DepositID =  depositrevenue::whereIn('Deposit_ID',$array)->get();
-        }
-        dd($array,$DepositID);
+        $DepositID = depositrevenue::whereIn('Deposit_ID', $array)->get();
+        $Deposittotal = depositrevenue::whereIn('Deposit_ID', $array)->sum('payment');
+
+
         $IssueDate=$invoice->IssueDate;
         $Expiration=$invoice->Expiration;
         $sequence = $invoice->sequence;
@@ -842,26 +867,29 @@ class Document_invoice extends Controller
         $invoices =document_invoices::where('Quotation_ID',$QuotationID)->whereIn('document_status',[1,2])->where('Invoice_ID', '!=', $Invoice_IDold)->get();
         $totalinvoice = 0;
         if ($invoices) {
-
             foreach ($invoices as $item) {
                 $totalinvoice +=  $item->sumpayment;
             }
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Depositlist = depositrevenue::where('Quotation_ID',$QuotationID)->get();
         return view('document_invoice.edit',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','Contact_Email','Contact_Name','Contact_phone','Fax_number'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','Contact_Email','Contact_Name','Contact_phone','Fax_number','array','Depositlist'
+                    ,'Deposittotal','DepositID'));
     }
 
     public function update(Request $request ,$id){
         try {
             $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
             $data =$request->all();
-
+            // dd($data);
             $ids = $request->id;
             $preview = $request->preview;
             $save = $request->save;
             $userid = $invoice->Operated_by;
-
+            $Deposit_ID = $invoice->Deposit_ID;
+            $array = array_map('trim', explode(',', $Deposit_ID));
+            $deposit = $request->deposit;
             $invoice = document_invoices::where('id',$id)->first();
             $correct = $invoice->correct;
             if ($correct >= 1) {
@@ -869,119 +897,149 @@ class Document_invoice extends Controller
             }else{
                 $correctup = 1;
             }
+
+
+
             $dataArray = [
 
                 'Sum' => $invoice['sumpayment'] ?? null,
                 'Balance' => $invoice['balance'] ?? null,
                 'Nettotal' => $invoice['Nettotal'] ?? null,
+                'deposit' =>  $array,
             ];
+            $data =$request->all();
             $datarequest = [
                 'Proposal_ID' => $data['QuotationID'] ?? null,
                 'InvoiceID' => $data['InvoiceID'] ?? null,
                 'IssueDate' => $data['IssueDate'] ?? null,
                 'Expiration' => $data['Expiration'] ?? null,
-
                 'Deposit' => $data['Deposit'] ?? null,
                 'Sum' => $data['sum'] ?? null,
                 'Nettotal' => $data['amount'] ?? null,
-                'Balance' => $data['amount'] - $data['sum'] ?? null,
+                'Payment'=> $data['Payment'] ?? null,
+                'Balance' => $request->amount - $request->Payment ?? null,
+                'paymentPercent'=> $data['PaymentPercent'] ?? null,
+                'deposit' =>  $deposit,
             ];
-
-            $keysToCompare = [ 'Sum', 'Balance','Nettotal'];
-            $differences = [];
-            foreach ($keysToCompare as $key) {
-                if (isset($dataArray[$key]) && isset($datarequest[$key])) {
-                    // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
-                    $dataArraySet = collect($dataArray[$key]);
-                    $dataSet = collect($datarequest[$key]);
-
-                    // หาค่าที่แตกต่างกัน
-                    $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
-                    $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
-
-                    // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
-                    if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
-                        $differences[$key] = [
-                            'dataArray' => $onlyInDataArray,
-                            'request' => $onlyInRequest
-                        ];
-                    }
-                }
-            }
-            $extractedData = [];
-
-            // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
-            foreach ($differences as $key => $value) {
-                if ($key === 'phone'||$key === 'fax') {
-                    // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
-                    $extractedData[$key] = $value['request'];
-                    $extractedDataA[$key] = $value['dataArray'];
-                } elseif (isset($value['request'][0])) {
-                    // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
-                    $extractedData[$key] = $value['request'][0];
-                }else{
-                    $extractedDataA[$key] = $value['dataArray'][0];
-                }
-
-            }
-            $Sum = $datarequest['Sum'] ?? null;
-            $Balance = $datarequest['Balance'] ?? null;
-            $Nettotal = $datarequest['Nettotal'] ?? null;
-
-            $InvoiceID = $datarequest['InvoiceID'] ?? null;
-            $Proposal_ID = $datarequest['Proposal_ID'] ?? null;
-            $Validcheck = null;
-
-            $Nettotalcheck = null;
-            if ($Nettotal) {
-                $Nettotalcheck = 'ยอดเงินเต็ม : '.number_format($Nettotal). ' บาท';
-            }
-
-            $Paymentcheck = null;
-            if ($Sum) {
-                $Paymentcheck = 'ยอดเงินที่ชำระ : '. number_format($Sum). ' บาท';
-            }
-
-            $Balancecheck = null;
-            if ($Balance) {
-                $Balancecheck = 'ยอดเงินคงเหลือชำระ : '.number_format($Balance). ' บาท';
-            }
-            $fullname = 'รหัส : '.$InvoiceID.' + '.'อ้างอิงจาก : '.$Proposal_ID;
-            $datacompany = '';
-
-            $variables = [$fullname, $Nettotalcheck, $Paymentcheck, $Balancecheck, $Validcheck];
-
-            foreach ($variables as $variable) {
-                if (!empty($variable)) {
-                    if (!empty($datacompany)) {
-                        $datacompany .= ' + ';
-                    }
-                    $datacompany .= $variable;
-                }
-            }
-
-            $userids = Auth::user()->id;
-            $save = new log_company();
-            $save->Created_by = $userids;
-            $save->Company_ID = $InvoiceID;
-            $save->type = 'Edit';
-            $save->Category = 'Edit :: Proposal Invoice ';
-            $save->content =$datacompany;
-            $save->save();
-
             {
+                $keysToCompare = [ 'Sum', 'Balance','Nettotal','deposit'];
+                $differences = [];
+                foreach ($keysToCompare as $key) {
+                    if (isset($dataArray[$key]) && isset($datarequest[$key])) {
+                        // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
+                        $dataArraySet = collect($dataArray[$key]);
+                        $dataSet = collect($datarequest[$key]);
+
+                        // หาค่าที่แตกต่างกัน
+                        $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
+                        $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
+
+                        // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                        if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                            $differences[$key] = [
+                                'dataArray' => $onlyInDataArray,
+                                'request' => $onlyInRequest
+                            ];
+                        }
+                    }
+                }
+                $extractedData = [];
+
+                // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+                foreach ($differences as $key => $value) {
+                    if ($key === 'deposit') {
+                        // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                        $extractedData[$key] = $value['request'];
+                        $extractedDataA[$key] = $value['dataArray'];
+                    } elseif (isset($value['request'][0])) {
+                        // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                        $extractedData[$key] = $value['request'][0];
+                    }else{
+                        $extractedDataA[$key] = $value['dataArray'][0];
+                    }
+                }
+                $Sum = $extractedData['Sum'] ?? null;
+                $deposit = $extractedData['deposit'] ?? null;
+                $Nettotal = $extractedData['amount'] ?? null;
+                $Payment = $extractedData['Payment'] ?? null;
+                $Balance = $extractedData['Balance'] ?? null;
+                $InvoiceID = $datarequest['InvoiceID'] ?? null;
+                $Proposal_ID = $datarequest['Proposal_ID'] ?? null;
+                $Validcheck = null;
+                $formattedProductData = [];
+                $depositnew = 0;
+                if ($deposit !== 0) {
+                        $depositnew = []; // กำหนดให้เป็นอาร์เรย์ก่อนใช้
+                        foreach ($deposit as $item) {
+                            $data = depositrevenue::whereIn('Deposit_ID', $deposit)->get();
+                            $depositnew = $data->map(function ($item) {
+                                return [
+                                    'Deposit_ID' => $item->Deposit_ID,
+                                    'Amount'     => $item->amount,
+                                ];
+                            });
+                        }
+
+                    foreach ($depositnew as $item) {
+                        $formattedPrice = number_format($item['Amount']).' '.'บาท';
+                        $formattedProductData[] = 'Deposit Revenue : ' . $item['Deposit_ID'] . ' , ' . 'Amount : ' . $formattedPrice;
+                    }
+                }
+                $Nettotalcheck = null;
+                if ($Nettotal) {
+                    $Nettotalcheck = 'ยอดเงินเต็ม : '.number_format($Nettotal). ' บาท';
+                }
+
+                $Paymentcheck = null;
+                if ($Sum) {
+                    $Paymentcheck = 'ยอดเงินที่ชำระ : '. number_format($Sum). ' บาท';
+                }
+
+                $Balancecheck = null;
+                if ($Balance) {
+                    $Balancecheck = 'ยอดเงินคงเหลือชำระ : '.number_format($Balance). ' บาท';
+                }
+                $fullname = 'รหัส : '.$InvoiceID.' + '.'อ้างอิงจาก : '.$Proposal_ID;
+                $datacompany = '';
+
+                $variables = [$fullname, $Nettotalcheck, $Paymentcheck, $Balancecheck, $Validcheck];
+                $formattedProductDataString = implode(' + ', $formattedProductData);
+
+                // รวม $formattedProductDataString เข้าไปใน $variables
+                $variables[] = $formattedProductDataString;
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+
+                $userids = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userids;
+                $save->Company_ID = $InvoiceID;
+                $save->type = 'Edit';
+                $save->Category = 'Edit :: Proposal Invoice ';
+                $save->content =$datacompany;
+                $save->save();
+            }
+            {
+                //pdf
                 $data = $request->all();
                 $datarequest = [
                     'Proposal_ID' => $data['QuotationID'] ?? null,
                     'InvoiceID' => $data['InvoiceID'] ?? null,
                     'IssueDate' => $data['IssueDate'] ?? null,
                     'Expiration' => $data['Expiration'] ?? null,
-                    'Valid' => $data['valid'] ?? null,
                     'Deposit' => $data['Deposit'] ?? null,
                     'Sum' => $data['sum'] ?? null,
                     'amount' => $data['amount'] ?? null,
-
+                    'Payment'=> $data['Payment'] ?? null,
                 ];
+                $Payment = $datarequest['Payment'] ?? null;
+                $Sum = $datarequest['Sum'] ?? null;
                 $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
                 $Selectdata =  $Quotation->type_Proposal;
                 if ($Selectdata == 'Guest') {
@@ -1074,9 +1132,11 @@ class Document_invoice extends Controller
                 $Children = $Quotation->children;
                 $Checkin = $checkin;
                 $Checkout = $checkout;
-                $valid = $valid;
+
                 $Deposit = $datarequest['Deposit'];
-                $payment=$datarequest['Sum'];
+                $sum = $Sum;
+                $payment=$Payment;
+
                 $Nettotal = floatval(str_replace(',', '', $datarequest['amount']));
                 if ($payment) {
                     $payment0 = number_format($payment);
@@ -1085,22 +1145,44 @@ class Document_invoice extends Controller
                     $addtax = 0;
                     $before = 0;
                     $balance =0;
+                    $SubtotalAll =0;
+                    $deposit = 0;
                     if ($vattype == 51) {
                         $Subtotal = $payment;
-                        $total = $payment;
+                        $SubtotalAll =$payment - $sum;
+                        $depositall = $payment - $SubtotalAll;
+                        $total = $depositall;
                         $addtax = 0;
-                        $before = $payment;
-                        $balance = $Subtotal;
+                        $before = $depositall;
+                        $balance = $depositall;
                     }else{
                         $Subtotal = $payment;
-                        $total = $Subtotal/1.07;
-                        $addtax = $Subtotal-$total;
-                        $before = $Subtotal-$addtax;
-                        $balance = $Subtotal;
+                        $SubtotalAll = $Subtotal-$sum;
+                        $depositall = $payment - $SubtotalAll;
+                        $total = $depositall/1.07;
+                        $addtax = $depositall-$total;
+                        $before = $depositall-$addtax;
+                        $balance = $SubtotalAll-$depositall;
                     }
-
                 }
+                // dd($deposit);
+                $depositnew = $request->deposit;
                 $user = User::where('id',$userid)->first();
+                $deposit = 0;
+                if ($depositnew) {
+                    $deposit = []; // กำหนดให้เป็นอาร์เรย์ก่อนใช้
+
+                    foreach ($depositnew as $item) {
+                        $data = depositrevenue::whereIn('Deposit_ID', $depositnew)->get();
+
+                        $deposit = $data->map(function ($item) {
+                            return [
+                                'Deposit_ID' => $item->Deposit_ID,
+                                'Amount'     => $item->amount,
+                            ];
+                        });
+                    }
+                }
                 $data= [
                     'date'=>$date,
                     'settingCompany'=>$settingCompany,
@@ -1136,12 +1218,16 @@ class Document_invoice extends Controller
                     'before'=>$before,
                     'vattype'=>$vattype,
                     'user'=>$user,
+                    'deposit'=>$deposit,
+                    'depositall'=>$depositall,
                 ];
                 $template = master_template::query()->latest()->first();
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('document_invoice.invoicePDF.'.$view,$data);
                 $path = 'PDF/invoice/';
+
                 $pdf->save($path . $InvoiceID.'-'.$correctup . '.pdf');
+                // return $pdf->stream();
                 $currentDateTime = Carbon::now();
                 $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
                 $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
@@ -1152,20 +1238,37 @@ class Document_invoice extends Controller
                 $savePDF = new log();
                 $savePDF->Quotation_ID = $InvoiceID;
                 $savePDF->QuotationType = 'invoice';
-                $savePDF->correct = $correctup;
-                $savePDF->Approve_date = $formattedDate;
                 $savePDF->Approve_date = $formattedDate;
                 $savePDF->Approve_time = $formattedTime;
+                $savePDF->correct = $correctup;
                 $savePDF->save();
+
             }
             {
+                $data = $request->all();
+
+                $depositDATA = 0;
+                if (!empty($request->deposit)) {
+                    // ดึงข้อมูลครั้งเดียวจาก depositrevenue
+                    $depositDATA = depositrevenue::whereIn('Deposit_ID', $request->deposit)->get();
+
+                    // แปลงข้อมูลเป็น array ของ Deposit_ID
+                    $depositMAIN = $depositDATA->pluck('Deposit_ID')->toArray();
+
+                    // นำ Deposit_ID มาต่อกันเป็น string
+                    $DATA = implode(' , ', $depositMAIN);
+                }
                 $save = document_invoices::find($ids);
-                $save->payment = $request->sum;
-                $save->balance = $request->amount - $request->sum;
+                $save->payment = $request->Payment;
+                $save->paymentPercent = $request->PaymentPercent;
+                $save->balance = $request->amount - $request->Payment;
                 $save->sumpayment = $request->sum;
                 $save->Nettotal = $request->amount;
                 $save->correct = $correctup;
+                $save->Deposit_ID = $DATA;
                 $save->save();
+
+                depositrevenue::whereIn('Deposit_ID', $request->deposit)->update(['receipt' => 1]);
             }
 
 
@@ -1914,12 +2017,16 @@ class Document_invoice extends Controller
         if ($invoices) {
 
             foreach ($invoices as $item) {
-                $totalinvoice +=  $item->sumpayment;
+                $totalinvoice +=  $item->payment;
             }
         }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Deposit_ID = $invoice->Deposit_ID;
+        $array = array_map('trim', explode(',', $Deposit_ID));
+        $DepositID = depositrevenue::whereIn('Deposit_ID', $array)->get();
+        $Deposittotal = depositrevenue::whereIn('Deposit_ID', $array)->sum('payment');
         return view('document_invoice.viewinvoice',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
-                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','id','Fax_number','Contact_Name','Contact_phone','Contact_Email'));
+                    'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','id','Fax_number','Contact_Name','Contact_phone','Contact_Email','DepositID','Deposittotal'));
     }
     public function email($id){
         $quotation = document_invoices::where('id',$id)->first();

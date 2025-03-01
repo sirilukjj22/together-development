@@ -303,7 +303,7 @@
                                             <div class="outer-glow-circle"></div>
                                             <div class="circle-content">
                                                 <p class="circle-text">
-                                                <p class="f-w-bold fs-3">{{ number_format($Quotation->Nettotal + $Additional_Nettotal - $totalinvoice , 2, '.', ',') }}</p>
+                                                <p class="f-w-bold fs-3">{{ number_format($Quotation->Nettotal - $totalinvoice , 2, '.', ',') }}</p>
                                                 <span class="subtext fs-6" >Total Amount</span>
                                                 </p>
                                             </div>
@@ -321,12 +321,6 @@
                                                 <span >Proposal ID ({{$QuotationID}})</span>
                                                 <span class=" hover-effect i  f-w-bold " style="color: #438985;" > {{ number_format($Quotation->Nettotal, 2, '.', ',') }}</span>
                                             </li>
-                                            @if ($Additional_ID)
-                                                <li class="pr-3">
-                                                    <span >Additional ID ({{$Additional_ID}})</span>
-                                                    <span class=" hover-effect i f-w-bold" style="color: #438985;">{{ number_format($Additional_Nettotal, 2, '.', ',') }}</span>
-                                                </li>
-                                            @endif
                                             @if ($invoices)
                                                 @foreach ( $invoices as $item)
                                                 <li class="pr-3">
@@ -336,11 +330,12 @@
                                                 @endforeach
                                             @endif
                                         </span>
+
                                     </ul>
                                     <li class="outstanding-amount">
                                         <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                        <span class="text-success f-w-bold"> {{ number_format($Quotation->Nettotal + $Additional_Nettotal - $totalinvoice, 2, '.', ',') }}</span>
-                                        <input type="hidden" id="amount" name="amount" value="{{$Quotation->Nettotal + $Additional_Nettotal - $totalinvoice}}">
+                                        <span class="text-success f-w-bold"> {{ number_format($Quotation->Nettotal - $totalinvoice, 2, '.', ',') }}</span>
+                                        <input type="hidden" id="amount" name="amount" value="{{$Quotation->Nettotal - $totalinvoice}}">
                                     </li>
                                 </div>
                             </div>
@@ -364,6 +359,7 @@
                                                 <input class="custom-radio mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
                                             </div>
                                             <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)">
+                                            <input type="hidden" class="form-control" id="PaymentPercent" name="Payment" >
                                             <span class="input-group-text">%</span>
                                             <input type="hidden" id="Amount">
                                         </div>
@@ -393,11 +389,11 @@
                                                     total = depost/1.07;
                                                     addtax = depost-total;
                                                     before = depost-addtax;
-                                                    balance = Nettotal-depost;
+                                                    balance = amount-depost;
                                                 }
 
                                                 $('#Subtotalview').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                                                $('#Subtotal').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                                $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#SubtotalAll').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                                 $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -405,6 +401,7 @@
                                                 $('#balance').val(balance);
                                                 $('#sum').val(depost);
                                                 $('#totalamout_total').val(Subtotal);
+                                                $('#PaymentPercent').val(Subtotal);
                                             }
                                         </script>
                                     </div>

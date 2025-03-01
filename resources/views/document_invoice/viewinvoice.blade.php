@@ -303,7 +303,7 @@
                                             <div class="outer-glow-circle"></div>
                                             <div class="circle-content">
                                                 <p class="circle-text">
-                                                <p class="f-w-bold fs-3">{{ number_format($Quotation->Nettotal + $Additional_Nettotal - $totalinvoice , 2, '.', ',') }}</p>
+                                                <p class="f-w-bold fs-3">{{ number_format($Quotation->Nettotal - $totalinvoice , 2, '.', ',') }}</p>
                                                 <span class="subtext fs-6" >Total Amount</span>
                                                 </p>
                                             </div>
@@ -321,17 +321,11 @@
                                                 <span >Proposal ID ({{$QuotationID}})</span>
                                                 <span class=" hover-effect i  f-w-bold " style="color: #438985;" > {{ number_format($Quotation->Nettotal, 2, '.', ',') }}</span>
                                             </li>
-                                            @if ($Additional_ID)
-                                                <li class="pr-3">
-                                                    <span >Additional ID ({{$Additional_ID}})</span>
-                                                    <span class=" hover-effect i f-w-bold" style="color: #438985;">{{ number_format($Additional_Nettotal, 2, '.', ',') }}</span>
-                                                </li>
-                                            @endif
                                             @if ($invoices)
                                                 @foreach ( $invoices as $item)
                                                 <li class="pr-3">
                                                     <span >Invoice ID ({{$item->Invoice_ID}})</span>
-                                                    <span class=" text-danger i f-w-bold"> - {{ number_format($item->sumpayment, 2, '.', ',') }}</span>
+                                                    <span class=" text-danger i f-w-bold"> - {{ number_format($item->payment, 2, '.', ',') }}</span>
                                                 </li>
                                                 @endforeach
                                             @endif
@@ -339,8 +333,8 @@
                                     </ul>
                                     <li class="outstanding-amount">
                                         <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                        <span class="text-success f-w-bold"> {{ number_format($Quotation->Nettotal + $Additional_Nettotal - $totalinvoice, 2, '.', ',') }}</span>
-                                        <input type="hidden" id="amount" name="amount" value="{{$Quotation->Nettotal + $Additional_Nettotal - $totalinvoice}}">
+                                        <span class="text-success f-w-bold"> {{ number_format($Quotation->Nettotal - $totalinvoice, 2, '.', ',') }}</span>
+                                        <input type="hidden" id="amount" name="amount" value="{{$Quotation->Nettotal - $totalinvoice}}">
                                     </li>
                                 </div>
                             </div>
@@ -564,6 +558,20 @@
                                                 </td>
                                                 <td style="text-align:right"><span id="Subtotal"></span> THB </td>
                                             </tr>
+
+                                        </tbody>
+                                        <tbody id="display-deposit">
+                                            @foreach ($DepositID as $key => $item)
+                                                <tr>
+                                                    <td style="text-align:center">{{$key+2}}</td>
+                                                    <td style="text-align:left">
+                                                       <span> Deposit ID : {{$item->Deposit_ID}} </span>
+                                                    </td>
+                                                    <td style="text-align:right"> - {{ number_format($item->amount, 2) }} THB</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tbody id="display-selected-itemsw">
                                             <tr>
                                                 <td><br></td>
                                                 <td style="text-align:right">Subtotal :</td>
@@ -643,6 +651,7 @@
                                 </div>
                                 <div class="col-12 row mt-5">
                                     <div class="col-4">
+                                        <input type="hidden" id="payment" value="{{$invoice->payment}}">
                                         <input type="hidden"id="document_type" name="document_type" value="PD">
                                         <input type="hidden" id="Deposit" name="Deposit" value="{{$Deposit}}">
                                         <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
@@ -668,6 +677,7 @@
         </form>
 
     </div>
+    <input type="hidden" id="Deposit_all" name="Deposit_all[]" value="{{$Deposittotal}}" >
     <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -689,36 +699,41 @@
 
         $(document).ready(function() {
             var vat_type = parseFloat(document.getElementById('vat_type').value);
-            var Payment1 = parseFloat(document.getElementById('Payment1').value);
+            var payment = parseFloat(document.getElementById('payment').value);
             var Nettotal = parseFloat(document.getElementById('amount').value.replace(/,/g, '')) || 0;
-            console.log(Payment1);
+            var Deposit_all = parseFloat(document.getElementById('Deposit_all').value) || 0;
+            console.log(Deposit_all);
 
             let Subtotal =0;
             let total =0;
             let addtax = 0;
             let before = 0;
             let balance =0;
+            let depost =0;
             if (vat_type == 51) {
-                Subtotal =  parseFloat(Payment1);
-                total = Subtotal;
+                Subtotal =  parseFloat(payment);
+                depost = Subtotal-Deposit_all;
+                total = depost;
                 addtax = 0;
-                before = Subtotal;
-                balance = Nettotal-Subtotal;
+                before = depost;
+                balance = Nettotal-depost;
             }else{
-                Subtotal =  parseFloat(Payment1);
-                total = Subtotal/1.07;
-                addtax = Subtotal-total;
-                before = Subtotal-addtax;
-                balance = Nettotal-Subtotal;
+                Subtotal =  parseFloat(payment);
+                depost = Subtotal-Deposit_all;
+                total = depost/1.07;
+                addtax = depost-total;
+                before = depost-addtax;
+                balance = Nettotal-depost;
             }
-
+            $('#Subtotalview').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-            $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#SubtotalAll').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-            $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Total').text(isNaN(depost) ? '0' : depost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#balance').val(balance);
-            $('#sum').val(Subtotal);
+            $('#sum').val(depost);
+            $('#totalamout_total').val(Subtotal);
         });
     </script>
     <script>
@@ -790,7 +805,6 @@
 
 
 
-
         function view(id){
             event.preventDefault();
             Swal.fire({
@@ -807,6 +821,7 @@
                 }
             });
         }
+
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
