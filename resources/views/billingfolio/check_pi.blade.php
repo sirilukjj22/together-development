@@ -189,38 +189,44 @@
                         @if ($status == '0')
                             <div class="card-body">
                                 <b>Invoice</b>
-                                <table id="InvoiceTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
-                                    <thead >
-                                        <tr>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%;">Proforma Invoice ID</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Payment</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Valid</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(!empty($invoices))
+                                <div class="wrap-table-together">
+                                    <table id="" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th style="text-align:center;" data-priority="1">Proforma Invoice ID</th>
+                                            <th style="text-align:center;">Payment</th>
+                                            <th style="text-align:center;">Status</th>
+                                            <th style="text-align:center;">Total Amount</th>
+                                            <th style="text-align:center;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($invoices))
                                             @foreach ($invoices as $key => $item2)
                                                     <tr>
-                                                        <th style="text-align:left;">{{$item2->Invoice_ID}}</th>
-                                                        <th style="text-align:center;">{{ number_format($item2->sumpayment, 2, '.', ',') }}</th>
-                                                        <th style="text-align:center;">{{$item2->valid}}</th>
-                                                        <th style="text-align:center;">
-                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                        </th>
-                                                        <th style="text-align:center;">{{ number_format($item2->sumpayment, 2, '.', ',') }}</th>
-                                                        <th style="text-align:left;">
-                                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}'">
-                                                                Paid
-                                                            </button>
-                                                        </th>
+                                                        <td style="text-align:left;">{{$item2->Invoice_ID}}</td>
+                                                        <td style="text-align:center;">{{ number_format($item2->payment, 2, '.', ',') }}</td>
+                                                        <td style="text-align:center;">
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
+                                                        </td>
+                                                        <td style="text-align:center;">{{ number_format($item2->payment, 2, '.', ',') }}</td>
+                                                        <td style="text-align:center;">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                                    <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}">Paid</a></li>
+                                                                    <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}">Bill Splitting</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                             @endforeach
                                         @endif
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
                             </div>
                         @endif
                         <div class="card-body">
@@ -852,54 +858,7 @@
         }
 
     </script>
-    <script>
-        const table_name = ['ProposalTable','InvoiceTable','ReceiptTable'];
-        $(document).ready(function() {
-            for (let index = 0; index < table_name.length; index++) {
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        });
-        function nav(id) {
-            for (let index = 0; index < table_name.length; index++) {
-                $('#'+table_name[index]).DataTable().destroy();
-                new DataTable('#'+table_name[index], {
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    }],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    }
-                });
-            }
-        }
 
-
-    </script>
 
 <script>
     $(document).ready(function() {

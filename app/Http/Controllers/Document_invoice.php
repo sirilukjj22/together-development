@@ -659,8 +659,9 @@ class Document_invoice extends Controller
                 $save->total = $NettotalPD;
                 $save->Deposit_ID = $formattedProductDataString;
                 $save->save();
-
-                depositrevenue::whereIn('id', $idArray)->update(['receipt' => 1]);
+                if (!empty($idArray)) {
+                    depositrevenue::whereIn('id', $idArray)->update(['receipt' => 1]);
+                }
                 return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
             }
         } catch (\Throwable $e) {

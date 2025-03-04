@@ -1,19 +1,19 @@
 @extends('layouts.masterLayout')
 <style>
-@media screen and (max-width: 500px) {
-    .mobileHidden {
-    display: none;
-    }
+    @media screen and (max-width: 500px) {
+        .mobileHidden {
+        display: none;
+        }
 
-    .mobileLabelShow {
-    display: inline;
-    }
+        .mobileLabelShow {
+        display: inline;
+        }
 
-    #mobileshow {
-    margin-top: 60px;
+        #mobileshow {
+        margin-top: 60px;
+        }
     }
-}
-.table-revenue-detail {
+    .table-revenue-detail {
     display: none;
     margin: 1rem 0;
     padding: 1rem;
@@ -356,6 +356,7 @@
                                                         @endif
                                                     </div>
                                                 @endif
+
                                                 <li class="parent-row">
                                                     <span style="text-align: center;font-weight: bold;">Outstanding Amount </span>: <span id="total">{{ $sumpayment }}</span>
                                                 </li>
@@ -1640,7 +1641,7 @@
                     // AJAX เรียกข้อมูล
                     $.ajax({
                         type: "GET",
-                        url: `/Document/BillingFolio/Proposal/invoice/prewive/${id}/${InvoiceID}`,
+                        url: `/Document/BillingFolio/Proposal/invoice/preview/${id}`,
                         datatype: "JSON",
                         success: function(response) {
                             var fullname = response.fullname;

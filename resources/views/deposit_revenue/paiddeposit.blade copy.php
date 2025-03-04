@@ -439,15 +439,15 @@
                         <div class="span3">Generate Deposit Revenue</div>
                     </div>
                     <div class="col-auto">
-                        {{-- <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
+                        <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
                             <span >Issue Deposit</span>
-                        </button> --}}
+                        </button>
 
                         <div class="modal fade bd-example-modal-lg" id="modalAddBill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content rounded-lg">
                                 <div class="modal-header modal-h" style="border-radius: 0;">
-                                    <h3 class="modal-title text-white">Payment</h3>
+                                    <h3 class="modal-title text-white">Issue Deposit</h3>
                                     <div class="center sm mb-0 add" style="max-width: 35px;font-size:20px;background-color:rgb(253, 255, 255);border-radius:5px;" >+</div>
 
                                 </div>
@@ -597,7 +597,7 @@
                                     </div>
                                     <div class="modal-footer mt-0" style="background-color: rgb(255, 255, 255);">
                                         <button type="button" class="bt-tg bt-grey sm" data-dismiss="modal"> Close </button>
-                                        <button type="button" id="modal_but" class="bt-tg sm modal_but" data-dismiss="modal" onclick="Preview()">Preview</button>
+                                        <button type="button"  class="bt-tg sm modal_but" data-dismiss="modal" onclick="Preview()">Preview</button>
                                     </div>
 
 
@@ -861,12 +861,8 @@
                                 </div>
                                 <div class="styled-hr mt-3"></div>
                                 <div class="pay-cutomer-detail mt-3" id="companyTable" >
-                                    <ul><b class="font-upper" style="font-size: 18px">
-                                            <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
-                                                <span >Payment</span>
-                                            </button>
-                                        </b>
-
+                                    <ul>
+                                    <b class="font-upper" style="font-size: 18px">Payment</b>
                                     <li class="mt-3">
                                         <b>Date</b>
                                         <span id="paymentday"></span>
@@ -879,6 +875,7 @@
                                     </ul>
                                     <ul>
                                         <li></li>
+
                                         <div>
                                             <strong  style="font-size: 16px">List</strong>
                                             <table class="table table-borderless align-middle mb-0" id="table-revenueEditBill" style="width:100%">
@@ -1101,7 +1098,6 @@
                 ToAccount.value = null;
                 cheque.value = "";
                 chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
-                Total();
             } else if (selectedType === 'bankTransfer') {
                 cashInputDiv.style.display = "none";
                 cashAmountInput.disabled = true;
@@ -1117,7 +1113,6 @@
                 deposit_date.disabled = true;
                 ToAccount.value = null;
                 cheque.value = "";
-                Total();
             } else if (selectedType === 'creditCard') {
                 cashInputDiv.style.display = "none";
                 cashAmountInput.disabled = true;
@@ -1134,7 +1129,6 @@
                 ToAccount.value = null;
                 cheque.value = "";
                 chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
-                Total();
             } else if (selectedType === 'cheque') {
                 cashInputDiv.style.display = "none";
                 cashAmountInput.disabled = true;
@@ -1149,7 +1143,6 @@
                 chequeDiv.style.display = "block";
                 ToAccount.disabled = false;
                 deposit_date.disabled = false;
-                Total();
             }else{
                 cashInputDiv.style.display = "none";
                 cashAmountInput.disabled = true;
@@ -1164,7 +1157,6 @@
                 ToAccount.value = null;
                 cheque.value = "";
                 chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
-                Total();
             }
 
         });
@@ -2688,14 +2680,15 @@
         var sum = cash+amounts+bank+credit+cashamount;
         var Outstanding = sumpayment-sum;
         var all = sum;
+        console.log(sum);
         let formattedOutstanding = Outstanding.toLocaleString('th-TH', { minimumFractionDigits: 2 });
         $('#total').text(formattedOutstanding);
         $('#totalamountall').text(all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB');
 
         if (Outstanding !== 0) {
-            document.querySelector('#modal_but').disabled = true; // ปิดการใช้งานปุ่ม
+            document.querySelector('.modal_but').disabled = true; // ปิดการใช้งานปุ่ม
         } else {
-            document.querySelector('#modal_but').disabled = false; // เปิดการใช้งานปุ่ม
+            document.querySelector('.modal_but').disabled = false; // เปิดการใช้งานปุ่ม
         }
     }
     function getAllPayments() {

@@ -858,10 +858,7 @@ class BillingFolioController extends Controller
     }
     public function saveone(Request $request) {
         $data = $request->all();
-        // dd( $data);
-        $additional = $request->additional || 0;
-        $cashcomp = $request->cashcomp || 0;
-        $complimentary =  $additional-$cashcomp;
+
         $requestData = $request->all();
 
         $groupedData = []; // ตัวแปรสำหรับจัดเก็บข้อมูลที่ใช้ index
@@ -873,6 +870,7 @@ class BillingFolioController extends Controller
                 $groupedData[$index ] = [
                     "paymentType" =>  $data["paymentType"] ?? null, // ค่า paymentType_x ที่ดึงมา
                     "cashAmount" =>  $data["cashAmount"] ?? null,
+                    "Complimentary" => $data["Complimentary"] ?? null,
                     "bank" => $data["bank"] ?? null, // ค้นหา bank_x
                     "bankTransferAmount" => $data["bankTransferAmount"] ?? null, // ค้นหา bankTransferAmount_x
                     "CardNumber" => $data["CardNumber"] ?? null, // ค้นหา CardNumber_x
@@ -885,7 +883,9 @@ class BillingFolioController extends Controller
                     "chequeamount" => isset($data["chequeamount"])
                     ? str_replace([',', '.00'], ['', ''], $data["chequeamount"]) // ถอดคอมมาและ .00
                     : null, // ถ้าไม่มีค่าก็ให้เป็น null
-                     // ถ้าไม่มีค่าก็ให้เป็น null
+                    "NoShowAmount" => isset($data["NoShowAmount"])
+                    ? str_replace([',', '.00'], ['', ''], $data["NoShowAmount"]) // ถอดคอมมาและ .00
+                    : null, // ถ้าไม่มีค่าก็ให้เป็น null
                     "detail" => ($data["paymentType"] == 'cash')
                     ? 'Cash'
                     : ($data["paymentType"] == 'bankTransfer'
@@ -894,15 +894,17 @@ class BillingFolioController extends Controller
                             ? 'Credit Card No. ' . $data["CardNumber"] . ' Exp. Date: ' . $data["Expiry"]
                             : ($data["paymentType"] == 'cheque'
                                 ? 'Cheque Bank ' . $data["chequebank_name"] . ' Cheque Number ' . $data["cheque"]
+                                : ($data["paymentType"] == 'No Show'
+                                    ? 'No Show '
                                     : null
+                                )
                             )
                         )
                     ),
                 ];
                 // สร้างอาร์เรย์ใหม่ที่ใช้ index
-                $groupedData[$index] = [
+                $groupedData[$index + 1] = [
                     "paymentType" => $value, // ค่า paymentType_x ที่ดึงมา
-                    "cashAmount" =>  $requestData["cashAmount_$index"] ?? null,
                     "bank" => $requestData["bank_$index"] ?? null, // ค้นหา bank_x
                     "bankTransferAmount" => $requestData["bankTransferAmount_$index"] ?? null, // ค้นหา bankTransferAmount_x
                     "CardNumber" => $requestData["CardNumber_$index"] ?? null, // ค้นหา CardNumber_x
@@ -915,10 +917,7 @@ class BillingFolioController extends Controller
                     "chequeamount" => isset($requestData["chequeamount_$index"])
                     ? str_replace([',', '.00'], ['', ''], $requestData["chequeamount_$index"]) // ถอดคอมมาและ .00
                     : null, // ถ้าไม่มีค่าก็ให้เป็น null
-                    "detail" => ($value == 'cash')
-                    ? 'Cash'
-                    :
-                    ($value == 'bankTransfer'
+                    "detail" => ($value == 'bankTransfer'
                         ? $requestData["bank_$index"] . ' Bank Transfer - Together Resort Ltd'
                         : ($value == 'creditCard'
                             ? 'Credit Card No. ' . $requestData["CardNumber_$index"] . ' Exp. Date: ' . $requestData["Expiry_$index"]
@@ -933,6 +932,7 @@ class BillingFolioController extends Controller
                 $groupedData[0] = [
                     "paymentType" =>  $data["paymentType"] ?? null, // ค่า paymentType_x ที่ดึงมา
                     "cashAmount" =>  $data["cashAmount"] ?? null,
+                    "Complimentary" => $data["Complimentary"] ?? null,
                     "bank" => $data["bank"] ?? null, // ค้นหา bank_x
                     "bankTransferAmount" => $data["bankTransferAmount"] ?? null, // ค้นหา bankTransferAmount_x
                     "CardNumber" => $data["CardNumber"] ?? null, // ค้นหา CardNumber_x
@@ -945,7 +945,9 @@ class BillingFolioController extends Controller
                     "chequeamount" => isset($data["chequeamount"])
                     ? str_replace([',', '.00'], ['', ''], $data["chequeamount"]) // ถอดคอมมาและ .00
                     : null, // ถ้าไม่มีค่าก็ให้เป็น null
-                     // ถ้าไม่มีค่าก็ให้เป็น null
+                    "NoShowAmount" => isset($data["NoShowAmount"])
+                    ? str_replace([',', '.00'], ['', ''], $data["NoShowAmount"]) // ถอดคอมมาและ .00
+                    : null, // ถ้าไม่มีค่าก็ให้เป็น null
                     "detail" => ($data["paymentType"] == 'cash')
                     ? 'Cash'
                     : ($data["paymentType"] == 'bankTransfer'
@@ -954,7 +956,10 @@ class BillingFolioController extends Controller
                             ? 'Credit Card No. ' . $data["CardNumber"] . ' Exp. Date: ' . $data["Expiry"]
                             : ($data["paymentType"] == 'cheque'
                                 ? 'Cheque Bank ' . $data["chequebank_name"] . ' Cheque Number ' . $data["cheque"]
+                                : ($data["paymentType"] == 'No Show'
+                                    ? 'No Show '
                                     : null
+                                )
                             )
                         )
                     ),
@@ -962,7 +967,7 @@ class BillingFolioController extends Controller
             }
         }
 
-
+        dd( $groupedData);
         $cash = 0;
         $cashbankTransfer = 0;
         $cashCard = 0;
@@ -975,11 +980,10 @@ class BillingFolioController extends Controller
             $cashcheque += isset($value['chequeamount']) ? (float)$value['chequeamount'] : 0;
             $cashnoshow += isset($value['NoShowAmount']) ? (float)$value['NoShowAmount'] : 0;
         }
-        $Amountall = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow+$additional;
+        $Amountall = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow;
         $Amount = floatval($Amountall);
-        $RealAmount = $Amountall-$complimentary;
 
-        $companyid = $request->Guest;
+        $guest = $request->Guest;
         $reservationNo = $request->reservationNo;
         $room = $request->roomNo;
         $numberOfGuests = $request->numberOfGuests;
@@ -991,166 +995,87 @@ class BillingFolioController extends Controller
         $paymentDate = $request->paymentDate;
         $Complimentary = $request->Complimentary;
         $paymentType = $request->paymentTypecheque ?? $request->paymentType;
-        if ($paymentType == null || $companyid == null || $reservationNo == null || $room == null || $numberOfGuests == null || $arrival == null || $departure == null) {
+        if ($paymentType == null || $guest == null || $reservationNo == null || $room == null || $numberOfGuests == null || $arrival == null || $departure == null) {
             return redirect()->route('BillingFolio.index')->with('error', 'กรุณากรอกข้อมูลให้ครบ');
         }
         $invoice = $request->invoice;
-        $parts = explode('-', $companyid);
+        $parts = explode('-', $guest);
         $firstPart = $parts[0];
         if ($firstPart == 'C') {
-            $Selectdata =  'Company';
-            $company =  companys::where('Profile_ID',$companyid)->first();
-
+            $company =  companys::where('Profile_ID',$guest)->first();
             if ($company) {
-                $Address=$company->Address;
-                $CityID=$company->City;
-                $amphuresID = $company->Amphures;
-                $TambonID = $company->Tambon;
-                $Identification = $company->Taxpayer_Identification;
-                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                $phone = company_phone::where('Profile_ID',$company->Profile_ID)->where('Sequence','main')->first();
-                $email = $company->Company_Email;
+                $type_Proposal = 'Company';
                 $Company_typeID=$company->Company_type;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="บริษัทจำกัด") {
-                    $name = 'ลูกค้า : '."บริษัท ". $company->Company_Name . " จำกัด";
+                    $name = "ลูกค้า : "." บริษัท ". $company->Company_Name . " จำกัด";
                     $nameold = "บริษัท ". $company->Company_Name . " จำกัด";
                 }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                    $name = 'ลูกค้า : '."บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                    $name = "ลูกค้า : "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                     $nameold = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
                 }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                    $name = 'ลูกค้า : '."ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                    $name = "ลูกค้า : "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
                     $nameold = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
-                }else{
+                }else {
                     $name = 'ลูกค้า : '.$comtype->name_th . $company->Company_Name;
                     $nameold = $comtype->name_th . $company->Company_Name;
                 }
             }else{
-
-                $company =  company_tax::where('ComTax_ID',$companyid)->first();
+                $company =  company_tax::where('ComTax_ID',$guest)->first();
+                $type_Proposal = 'company_tax';
                 $Company_typeID=$company->Company_type;
-                if ($Company_typeID == [30,31,32]) {
-                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($company->Companny_name) {
                     if ($comtype->name_th =="บริษัทจำกัด") {
-                        $name = 'ลูกค้า : '."บริษัท ". $company->Company_Name . " จำกัด";
-                        $nameold = "บริษัท ". $company->Company_Name . " จำกัด";
+                        $name = "ลูกค้า : "." บริษัท ". $company->Companny_name . " จำกัด";
+                        $nameold = "บริษัท ". $company->Companny_name . " จำกัด";
                     }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                        $name = 'ลูกค้า : '."บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
-                        $nameold = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                        $name = "ลูกค้า : "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                        $nameold = "บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                        $name = 'ลูกค้า : '."ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
-                        $nameold = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
-                    }else{
-                        $name = 'ลูกค้า : '.$comtype->name_th . $company->Company_Name;
-                        $nameold = $comtype->name_th . $company->Company_Name;
+                        $name = "ลูกค้า : "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                        $nameold = "ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                    }else {
+                        $name = 'ลูกค้า : '.$comtype->name_th . $company->Companny_name;
+                        $nameold = $comtype->name_th . $company->Companny_name;
                     }
                 }else{
-                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
-                    if ($comtype->name_th =="นาย") {
-                        $nameold = "นาย ". $company->first_name . ' ' . $company->last_name;
-                        $name = 'ลูกค้า : '."นาย ". $company->first_name . ' ' . $company->last_name;
-                    }elseif ($comtype->name_th =="นาง") {
-                        $nameold = "นาง ". $company->first_name . ' ' . $company->last_name;
-                        $name = 'ลูกค้า : '."นาง ". $company->first_name . ' ' . $company->last_name;
-                    }elseif ($comtype->name_th =="นางสาว") {
-                        $nameold = "นางสาว ". $company->first_name . ' ' . $company->last_name ;
-                        $name = 'ลูกค้า : '."นางสาว ". $company->first_name . ' ' . $company->last_name ;
-                    }else{
-                        $nameold = "คุณ ". $company->first_name . ' ' . $company->last_name ;
-                        $name = 'ลูกค้า : '."คุณ ". $company->first_name . ' ' . $company->last_name ;
-                    }
+                    $name =  'ลูกค้า : '.'คุณ '.$company->first_name.' '.$company->last_name;
+                    $nameold = 'คุณ '.$company->first_name.' '.$company->last_name;
                 }
-                $Address=$company->Address;
-                $CityID=$company->City;
-                $amphuresID = $company->Amphures;
-                $TambonID = $company->Tambon;
-                $Identification = $company->Taxpayer_Identification;
-                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                $phone = company_tax_phone::where('ComTax_ID',$companyid)->where('Sequence','main')->first();
-                $email = $company->Company_Email;
             }
         }else{
-
-            $guestdata =  Guest::where('Profile_ID',$companyid)->first();
-
+            $guestdata =  Guest::where('Profile_ID',$guest)->first();
             if ($guestdata) {
-                $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
-                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
-                if ($comtype->name_th =="นาย") {
-                    $nameold = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                }elseif ($comtype->name_th =="นาง") {
-                    $nameold = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                }elseif ($comtype->name_th =="นางสาว") {
-                    $nameold = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                }else{
-                    $nameold = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                }
-                $Address=$guestdata->Address;
-                $CityID=$guestdata->City;
-                $amphuresID = $guestdata->Amphures;
-                $TambonID = $guestdata->Tambon;
-                $Identification = $guestdata->Identification_Number;
-                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                $phone = phone_guest::where('Profile_ID',$guestdata->Profile_ID)->where('Sequence','main')->first();
-                $email = $guestdata->Company_Email;
+                $type_Proposal = 'Guest';
+                $name =  'ลูกค้า : '.'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+                $nameold = 'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
             }else{
-                $guestdata =  guest_tax::where('GuestTax_ID',$companyid)->first();
+                $guestdata =  guest_tax::where('GuestTax_ID',$guest)->first();
+                $type_Proposal = 'guest_tax';
                 $Company_typeID=$guestdata->Company_type;
-                if ($Company_typeID == [30,31,32]) {
+                if ($guestdata->Company_name) {
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="บริษัทจำกัด") {
+                        $name = "ลูกค้า : "." บริษัท ". $guestdata->Company_name . " จำกัด";
                         $nameold = "บริษัท ". $guestdata->Company_name . " จำกัด";
-                        $name = 'ลูกค้า : '."บริษัท ". $guestdata->Company_name . " จำกัด";
                     }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $name = "ลูกค้า : "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
                         $nameold = "บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
-                        $name = 'ลูกค้า : '."บริษัท ". $guestdata->Company_name . " จำกัด";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $name = "ลูกค้า : "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
                         $nameold = "ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
-                        $name = 'ลูกค้า : '."บริษัท ". $guestdata->Company_name . " จำกัด";
-                    }elseif ($Company_typeID > 32){
+                    }else {
+                        $name = "ลูกค้า : ".$comtype->name_th . $guestdata->Company_name;
                         $nameold = $comtype->name_th . $guestdata->Company_name;
-                        $name = 'ลูกค้า : '."บริษัท ". $guestdata->Company_name . " จำกัด";
                     }
                 }else{
-                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
-                    if ($comtype->name_th =="นาย") {
-                        $nameold = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                        $name = 'ลูกค้า : '."นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    }elseif ($comtype->name_th =="นาง") {
-                        $nameold = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                        $name = 'ลูกค้า : '."นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    }elseif ($comtype->name_th =="นางสาว") {
-                        $nameold = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                        $name = 'ลูกค้า : '. "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    }else{
-                        $nameold = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                        $name = 'ลูกค้า : '."คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    }
+                    $name =  'ลูกค้า : '.'คุณ '.$guestdata->first_name.' '.$guestdata->last_name;
+                    $nameold = 'คุณ '.$guestdata->first_name.' '.$guestdata->last_name;
                 }
-                $Address=$guestdata->Address;
-                $CityID=$guestdata->City;
-                $amphuresID = $guestdata->Amphures;
-                $TambonID = $guestdata->Tambon;
-                $Identification = $guestdata->Identification_Number;
-                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                $phone = guest_tax_phone::where('GuestTax_ID',$companyid)->where('Sequence','main')->first();
-                $email = $guestdata->Company_Email;
             }
         }
-        dd( $data,$groupedData,$RealAmount,$name,$nameold);
+
         $currentDate = Carbon::now();
         $ID = 'RE-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
@@ -1179,13 +1104,13 @@ class BillingFolioController extends Controller
             $save->Receipt_ID = $REID;
             $save->Invoice_ID = $invoice;
             $save->Quotation_ID = $Quotation_ID;
-            $save->company = $companyid;
-            $save->Amount = $RealAmount;
+            $save->company = $guest;
+            $save->Amount = $Amount;
             $save->fullname = $nameold;
             $save->additional_type = $additional_type;
             $save->additional = $additional;
-            $save->complimentary = $complimentary ?? 0;
-            $save->document_amount = $Amount;
+            $save->complimentary = $data["Complimentary"] ?? null;
+            $save->document_amount = ($Amount + ($data["Complimentary"] ?? 0));
             $save->reservationNo = $reservationNo;
             $save->roomNo = $room;
             $save->numberOfGuests = $numberOfGuests;
@@ -1205,10 +1130,12 @@ class BillingFolioController extends Controller
                 $item->receive_id = $REID;
                 $item->detail = $index['detail'];
                 $item->amount =     ($index['cashAmount'] ?? 0) +
+                                    ($index['Complimentary'] ?? 0) +
                                     ($index['bankTransferAmount'] ?? 0) +
                                     ($index['creditCardAmount'] ?? 0) +
                                     ($index['chequeamount'] ?? 0) +
                                     ($index['NoShowAmount'] ?? 0);
+                $item->complimentary = $index['Complimentary'] ?? null;
                 $item->type = $index['paymentType'] ?? null;
                 if ($index['paymentType'] == 'bankTransfer') {
                     $item->bank = $index['bank'] ?? null;

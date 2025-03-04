@@ -1041,6 +1041,32 @@ textarea {
   background: linear-gradient(to right, #008996, #2c7f7a);
   outline: none;
 }
+.bt-tg-secondary {
+    margin: 0.5rem 0;
+    color: white !important;
+    border-radius: 7px;
+    background-color: #6c757d;
+    border: none;
+    transition-duration: 100ms;
+    padding: 0.4rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    white-space: nowrap;
+    height: 2.8rem;
+    transition: transform 0.05s ease;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+  }
+
+  .bt-tg-secondary:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(to right, #6c757d, #808b96);
+  }
+
+  .bt-tg-secondary:focus {
+    background: linear-gradient(to right, #6c757d, #808b96);
+    outline: none;
+  }
 
 .bg-tg-light {
   background-color: rgb(73, 184, 179);

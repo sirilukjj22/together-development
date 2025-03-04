@@ -873,14 +873,14 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(BillingFolioController::class)->middleware('role:document')->group(function () {
         Route::get('/Document/BillingFolio/index', 'index')->name('BillingFolio.index');
         Route::get('/Document/BillingFolio/issuebill', 'issuebill')->name('BillingFolio.issuebill');
-        Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','PaidInvoice')->name('BillingFolio.PaidInvoice');
+        Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','create')->name('BillingFolio.PaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/{id}','EditPaidInvoice')->name('BillingFolio.EditPaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}','PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/cheque/{id}','cheque');
-        Route::get('/Document/BillingFolio/Proposal/invoice/prewive/{id}/{ids}','PaidInvoiceDataprewive')->name('BillingFolio.PaidInvoiceDataprewive');
+        Route::get('/Document/BillingFolio/Proposal/invoice/preview/{id}','previewPdf')->name('BillingFolio.previewPdf');
         Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('BillingFolio.CheckPI');
         // //-------------------------------------save------------------------------------
-        Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'savere')->name('BillingFolio.savere');
+        Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'saveone')->name('BillingFolio.saveone');
         //-----------------------------------------update------------------------------------
         Route::post('/Document/BillingFolio/Proposal/invoice/Generate/update/{id}', 'update')->name('BillingFolio.update');
         // //-------------------------------------view------------------------------------

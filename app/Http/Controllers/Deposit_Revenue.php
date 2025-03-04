@@ -48,8 +48,9 @@ class Deposit_Revenue extends Controller
         $pening= depositrevenue::where('document_status',1)->get();
         $success= depositrevenue::where('document_status',2)->get();
         $cancel= depositrevenue::where('document_status',0)->get();
+        $invoice= depositrevenue::where('document_status',2)->where('receipt',1)->get();
 
-        return view('deposit_revenue.index',compact('diposit','pening','success','cancel'));
+        return view('deposit_revenue.index',compact('diposit','pening','success','cancel','invoice'));
     }
     public function create($id)
     {
