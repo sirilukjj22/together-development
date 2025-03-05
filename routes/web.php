@@ -717,6 +717,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/Deposit/Revise/{id}','Revise')->name('Deposit.Revise');
         Route::get('/Document/Deposit/quotation','Quotation')->name('Deposit.Quotation');
         Route::get('/Document/deposit_revenue/Data/createnew/{id}', 'deposit_pd');
+        Route::get('/Deposit/edit/revenue/deposit/{id}','depositedit')->name('Deposit.depositedit');
 
     });
     #DummyQuotaion

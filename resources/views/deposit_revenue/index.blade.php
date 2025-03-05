@@ -156,6 +156,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
+                                                                        @if ($item->document_status == 2 && $item->receipt == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/revenue/deposit/'.$item->id) }}">Edit</a></li>
+                                                                        @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
@@ -165,6 +168,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
+                                                                        @if ($item->document_status == 2 && $item->receipt == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/revenue/deposit/'.$item->id) }}">Edit</a></li>
+                                                                        @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
@@ -173,6 +179,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Await Deduct</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        @if ($item->document_status == 2 && $item->receipt == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/revenue/deposit/'.$item->id) }}">Edit</a></li>
                                                                         @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
@@ -372,6 +381,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
+                                                                        @if ($item->document_status == 2 && $item->receipt == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/revenue/deposit/'.$item->id) }}">Edit</a></li>
+                                                                        @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
@@ -381,6 +393,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
+                                                                        @if ($item->document_status == 2 && $item->receipt == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/revenue/deposit/'.$item->id) }}">Edit</a></li>
+                                                                        @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
@@ -389,6 +404,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/generate/Revenue/'.$item->id) }}">Await Deduct</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                        @if ($item->document_status == 2 && $item->receipt == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/revenue/deposit/'.$item->id) }}">Edit</a></li>
                                                                         @endif
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/Send/Email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
