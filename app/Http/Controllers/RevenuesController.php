@@ -408,48 +408,48 @@ class RevenuesController extends Controller
         $credit_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_credit')->first();
         $credit_revenue_today = $credit_revenue;
         $credit_revenue_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_credit) as total_credit"))->first();
-        $credit_revenue_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_credit) as total_credit"))->first();
+        $credit_revenue_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select(DB::raw("SUM(total_credit) as total_credit"))->first();
 
         $total_front_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('front_cash', 'front_transfer', 'front_credit')->first();
         $today_front_revenue = $total_front_revenue;
         $total_front_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
-        $total_front_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
+        $total_front_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
         $front_charge = Revenues::getManualCharge("date", $date_from, $date_to, date('Y-m-d'), date('m'), date('Y'), 6, 6);
 
         $total_guest_deposit = Revenues::whereDate('date', date('Y-m-d'))->select('room_cash', 'room_transfer', 'room_credit')->first();
         $today_guest_deposit = $total_guest_deposit;
         $total_guest_deposit_month = Revenues::whereDate('date', '>=', date('Y-m-01'))->whereDate('date', $symbol, date('Y-m-d'))->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
-        $total_guest_deposit_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
+        $total_guest_deposit_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
         $guest_deposit_charge = Revenues::getManualCharge("date", $date_from, $date_to, date('Y-m-d'), date('m'), date('Y'), 1, 1);
 
         $total_fb_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('fb_cash', 'fb_transfer', 'fb_credit')->first();
         $today_fb_revenue = $total_fb_revenue;
         $total_fb_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
-        $total_fb_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
+        $total_fb_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
         $fb_charge = Revenues::getManualCharge("date", $date_from, $date_to, date('Y-m-d'), date('m'), date('Y'), 2, 2);
 
         $total_agoda_revenue = Revenues::whereDate('date', date('Y-m-d'))->sum('total_credit_agoda');
         $today_agoda_revenue = $total_agoda_revenue;
         $total_agoda_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->sum('total_credit_agoda');
-        $total_agoda_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->sum('total_credit_agoda');
+        $total_agoda_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->sum('total_credit_agoda');
         $agoda_charge = Revenues::getManualAgodaCharge("date", $date_from, $date_to, date('Y-m-d'), date('m'), date('Y'), 1, 5);
 
         $total_wp_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('wp_cash', 'wp_transfer', 'wp_credit')->first();
         $today_wp_revenue = $total_wp_revenue;
         $total_wp_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
-        $total_wp_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
+        $total_wp_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
         $wp_charge = Revenues::getManualCharge("date", $date_from, $date_to, date('Y-m-d'), date('m'), date('Y'), 3, 3);
 
         $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
         $today_ev_revenue = $total_ev_revenue;
         $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
-        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge("date", $date_from, $date_to, date('Y-m-d'), date('m'), date('Y'), 8, 8);
 
         $total_other_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('other_revenue')->sum('other_revenue');
         $today_other_revenue = $total_other_revenue;
         $total_other_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('other_revenue')->sum('other_revenue');
-        $total_other_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('other_revenue')->sum('other_revenue');
+        $total_other_year = Revenues::whereDate('date', '>=', date('Y-01-01'))->select('other_revenue')->sum('other_revenue');
 
         $by_page = 'index';
 
@@ -2072,6 +2072,8 @@ class RevenuesController extends Controller
 
             $filter_by = "thisYear";
         }
+
+        // dd($request);
 
         ## Cash
         if ($request->revenue_type == "cash_front") {

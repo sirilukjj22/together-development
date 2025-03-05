@@ -96,6 +96,10 @@ class ElexaController extends Controller
             $query->whereNotIn('revenue_credit.id', $request->receiveID);
         }
 
+        if (isset($request->confirmReceiveID) && !empty($request->confirmReceiveID)) {
+            $query->whereNotIn('revenue_credit.id', $request->confirmReceiveID);
+        }
+
         if (isset($request->year) && $request->year != "all") {
             $query->whereYear('revenue.date', $request->year);
         }
@@ -117,7 +121,7 @@ class ElexaController extends Controller
         $recordsTotal = Revenue_credit::count();
         $recordsFiltered = $query->count();
 
-        $query->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
+        $query->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee',  'revenue_credit.ev_vat', 
         'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date');
 
         $totalAmount = $query->sum('revenue_credit.ev_revenue');
@@ -132,10 +136,10 @@ class ElexaController extends Controller
                 $btn_action = "";
                 if ($value->receive_payment == 0)
                 {
-                    $btn_action = '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
+                    $btn_action = '<button type="button" class="btn btn-color-green btn-sm rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
                     onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')">Receive</button>';
                 } else {
-                    $btn_action = '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
+                    $btn_action = '<button type="button" class="btn btn-color-green btn-sm rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
                     onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')" disabled>Receive</button>';
                 }
 
@@ -156,6 +160,9 @@ class ElexaController extends Controller
                     'check_box' => $btn_checkbox,
                     'date' => $value->date,
                     'order_id' => $value->batch,
+                    'ev_charge' => $value->ev_charge,
+                    'ev_vat' => $value->ev_vat,
+                    'ev_fee' => $value->ev_fee,
                     'amount' => $value->ev_revenue,
                     'btn_action' => $btn_action,
                 ];
@@ -191,9 +198,10 @@ class ElexaController extends Controller
 
         // เลขที่เอกสาร
         if ($elexa_revenue->status_receive_elexa == 0) {
+            $document_query = '';
             $document_no = $this->generateDocumentNumber();
         } else {
-            $document_query = Document_elexa::where('sms_id', $id)->select('doc_no')->first();
+            $document_query = Document_elexa::where('sms_id', $id)->select('doc_no', 'debit_amount')->first();
             $document_no = !empty($document_query) ? $document_query->doc_no : '';
         }
 
@@ -233,7 +241,7 @@ class ElexaController extends Controller
             $total_outstanding_all += $value->elexa_outstanding;
         }
 
-        return view('elexa.edit_elexa_outstanding', compact('elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
+        return view('elexa.edit_elexa_outstanding', compact('document_query', 'elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
     }
 
     public function select_elexa_outstanding($id) {
@@ -252,6 +260,7 @@ class ElexaController extends Controller
     public function select_all_elexa_outstanding(Request $request) {
 
         $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->whereIn('revenue_credit.id', $request->selectedItems)
             ->where('revenue_credit.status', 8);
 
         if (isset($request->year) && $request->year != "all") {
@@ -270,7 +279,7 @@ class ElexaController extends Controller
         $elexa_outstanding = $query->get();
 
         if ($totalAmount > $request->total_revenue_amount) {
-            $elexa_outstanding = '';
+            $elexa_outstanding = $request->total_revenue_amount;
             $status = 500;
         } else {
             $status = 200;
@@ -279,6 +288,7 @@ class ElexaController extends Controller
 
             return response()->json([
                 'data' => $elexa_outstanding,
+                'total_amount' => $totalAmount,
                 'status' => $status,
             ]);
     }
@@ -333,6 +343,7 @@ class ElexaController extends Controller
                Document_elexa::where('sms_id', $request->sms_id)->update([
                     'issue_date' => $request->issue_date,
                     'sms_id' => $request->sms_id,
+                    'debit_amount' => $request->debit_out_amount ?? 0,
                     'status_lock' => 1,
                     'status_paid' => 1,
                     'created_by' => Auth::user()->id
@@ -355,9 +366,10 @@ class ElexaController extends Controller
                     'doc_no' => $this->generateDocumentNumber(),
                     'issue_date' => $request->issue_date,
                     'sms_id' => $request->sms_id,
+                    'debit_amount' => $request->debit_out_amount ?? 0,
                     'status_lock' => 1,
                     'status_paid' => 1,
-                    'created_by' => Auth::user()->id
+                    'created_by' => Auth::user()->id 
                 ])->id;
 
                 $request['id'] = $data;
