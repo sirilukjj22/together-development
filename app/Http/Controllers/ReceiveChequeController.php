@@ -48,7 +48,8 @@ class ReceiveChequeController extends Controller
         $chequepaind = receive_cheque::query()->where('status', 1)->get();
         $chequeDedected = receive_cheque::query()->where('status', 2)->get();
         $chequeBounced = receive_cheque::query()->where('status', 0)->get();
-        return view('recevie_cheque.index',compact('invoice','data_bank','cheque','chequepaind','chequeDedected','chequeBounced'));
+        $date = Carbon::now();
+        return view('recevie_cheque.index',compact('invoice','data_bank','cheque','chequepaind','chequeDedected','chequeBounced','date'));
     }
     public function NumberID(Request $request){
         $currentDate = Carbon::now();
@@ -75,8 +76,8 @@ class ReceiveChequeController extends Controller
     }
     public function save(Request $request)
     {
-        $data = $request->all();
-
+        $date = Carbon::now();
+        $formattedDate = Carbon::parse($date)->format('d/m/Y');
         try {
             $refer = 'อ้างอิงจาก : '.$request->Refer;
             $data_bank = Masters::where('id',$request->bank)->first();
@@ -87,13 +88,13 @@ class ReceiveChequeController extends Controller
 
             $amount = 'ยอดเงิน : ' . number_format($request->Amount).' บาท';
 
-            $receive_date = 'วันที่รับ : '.$request->receive_date;
+            $branch = 'สาขาธนาคาร : '.$request->branch;
 
-            $issue_date = 'วันที่ตีเช็ค : '.$request->Issue_Date;
+            $issue_date = 'วันที่สร้างเช็ค : '.$request->formattedDate;
 
             $datacompany = '';
 
-            $variables = [$refer, $bank, $cheque_number, $amount, $receive_date,$issue_date];
+            $variables = [$refer, $bank, $cheque_number, $amount, $branch,$issue_date];
 
             // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
 
@@ -124,11 +125,10 @@ class ReceiveChequeController extends Controller
             $save->Cheque_ID = $request->Cheque_ID;
             $save->refer_proposal = $request->Refer;
             $save->bank_cheque = $request->bank;
-            $save->bank_received = $request->received;
             $save->cheque_number = $request->chequeNumber;
             $save->amount = $request->Amount;
-            $save->receive_date = $request->receive_date;
-            $save->issue_date = $request->Issue_Date;
+            $save->branch = $request->branch;
+            $save->issue_date = $formattedDate;
             $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('ReceiveCheque.index')->with('success', 'Data has been successfully saved.');
@@ -144,28 +144,24 @@ class ReceiveChequeController extends Controller
         $bank_cheque = $view->bank_cheque;
         $data_bank = Masters::where('id',$bank_cheque)->first();
         $bank = $data_bank->name_th.' '.'('.$data_bank->name_en.')';
-        $bank_receiveds = $view->bank_received;
-        if ($bank_receiveds) {
-            $data_received = Masters::where('id',$bank_receiveds)->first();
-            $bankreceived = $data_received->name_th.' '.'('.$data_received->name_en.')';
-        }else {
-            $bankreceived =null;
-        }
+        $receive_payment = $view->receive_payment;
+
         $cheque_number = $view->cheque_number;
         $amount = $view->amount;
-        $receive_date = $view->receive_date;
+        $deduct_date = $view->deduct_date;
         $issue_date = $view->issue_date;
-
+        $branch = $view->branch;
         return response()->json([
             'invoice'=>$invoice,
             'proposal'=>$proposal,
             'bank_cheque'=>$bank,
-            'bank_received'=>$bankreceived,
+            'receive_payment'=>$receive_payment,
             'cheque_number'=>$cheque_number,
             'amount' => $amount,
-            'receive_date' => $receive_date,
+            'deduct_date' => $deduct_date,
             'issue_date'=>$issue_date,
             'Cheque_ID'=>$Cheque_ID,
+            'branch'=>$branch,
 
         ]);
     }
@@ -179,14 +175,14 @@ class ReceiveChequeController extends Controller
         $amount = $view->amount;
         $receive_date = $view->receive_date;
         $issue_date = $view->issue_date;
-
+        $branch = $view->branch;
         return response()->json([
             'proposal'=>$proposal,
             'bank_cheque'=>$bank_cheque,
             'bank_received'=>$bank_receiveds,
             'cheque_number'=>$cheque_number,
             'amount' => $amount,
-            'receive_date' => $receive_date,
+            'branch' => $branch,
             'issue_date'=>$issue_date,
             'Cheque_ID'=>$Cheque_ID,
         ]);
@@ -208,9 +204,7 @@ class ReceiveChequeController extends Controller
             'bank'=>$datacheque['bank_cheque'] ?? null,
             'chequeNumber'=>$datacheque['cheque_number'] ?? null,
             'Amount'=>$datacheque['amount'] ?? null,
-            'receive_date'=>$datacheque['receive_date'] ?? null,
-            'Issue_Date'=>$datacheque['issue_date'] ?? null,
-
+            'branch'=>$datacheque['branch'] ?? null,
         ];
         $keysToCompare = ['Refer', 'bank', 'chequeNumber','Amount','receive_date','Issue_Date'];
         $differences = [];
@@ -254,8 +248,7 @@ class ReceiveChequeController extends Controller
         $Bank = $extractedData['bank'] ?? null;
         $chequeNumber =  $extractedData['chequeNumber'] ?? null;
         $Amount =  $extractedData['Amount'] ?? null;
-        $Receive_date =  $extractedData['receive_date'] ?? null;
-        $Issue_Date =  $extractedData['Issue_Date'] ?? null;
+        $branch =  $extractedData['branch'] ?? null;
         try {
             $refer = null;
             if ($Refer) {
@@ -278,19 +271,14 @@ class ReceiveChequeController extends Controller
                 $amount = 'ยอดเงิน : ' . number_format($Amount).' บาท';
             }
 
-            $receive_date = null;
-            if ($Receive_date) {
-                $receive_date = 'วันที่รับ : '.$Receive_date;
-            }
-
-            $issue_date = null;
-            if ($Issue_Date) {
-                $issue_date = 'วันที่ตีเช็ค : '.$Issue_Date;
+            $Branch = null;
+            if ($branch) {
+                $Branch = 'สาขาธนาคาร : '.$branch;
             }
 
             $datacompany = '';
 
-            $variables = [$refer, $bank, $cheque_number, $amount, $receive_date,$issue_date];
+            $variables = [$refer, $bank,$Branch, $cheque_number, $amount];
 
             // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
 
@@ -318,11 +306,9 @@ class ReceiveChequeController extends Controller
             $save = receive_cheque::find($request->ids);
             $save->refer_proposal = $request->Refer;
             $save->bank_cheque = $request->bank;
-            $save->bank_received = $request->received;
             $save->cheque_number = $request->chequeNumber;
             $save->amount = $request->Amount;
-            $save->receive_date = $request->receive_date;
-            $save->issue_date = $request->Issue_Date;
+            $save->branch = $request->branch;
             $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('ReceiveCheque.index')->with('success', 'Data has been successfully saved.');

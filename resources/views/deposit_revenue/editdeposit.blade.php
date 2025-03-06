@@ -467,7 +467,7 @@
                                                     <span>Invoice / Deposit</span>: <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
                                                 </li>
                                                 <li class="parent-row">
-                                                    <span style="text-align: center;font-weight: bold;">Outstanding Amount </span>: <span id="total">{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                                    <span style="text-align: center;font-weight: bold;">Outstanding Amount </span>: <span id="total">{{ number_format(0, 2, '.', ',') }}</span>
                                                 </li>
                                             </div>
                                         </section>
@@ -506,7 +506,7 @@
                                                                 <div class="payment-cash" style="display: {{$item->PaymentType == 'cash' ? 'block' : 'none'}};">
                                                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                                        <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"  value="{{ $item->Amount }}"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                        <input type="text" id="cashAmount_{{$key}}" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"  value="{{ $item->Amount }}"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                                     </div>
                                                                 </div>
 
@@ -522,7 +522,7 @@
                                                                         </div>
                                                                         <div>
                                                                             <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                                            <input type="text" id="Amount" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount" value="{{ $item->Amount }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                            <input type="text" id="bankTransfer_{{$key}}" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -539,52 +539,44 @@
                                                                         </div>
                                                                         <div>
                                                                             <label for="creditCardAmount" class="star-red">Amount</label>
-                                                                            <input type="text" id="Amount" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount" value="{{ $item->Amount }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                            <input type="text" id="creditCard_{{$key}}" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount" value="{{ $item->Amount }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                                         </div>
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="payment-cheque chequeInput" style="display: {{$item->PaymentType == 'cheque' ? 'block' : 'none'}};">
-                                                                    <div class="d-grid-2column bg-paymentType">
+                                                                    <div class="bg-paymentType">
                                                                         <div>
                                                                             <label for="chequeNumber">Cheque Number</label>
-                                                                            <select  id="cheque" name="cheque" class="form-select cheque">
+                                                                            <select  id="chequeedit" name="cheque" class="form-select cheque">
                                                                                 @foreach ($data_cheque as $item)
-                                                                                    <option value="{{ $item->cheque_number }} {{$item->cheque_number == $Cheque_Number ? 'selected' : ''}}">{{ $item->cheque_number }}</option>
+                                                                                    <option value="{{ $item->cheque_number }} "{{$item->cheque_number == $Cheque_Number ? 'selected' : ''}}>{{ $item->cheque_number }}</option>
                                                                                 @endforeach
                                                                             </select>
                                                                         </div>
-                                                                        <div>
-                                                                            <label for="chequeNumber">Cheque Date</label>
-                                                                            <input type="text" class="form-control chequedate" id="chequedate" value="{{$issue_date}}" readonly />
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="chequeNumber">Cheque Bank</label>
-                                                                            <input type="text" class="form-control chequebank" id="chequebank" name="chequebank_name" value="{{$bankname}}" readonly />
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="chequeAmount">Amount</label>
-                                                                            <input type="text" class="form-control chequeamountAmount" id="Amount" name="chequeamount" value="{{ $amount }}" readonly />
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="chequeBank">To Account</label>
-                                                                            <select  id="chequebank" name="chequebank" class="ToAccount form-select">
-                                                                                <option value="SCB">SCB 708-226791-3</option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="chequeNumber">Date</label>
-                                                                            <div class="input-group">
-                                                                                <input type="text" name="deposit_date" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" value="{{$deposit_date}}" required>
-                                                                                <div class="input-group-prepend">
-                                                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                                        <i class="fas fa-calendar-alt"></i>
-                                                                                        <!-- ไอคอนปฏิทิน -->
-                                                                                    </span>
-                                                                                </div>
+                                                                        <div class="d-grid-2column  mt-2">
+                                                                            <div>
+                                                                                <label for="chequeNumber">Cheque Date</label>
+                                                                                <input type="text" class="form-control chequedate" id="chequedate" value="{{$issue_date}}" readonly />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label for="chequeNumber">Cheque Bank</label>
+                                                                                <input type="text" class="form-control chequebank" id="chequebank" name="chequebank_name" value="{{$bankname}}" readonly />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label for="chequeAmount">Amount</label>
+                                                                                <input type="text" class="form-control chequeamountAmount" id="chequeamountAmount_{{$key}}" name="chequeamount" value="{{ $amount }}" readonly />
+                                                                                <input type="hidden" class="form-control " id="key"  value="{{ $key }}" readonly />
+                                                                            </div>
+                                                                            <div>
+                                                                                <label for="chequeBank">To Account</label>
+                                                                                <select  id="chequebank" name="chequebank" class="ToAccount form-select">
+                                                                                    <option value="SCB 708-226791-3">SCB 708-226791-3</option>
+                                                                                </select>
                                                                             </div>
                                                                         </div>
                                                                     </div>
+
                                                                 </div>
                                                             </div>
                                                         @endforeach
@@ -959,7 +951,34 @@
             // แสดงช่องที่ตรงกับ Payment Type
             $('.payment-inputs[data-index="' + index + '"] .payment-' + selectedType).show();
         });
-        TotalEdit();
+        $('.paymentType, .cashAmount, .bankTransferAmount, .creditCardAmount, .chequeamountAmount').on('change input', function() {
+            TotalEdit();
+        });
+        $('#chequeedit').on('change', function() {
+            console.log(1);
+            var id = $('#chequeedit').val();
+            var key = $('#key').val();
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/Document/deposit_revenue/cheque/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    var amount = response.amount;
+                    var issue_date = response.issue_date;
+                    var bank = response.data_bank.name_en;
+
+                    $('#chequedate').val(issue_date);
+                    $('#chequebank').val(bank);
+                    $('#chequeamountAmount_' + key).val(amount);
+
+                    TotalEdit();
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX request failed: ", status, error);
+                }
+            });
+        });
     });
     $(function() {
         // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -1032,6 +1051,9 @@
         });
     });
     $(document).ready(function() {
+        $('.bankTransferAmount').on('input', function() {
+            $('.bankTransferAmount').val($(this).val());
+        });
         $('.select2').select2({
             placeholder: "Please select an option"
         });
@@ -2599,18 +2621,33 @@
         cb(start, end);
     });
     function TotalEdit() {
-        var amount = 0;
-        var uniqueValues = new Set(); // ใช้ Set เพื่อเก็บค่าไม่ซ้ำ
+        var total = 0;
 
-        $("[id^='Amount']").each(function () {
-            var value = parseFloat($(this).val()) || 0;
-            // เพิ่มค่าเข้า Set ถ้ายังไม่มีใน Set
-            if (!uniqueValues.has(value) && value !== 0) {
-                uniqueValues.add(value);
-                amount += value;
+        $('.paymentType').each(function() {
+            var index = $(this).data('index');
+            var selectedType = $(this).val();
+
+            // ดึงค่าตาม Payment Type ที่เลือก
+            if (selectedType === 'cash') {
+                var cashAmount = parseFloat($('#cashAmount_' + index).val()) || 0;
+                total += cashAmount;
+            }
+            else if (selectedType === 'bankTransfer') {
+                var bankAmount = parseFloat($('#bankTransfer_' + index).val()) || 0;
+                total += bankAmount;
+            }
+            else if (selectedType === 'creditCard') {
+                var creditAmount = parseFloat($('#creditCard_' + index).val()) || 0;
+                total += creditAmount;
+            }
+            else if (selectedType === 'cheque') {
+                var chequeAmount = parseFloat($('#chequeamountAmount_' + index).val()) || 0;
+                total += chequeAmount;
             }
         });
-        $('#totalamount').val(amount);
+        console.log(total);
+
+        $('#totalamount').val(total);
         Total();
     }
     function data() {
@@ -2658,6 +2695,7 @@
         });
     }
     function Total() {
+        var uniqueValues = new Set();
         var cashamount = parseFloat($('#totalamount').val()) || 0;
         var sumpayment = parseFloat($('#amout').val()) || 0;
         var amountsArray = [];
@@ -2668,8 +2706,14 @@
             var value = $(this).val(); // ดึงค่าจาก input
             if (value) {
                 value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
+
+
                 if (!isNaN(value)) {
-                    amountsArray.push(value); // เก็บค่าใน array
+                    if (!uniqueValues.has(value) && value !== 0) {
+                        uniqueValues.add(value);
+                        amountsArray.push(value);
+                    }
+                    console.log(amountsArray);
                 }
             }
         });
@@ -2677,8 +2721,14 @@
             var value = $(this).val(); // ดึงค่าจาก input
             if (value) {
                 value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
+                console.log(value);
+
                 if (!isNaN(value)) {
-                    creditCardArray.push(value); // เก็บค่าใน array
+                    if (!uniqueValues.has(value) && value !== 0) {
+                        uniqueValues.add(value);
+                        creditCardArray.push(value);
+                    }
+
                 }
             }
         });
@@ -2686,8 +2736,13 @@
             var value = $(this).val(); // ดึงค่าจาก input
             if (value) {
                 value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
+
                 if (!isNaN(value)) {
-                    bankTransferArray.push(value); // เก็บค่าใน array
+                    if (!uniqueValues.has(value) && value !== 0) {
+                        uniqueValues.add(value);
+                        bankTransferArray.push(value);
+                    }
+                    console.log(bankTransferArray);
                 }
             }
         });
@@ -2695,17 +2750,31 @@
             var value = $(this).val(); // ดึงค่าจาก input
             if (value) {
                 value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
+
                 if (!isNaN(value)) {
-                    cashArray.push(value); // เก็บค่าใน array
+                    if (!uniqueValues.has(value) && value !== 0) {
+                        uniqueValues.add(value);
+                        cashArray.push(value);
+                    }
+                    console.log(cashArray);
                 }
             }
         });
+
+
+
         var sum =0;
         var amounts = amountsArray.reduce((sum, current) => sum + current, 0);
         var cash = cashArray.reduce((sum, current) => sum + current, 0);
         var credit = creditCardArray.reduce((sum, current) => sum + current, 0);
         var bank = bankTransferArray.reduce((sum, current) => sum + current, 0);
+
         var sum = cash+amounts+bank+credit+cashamount;
+        console.log(amounts);
+        console.log(cash);
+        console.log(credit);
+        console.log(bank);
+        console.log(sum);
         var Outstanding = sumpayment-sum;
         var all = sum;
         let formattedOutstanding = Outstanding.toLocaleString('th-TH', { minimumFractionDigits: 2 });
@@ -2720,31 +2789,34 @@
     }
     function getAllPayments() {
         let payments = [];
-        $('.payment-container').each(function () {
-            let paymentType = $(this).find('.paymentType').val();
+        $('.paymentType').each(function () {
+            let index = $(this).data('index');
+            let paymentType = $(this).val();
             let paymentData = { type: paymentType };
             // ตรวจสอบว่าถูกติ๊กหรือไม่
+            console.log(paymentType);
 
+            let container = $(this).closest('.payment-container');
             if (paymentType === 'bankTransfer') {
-
-                paymentData.bank = $(this).find('.bankName').val();
-                paymentData.amount = $(this).find('.bankTransferAmount').val();
+                paymentData.bank = container.find('.bankName').val();
+                paymentData.amount = container.find('.bankTransferAmount').val();
                 paymentData.datanamebank = paymentData.bank + ' Bank Transfer - Together Resort Ltd';
             } else if (paymentType === 'creditCard') {
 
-                paymentData.cardNumber = $(this).find('.creditCardNumber').val();
-                paymentData.expiry = $(this).find('.expiryDate').val();
-                paymentData.amount = $(this).find('.creditCardAmount').val();
-                paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
-            }else if (paymentType === 'cheque'){
+                    paymentData.cardNumber = container.find('.creditCardNumber').val();
+                    paymentData.expiry = container.find('.expiryDate').val();
+                    paymentData.amount = container.find('.creditCardAmount').val();
+                    paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
 
-                paymentData.cheque = $(this).find('.cheque').val();
-                paymentData.chequedate = $(this).find('.chequedate').val();
-                paymentData.chequebank = $(this).find('.chequebank').val();
-                paymentData.amount = $(this).find('.chequeamountAmount').val().replace(/,/g, '').split('.')[0];
+
+            } else if (paymentType === 'cheque') {
+                paymentData.cheque = container.find('.cheque').val();
+                paymentData.chequedate = container.find('.chequedate').val();
+                paymentData.chequebank = container.find('.chequebank').val();
+                paymentData.amount = container.find('.chequeamountAmount').val().replace(/,/g, '').split('.')[0];
                 paymentData.datanamebank = `Cheque Bank ${paymentData.chequebank} Cheque Number ${paymentData.cheque}`;
-            }else if (paymentType === 'cash') {
-                paymentData.amount = $(this).find('.cashAmount').val();
+            } else if (paymentType === 'cash') {
+                paymentData.amount = container.find('.cashAmount').val();
                 paymentData.datanamebank = 'Cash';
             }
             payments.push(paymentData);

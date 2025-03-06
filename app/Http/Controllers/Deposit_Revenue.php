@@ -349,6 +349,7 @@ class Deposit_Revenue extends Controller
     {
 
         $chequeRe =receive_cheque::where('cheque_number',$id)->first();
+
         $bank = $chequeRe->bank_cheque;
         $amount= $chequeRe->amount;
         $issue_date= $chequeRe->issue_date;
@@ -554,9 +555,11 @@ class Deposit_Revenue extends Controller
                 $cheque = receive_cheque::where('cheque_number', $Cheque_Number)->first();
 
                 if ($cheque) { // ตรวจสอบว่า $cheque ไม่เป็น null ก่อนเข้าถึง property
-                    $bank = $cheque->bank_received;
+                    $bank = $cheque->bank_cheque;
                     $databank = Masters::where('category', "bank")->where('id',$bank)->first();
-                    $bankname = $databank->name_en;
+                    if ($databank) {
+                        $bankname = $databank->name_en;
+                    }
                     $deposit_date = $cheque->deposit_date;
                     $amount = $cheque->amount;
                     $issue_date = $cheque->issue_date;
@@ -2495,7 +2498,8 @@ class Deposit_Revenue extends Controller
         }
         $Deposit = $deposit->count;
         $data = $request->all();
-
+        $date = Carbon::now();
+        $formattedDate = Carbon::parse($date)->format('d/m/Y');
         $requestData = $request->all();
         $groupedData = []; // ตัวแปรสำหรับจัดเก็บข้อมูลที่ใช้ index
 
@@ -2913,17 +2917,16 @@ class Deposit_Revenue extends Controller
             $savePDF->Approve_time = $formattedTime;
             $savePDF->correct = $correctup;
             $savePDF->save();
-
+            $userid = Auth::user()->id;
             foreach ($groupedData as $index) {
                 if (!empty($index['cheque'])) {
                     $chequeRe =receive_cheque::where('cheque_number',$index['cheque'])->where('status',1)->first();
                     $id_cheque = $chequeRe->id;
-                    $chequeBankReceivedname= Masters::where('name_en', $index['chequebank'])->first();
-                    $bank_received = $chequeBankReceivedname->id;
                     $savecheque = receive_cheque::find($id_cheque);
-                    $savecheque->bank_received =$bank_received;
-                    $savecheque->deposit_date =$index['deposit_date'];
+                    $savecheque->receive_payment =$index['chequebank'];
                     $savecheque->status = 2;
+                    $savecheque->deduct_date = $formattedDate;
+                    $savecheque->deduct_by = $userid;
                     $savecheque->save();
                 }
             }

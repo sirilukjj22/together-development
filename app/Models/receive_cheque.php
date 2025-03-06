@@ -10,15 +10,17 @@ class receive_cheque extends Model
     use HasFactory;
     protected $table = 'receive_cheque';
     protected $fillable = [
-        'refer_invoice',
+        'branch',
+        'Cheque_ID',
         'refer_proposal',
         'bank_cheque',
-        'bank_received',
-        'cheque_number',
+        'receive_payment',
         'amount',
-        'receive_date',
+        'cheque_number',
+        'deduct_by',
+        'deduct_date',
         'issue_date',
-        'status',
+        'Operated_by',
     ];
     public function  bank()
     {
@@ -27,5 +29,9 @@ class receive_cheque extends Model
     public function  userOperated()
     {
         return $this->hasOne(User::class, 'id','Operated_by');
+    }
+    public function  userDeduct()
+    {
+        return $this->hasOne(User::class, 'id','deduct_by');
     }
 }

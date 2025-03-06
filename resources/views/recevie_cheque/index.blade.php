@@ -55,6 +55,7 @@
                                                         <div class="row">
                                                             <div class="col-sm-4 col-12 ml-auto">
                                                                 <b >Cheque ID : <span id="Cheque_id_Save"></span></b>
+                                                                <b>Issue Date : <span>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</span></b>
                                                             </div>
                                                             <input type="hidden" class="form-control" id="Cheque_IDsave" name="Cheque_ID" >
 
@@ -64,9 +65,42 @@
                                                         <label for="Status">Refer Proposal</label>
                                                         <select name="Refer" id="Refer" class="select2">
                                                             @foreach($invoice as $item)
+                                                                @php
+                                                                    $quotation =  DB::table('quotation')->where('Quotation_ID',$item->Quotation_ID)->first();
+                                                                    $companyid = $quotation->Company_ID; // เช่น "123-456"
+                                                                    $parts = explode('-', $companyid); // แยกด้วย "-"
+                                                                    $firstPart = $parts[0]; // ได้ค่าด้านหน้า เช่น "123"
+                                                                    if ($firstPart == 'C') {
+                                                                        $company =  DB::table('companys')->where('Profile_ID',$companyid)->first();
+                                                                        $Company_typeID=$company->Company_type;
+                                                                        $comtype = DB::table('master_documents')->where('id',$Company_typeID)->select('name_th', 'id')->first();
+                                                                        if ($comtype->name_th =="บริษัทจำกัด") {
+                                                                            $fullName = "บริษัท ". $company->Company_Name . " จำกัด";
+                                                                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                                                                            $fullName = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                                                                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                                                                            $fullName = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                                                                        }else{
+                                                                            $fullName = $comtype->name_th . $company->Company_Name;
+                                                                        }
+                                                                    }else {
+                                                                        $guestdata =  DB::table('guests')->where('Profile_ID',$companyid)->first();
+                                                                        $Company_typeID=$guestdata->Company_type;
+                                                                        $comtype = DB::table('master_documents')->where('id',$Company_typeID)->select('name_th', 'id')->first();
+                                                                        if ($comtype->name_th =="นาย") {
+                                                                            $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                                                                        }elseif ($comtype->name_th =="นาง") {
+                                                                            $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                                                                        }elseif ($comtype->name_th =="นางสาว") {
+                                                                            $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                                                                        }else{
+                                                                            $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                                                                        }
+                                                                    }
+                                                                @endphp
                                                                 <option value=""></option>
                                                                 <option value="{{ $item->Quotation_ID }}">
-                                                                    Proposal : {{$item->Quotation_ID}}
+                                                                    Proposal : {{$item->Quotation_ID}} {{$fullName}}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -82,8 +116,8 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Bank received </label>
-                                                        <input type="text" class="form-control" id="received" name="received" disabled>
+                                                        <label for="Status">Branch No. </label>
+                                                        <input type="number" class="form-control" id="branch" name="branch">
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Cheque Number</label>
@@ -91,29 +125,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
-                                                        <input type="text" class="form-control" id="Amount" name="Amount">
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="receive">Receive Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="receive_date" id="receive_date" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Issue_Date">Issue Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="Issue_Date" id="Issue_Date" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
+                                                        <input type="number" class="form-control" id="Amount" name="Amount">
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
@@ -162,6 +174,7 @@
                                                     <div class="row">
                                                         <div class="col-sm-4 col-12 ml-auto">
                                                             <b >Cheque ID : <span id="Cheque_ID_View"></span></b>
+                                                            <b>Issue Date : <span id="Issue_dateView"></span></b>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -175,8 +188,8 @@
                                                         <input type="text" class="form-control" id="BankChequeview" name="received" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Bank received </label>
-                                                        <input type="text" class="form-control" id="Bankreceivedview" name="received" disabled>
+                                                        <label for="Status">Branch No. </label>
+                                                        <input type="text" class="form-control" id="branchview" name="branch" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Cheque Number</label>
@@ -187,26 +200,12 @@
                                                         <input type="text" class="form-control" id="Amountview" name="Amount" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="receive">Receive Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="receive_date" id="receive_dateview" placeholder="DD/MM/YYYY" class="form-control" disabled>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
+                                                        <label for="Status">Deduct Date</label>
+                                                        <input type="text" class="form-control" id="deductdateview" name="deductdate" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Issue_Date">Issue Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="Issue_Date" id="Issue_Dateview" placeholder="DD/MM/YYYY" class="form-control" disabled>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
+                                                        <label for="Status">Receive Payment</label>
+                                                        <input type="text" class="form-control" id="receiveview" name="receive" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -236,7 +235,8 @@
                                                     <div class="col-sm-12 col-12">
                                                         <div class="row">
                                                             <div class="col-sm-4 col-12 ml-auto">
-                                                                <b >Cheque ID : <span id="Cheque_ID_Update"></span></b>
+                                                                <b>Cheque ID  : <span id="Cheque_ID_Update"></span></b>
+                                                                <b>Issue Date : <span id="Issue_date"></span></b>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -244,8 +244,41 @@
                                                         <label for="Status">Refer Proposal</label>
                                                         <select name="Refer" id="Referedit" class="select2" >
                                                             @foreach($invoice as $item)
+                                                            @php
+                                                                    $quotation =  DB::table('quotation')->where('Quotation_ID',$item->Quotation_ID)->first();
+                                                                    $companyid = $quotation->Company_ID; // เช่น "123-456"
+                                                                    $parts = explode('-', $companyid); // แยกด้วย "-"
+                                                                    $firstPart = $parts[0]; // ได้ค่าด้านหน้า เช่น "123"
+                                                                    if ($firstPart == 'C') {
+                                                                        $company =  DB::table('companys')->where('Profile_ID',$companyid)->first();
+                                                                        $Company_typeID=$company->Company_type;
+                                                                        $comtype = DB::table('master_documents')->where('id',$Company_typeID)->select('name_th', 'id')->first();
+                                                                        if ($comtype->name_th =="บริษัทจำกัด") {
+                                                                            $fullName = "บริษัท ". $company->Company_Name . " จำกัด";
+                                                                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                                                                            $fullName = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                                                                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                                                                            $fullName = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                                                                        }else{
+                                                                            $fullName = $comtype->name_th . $company->Company_Name;
+                                                                        }
+                                                                    }else {
+                                                                        $guestdata =  DB::table('guests')->where('Profile_ID',$companyid)->first();
+                                                                        $Company_typeID=$guestdata->Company_type;
+                                                                        $comtype = DB::table('master_documents')->where('id',$Company_typeID)->select('name_th', 'id')->first();
+                                                                        if ($comtype->name_th =="นาย") {
+                                                                            $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                                                                        }elseif ($comtype->name_th =="นาง") {
+                                                                            $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                                                                        }elseif ($comtype->name_th =="นางสาว") {
+                                                                            $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                                                                        }else{
+                                                                            $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                                                                        }
+                                                                    }
+                                                                @endphp
                                                                 <option value="{{ $item->Quotation_ID }}">
-                                                                    Refer Proposal : {{$item->Quotation_ID}}
+                                                                    Refer Proposal : {{$item->Quotation_ID}} {{$fullName}}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -261,8 +294,8 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Bank received </label>
-                                                        <input type="text" class="form-control" id="receivededit" name="received" disabled>
+                                                        <label for="Status">Branch No. </label>
+                                                        <input type="number" class="form-control" id="branchedit" name="branch">
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Cheque Number</label>
@@ -270,30 +303,8 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
-                                                        <input type="text" class="form-control" id="Amountedit" name="Amount" required>
+                                                        <input type="number" class="form-control" id="Amountedit" name="Amount" required>
                                                         <input type="hidden" class="form-control" id="ids" name="ids" required>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="receive">Receive Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="receive_date" id="receive_dateedit" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Issue_Date">Issue Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="Issue_Date" id="Issue_Dateedit" placeholder="DD/MM/YYYY" class="form-control" required>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
@@ -316,7 +327,7 @@
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><i class="fa fa-circle fa-xs"style="color: #64748b;" ></i> Cheque</a></li>{{--ประวัติการแก้ไข--}}
                         <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;" ></i> Await Deduct</a></li>
-                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;" ></i> Deducted</a></li>
+                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #198754;" ></i> Deducted</a></li>
                         <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;" ></i> Bounced Cheque</a></li>
                     </ul>
                     <div class="card mb-3">
@@ -328,13 +339,16 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
-                                                    <th>Refer Proposal</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th>Proposal ID</th>
                                                     <th data-priority="1">Bank Cheque</th>
                                                     <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Branch No</th>
                                                     <th class="text-center">Amount</th>
-                                                    <th class="text-center">Receive Date</th>
-                                                    <th class="text-center">Issue Date</th>
                                                     <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Deduct Date</th>
+                                                    <th class="text-center">Receive Payment</th>
+                                                    <th class="text-center">Deduct By</th>
                                                     <th class="text-center">Document status</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
@@ -346,7 +360,9 @@
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
                                                         </td>
-
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
                                                         <td style="text-align: left;">
                                                             {{$item->refer_proposal}}
                                                         </td>
@@ -356,17 +372,23 @@
                                                         <td style="text-align: center;">
                                                             {{$item->cheque_number}}
                                                         </td>
+                                                        <td style="text-align: center;" >
+                                                            {{$item->branch ?? '-'}}
+                                                        </td>
                                                         <td style="text-align: center;" class="target-class">
                                                             {{$item->amount}}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{$item->receive_date}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{$item->issue_date}}
-                                                        </td>
-                                                        <td style="text-align: center;">
                                                             {{ @$item->userOperated->name }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->deduct_date ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_payment ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{@$item->userDeduct->name ?? '-'}}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             @if ($item->status == 1)
@@ -409,13 +431,16 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
-                                                    <th>Refer Proposal</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th>Proposal ID</th>
                                                     <th data-priority="1">Bank Cheque</th>
                                                     <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Branch No</th>
                                                     <th class="text-center">Amount</th>
-                                                    <th class="text-center">Receive Date</th>
-                                                    <th class="text-center">Issue Date</th>
                                                     <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Deduct Date</th>
+                                                    <th class="text-center">Receive Payment</th>
+                                                    <th class="text-center">Deduct By</th>
                                                     <th class="text-center">Document status</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
@@ -427,7 +452,9 @@
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
                                                         </td>
-
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
                                                         <td style="text-align: left;">
                                                             {{$item->refer_proposal}}
                                                         </td>
@@ -437,17 +464,23 @@
                                                         <td style="text-align: center;">
                                                             {{$item->cheque_number}}
                                                         </td>
+                                                        <td style="text-align: center;" >
+                                                            {{$item->branch ?? '-'}}
+                                                        </td>
                                                         <td style="text-align: center;" class="target-class">
                                                             {{$item->amount}}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{$item->receive_date}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{$item->issue_date}}
-                                                        </td>
-                                                        <td style="text-align: center;">
                                                             {{ @$item->userOperated->name }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->deduct_date ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_payment ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{@$item->userDeduct->name ?? '-'}}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
@@ -470,24 +503,25 @@
                                                 @endif
                                             </tbody>
                                         </table>
-
                                     </div>
                                 </div>
 
                                 <div class="tab-pane fade "id="nav-Approved" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-
                                         <table id="ApprovedTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
-                                                    <th>Refer Proposal</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th>Proposal ID</th>
                                                     <th data-priority="1">Bank Cheque</th>
                                                     <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Branch No</th>
                                                     <th class="text-center">Amount</th>
-                                                    <th class="text-center">Receive Date</th>
-                                                    <th class="text-center">Issue Date</th>
                                                     <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Deduct Date</th>
+                                                    <th class="text-center">Receive Payment</th>
+                                                    <th class="text-center">Deduct By</th>
                                                     <th class="text-center">Document status</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
@@ -499,7 +533,9 @@
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
                                                         </td>
-
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
                                                         <td style="text-align: left;">
                                                             {{$item->refer_proposal}}
                                                         </td>
@@ -509,20 +545,26 @@
                                                         <td style="text-align: center;">
                                                             {{$item->cheque_number}}
                                                         </td>
+                                                        <td style="text-align: center;" >
+                                                            {{$item->branch ?? '-'}}
+                                                        </td>
                                                         <td style="text-align: center;" class="target-class">
                                                             {{$item->amount}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{$item->receive_date}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{$item->issue_date}}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             {{ @$item->userOperated->name }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
+                                                            {{$item->deduct_date ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_payment ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{@$item->userDeduct->name ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <span class="badge rounded-pill bg-success">Deducted</span>
                                                         </td>
                                                         {{-- Receive Cheque --}}
                                                         <td style="text-align: center;">
@@ -548,13 +590,16 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
-                                                    <th>Refer Proposal</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th>Proposal ID</th>
                                                     <th data-priority="1">Bank Cheque</th>
                                                     <th class="text-center" data-priority="1">Cheque Number</th>
+                                                    <th class="text-center">Branch No</th>
                                                     <th class="text-center">Amount</th>
-                                                    <th class="text-center">Receive Date</th>
-                                                    <th class="text-center">Issue Date</th>
                                                     <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Deduct Date</th>
+                                                    <th class="text-center">Receive Payment</th>
+                                                    <th class="text-center">Deduct By</th>
                                                     <th class="text-center">Document status</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
@@ -566,7 +611,9 @@
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
                                                         </td>
-
+                                                        <td style="text-align: center;">
+                                                            {{$item->issue_date}}
+                                                        </td>
                                                         <td style="text-align: left;">
                                                             {{$item->refer_proposal}}
                                                         </td>
@@ -576,20 +623,26 @@
                                                         <td style="text-align: center;">
                                                             {{$item->cheque_number}}
                                                         </td>
+                                                        <td style="text-align: center;" >
+                                                            {{$item->branch ?? '-'}}
+                                                        </td>
                                                         <td style="text-align: center;" class="target-class">
                                                             {{$item->amount}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{$item->receive_date}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{$item->issue_date}}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             {{ @$item->userOperated->name }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            <span class="badge rounded-pill "style="background-color: #FF6633"> Await Deduct</span>
+                                                            {{$item->deduct_date ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{$item->receive_payment ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{@$item->userDeduct->name ?? '-'}}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <span class="badge rounded-pill "style="background-color: #red">Bounced Cheque</span>
                                                         </td>
                                                         {{-- Receive Cheque --}}
                                                         <td style="text-align: center;">
@@ -674,20 +727,22 @@
                     var invoice = response.invoice;
                     var proposal = response.proposal;
                     var bank_cheque = response.bank_cheque;
-                    var bank_received = response.bank_received;
+                    var receive_payment	 = response.receive_payment;
                     var cheque_number = response.cheque_number;
                     var amount = response.amount;
-                    var receive_date = response.receive_date;
+                    var deduct_date = response.deduct_date;
+                    var branch = response.branch;
                     var issue_date = response.issue_date;
                     var Cheque_IDView = response.Cheque_ID;
                     var refer = 'อ้างอิงจาก Proposol : ' + proposal;
                     $('#Referview').val(refer);
                     $('#BankChequeview').val(bank_cheque);
-                    $('#Bankreceivedview').val(bank_received);
                     $('#chequeNumberview').val(cheque_number);
+                    $('#branchview').val(branch);
                     $('#Amountview').val(amount);
-                    $('#receive_dateview').val(receive_date);
-                    $('#Issue_Dateview').val(issue_date);
+                    $('#deductdateview').val(deduct_date);
+                    $('#receiveview').val(receive_payment);
+                    $('#Issue_dateView').text(issue_date);
                     $('#viewModal').modal('show');
                     $('#Cheque_ID_View').text(Cheque_IDView);
                 },
@@ -711,8 +766,8 @@
                     var bank_received = response.bank_received;
                     var cheque_number = response.cheque_number;
                     var amount = response.amount;
-                    var receive_date = response.receive_date;
                     var issue_date = response.issue_date;
+                    var branch = response.branch;
                     var Cheque_IDEdit = response.Cheque_ID;
                     console.log(proposal);
 
@@ -722,8 +777,8 @@
                     // $('#Bankreceivedview').val(bank_received);
                     $('#chequeNumberedit').val(cheque_number);
                     $('#Amountedit').val(amount);
-                    $('#receive_dateedit').val(receive_date);
-                    $('#Issue_Dateedit').val(issue_date);
+                    $('#branchedit').val(branch);
+                    $('#Issue_date').text(issue_date);
                     $('#editModal').modal('show');
                     $('#Cheque_ID_Update').text(Cheque_IDEdit);
                 },
