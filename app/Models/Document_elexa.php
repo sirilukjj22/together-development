@@ -14,6 +14,7 @@ class Document_elexa extends Model
         'doc_no',
         'issue_date',
         'sms_id',
+        'debit_amount',
         'status_lock',
         'status_paid',
         'created_by',

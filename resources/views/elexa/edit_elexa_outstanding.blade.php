@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="flex-end">
-                <button type="button" class="bt-tg-normal" id="btn-modal-add" data-bs-toggle="modal" data-bs-target="#ElexaRevenueList">Add </button>
+                <button type="button" class="bt-tg-normal btn-sm" id="btn-modal-add" data-bs-toggle="modal" data-bs-target="#ElexaRevenueList">Add </button>
             </div>
         </div>
 
@@ -118,7 +118,7 @@
                 <tfoot style="background-color: #d7ebe1; font-weight: bold">
                     <tr>
                         <td colspan="2" class="text-center" style="padding: 10px">Total</td>
-                        <td class="text-end" id="tfoot-total-debit">{{ number_format($total_debit, 2) }}</span></td>
+                        <td class="text-end" id="tfoot-total-debit">{{ number_format(($total_debit - (isset($document_query) && !empty($document_query) ? $document_query->debit_amount : 0)), 2) }}</span></td>
                         <td></td>
                     </tr>
                 </tfoot>
@@ -148,6 +148,10 @@
             </button>
             </div>
             <div class="modal-body">
+            <div class="flex-end">
+                <input type="text" id="input-debit-amount" class="form-control mt-2" style="width: 100px; height: 35px;">
+                <button type="button" id="btn-debit-amount" class="bt-tg-normal sm">Debit</button>
+            </div>
             <div class="mt-2 top-3-card">
                 <div>
                     <span>Total Selected </span>
@@ -178,6 +182,14 @@
                     <tbody>
 
                     </tbody>
+                    <tfoot style="background-color: #d7ebe1; font-weight: bold">
+                        <tr>
+                            <td>Total</td>
+                            <td></td>
+                            <td class="text-end"><span id="tfoot-total-outstanding-select">0.00</span></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <div class="wrap-table-together">
@@ -217,16 +229,19 @@
                 </div>
                 <table id="myDataTableOutstanding" class="table-style table-together" style="width: 100%;">
                     <thead>
-                        <tr class="text-capitalize">
+                        <tr>
                             <th data-priority="1">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="select-all-outstanding" id="select-all-outstanding">
-                                    <label class="form-check-label" for="select-all-outstanding">Select All</label>
+                                    <label class="form-check-label" for="select-all-outstanding">Select </label>
                                 </div>                                
                             </th>
                             <th data-priority="2">#</th>
                             <th data-priority="1">Date</th>
                             <th data-priority="1">Order ID</th>
+                            <th data-priority="1">EV Charge</th>
+                            <th data-priority="1">EV Fee</th>
+                            <th data-priority="1">EV VAT</th>
                             <th data-priority="1">amount</th>
                             <th data-priority="2">Action</th>
                         </tr>
@@ -238,6 +253,9 @@
                         <tr>
                             <td></td>
                             <td style="padding: 10px">Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td><span id="tfoot-total-outstanding">0.00</span></td>
@@ -270,6 +288,7 @@
     <input type="hidden" name="doc_no" value="{{ $document_no ?? '' }}">
     <input type="hidden" name="issue_date" value="{{ date('Y-m-d') }}">
     <input type="hidden" id="revenue_id" name="sms_id" value="{{ isset($elexa_revenue) ? $elexa_revenue->id : 0 }}"> <!-- ID รายได้ที่มาจาก SMS -->
+    <input type="hidden" id="debit-out-amount" name="debit_out_amount" value="0">
 
     @foreach ($elexa_all as $key => $item)
         @if ($item->receive_payment == 1 && $item->sms_revenue == $elexa_revenue->id)
@@ -310,6 +329,22 @@
     //     table.columns.adjust().responsive.recalc();     
     // });
 
+    $(document).on('click', '#btn-debit-amount', function () {
+        var debit_amount = Number($('#input-debit-amount').val());
+        var debit_amount_old = Number($('#debit-out-amount').val());
+        var sms_amount = Number($('#total_revenue_amount').val());
+        var selected_amount = Number($('#input-selected-amount').val()) - debit_amount;
+        var outstanding = Number($('#outstanding_amount').val());
+
+        if (debit_amount > 0 && debit_amount_old == 0) {
+            $('#debit-out-amount').val(debit_amount);
+            $('#outstanding_amount').val((sms_amount - selected_amount));
+            $('#txt-total-selected-outstanding').text(currencyFormat((sms_amount - selected_amount)));
+            $('#txt-total-selected-amount').text(currencyFormat(selected_amount));
+            $('#input-selected-amount').val(selected_amount);
+        }
+    });
+
     $(document).on('click', '#btn-modal-add', function () {
         selectedItems = [];
         getTableOutstanding();
@@ -323,6 +358,13 @@
     // Number Format
     function currencyFormat(num) {
         return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    }
+
+    function currencyFormat2(num) {
+        let str = num.toString();
+        let parts = str.split("."); // แยกส่วนจำนวนเต็มและทศนิยม
+        parts[1] = parts[1] ? parts[1].slice(0, 2) : "00"; // ตัดทศนิยมให้เหลือ 2 ตำแหน่ง
+        return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + parts[1];
     }
 
     // Function to adjust DataTable
@@ -361,6 +403,7 @@
         var month = $('#elexaMonthFilter').val();
         var select_all = $('#select-all-outstanding').prop('checked');
         var receiveID = $('[name="receive_select_id[]"]').map(function() { return $(this).val(); }).get();
+        var confirmReceiveID = $('[name="receive_id[]"]').map(function() { return $(this).val(); }).get();
 
         var table = $("#myDataTableOutstanding").DataTable({
             paging: true,
@@ -368,7 +411,7 @@
             ordering: false,
             info: true,
             destroy: true, // ทำลายก่อนสร้างใหม่
-            serverSide: false,
+            // serverSide: false,
             responsive: {
                 details: {
                     type: "column",
@@ -385,6 +428,7 @@
                 data: {
                     year: year,
                     month: month,
+                    confirmReceiveID: confirmReceiveID,
                     receiveID: receiveID,
                     select_all: select_all
                 },
@@ -398,12 +442,24 @@
                 $('#tfoot-total-outstanding').text(totalAmount);
             },
             columnDefs: [
-                { targets: [4], className: 'text-end' },
+                { targets: [4, 5, 6, 7], className: 'text-end' },
                 {
-                    targets: [4],
+                    targets: [5],
                     createdCell: function(td, cellData, rowData, row, col) {
                         if ($.isNumeric(cellData)) {
                             $(td).text(parseFloat(cellData).toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }));
+                        }
+                    }
+                },
+                {
+                    targets: [4, 6, 7],
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        if ($.isNumeric(cellData)) {
+                            let formattedNumber = Math.floor(cellData * 100) / 100; // ตัดเศษออกที่ทศนิยม 2 ตำแหน่ง
+                            $(td).text(formattedNumber.toLocaleString("en-US", {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             }));
@@ -416,6 +472,9 @@
                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
                 { data: 'date', "render": function (data, type, full) { return moment(data).format('DD/MM/YYYY') } },
                 { data: 'order_id' },
+                { data: 'ev_charge' },
+                { data: 'ev_fee' },
+                { data: 'ev_vat' },
                 { data: 'amount' },
                 { data: 'btn_action' },
             ],
@@ -454,7 +513,7 @@
             alert('กรุณาเลือกอย่างน้อยหนึ่งรายการ');
             return;
         } else {
-            $('#myDataTableOutstandingSelect').DataTable().clear().draw();
+            // $('#myDataTableOutstandingSelect').DataTable().clear().draw();
 
             if ($('#select-all-outstanding').prop('checked')) {
                 var year = $('#elexaYearFilter').val();
@@ -475,6 +534,7 @@
                     async: false,
                     success: function(response) {
                         if (response.status == 200) {
+                            var sumTotalAmount = 0;
                             var status = "";
                             var table = $('#myDataTableOutstandingSelect').DataTable(
                                     {
@@ -482,7 +542,7 @@
                                         paging: true,
                                         info: true,
                                         order: true,
-                                        serverSide: false,
+                                        // serverSide: false,
                                         destroy: true,
                                         responsive: {
                                         details: {
@@ -519,6 +579,8 @@
                             $('input[type="search"]').attr("placeholder", "Type to search...");
                             $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
 
+                            table.page('last').draw('page');
+
                             response.data.forEach(function(value) {
                                 // Update ยอดที่เลือก
                                 var elexa_revenue_outstanding = Number($('#input-outstanding-amount').val());
@@ -538,7 +600,11 @@
                                     ]
                                 ).draw();
 
+                                table.page('last').draw('page');
+
                                 $('#form-elexa-select').append('<input type="hidden" id="receive-select-id-' + value.id + '" name="receive_select_id[]" value="' + value.id + '">');
+
+                                sumTotalAmount += value.ev_revenue;
 
                                 $('#input-selected-item').val(elexa_num + 1);
                                 $('#input-selected-amount').val(elexa_revenue_amount + value.ev_revenue);
@@ -549,6 +615,9 @@
                                 $('#txt-total-selected-outstanding').text(currencyFormat(elexa_revenue_outstanding - value.ev_revenue));
                                 $('#tfoot-total-outstanding').text(currencyFormat(elexa_revenue_outstanding - value.ev_revenue));
                             });
+
+                            $('#tfoot-total-outstanding-select').text(currencyFormat(Number($('#input-selected-amount').val())));
+                            
                         } else {
                             return Swal.fire({
                                 icon: 'error',
@@ -564,99 +633,103 @@
 
                 $('#select-all-outstanding').prop('checked', false);
                 selectedItems = [];
-            }
 
-            selectedItems.forEach(function(value) {
-                // Update ยอดที่เลือก
-                // var elexa_revenue = Number($('#elexa_revenue'+id).val());
-                var elexa_revenue_outstanding = Number($('#input-outstanding-amount').val());
-                var elexa_num = Number($('#input-selected-item').val());
-                var elexa_revenue_amount = Number($('#input-selected-amount').val());
-                // END
+            } else {
+                selectedItems.forEach(function(value) {
+                    // Update ยอดที่เลือก
+                    // var elexa_revenue = Number($('#elexa_revenue'+id).val());
+                    var elexa_revenue_outstanding = Number($('#input-outstanding-amount').val());
+                    var elexa_num = Number($('#input-selected-item').val());
+                    var elexa_revenue_amount = Number($('#input-selected-amount').val());
+                    // END
 
-                // ถ้าเลือกไว้ใน selectedItems ให้ append ค่าไปยังฟอร์ม
-                if (value != "select-all-outstanding") {
-                    $('#form-elexa-select').append('<input type="hidden" id="receive-select-id-' + value + '" name="receive_select_id[]" value="' + value + '">');
+                    // ถ้าเลือกไว้ใน selectedItems ให้ append ค่าไปยังฟอร์ม
+                    if (value != "select-all-outstanding") {
+                        $('#form-elexa-select').append('<input type="hidden" id="receive-select-id-' + value + '" name="receive_select_id[]" value="' + value + '">');
 
-                    jQuery.ajax({
-                        type: "GET",
-                        url: "{!! url('debit-select-elexa-outstanding/"+value+"') !!}",
-                        datatype: "JSON",
-                        async: false,
-                        success: function(response) {
-                            if (response.data) {
-                                var status = "";
-                                var table = $('#myDataTableOutstandingSelect').DataTable(
-                                        {
-                                            searching: true,
-                                            paging: true,
-                                            info: true,
-                                            order: true,
-                                            serverSide: false,
-                                            destroy: true,
-                                            responsive: {
-                                            details: {
-                                                    type: "column",
-                                                    target: "tr",
-                                                },
-                                            },
-                                            initComplete: function () {
-                                                $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
-                                            },
-                                            columnDefs: [
-                                                { targets: [3], className: 'dt-center text-center', },
-                                                { targets: [2], className: 'text-end', },
-                                                {
-                                                    targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
-                                                    createdCell: function (td, cellData, rowData, row, col) {
-                                                        // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
-                                                        if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
-                                                            $(td).text(
-                                                            parseFloat(cellData).toLocaleString("en-US", {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2,
-                                                            })
-                                                            );
-                                                        }
+                        jQuery.ajax({
+                            type: "GET",
+                            url: "{!! url('debit-select-elexa-outstanding/"+value+"') !!}",
+                            datatype: "JSON",
+                            async: false,
+                            success: function(response) {
+                                if (response.data) {
+                                    var status = "";
+                                    var table = $('#myDataTableOutstandingSelect').DataTable(
+                                            {
+                                                searching: true,
+                                                paging: true,
+                                                info: true,
+                                                order: true,
+                                                serverSide: false,
+                                                destroy: true,
+                                                responsive: {
+                                                details: {
+                                                        type: "column",
+                                                        target: "tr",
                                                     },
                                                 },
-                                            ],
-                                        }
-                                    );
+                                                initComplete: function () {
+                                                    $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+                                                },
+                                                columnDefs: [
+                                                    { targets: [3], className: 'dt-center text-center', },
+                                                    { targets: [2], className: 'text-end', },
+                                                    {
+                                                        targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                                        createdCell: function (td, cellData, rowData, row, col) {
+                                                            // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                                            if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                                $(td).text(
+                                                                parseFloat(cellData).toLocaleString("en-US", {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2,
+                                                                })
+                                                                );
+                                                            }
+                                                        },
+                                                    },
+                                                ],
+                                            }
+                                        );
 
-                                $(window).on("resize", adjustDataTable);
+                                    $(window).on("resize", adjustDataTable);
 
-                                $('input[type="search"]').attr("placeholder", "Type to search...");
-                                $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+                                    $('input[type="search"]').attr("placeholder", "Type to search...");
+                                    $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
 
-                                table.rows.add(
-                                    [
+                                    table.rows.add(
                                         [
-                                            moment(response.data.date).format('DD/MM/YYYY'),
-                                            response.data.batch,
-                                            currencyFormat(response.data.ev_revenue),
-                                            '<button type="button" class="btn" id="btn-receive-' + value + '" value="1"' +
-                                            'onclick="select_receive_payment(this, ' + value + ', ' + response.data.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
+                                            [
+                                                moment(response.data.date).format('DD/MM/YYYY'),
+                                                response.data.batch,
+                                                currencyFormat(response.data.ev_revenue),
+                                                '<button type="button" class="btn" id="btn-receive-' + value + '" value="1"' +
+                                                'onclick="select_receive_payment(this, ' + value + ', ' + response.data.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
+                                            ]
                                         ]
-                                    ]
-                                ).draw();
+                                    ).draw();
 
-                                $('#input-selected-item').val(elexa_num + 1);
-                                $('#input-selected-amount').val(elexa_revenue_amount + response.data.ev_revenue);
-                                $('#input-outstanding-amount').val(elexa_revenue_outstanding - response.data.ev_revenue);
+                                    table.page('last').draw('page');
 
-                                $('#txt-total-selected').text(elexa_num + 1);
-                                $('#txt-total-selected-amount').text(currencyFormat(elexa_revenue_amount + response.data.ev_revenue));
-                                $('#txt-total-selected-outstanding').text(currencyFormat(elexa_revenue_outstanding - response.data.ev_revenue));
-                                $('#tfoot-total-outstanding').text(currencyFormat(elexa_revenue_outstanding - response.data.ev_revenue));
+                                    $('#input-selected-item').val(elexa_num + 1);
+                                    $('#input-selected-amount').val(elexa_revenue_amount + response.data.ev_revenue);
+                                    $('#input-outstanding-amount').val(elexa_revenue_outstanding - response.data.ev_revenue);
+
+                                    $('#txt-total-selected').text(elexa_num + 1);
+                                    $('#txt-total-selected-amount').text(currencyFormat(elexa_revenue_amount + response.data.ev_revenue));
+                                    $('#txt-total-selected-outstanding').text(currencyFormat(elexa_revenue_outstanding - response.data.ev_revenue));
+                                    $('#tfoot-total-outstanding').text(currencyFormat(elexa_revenue_outstanding - response.data.ev_revenue));
+                                }
                             }
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
         }
 
         // เรียกใช้ getTableOutstanding() เพื่อรีเฟรช DataTable
+        selectedItems = [];
         getTableOutstanding();
     });
 
@@ -687,6 +760,7 @@
                 $('#txt-total-selected-amount').text(currencyFormat(elexa_revenue_amount + amount));
                 $('#txt-total-selected-outstanding').text(currencyFormat(elexa_revenue_outstanding - amount));
                 $('#tfoot-total-outstanding').text(currencyFormat(elexa_revenue_outstanding - amount));
+                $('#tfoot-total-outstanding-select').text(currencyFormat(elexa_revenue_amount + amount));
                 // END
 
                 $('#total_receive_payment').val(Number(total_receive_payment + amount).toFixed(2));
@@ -713,14 +787,15 @@
                     success: function(response) {
                         if (response.data) {
                             var status = "";
-                            $('#myDataTableOutstandingSelect').DataTable().destroy();
                             var table = $('#myDataTableOutstandingSelect').DataTable(
                                     {
                                         searching: true,
                                         paging: true,
                                         info: true,
                                         order: true,
-                                        serverSide: false,
+                                        destroy: true,
+                                        // pageLength: -1,
+                                        // serverSide: false,
                                         responsive: {
                                         details: {
                                                 type: "column",
@@ -731,12 +806,8 @@
                                             $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
                                         },
                                         columnDefs: [
-                                            {
-                                                targets: [3], className: 'dt-center text-center',
-                                            },
-                                            {
-                                                targets: [2], className: 'text-end',
-                                            },
+                                            { targets: [3], className: 'dt-center text-center', },
+                                            { targets: [2], className: 'text-end', },
                                             {
                                                 targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
                                                 createdCell: function (td, cellData, rowData, row, col) {
@@ -771,6 +842,8 @@
                                     ]
                                 ]
                             ).draw();
+
+                            table.page('last').draw('page');
                         }
                     }
                 });
@@ -803,6 +876,8 @@
 
                 $('#balance').text(currencyFormat(Number(total_revenue_amount - (total_receive_payment - amount)))); // ยอดคงเหลือ Dashboard
 
+                $('#tfoot-total-outstanding-select').text(currencyFormat(elexa_revenue_amount - amount));
+
                 $('#receive-select-id-' + id).remove();
                 // $('#receive-id-' + id).remove();
 
@@ -824,107 +899,132 @@
     }
 
     function btnConfirm() {
-        var total_debit = Number($('#total_receive_payment').val());
+        var total_debit = 0;
+        var debit_out = Number($('#debit-out-amount').val());
+        var sms_amount = Number($('#total_revenue_amount').val());
+        var total_receive_payment = Number($('#total_receive_payment').val());
+        var total_selected_amount = Number($('#input-selected-amount').val());
         var tableSelect = $('#myDataTableOutstandingSelect').DataTable();
-        tableSelect.clear().draw();
 
-        jQuery.ajax({
-            type: "POST",
-            url: "{!! url('debit-confirm-select-elexa-outstanding') !!}",
-            datatype: "JSON",
-            data: $('#form-elexa-select').serialize(),
-            async: false,
-            success: function(response) {
-                if (response.status == 200 && response.data && typeof response.data === 'object') {
+        // total_debit += total_selected_amount;
 
-                    Swal.fire({
-                        title: 'กำลังโหลด...',
-                        didOpen: () => {
-                            Swal.showLoading(); // แสดงการโหลด
-                        },
-                        timer: 500, // ปิดหลังจาก 0.5 วินาที
-                        timerProgressBar: true, // แสดงแถบความคืบหน้า
-                    });
+        if (total_selected_amount == sms_amount) {
+            tableSelect.clear().draw();
 
-                    $('#myDataTableDebit').DataTable().destroy();
-                    var table = $('#myDataTableDebit').DataTable(
-                            {
-                                searching: true,
-                                paging: true,
-                                info: true,
-                                order: true,
-                                serverSide: false,
-                                responsive: {
-                                details: {
-                                        type: "column",
-                                        target: "tr",
-                                    },
-                                },
-                                columnDefs: [
-                                    {
-                                        targets: [3], className: 'dt-center text-center',
-                                    },
-                                    {
-                                        targets: [2], className: 'text-end',
-                                    },
-                                    {
-                                        targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
-                                        createdCell: function (td, cellData, rowData, row, col) {
-                                            // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
-                                            if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
-                                                $(td).text(
-                                                parseFloat(cellData).toLocaleString("en-US", {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2,
-                                                })
-                                                );
-                                            }
+            jQuery.ajax({
+                type: "POST",
+                url: "{!! url('debit-confirm-select-elexa-outstanding') !!}",
+                datatype: "JSON",
+                data: $('#form-elexa-select').serialize(),
+                async: false,
+                success: function(response) {
+                    if (response.status == 200 && response.data && typeof response.data === 'object') {
+    
+                        Swal.fire({
+                            title: 'กำลังโหลด...',
+                            didOpen: () => {
+                                Swal.showLoading(); // แสดงการโหลด
+                            },
+                            timer: 500, // ปิดหลังจาก 0.5 วินาที
+                            timerProgressBar: true, // แสดงแถบความคืบหน้า
+                        });
+    
+                        var table = $('#myDataTableDebit').DataTable(
+                                {
+                                    searching: true,
+                                    paging: true,
+                                    info: true,
+                                    order: true,
+                                    destroy: true,
+                                    serverSide: false,
+                                    responsive: {
+                                    details: {
+                                            type: "column",
+                                            target: "tr",
                                         },
                                     },
-                                ],
-                            }
-                        );
-
-                    $(window).on("resize", adjustDataTable);
-
-                    $('input[type="search"]').attr("placeholder", "Type to search...");
-                    $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
-
-                    response.data.forEach(function(item) {
-                        $('#form-elexa').append('<input type="hidden" id="receive-id-' + item.id + '" name="receive_id[]" value="' + item.id + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
-                        $('#receive-select-id-' + item.id).remove(); // ลบค่าใน form-elexa-select
-
-                        table.rows.add(
-                            [
+                                    columnDefs: [
+                                        {
+                                            targets: [3], className: 'dt-center text-center',
+                                        },
+                                        {
+                                            targets: [2], className: 'text-end',
+                                        },
+                                        {
+                                            targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                                if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                                    $(td).text(
+                                                    parseFloat(cellData).toLocaleString("en-US", {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    })
+                                                    );
+                                                }
+                                            },
+                                        },
+                                    ],
+                                }
+                            );
+    
+                        $(window).on("resize", adjustDataTable);
+    
+                        $('input[type="search"]').attr("placeholder", "Type to search...");
+                        $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+    
+                        response.data.forEach(function(item) {
+                            $('#form-elexa').append('<input type="hidden" id="receive-id-' + item.id + '" name="receive_id[]" value="' + item.id + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
+                            $('#receive-select-id-' + item.id).remove(); // ลบค่าใน form-elexa-select
+    
+                            table.rows.add(
                                 [
-                                    moment(item.date).format('DD/MM/YYYY'),
-                                    item.batch,
-                                    currencyFormat(item.ev_revenue),
-                                    '<button type="button" class="btn" id="btn-receive-' + item.id + '" value="1"' +
-                                    'onclick="delete_receive_payment(this, ' + item.id + ', ' + item.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
+                                    [
+                                        moment(item.date).format('DD/MM/YYYY'),
+                                        item.batch,
+                                        currencyFormat(item.ev_revenue),
+                                        '<button type="button" class="btn" id="btn-receive-' + item.id + '" value="1"' +
+                                        'onclick="delete_receive_payment(this, ' + item.id + ', ' + item.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
+                                    ]
                                 ]
-                            ]
-                        ).draw();
-                    });
-
-                    $('#ElexaRevenueList').modal('hide');
-                    $('#input-selected-item').val(0);
-                    $('#input-selected-amount').val(0);
-                    $('#total_receive_payment').val(total_debit);
-
-                    $('#txt-total-selected').text(0);
-                    $('#txt-total-selected-amount').text(currencyFormat(0)); 
-                    $('#tfoot-total-debit').text(currencyFormat(total_debit));
-                } else {
-                    Swal.fire({
-                        title: 'กรุณาเลือกข้อมูลก่อนยืนยัน',
-                        text: 'ไม่สามารถโหลดข้อมูลได้',
-                        icon: 'info',
-                        confirmButtonText: 'OK'
-                    });
+                            ).draw();
+    
+                            total_debit += item.ev_revenue;
+                        });
+    
+                        $('#ElexaRevenueList').modal('hide');
+                        $('#input-selected-item').val(0);
+                        $('#input-selected-amount').val(0);
+                        $('#total_receive_payment').val(total_debit - debit_out);
+    
+                        $('#txt-total-selected').text(0);
+                        $('#txt-total-selected-amount').text(currencyFormat(0)); 
+                        $('#tfoot-total-debit').text(currencyFormat(total_debit - debit_out));
+                    } else {
+                        Swal.fire({
+                            title: 'กรุณาเลือกข้อมูลก่อนยืนยัน',
+                            text: 'ไม่สามารถโหลดข้อมูลได้',
+                            icon: 'info',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 }
+            });
+        } else {
+            if (total_selected_amount > sms_amount) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่สามารถบันทึกข้อมูลได้',
+                    text: 'ยอด Elexa EGAT Outstanding ที่เลือกมากกว่า Elexa EGAT Revenue!',
+                });
+            } else {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่สามารถบันทึกข้อมูลได้',
+                    text: 'ยอด Elexa EGAT Outstanding ที่เลือกน้อยกว่า Elexa EGAT Revenue!',
+                });
             }
-        });
+        }
     }
 
     // ปุ่มลบรายการตารางที่ยืนยันแล้ว
