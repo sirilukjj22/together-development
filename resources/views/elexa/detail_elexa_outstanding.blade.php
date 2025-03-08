@@ -85,7 +85,6 @@
                         <th data-priority="1">Date</th>
                         <th data-priority="1">Order ID</th>
                         <th data-priority="1">amount</th>
-                        <th data-priority="3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,24 +94,23 @@
                     @foreach ($elexa_outstanding as $key => $item)
                         <tr>
                             <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                            <td>{{ $item->batch }}</td>
+                            <td class="text-start">{{ $item->batch }}</td>
                             <td class="text-end target-class">{{ $item->ev_revenue }}</td>
-                            <td>
-                                <a href="#" onclick="delete_receive_payment(this, {{ $item->id}}, {{ $item->ev_revenue }})">
-                                    <i class="fa fa-trash-o"></i>
-                                </a>
-                            </td>
                         </tr>
                         <?php 
                             $total_debit += $item->ev_revenue; 
                         ?>
                     @endforeach
+                    <tr>
+                        <td>{{ Carbon\Carbon::parse(@$elexa_revenue->DocumentNoElexa->issue_date)->format('d/m/Y') }}</td>
+                        <td class="text-start">Deposit Revenue</td>
+                        <td class="text-end target-class">-{{ @$elexa_revenue->DocumentNoElexa->debit_amount }}</td>
+                    </tr>
                 </tbody>
                 <tfoot style="background-color: #d7ebe1; font-weight: bold">
                     <tr>
-                        <td colspan="2" class="text-center" style="padding: 10px">Total</td>
-                        <td class="text-end"><span id="txt-total-agodaDebitDetail">{{ number_format($total_debit, 2) }}</span></td>
-                        <td></td>
+                        <td colspan="2" class="text-start" style="padding: 10px">Total</td>
+                        <td class="text-end"><span id="txt-total-agodaDebitDetail">{{ number_format(($total_debit - @$elexa_revenue->DocumentNoElexa->debit_amount ?? 0), 2) }}</span></td>
                     </tr>
                 </tfoot>
             </table>

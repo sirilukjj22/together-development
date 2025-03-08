@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class amphures extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'code',
         'name_th',

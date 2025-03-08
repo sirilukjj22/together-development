@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Quotation extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'quotation';
     protected $fillable = [
         'Quotation_ID',

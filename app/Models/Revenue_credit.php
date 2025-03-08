@@ -9,6 +9,7 @@ class Revenue_credit extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'revenue_credit';
     protected $fillable = [
         'revenue_id',

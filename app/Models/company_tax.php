@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class company_tax extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'company_tax';
     protected $fillable = [
         'ComTax_ID',

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class proposal_overbill extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'proposal_overbill';
     protected $fillable = [
         'Overbill_ID',

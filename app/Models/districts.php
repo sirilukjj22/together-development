@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class districts extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'zip_code',
         'name_th',

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class confirmation_request extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'confirmation_requests';
     protected $fillable = [
         'requester_id',

@@ -13,6 +13,7 @@ class Log_agoda extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'log_agoda';
     protected $fillable = [
         'document_id',

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Freelancer_checked extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'freelancer_checkeds';
     protected $fillable = [
         'prefix',

@@ -9,6 +9,7 @@ class Document_elexa extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'document_elexa';
     protected $fillable = [
         'doc_no',

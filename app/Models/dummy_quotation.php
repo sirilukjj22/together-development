@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class dummy_quotation extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'dummy_quotation';
     protected $fillable = [
         'DummyNo',

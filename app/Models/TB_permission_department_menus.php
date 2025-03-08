@@ -9,6 +9,7 @@ class TB_permission_department_menus extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'tb_permission_department_menu';
     protected $fillable = [
         'department_id',

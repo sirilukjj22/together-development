@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="flex-end">
-                <button type="button" class="bt-tg-normal btn-sm" id="btn-modal-add" data-bs-toggle="modal" data-bs-target="#ElexaRevenueList">Add </button>
+                <button type="button" class="bt-tg-normal sm" id="btn-modal-add">Add </button>
             </div>
         </div>
 
@@ -101,7 +101,7 @@
                     @foreach ($elexa_debit_revenue as $key => $item)
                         <tr id="tr_row_{{ $item->id }}" class="checkbox-debit-outstanding{{ $key_num += 1 }}">
                             <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                            <td>{{ $item->batch }}</td>
+                            <td class="text-start">{{ $item->batch }}</td>
                             <td class="text-end target-class">{{ $item->ev_revenue }}</td>
                             <td>
                                 <a href="#" onclick="delete_receive_payment(this, {{ $item->id}}, {{ $item->ev_revenue }})">
@@ -114,11 +114,27 @@
                             $debit_amount += 1;
                         ?>
                     @endforeach
+                    
+                    @if (!empty($elexa_debit_out))
+                        @foreach ($elexa_debit_out as $key => $item)
+                            <tr>
+                                <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                <td class="text-start">Debit Revenue</td>
+                                <td class="text-end target-class">-{{ $item->amount }}</td>
+                                <td>
+                                    <button type="button" class="btn" value="1" onclick="delete_debit(this, {{ $key }}, {{ $item->amount }})"><i class="fa fa-trash-o"></i></button>
+                                </td>
+                            </tr>
+                            <?php 
+                                $total_debit -= $item->amount; 
+                            ?>
+                        @endforeach
+                    @endif
                 </tbody>
                 <tfoot style="background-color: #d7ebe1; font-weight: bold">
                     <tr>
                         <td colspan="2" class="text-center" style="padding: 10px">Total</td>
-                        <td class="text-end" id="tfoot-total-debit">{{ number_format(($total_debit - (isset($document_query) && !empty($document_query) ? $document_query->debit_amount : 0)), 2) }}</span></td>
+                        <td class="text-end" id="tfoot-total-debit">{{ number_format($total_debit, 2) }}</span></td>
                         <td></td>
                     </tr>
                 </tfoot>
@@ -149,7 +165,7 @@
             </div>
             <div class="modal-body">
             <div class="flex-end">
-                <input type="text" id="input-debit-amount" class="form-control mt-2" style="width: 100px; height: 35px;">
+                {{-- <input type="text" id="input-debit-amount" class="form-control mt-2" style="width: 100px; height: 35px;"> --}}
                 <button type="button" id="btn-debit-amount" class="bt-tg-normal sm">Debit</button>
             </div>
             <div class="mt-2 top-3-card">
@@ -159,14 +175,24 @@
                     <b><span id="txt-total-selected">0</span></b>
                 </div>
                 <div>
+                    <span>Total Debit </span>
+                    <br />
+                    <b><span id="txt-total-debit-revenue">0</span></b>
+                </div>
+                <div>
                     <span>Total Selected Amount</span>
                     <br />
                     <b id="txt-total-selected-amount">0.00</b>
                 </div>
                 <div>
+                    <span>Total Debit Amount</span>
+                    <br />
+                    <b id="txt-total-debit-amount">0.00</b>
+                </div>
+                <div>
                     <span>Outstanding </span>
                     <br />
-                    <b id="txt-total-selected-outstanding">{{ number_format(isset($elexa_revenue) ? $elexa_revenue->amount : 0, 2) }}</b>
+                    <b id="txt-total-selected-outstanding">{{ number_format(round($elexa_revenue->amount - $total_debit, 2), 2) }}</b>
                 </div>
             </div>
             <div class="wrap-table-together mt-3">
@@ -273,32 +299,72 @@
     </div>
 </div>
 
-<input type="hidden" id="total_receive_payment" value="{{ round($total_debit, 2) }}"> <!-- ยอดรายการที่เลือกทั้งหมด -->
+<div class="modal fade" id="ElexaDebitRevenue" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="formModalLabel">Debit Revenue</h5>
+            {{-- <button type="button" style="border: 1px solid rgb(196, 194, 194);border-radius: 5px; width: 35px;" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true" style="font-size: 24px;">&times;</span>
+            </button> --}}
+            </div>
+            <div class="modal-body">
+                <div class="col-12 mt-2">
+                    <div class="col-md-6">
+                        <label for="">Debit Amount</label>
+                        <input type="text" class="form-control" name="" id="input-debit-amount" placeholder="0.00">
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <label for="">Remark</label>
+                        <textarea class="form-control" name="" id="input-debit-remark" cols="30" rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="bt-tg-normal bt-grey sm mx-2" id="btn-close-debit" data-bs-dismiss="modal"> Close </button>
+                <button type="button" class="bt-tg-normal sm" onclick="btnConfirmDebitRevenue()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="total_receive_payment" value="{{ $total_debit }}"> <!-- ยอดรายการที่เลือกทั้งหมด -->
 <input type="hidden" id="total_revenue_amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}"> <!-- ยอดจาก SMS -->
 <input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
 <input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
 
 <!-- Total Selected, Total Selected Amount, Outstanding -->
-<input type="hidden" id="input-outstanding-amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
+<input type="hidden" id="input-outstanding-amount" value="{{ round($elexa_revenue->amount - $total_debit, 2) }}">
 <input type="hidden" id="input-selected-amount" value="0">
 <input type="hidden" id="input-selected-item" value="0">
+
+<!-- Debit Revenue -->
+<input type="hidden" id="input-total-debit-revenue" value="0"> <!-- จำนวนรายการที่ Debit -->
+<input type="hidden" id="input-total-debit-amount" value="0"> <!-- ยอดเงินที่ Debit -->
 
 <form action="#" id="form-elexa">
     @csrf
     <input type="hidden" name="doc_no" value="{{ $document_no ?? '' }}">
     <input type="hidden" name="issue_date" value="{{ date('Y-m-d') }}">
     <input type="hidden" id="revenue_id" name="sms_id" value="{{ isset($elexa_revenue) ? $elexa_revenue->id : 0 }}"> <!-- ID รายได้ที่มาจาก SMS -->
-    <input type="hidden" id="debit-out-amount" name="debit_out_amount" value="0">
+    <input type="hidden" id="debit-out-amount" name="debit_out_amount" value="{{ (isset($document_query) && !empty($document_query) ? $document_query->debit_amount : 0) }}">
 
     @foreach ($elexa_all as $key => $item)
         @if ($item->receive_payment == 1 && $item->sms_revenue == $elexa_revenue->id)
             <input type="hidden" id="receive-id-{{ $item->id }}" name="receive_id[]" value="{{ $item->id }}">
         @endif
     @endforeach
+
+    @if (!empty($elexa_debit_out))
+        @foreach ($elexa_debit_out as $key => $item)
+            <input type="hidden" id="debit-revenue-amount-{{ $key }}" name="debit_revenue_amount[]" value="{{ $item->amount }}">
+            <input type="hidden" id="debit-revenue-remark-{{ $key }}" name="debit_revenue_remark[]" value="{{ $item->remark }}">
+        @endforeach
+    @endif
 </form>
 
 <form action="#" id="form-elexa-select">
-    @csrf
+    {{-- @csrf --}}
 </form>
 
 <style>
@@ -323,32 +389,115 @@
 <script src="{{ asset('assets/js/table-together.js') }}"></script>
 
 <script>
-
-    // $("#ElexaRevenueList").on("shown.bs.modal", function () {
-    //     var table = $(".table-together").DataTable();
-    //     table.columns.adjust().responsive.recalc();     
-    // });
-
-    $(document).on('click', '#btn-debit-amount', function () {
-        var debit_amount = Number($('#input-debit-amount').val());
-        var debit_amount_old = Number($('#debit-out-amount').val());
-        var sms_amount = Number($('#total_revenue_amount').val());
-        var selected_amount = Number($('#input-selected-amount').val()) - debit_amount;
-        var outstanding = Number($('#outstanding_amount').val());
-
-        if (debit_amount > 0 && debit_amount_old == 0) {
-            $('#debit-out-amount').val(debit_amount);
-            $('#outstanding_amount').val((sms_amount - selected_amount));
-            $('#txt-total-selected-outstanding').text(currencyFormat((sms_amount - selected_amount)));
-            $('#txt-total-selected-amount').text(currencyFormat(selected_amount));
-            $('#input-selected-amount').val(selected_amount);
-        }
+    $(document).on('click', '#btn-close-debit', function () {
+        $('#ElexaDebitRevenue').on('hidden.bs.modal', function () {
+            // เช็คว่า Modal ปิดแล้วจริงๆ
+            if (!$('#ElexaDebitRevenue').hasClass('show')) {
+                $('body').addClass('modal-open'); // เพิ่มคลาส modal-open ให้กับ body
+            }
+        });
     });
 
-    $(document).on('click', '#btn-modal-add', function () {
+    // เมื่อกดปุ่ม Add จะเปิด Add Modal
+    $('#btn-modal-add').click(function() {
+        var sms_amount = Number($('#total_revenue_amount').val());
+        var outstanding = Number($('#input-outstanding-amount').val());
+
+        // Total Selected, Total Selected Amount
+        $('#txt-total-selected').text('0');
+        $('#txt-total-selected-amount').text('0.00');
+        $('#input-selected-amount').val(0);
+        $('#input-selected-item').val(0);
+
+        // Total Debit, Total Debit Amount
+        $('#txt-total-debit-revenue').text('0');
+        $('#txt-total-debit-amount').text('0.00');
+        $('#input-total-debit-revenue').val(0);
+        $('#input-total-debit-amount').val(0);
+
+        // Outstanding
+        $('#txt-total-selected-outstanding').text(currencyFormat(outstanding));
+        $('#input-outstanding-amount').val(outstanding);
+
+        $('#myDataTableOutstandingSelect').DataTable().clear().draw();
+        $('#tfoot-total-outstanding-select').text('0.00');
+
+        $('#form-elexa-select').children().remove().end();
+
         selectedItems = [];
         getTableOutstanding();
+
+        $('#ElexaRevenueList').modal('show');
     });
+
+    // เมื่อกดปุ่ม Debit ใน Add Modal, จะเปิด Debit Modal โดยไม่ปิด Add Modal
+    $('#btn-debit-amount').click(function() {
+        if (Number($('#input-selected-item').val()) > 0) {
+            $('#input-debit-amount').val('');
+            $('#input-debit-remark').val('');
+            $('#ElexaDebitRevenue').modal('show');
+        } else {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'Error occurred.',
+                    text: 'กรุณาเลือกยอด Elexa EGAT Revenue ที่ต้องการชำระก่อน!',
+                });
+            }
+    });
+
+    function btnConfirmDebitRevenue() 
+    {
+        var debit_amount = Number($('#input-debit-amount').val());
+        var debit_amount_old = Number($('#debit-out-amount').val());
+        var number_debit = Number($('#input-total-debit-revenue').val());
+        var total_debit_amount = Number($('#input-total-debit-amount').val());
+        var outstanding = Number($('#input-outstanding-amount').val());
+        var selected_amount = Number($('#input-selected-amount').val()) - debit_amount;
+        var sms_amount = Number($('#total_revenue_amount').val());
+
+        if (debit_amount != '' && debit_amount != 0) {
+            // Update
+            // Text
+            $('#txt-total-debit-revenue').text(number_debit + 1);
+            $('#txt-total-debit-amount').text(total_debit_amount + debit_amount);
+            $('#txt-total-selected-amount').text(currencyFormat(selected_amount));
+            $('#txt-total-selected-outstanding').text(currencyFormat(sms_amount - selected_amount));
+
+            // Input
+            $('#input-total-debit-revenue').val(number_debit + 1);
+            $('#input-total-debit-amount').val(total_debit_amount + debit_amount);
+            $('#input-selected-amount').val(selected_amount);
+            $('#input-outstanding-amount').val(sms_amount - selected_amount);
+            $('#debit-out-amount').val(debit_amount + debit_amount_old); 
+
+            $('#tfoot-total-outstanding-select').text(currencyFormat(selected_amount));
+            $('#form-elexa-select').append('<input type="hidden" name="debit_revenue[]" value="' + debit_amount + '">');
+            $('#form-elexa-select').append('<input type="hidden" name="remark_debit_revenue[]" value="' + debit_amount + '">');
+
+            $('#myDataTableOutstandingSelect').DataTable().rows.add(
+                [
+                    [
+                        moment().format('DD/MM/YYYY'),
+                        'Debit Revenue',
+                        '-' + currencyFormat(debit_amount),
+                        '<button type="button" class="btn" value="1"' +
+                        'onclick="select_delete_debit(this, ' + (debit_amount) + ')"><i class="fa fa-trash-o"></i></button>'
+                    ]
+                ]
+            ).draw();
+        }
+
+        $('#ElexaDebitRevenue').modal('hide'); // ปิด Modal
+
+        // ใช้ event hidden.bs.modal เพื่อให้แน่ใจว่า Modal ถูกปิดแล้ว
+        $('#ElexaDebitRevenue').on('hidden.bs.modal', function () {
+            // เช็คว่า Modal ปิดแล้วจริงๆ
+            if (!$('#ElexaDebitRevenue').hasClass('show')) {
+                $('body').addClass('modal-open'); // เพิ่มคลาส modal-open ให้กับ body
+            }
+        });
+        
+    }
 
     function filterOutstanding() {
         selectedItems = [];
@@ -593,7 +742,7 @@
                                         [
                                             moment(value.date).format('DD/MM/YYYY'),
                                             value.batch,
-                                            currencyFormat(value.ev_revenue),
+                                            currencyFormat2(value.ev_revenue),
                                             '<button type="button" class="btn" id="btn-receive-' + value.id + '" value="1"' +
                                             'onclick="select_receive_payment(this, ' + value.id + ', ' + value.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
                                         ]
@@ -763,8 +912,8 @@
                 $('#tfoot-total-outstanding-select').text(currencyFormat(elexa_revenue_amount + amount));
                 // END
 
-                $('#total_receive_payment').val(Number(total_receive_payment + amount).toFixed(2));
-                $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment + amount)));
+                $('#total_receive_payment').val(total_receive_payment + amount);
+                $('#txt_total_receive_payment').text(currencyFormat(total_receive_payment + amount));
                 $('#btn-receive-' + id).val(1);
 
                 $('#txt_total_received').text(currencyFormat(Number(total_receive_payment + amount)));
@@ -794,8 +943,6 @@
                                         info: true,
                                         order: true,
                                         destroy: true,
-                                        // pageLength: -1,
-                                        // serverSide: false,
                                         responsive: {
                                         details: {
                                                 type: "column",
@@ -808,19 +955,31 @@
                                         columnDefs: [
                                             { targets: [3], className: 'dt-center text-center', },
                                             { targets: [2], className: 'text-end', },
+                                            // {
+                                            //     targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+                                            //     createdCell: function (td, cellData, rowData, row, col) {
+                                            //         // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+                                            //         if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+                                            //             $(td).text(
+                                            //             parseFloat(cellData).toLocaleString("en-US", {
+                                            //                 minimumFractionDigits: 2,
+                                            //                 maximumFractionDigits: 2,
+                                            //             })
+                                            //             );
+                                            //         }
+                                            //     },
+                                            // },
                                             {
-                                                targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
-                                                createdCell: function (td, cellData, rowData, row, col) {
-                                                    // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
-                                                    if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
-                                                        $(td).text(
-                                                        parseFloat(cellData).toLocaleString("en-US", {
+                                                targets: [2],
+                                                createdCell: function(td, cellData, rowData, row, col) {
+                                                    if ($.isNumeric(cellData)) {
+                                                        let formattedNumber = Math.floor(cellData * 100) / 100; // ตัดเศษออกที่ทศนิยม 2 ตำแหน่ง
+                                                        $(td).text(formattedNumber.toLocaleString("en-US", {
                                                             minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        })
-                                                        );
+                                                            maximumFractionDigits: 2
+                                                        }));
                                                     }
-                                                },
+                                                }
                                             },
                                         ],
                                     }
@@ -836,7 +995,7 @@
                                     [
                                         moment(response.data.date).format('DD/MM/YYYY'),
                                         response.data.batch,
-                                        currencyFormat(response.data.ev_revenue),
+                                        response.data.ev_revenue,
                                         '<button type="button" class="btn" id="btn-receive-' + id + '" value="1"' +
                                         'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_revenue + ')"><i class="fa fa-trash-o"></i></button>'
                                     ]
@@ -889,7 +1048,7 @@
                 selectedItems = [];
             }
         } else {
-            Swal.fire({
+           return Swal.fire({
                 icon: 'error',
                 title: 'ไม่สามารถบันทึกข้อมูลได้',
                 text: 'กรุณาเลือกยอด Elexa EGAT Revenue ที่ต้องการชำระก่อน!',
@@ -898,15 +1057,22 @@
 
     }
 
-    function btnConfirm() {
+    function btnConfirm() 
+    {
         var total_debit = 0;
         var debit_out = Number($('#debit-out-amount').val());
         var sms_amount = Number($('#total_revenue_amount').val());
         var total_receive_payment = Number($('#total_receive_payment').val());
         var total_selected_amount = Number($('#input-selected-amount').val());
-        var tableSelect = $('#myDataTableOutstandingSelect').DataTable();
+        var debit_revenue = $('input[name="debit_revenue[]"]').map(function() {
+            return $(this).val();
+        }).get();
 
-        // total_debit += total_selected_amount;
+        var debit_remark = $('input[name="remark_debit_revenue[]"]').map(function() {
+            return $(this).val();
+        }).get();
+
+        var tableSelect = $('#myDataTableOutstandingSelect').DataTable();
 
         if (total_selected_amount == sms_amount) {
             tableSelect.clear().draw();
@@ -916,6 +1082,9 @@
                 url: "{!! url('debit-confirm-select-elexa-outstanding') !!}",
                 datatype: "JSON",
                 data: $('#form-elexa-select').serialize(),
+                headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                 async: false,
                 success: function(response) {
                     if (response.status == 200 && response.data && typeof response.data === 'object') {
@@ -990,6 +1159,26 @@
                             ).draw();
     
                             total_debit += item.ev_revenue;
+                        });
+
+                        debit_revenue.forEach(element => {
+                            $('#form-elexa').append('<input type="hidden" name="debit_revenue_amount[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
+
+                            table.rows.add(
+                                [
+                                    [
+                                        moment().format('DD/MM/YYYY'),
+                                        'Debit Revenue',
+                                        '-' + element,
+                                        '<button type="button" class="btn" value="1"' +
+                                        'onclick="select_delete_debit(this, ' + (element) + ')"><i class="fa fa-trash-o"></i></button>'
+                                    ]
+                                ]
+                            ).draw();
+                        }); 
+
+                        debit_remark.forEach(element => {
+                            $('#form-elexa').append('<input type="hidden" name="debit_revenue_remark[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
                         });
     
                         $('#ElexaRevenueList').modal('hide');
@@ -1068,81 +1257,127 @@
         var removingRow = $(ele).closest('tr');
         tb_select.row(removingRow).remove().draw();
 
-        jQuery.ajax({
-            type: "GET",
-            url: "{!! url('debit-select-elexa-outstanding/"+id+"') !!}",
-            datatype: "JSON",
-            async: false,
-            success: function(response) {
-                if (response.data) {
-                    var status = "";
-                    $('#myDataTableOutstanding').DataTable().destroy();
-                    var table = $('#myDataTableOutstanding').DataTable(
-                            {
-                                searching: true,
-                                paging: true,
-                                info: true,
-                                order: false,
-                                serverSide: false,
-                                responsive: {
-                                details: {
-                                        type: "column",
-                                        target: "tr",
-                                    },
-                                },
-                                initComplete: function () {
-                                    $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
-                                },
-                                columnDefs: [
-                                    { targets: 0, visible: false }, // ซ่อนคอลัมน์ที่เก็บข้อมูล ISO 8601
-                                    {
-                                        targets: [4], className: 'dt-center text-center',
-                                    },
-                                    {
-                                        targets: [3], className: 'text-end',
-                                    },
-                                    {
-                                        targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
-                                        createdCell: function (td, cellData, rowData, row, col) {
-                                            // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
-                                            if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
-                                                $(td).text(
-                                                parseFloat(cellData).toLocaleString("en-US", {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2,
-                                                })
-                                                );
-                                            }
-                                        },
-                                    },
-                                ],
-                            }
-                        );
+        getTableOutstanding();
 
-                    table.rows.add(
-                        [
-                            [
-                                response.data.date, // คอลัมน์ที่ซ่อน ใช้ ISO 8601 สำหรับการจัดเรียง
-                                moment(response.data.date).format('DD/MM/YYYY'),
-                                response.data.batch,
-                                currencyFormat(response.data.ev_revenue),
-                                '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-' + id + '" value="0"' +
-                                'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_revenue + ')">รับชำระ</button>'
-                            ]
-                        ]
-                    ).draw();
-                }
+        // jQuery.ajax({
+        //     type: "GET",
+        //     url: "{!! url('debit-select-elexa-outstanding/"+id+"') !!}",
+        //     datatype: "JSON",
+        //     async: false,
+        //     success: function(response) {
+        //         if (response.data) {
+        //             var status = "";
+        //             $('#myDataTableOutstanding').DataTable().destroy();
+        //             var table = $('#myDataTableOutstanding').DataTable(
+        //                     {
+        //                         searching: true,
+        //                         paging: true,
+        //                         info: true,
+        //                         order: false,
+        //                         serverSide: false,
+        //                         responsive: {
+        //                         details: {
+        //                                 type: "column",
+        //                                 target: "tr",
+        //                             },
+        //                         },
+        //                         initComplete: function () {
+        //                             $(".btn-dropdown-menu").dropdown(); // ทำให้ dropdown ทำงาน
+        //                         },
+        //                         columnDefs: [
+        //                             { targets: 0, visible: false }, // ซ่อนคอลัมน์ที่เก็บข้อมูล ISO 8601
+        //                             {
+        //                                 targets: [4], className: 'dt-center text-center',
+        //                             },
+        //                             {
+        //                                 targets: [3], className: 'text-end',
+        //                             },
+        //                             {
+        //                                 targets: "_all", // ใช้กับทุกคอลัมน์หรือกำหนดเป้าหมายตามต้องการ
+        //                                 createdCell: function (td, cellData, rowData, row, col) {
+        //                                     // ตรวจสอบว่าเซลล์มีคลาส target-class หรือไม่
+        //                                     if ($(td).hasClass("target-class") && $.isNumeric(cellData)) {
+        //                                         $(td).text(
+        //                                         parseFloat(cellData).toLocaleString("en-US", {
+        //                                             minimumFractionDigits: 2,
+        //                                             maximumFractionDigits: 2,
+        //                                         })
+        //                                         );
+        //                                     }
+        //                                 },
+        //                             },
+        //                         ],
+        //                     }
+        //                 );
 
-                $('#btn-receive-' + id).val(0);
-                table.order([0, 'asc']).draw(); // refresh table
+        //             table.rows.add(
+        //                 [
+        //                     [
+        //                         response.data.date, // คอลัมน์ที่ซ่อน ใช้ ISO 8601 สำหรับการจัดเรียง
+        //                         moment(response.data.date).format('DD/MM/YYYY'),
+        //                         response.data.batch,
+        //                         currencyFormat(response.data.ev_revenue),
+        //                         '<button type="button" class="btn btn-color-green rounded-pill text-white btn-receive-pay" id="btn-receive-' + id + '" value="0"' +
+        //                         'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_revenue + ')">รับชำระ</button>'
+        //                     ]
+        //                 ]
+        //             ).draw();
+        //         }
 
-                $(window).on("resize", adjustDataTable);
+        //         $('#btn-receive-' + id).val(0);
+        //         table.order([0, 'asc']).draw(); // refresh table
 
-                $('input[type="search"]').attr("placeholder", "Type to search...");
-                $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+        //         $(window).on("resize", adjustDataTable);
 
-            }
-        });
+        //         $('input[type="search"]').attr("placeholder", "Type to search...");
+        //         $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
+
+        //     }
+        // });
+    }
+
+    // ปุ่มลบรายการยอด Debit ตารางที่ยืนยันแล้ว
+    function delete_debit(ele, number, amount) {
+        var total_receive_payment = Number($('#total_receive_payment').val());
+        var sms_amount = Number($('#total_revenue_amount').val());
+        var outstanding = Number($('#input-outstanding-amount').val());
+        // var selected_amount = Number($('#input-selected-amount').val());
+        // var outstanding = Number($('#outstanding_amount').val());
+
+        // // Input
+        // $('#input-selected-amount').val((Math.floor((selected_amount + amount) * 100) / 100).toFixed(2));
+
+        // var sms_amount = Number($('#total_revenue_amount').val());
+        // var sum_selected_amount = Number($('#input-selected-amount').val());
+
+        $('#total_receive_payment').val(Number(total_receive_payment + amount).toFixed(2));
+        $('#tfoot-total-debit').text(currencyFormat(total_receive_payment + amount)); // Total Select Amount
+        $('#txt-total-selected-outstanding').text(currencyFormat(sms_amount - $('#total_receive_payment').val())); // Outstanding
+        $('#input-outstanding-amount').val(sms_amount - $('#total_receive_payment').val());
+        // $('#tfoot-total-outstanding-select').text(currencyFormat(sum_selected_amount)); // Footer ตารางรายการรับชำระ
+
+        $('#debit-revenue-amount-' + number).remove().end();
+        $(ele).parent().parent().remove();
+    }
+
+    // ปุ่มลบรายการยอด Debit ตารางใน Modal
+    function select_delete_debit(ele, amount) {
+        var debit_amount_old = Number($('#debit-out-amount').val());
+        var selected_amount = Number($('#input-selected-amount').val());
+        var outstanding = Number($('#outstanding_amount').val());
+
+        // Input
+        $('#input-selected-amount').val((Math.floor((selected_amount + amount) * 100) / 100).toFixed(2));
+
+        var sms_amount = Number($('#total_revenue_amount').val());
+        var sum_selected_amount = Number($('#input-selected-amount').val());
+
+        $('#debit-out-amount').val(debit_amount_old - amount);
+        $('#txt-total-selected-amount').text(currencyFormat(sum_selected_amount)); // Total Select Amount
+        $('#txt-total-selected-outstanding').text(currencyFormat(sms_amount - sum_selected_amount)); // Outstanding
+        $('#tfoot-total-outstanding-select').text(currencyFormat(sum_selected_amount)); // Footer ตารางรายการรับชำระ
+
+        $(ele).parent().parent().remove();
     }
 
     document.querySelector("#btn-save").addEventListener('click', function() 

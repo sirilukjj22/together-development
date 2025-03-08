@@ -9,6 +9,7 @@ class TB_close_days extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'tb_close_day';
     protected $fillable = [
         'date',

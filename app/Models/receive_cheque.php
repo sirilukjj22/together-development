@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class receive_cheque extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'receive_cheque';
     protected $fillable = [
         'branch',

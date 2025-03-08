@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class province extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'code',
         'name_th',

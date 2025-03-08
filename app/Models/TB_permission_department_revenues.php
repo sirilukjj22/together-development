@@ -9,6 +9,7 @@ class TB_permission_department_revenues extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'tb_permission_department_revenue';
     protected $fillable = [
         'department_id',

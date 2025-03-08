@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class representative extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'Profile_ID',
         'prefix',

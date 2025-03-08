@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class master_product_item extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'Product_ID',
         'name_th',

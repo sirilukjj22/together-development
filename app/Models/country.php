@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class country extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'tbl_country';
     protected $fillable = [
         'ct_nameTHA',

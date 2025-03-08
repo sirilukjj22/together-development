@@ -9,6 +9,7 @@ class Role_permission_menu extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'role_permission_menu';
     protected $fillable = [
         'user_id',

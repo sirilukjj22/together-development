@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class master_document extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'sort',
         'code',

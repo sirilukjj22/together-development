@@ -13,6 +13,7 @@ class Log_elexa extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'log_elexa';
     protected $fillable = [
         'document_id',
@@ -43,7 +44,7 @@ class Log_elexa extends Model
 
         if (count($changes) > 0) {
             foreach ($changes as $column => $value) {
-                if (in_array($column, ['_token', 'id', 'created_by', 'created_at', 'updated_by', 'updated_at']))
+                if (in_array($column, ['_token', 'id', 'debit_revenue_amount', 'created_by', 'created_at', 'updated_by', 'updated_at']))
                     continue;
 
                 ### Rename

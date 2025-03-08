@@ -10,6 +10,7 @@ class Revenues extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'revenue';
     protected $fillable = [
         'date',

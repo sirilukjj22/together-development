@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document_elexa;
+use App\Models\Elexa_debit_revenue;
 use App\Models\Log_elexa;
 use App\Models\Revenue_credit;
 use App\Models\SMS_alerts;
@@ -134,13 +135,15 @@ class ElexaController extends Controller
             foreach ($data_elexa as $key => $value) 
             {
                 $btn_action = "";
+                $ev_revenue = $value->ev_revenue;
+
                 if ($value->receive_payment == 0)
                 {
                     $btn_action = '<button type="button" class="btn btn-color-green btn-sm rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
-                    onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')">Receive</button>';
+                    onclick="select_receive_payment(this, '.$value->id.', '.$ev_revenue.')">Receive</button>';
                 } else {
                     $btn_action = '<button type="button" class="btn btn-color-green btn-sm rounded-pill text-white btn-receive-pay" id="btn-receive-'.$value->id.'" value="0"
-                    onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')" disabled>Receive</button>';
+                    onclick="select_receive_payment(this, '.$value->id.', '.$ev_revenue.')" disabled>Receive</button>';
                 }
 
                 if (isset($request->select_all) && $request->select_all == 'true') {
@@ -201,7 +204,7 @@ class ElexaController extends Controller
             $document_query = '';
             $document_no = $this->generateDocumentNumber();
         } else {
-            $document_query = Document_elexa::where('sms_id', $id)->select('doc_no', 'debit_amount')->first();
+            $document_query = Document_elexa::where('sms_id', $id)->select('id', 'doc_no', 'debit_amount')->first();
             $document_no = !empty($document_query) ? $document_query->doc_no : '';
         }
 
@@ -227,6 +230,12 @@ class ElexaController extends Controller
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
+        if (!empty($document_query->id)) {
+            $elexa_debit_out = Elexa_debit_revenue::where('document_elexa', $document_query->id)->get();
+        } else {
+            $elexa_debit_out = '';
+        }
+
         $title = "Debit Elexa EGAT Revenue";
 
         $total_outstanding_all = 0;
@@ -241,7 +250,7 @@ class ElexaController extends Controller
             $total_outstanding_all += $value->elexa_outstanding;
         }
 
-        return view('elexa.edit_elexa_outstanding', compact('document_query', 'elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
+        return view('elexa.edit_elexa_outstanding', compact('document_query', 'elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'elexa_debit_out', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
     }
 
     public function select_elexa_outstanding($id) {
@@ -349,6 +358,20 @@ class ElexaController extends Controller
                     'created_by' => Auth::user()->id
                 ]);
 
+                Elexa_debit_revenue::where('document_elexa', $check_document_old->id)->delete();
+                
+                if (isset($request->debit_revenue_amount)) {
+                    foreach ($request->debit_revenue_amount as $key => $value) {
+                        Elexa_debit_revenue::create([
+                            'document_elexa' => $check_document_old->id,
+                            'date' => $request->issue_date,
+                            'amount' => $value,
+                            'remark' => $request->debit_revenue_remark[$key] ?? null,
+                            'created_by' => Auth::user()->id
+                        ]);
+                    }
+                }
+
                 $check_detail_old = Revenue_credit::where('sms_revenue', $request->sms_id)->select('id')->get();
 
                 if ($check_detail_old->isNotEmpty()) {
@@ -373,6 +396,19 @@ class ElexaController extends Controller
                 ])->id;
 
                 $request['id'] = $data;
+
+
+                if (isset($request->debit_revenue_amount)) {
+                    foreach ($request->debit_revenue_amount as $key => $value) {
+                        Elexa_debit_revenue::create([
+                            'document_elexa' => $data,
+                            'date' => date('Y-m-d'),
+                            'amount' => $value,
+                            'remark' => $request->debit_revenue_remark[$key] ?? null,
+                            'created_by' => Auth::user()->id
+                        ]);
+                    }
+                }
 
                 $log = Log_elexa::SaveLog('add', 0, $request);
             }

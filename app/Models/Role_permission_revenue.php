@@ -9,6 +9,7 @@ class Role_permission_revenue extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'role_permission_revenue';
     protected $fillable = [
         'user_id',

@@ -9,6 +9,7 @@ class Document_agoda extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'document_agoda';
     protected $fillable = [
         'doc_no',

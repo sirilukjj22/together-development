@@ -1568,7 +1568,7 @@ class RevenuesController extends Controller
         // Today
         $today_wp_revenue = Revenues::whereBetween('date', [$FromFormatDate, $ToFormatDate])->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
 
-        // Date
+        // Date 
         $total_wp_revenue = Revenues::whereBetween('date', [$FromFormatDate, $ToFormatDate])->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
 
         // Month

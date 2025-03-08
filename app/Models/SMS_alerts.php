@@ -9,6 +9,7 @@ class SMS_alerts extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'sms_alert';
     protected $fillable = [
         'sort',

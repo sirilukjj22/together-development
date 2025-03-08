@@ -9,6 +9,7 @@ class Masters extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'master';
     protected $fillable = [
         'sort',

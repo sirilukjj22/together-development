@@ -51,6 +51,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\ReportDocumentController;
+use App\Http\Controllers\SMSHarmonyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,19 +69,27 @@ Route::get('login', [AuthController::class, 'index'])->name('login');
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
+// API Together
 Route::get('sms-forward', [SMSController::class, 'forward'])->name('sms-forward');
 Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-forward');
+
+// API Harmony
+Route::get('harmony-sms-forward', [SMSHarmonyController::class, 'forward'])->name('harmony-sms-forward');
+Route::get('hamony-sms-api-forward', [SMSHarmonyController::class, 'forward'])->name('harmony-sms-api-forward');
+
+// Link PDF
 Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
 Route::get('/Invoice/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
 Route::get('/Deposit/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'Deposit'])->name('Deposit.link');
+
 // Test Gmail
-Route::get('/google/redirect', [GmailController::class, 'redirectToGoogle'])->name('google.auth');
-Route::get('/google/callback', [GmailController::class, 'handleGoogleCallback']);
-Route::get('/gmail/messages', [GmailController::class, 'listMessages'])->name('gmail.messages');
+// Route::get('/google/redirect', [GmailController::class, 'redirectToGoogle'])->name('google.auth');
+// Route::get('/google/callback', [GmailController::class, 'handleGoogleCallback']);
+// Route::get('/gmail/messages', [GmailController::class, 'listMessages'])->name('gmail.messages');
 
 Route::middleware(['auth'])->group(function () {
 
-    # SMS Alert
+    # SMS Alert (Together)
     Route::controller(SMSController::class)->middleware('role:sms_alert')->group(function () {
         Route::get('sms-alert', 'index')->name('sms-alert');
         Route::get('sms-alert-refresh/{day}/{month}/{year}', 'index_refresh')->name('sms-alert-refresh');
@@ -113,6 +122,41 @@ Route::middleware(['auth'])->group(function () {
         // Table Search / Paginate
         Route::post('sms-search-table', 'search_table')->name('sms-search-table');
         Route::post('sms-paginate-table', 'paginate_table')->name('sms-paginate-table');
+    });
+
+    # SMS Alert (Harmony)
+    Route::controller(SMSHarmonyController::class)->middleware('role:sms_alert')->group(function () {
+        Route::get('harmony-sms-alert', 'index')->name('harmony-sms-alert');
+        Route::get('harmony-sms-alert-refresh/{day}/{month}/{year}', 'index_refresh')->name('harmony-sms-alert-refresh');
+        Route::get('harmony-sms-change-status/{id}/{status}', 'change_status')->name('harmony-sms-change-status');
+        Route::post('harmony-sms-search-calendar', 'search_calendar')->name('harmony-sms-search-calendar');
+        Route::get('harmony-sms-create', 'create')->name('harmony-sms-create');
+        Route::post('harmony-sms-store', 'store')->name('harmony-sms-store');
+        Route::get('harmony-sms-edit/{id}', 'edit')->name('harmony-sms-edit');
+        Route::get('harmony-sms-delete/{id}', 'delete')->name('harmony-sms-delete');
+        Route::get('harmony-sms-get-remark-other-revenue/{id}', 'get_other_revenue')->name('harmony-sms-get-remark-other-revenue');
+        Route::post('harmony-sms-other-revenue', 'other_revenue')->name('harmony-sms-other-revenue');
+        Route::post('harmony-sms-transfer', 'transfer')->name('harmony-sms-transfer');
+        Route::get('harmony-sms-detail/{name}', 'detail')->name('harmony-sms-detail');
+        Route::get('harmony-sms-update-time/{id}/{time}', 'update_time')->name('harmony-sms-update-time');
+        Route::post('harmony-sms-update-split', 'update_split')->name('harmony-sms-update-split');
+        Route::get('harmony-sms-agoda-receive-payment/{id}', 'receive_payment')->name('harmony-sms-agoda-receive-payment');
+
+        // Graph
+        Route::get('harmony-sms-graph-thisWeek/{date}/{type}/{account}', 'graphThisWeek')->name('harmony-sms-thisWeek');
+        Route::get('harmony-sms-graph-thisMonth/{date}/{type}/{account}', 'graphThisMonth')->name('harmony-sms-thisMonth');
+        Route::get('harmony-sms-graph-thisMonthByDay/{date}/{type}/{account}', 'graphThisMonthByDay')->name('harmony-sms-thisMonthByDay');
+        Route::get('harmony-sms-graph-yearRange/{year}/{type}/{account}', 'graphYearRange')->name('harmony-sms-yearRange');
+        Route::get('harmony-sms-graph-monthRange/{month}/{to_month}/{year}/{type}/{account}', 'graphMonthRange')->name('harmony-sms-monthRange');
+        Route::get('harmony-sms-graph-daterang/{startdate}/{enddate}/{type}/{account}', 'graphDateRang')->name('harmony-sms-daterang');
+        Route::get('harmony-sms-graph-daterang-detail/{startdate}/{enddate}/{type}/{account}', 'graphDateRangDetail')->name('harmony-sms-daterang-detail');
+        Route::get('harmony-sms-graph30days/{date}/{type}/{account}', 'graph30days')->name('harmony-sms-graph30days');
+        Route::get('harmony-sms-graphToday/{to_date}', 'graphToday')->name('harmony-sms-graphToday');
+        Route::get('harmony-sms-graphForcast/{to_date}', 'graphForcast')->name('harmony-sms-graphForcast');
+
+        // Table Search / Paginate
+        Route::post('harmony-sms-search-table', 'search_table')->name('harmony-sms-search-table');
+        Route::post('harmony-sms-paginate-table', 'paginate_table')->name('harmony-sms-paginate-table');
     });
 
     # Revenue

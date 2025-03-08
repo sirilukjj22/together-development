@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class company_fax extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $fillable = [
         'Profile_ID',
         'Fax_number',
