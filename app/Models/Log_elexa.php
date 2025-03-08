@@ -13,6 +13,7 @@ class Log_elexa extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'log_elexa';
     protected $fillable = [
         'document_id',

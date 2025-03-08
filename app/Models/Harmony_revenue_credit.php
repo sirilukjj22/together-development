@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Revenue_credit extends Model
+class Harmony_revenue_credit extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
+    protected $connection = 'mysql_harmony';
     protected $table = 'revenue_credit';
     protected $fillable = [
         'revenue_id',

@@ -9,6 +9,7 @@ class TB_outstanding_balance extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'table_outstanding_balance';
     protected $fillable = [
         'year',

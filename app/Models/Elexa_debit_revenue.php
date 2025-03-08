@@ -9,6 +9,7 @@ class Elexa_debit_revenue extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'elexa_debit_revenue';
     protected $fillable = [
         'document_elexa',

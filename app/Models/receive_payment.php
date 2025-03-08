@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class receive_payment extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'document_receive';
     protected $fillable = [
         'Invoice_ID',

@@ -9,6 +9,7 @@ class Guest extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $fillable = [
         'Profile_ID',
         'First_name',

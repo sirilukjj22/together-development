@@ -120,7 +120,7 @@
                             <tr>
                                 <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                 <td class="text-start">Debit Revenue</td>
-                                <td class="text-end target-class">{{ $item->amount }}</td>
+                                <td class="text-end target-class">-{{ $item->amount }}</td>
                                 <td>
                                     <button type="button" class="btn" value="1" onclick="delete_debit(this, {{ $key }}, {{ $item->amount }})"><i class="fa fa-trash-o"></i></button>
                                 </td>
@@ -471,13 +471,14 @@
 
             $('#tfoot-total-outstanding-select').text(currencyFormat(selected_amount));
             $('#form-elexa-select').append('<input type="hidden" name="debit_revenue[]" value="' + debit_amount + '">');
+            $('#form-elexa-select').append('<input type="hidden" name="remark_debit_revenue[]" value="' + debit_amount + '">');
 
             $('#myDataTableOutstandingSelect').DataTable().rows.add(
                 [
                     [
                         moment().format('DD/MM/YYYY'),
                         'Debit Revenue',
-                        currencyFormat(debit_amount),
+                        '-' + currencyFormat(debit_amount),
                         '<button type="button" class="btn" value="1"' +
                         'onclick="select_delete_debit(this, ' + (debit_amount) + ')"><i class="fa fa-trash-o"></i></button>'
                     ]
@@ -1055,7 +1056,8 @@
 
     }
 
-    function btnConfirm() {
+    function btnConfirm() 
+    {
         var total_debit = 0;
         var debit_out = Number($('#debit-out-amount').val());
         var sms_amount = Number($('#total_revenue_amount').val());
@@ -1156,12 +1158,14 @@
 
                         debit_revenue.forEach(element => {
                             $('#form-elexa').append('<input type="hidden" name="debit_revenue_amount[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
+                            $('#form-elexa').append('<input type="hidden" name="debit_revenue_remark[]" value="' + element + '">');
+
                             table.rows.add(
                                 [
                                     [
                                         moment().format('DD/MM/YYYY'),
                                         'Debit Revenue',
-                                        element,
+                                        '-' + element,
                                         '<button type="button" class="btn" value="1"' +
                                         'onclick="select_delete_debit(this, ' + (element) + ')"><i class="fa fa-trash-o"></i></button>'
                                     ]

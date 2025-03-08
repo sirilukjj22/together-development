@@ -9,6 +9,7 @@ class SMS_forwards extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'sms_forward';
     protected $fillable = [
         'messages',

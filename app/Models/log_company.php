@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class log_company extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'log_company';
     protected $fillable = [
         'Category',

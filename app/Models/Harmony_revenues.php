@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Revenues extends Model
+class Harmony_revenues extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
+    protected $connection = 'mysql_harmony';
     protected $table = 'revenue';
     protected $fillable = [
         'date',

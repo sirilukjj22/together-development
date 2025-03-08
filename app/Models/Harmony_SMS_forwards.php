@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TB_close_days extends Model
+class Harmony_SMS_forwards extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
-    protected $table = 'tb_close_day';
+    protected $connection = 'mysql_harmony';
+    protected $table = 'sms_forward';
     protected $fillable = [
-        'date',
-        'status',
+        'messages',
+        'sender',
+        'chanel',
+        'is_status',
         'created_at',
         'updated_at',
     ];

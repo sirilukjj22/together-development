@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class document_receive_item extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'document_receive_item';
     protected $fillable = [
         'receive_id',

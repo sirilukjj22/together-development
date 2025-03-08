@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class document_deposit_revenue extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'document_deposit_revenue';
     protected $fillable = [
         'Deposit_ID',

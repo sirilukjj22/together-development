@@ -9,6 +9,7 @@ class TB_departments extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
     protected $table = 'tb_department';
     protected $fillable = [
         'department',

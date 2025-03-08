@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class guest_tax extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'guest_tax';
     protected $fillable = [
         'GuestTax_ID',

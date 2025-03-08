@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SMS_alerts extends Model
+class Harmony_SMS_alerts extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
+    protected $connection = 'mysql_harmony';
     protected $table = 'sms_alert';
     protected $fillable = [
         'sort',
@@ -43,7 +43,7 @@ class SMS_alerts extends Model
 
     public function fullAmount()
     {
-        return $this->hasOne(SMS_alerts::class, 'id', 'split_ref_id');
+        return $this->hasOne(Harmony_SMS_alerts::class, 'id', 'split_ref_id');
     }
 
     public static function check_bank($datakey){

@@ -104,7 +104,7 @@
                     <tr>
                         <td>{{ Carbon\Carbon::parse(@$elexa_revenue->DocumentNoElexa->issue_date)->format('d/m/Y') }}</td>
                         <td class="text-start">Deposit Revenue</td>
-                        <td class="text-end target-class">{{ @$elexa_revenue->DocumentNoElexa->debit_amount }}</td>
+                        <td class="text-end target-class">-{{ @$elexa_revenue->DocumentNoElexa->debit_amount }}</td>
                     </tr>
                 </tbody>
                 <tfoot style="background-color: #d7ebe1; font-weight: bold">

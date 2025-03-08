@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Master_company extends Model
 {
     use HasFactory;
+
+    protected $connection = 'mysql';
     protected $table = 'master_company';
     protected $fillable = [
         'name',
