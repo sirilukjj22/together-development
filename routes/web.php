@@ -718,6 +718,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/Deposit/quotation','Quotation')->name('Deposit.Quotation');
         Route::get('/Document/deposit_revenue/Data/createnew/{id}', 'deposit_pd');
         Route::get('/Deposit/edit/revenue/deposit/{id}','depositedit')->name('Deposit.depositedit');
+        Route::post('/Deposit/generate/Revenue/edit/save/{id}', 'edit_generate_dr')->name('Deposit.edit_generate_dr');
 
     });
     #DummyQuotaion

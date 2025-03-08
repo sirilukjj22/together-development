@@ -566,6 +566,7 @@ class Deposit_Revenue extends Controller
                 }
             }
         }
+
         return view('deposit_revenue.editdeposit',compact('DepositID','QuotationID','Deposit','data_bank','data_cheque','vat_type','fullName','address','Identification','Email','phone'
         ,'Nettotal','Quotation','settingCompany','user','Subtotal','total','addtax','before','balance','deposit','list','date','payment','IssueDate','ExpirationDate','Cheque_Number'
         ,'bank','deposit_date','amount','issue_date','databank','Amount','bankname'));
@@ -2984,6 +2985,118 @@ class Deposit_Revenue extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('Deposit.index')->with('error', $e->getMessage());
         }
+    }
+    public function edit_generate_dr(Request $request ,$id){
+        $groupedDatanew = [];
+        $groupedData = [];
+        $requestData = $request->all();
+        $data = $request->all();
+        foreach ($request->input("paymentType", []) as $index => $type) {
+            $cashAmount = floatval($request->input("cashAmount{$index}", 0));
+            $bank = $request->input("bank{$index}", null);
+            $bankTransferAmount = $request->input("bankTransferAmount{$index}", null);
+            $cardNumber = $request->input("CardNumber{$index}", null);
+            $expiry = $request->input("Expiry_{$index}", null);
+            $creditCardAmount = $request->input("creditCardAmount_{$index}", null);
+            $cheque = $request->input("cheque{$index}", null);
+            $chequebank = $request->input("chequebank", null);
+            $chequebankName = $request->input("chequebank_name_{$index}", null);
+            $chequeAmount = $request->input("chequeamount_{$index}", null);
+
+            if ($type === 'cash') {
+                if (isset($groupedData['cash'])) {
+                    $groupedData['cash']['cashAmount'] += $cashAmount;
+                } else {
+                    $groupedData[$index] = [
+                        "paymentType" => 'cash',
+                        "cashAmount" => $cashAmount,
+                        "bank" => null,
+                        "bankTransferAmount" => null,
+                        "CardNumber" => null,
+                        "Expiry" => null,
+                        "creditCardAmount" => null,
+                        "cheque" => null,
+                        "chequebank" => null,
+                        "chequebank_name" => null,
+                        "chequeamount" => null,
+                        "detail" => 'Cash'
+                    ];
+                }
+            } else {
+                $groupedData[$index] = [
+                    "paymentType" => $type,
+                    "cashAmount" => null,
+                    "bank" => $type === 'bankTransfer' ? $bank : null,
+                    "bankTransferAmount" => $type === 'bankTransfer' ? $bankTransferAmount : null,
+                    "CardNumber" => $type === 'creditCard' ? $cardNumber : null,
+                    "Expiry" => $type === 'creditCard' ? $expiry : null,
+                    "creditCardAmount" => $type === 'creditCard' ? $creditCardAmount : null,
+                    "cheque" => $type === 'cheque' ? $cheque : null,
+                    "chequebank" => $type === 'cheque' ? $chequebank : null,
+                    "chequebank_name" => $type === 'cheque' ? $chequebankName : null,
+                    "chequeamount" => $type === 'cheque' ? $chequeAmount : null,
+                    "detail" => match($type) {
+                        'cash' => 'Cash',
+                        'bankTransfer' => "$bank Bank Transfer - Together Resort Ltd",
+                        'creditCard' => "Credit Card No. $cardNumber Exp. Date: $expiry",
+                        'cheque' => "Cheque Bank $chequebankName Cheque Number $cheque",
+                        default => null,
+                    },
+                ];
+            }
+
+        }
+        foreach ($requestData as $key => $value) {
+            if (strpos($key, 'paymentType_') === 0) { // ตรวจสอบว่าคีย์ขึ้นต้นด้วย 'paymentType_'
+                // สร้างอาร์เรย์ใหม่ที่ใช้ index
+                $groupedDatanew[$index] = [
+                    "paymentType" => $value, // ค่า paymentType_x ที่ดึงมา
+                    "cashAmount" =>  $requestData["cashAmount_$index"] ?? null,
+                    "bank" => $requestData["bank_$index"] ?? null, // ค้นหา bank_x
+                    "bankTransferAmount" => $requestData["bankTransferAmount_$index"] ?? null, // ค้นหา bankTransferAmount_x
+                    "CardNumber" => $requestData["CardNumber_$index"] ?? null, // ค้นหา CardNumber_x
+                    "Expiry" => $requestData["Expiry_$index"] ?? null, // ค้นหา Expiry_x
+                    "creditCardAmount" => $requestData["creditCardAmount_$index"] ?? null, // ค้นหา creditCardAmount_x
+                    "cheque" => $requestData["cheque_$index"] ?? null, // ค้นหา creditCardAmount_
+                    "chequebank" => $requestData["chequebank_$index"] ?? null,
+                    "chequebank_name" => $requestData["chequebank_name_$index"] ?? null,
+                    "chequeamount" => isset($requestData["chequeamount_$index"])
+                    ? str_replace([',', '.00'], ['', ''], $requestData["chequeamount_$index"]) // ถอดคอมมาและ .00
+                    : null, // ถ้าไม่มีค่าก็ให้เป็น null
+                    "detail" => ($value == 'cash')
+                    ? 'Cash'
+                    :
+                    ($value == 'bankTransfer'
+                        ? $requestData["bank_$index"] . ' Bank Transfer - Together Resort Ltd'
+                        : ($value == 'creditCard'
+                            ? 'Credit Card No. ' . $requestData["CardNumber_$index"] . ' Exp. Date: ' . $requestData["Expiry_$index"]
+                            : ($value == 'cheque'
+                                ? 'Cheque Bank ' . $requestData["chequebank_name_$index"] . ' Cheque Number ' . $requestData["cheque_$index"]
+                                : null
+                            )
+                        )
+                    ),
+                ];
+            }
+        }
+        foreach ($groupedDatanew as $newData) {
+            $found = false;
+            foreach ($groupedData as $index => $existingData) {
+                if ($newData['paymentType'] === $existingData['paymentType']) {
+                    // ถ้าค่าตรงกัน (paymentType), รวมข้อมูล
+                    $groupedData[$index] = array_merge($existingData, $newData);
+                    $found = true;
+                    break;
+                }
+            }
+
+            // ถ้าไม่พบ paymentType เดิม, ให้เพิ่มข้อมูลใหม่
+            if (!$found) {
+                $groupedData[] = $newData;
+            }
+        }
+        dd($groupedData);
+
     }
     public function Revise($id){
         try {

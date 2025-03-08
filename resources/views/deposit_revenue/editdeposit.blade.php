@@ -430,7 +430,7 @@
             }
         </style>
 @section('content')
-    <form id="myForm"  action="{{url('/Deposit/generate/Revenue/save/'.$deposit->id)}}" method="POST" onsubmit="event.preventDefault(); submitsave();">
+    <form id="myForm"  action="{{url('/Deposit/generate/Revenue/edit/save/'.$deposit->id)}}" method="POST" onsubmit="event.preventDefault(); submitsave();">
         @csrf
         <div id="content-index" class="body-header border-bottom d-flex py-3">
             <div class="container-xl">
@@ -488,9 +488,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="container_new">
-                                                    <div class="payment-container mt-2">
-                                                        @foreach ($list as $key => $item)
-                                                            <div class="d-grid-120px-230px my-2">
+                                                    @foreach ($list as $key => $item)
+                                                        <div class="payment-container mt-2" id="payment-{{$key}}">
+                                                            <div class="d-grid-120px-230px my-2 "style="position:relative">
+                                                                <button type="button" class="btn removemain "   id="remove{{$key}}" style=" border: none; position: absolute;  top:50% ;right: 2px;transform: translateY(-50%);">
+                                                                    <i class="fa fa-minus-circle text-danger fa-lg"></i>
+                                                                </button>
                                                                 <label for="paymentType{{$key}}" class="star-red">Payment Type</label>
                                                                 <select name="paymentType[]" id="paymentType{{$key}}" class="paymentType select2" data-index="{{$key}}">
                                                                     <option value="" disabled {{ empty($item->PaymentType) ? 'selected' : '' }}>Select Payment Type</option>
@@ -506,7 +509,9 @@
                                                                 <div class="payment-cash" style="display: {{$item->PaymentType == 'cash' ? 'block' : 'none'}};">
                                                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                                        <input type="text" id="cashAmount_{{$key}}" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"  value="{{ $item->Amount }}"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                        <input type="text" id="cashAmount_{{$key}}" name="cashAmount{{$key}}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                                                        value="{{ $item->PaymentType == 'cash' && $item->Amount && $item->Amount != 0 ? $item->Amount : '0' }}"
+                                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                                     </div>
                                                                 </div>
 
@@ -514,7 +519,7 @@
                                                                     <div class="d-grid-2column bg-paymentType">
                                                                         <div>
                                                                             <label for="bankName" class="star-red">Bank</label>
-                                                                            <select id="bank" name="bank" class="bankName select2">
+                                                                            <select id="bank" name="bank{{$key}}" class="bankName select2">
                                                                                 @foreach ($data_bank as $item1)
                                                                                     <option value="{{ $item1->name_en }}" {{$item1->name_en == $item->bank ? 'selected' : ''}}>{{ $item1->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
                                                                                 @endforeach
@@ -522,7 +527,7 @@
                                                                         </div>
                                                                         <div>
                                                                             <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                                            <input type="text" id="bankTransfer_{{$key}}" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                            <input type="text" id="bankTransfer_{{$key}}" name="bankTransferAmount{{$key}}" class="bankTransferAmount form-control" placeholder="Enter transfer amount" value="{{ $item->Amount }}"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -531,15 +536,15 @@
                                                                     <div class="d-grid-2column bg-paymentType">
                                                                         <div>
                                                                             <label for="creditCardNumber" class="star-red">Credit Card Number</label>
-                                                                            <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" value="{{ $item->CardNumber }}" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                                                            <input type="text" id="CardNumber" name="CardNumber{{$key}}" class="creditCardNumber form-control" value="{{ $item->CardNumber }}" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
                                                                         </div>
                                                                         <div>
                                                                             <label for="expiryDate" class="star-red">Expiry Date</label>
-                                                                            <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" value="{{ $item->Expiry }}" placeholder="MM/YY" maxlength="5">
+                                                                            <input type="text" name="Expiry" id="Expiry{{$key}}" class="expiryDate form-control" value="{{ $item->Expiry }}" placeholder="MM/YY" maxlength="5">
                                                                         </div>
                                                                         <div>
                                                                             <label for="creditCardAmount" class="star-red">Amount</label>
-                                                                            <input type="text" id="creditCard_{{$key}}" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount" value="{{ $item->Amount }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                            <input type="text" id="creditCard_{{$key}}" name="creditCardAmount{{$key}}" class="creditCardAmount form-control" placeholder="Enter Amount" value="{{ $item->Amount }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -548,7 +553,7 @@
                                                                     <div class="bg-paymentType">
                                                                         <div>
                                                                             <label for="chequeNumber">Cheque Number</label>
-                                                                            <select  id="chequeedit" name="cheque" class="form-select cheque">
+                                                                            <select  id="chequeedit" name="cheque{{$key}}" class="form-select cheque">
                                                                                 @foreach ($data_cheque as $item)
                                                                                     <option value="{{ $item->cheque_number }} "{{$item->cheque_number == $Cheque_Number ? 'selected' : ''}}>{{ $item->cheque_number }}</option>
                                                                                 @endforeach
@@ -579,8 +584,8 @@
 
                                                                 </div>
                                                             </div>
-                                                        @endforeach
-                                                    </div>
+                                                        </div>
+                                                    @endforeach
                                                 </div>
                                             </section>
                                         </div>
@@ -941,16 +946,37 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript">
     $(document).ready(function() {
+        $(document).on('click', '.removemain', function() {
+            $(this).closest('.payment-container').remove(); // ลบ .payment-container ได้ตรง ๆ
+        });
         $('.paymentType').change(function() {
             var index = $(this).data('index');
             var selectedType = $(this).val();
+            var selectedValues = [];
 
-            // ซ่อนทุกช่องก่อน
-            $('.payment-inputs[data-index="' + index + '"] > div').hide();
+            $('.paymentType').each(function() {
 
-            // แสดงช่องที่ตรงกับ Payment Type
-            $('.payment-inputs[data-index="' + index + '"] .payment-' + selectedType).show();
+                var value = $(this).val()?.toString().trim();
+                if (value) {
+                    if (selectedValues.includes(value)) { // ใช้ includes() แทน indexOf() (อ่านง่ายกว่า)
+                        console.log('ค่าซ้ำกัน: ' + value);
+                        alert('This payment type has already been selected.');
+                        // $('.payment-inputs[data-index="' + index + '"] > div').hide();
+                        $('.payment-inputs[data-index="' + index + '"] .payment-' + selectedType).hide();
+                        $('.payment-inputs[data-index="' + index + '"] .payment-' + selectedType + ' input').val('0');
+
+
+                    } else {
+                        selectedValues.push(value);
+                        $('.payment-inputs[data-index="' + index + '"] > div').hide();
+                        $('.payment-inputs[data-index="' + index + '"] .payment-' + selectedType).show();
+                    }
+                }
+            });
+
+
         });
+
         $('.paymentType, .cashAmount, .bankTransferAmount, .creditCardAmount, .chequeamountAmount').on('change input', function() {
             TotalEdit();
         });
@@ -1051,8 +1077,18 @@
         });
     });
     $(document).ready(function() {
-        $('.bankTransferAmount').on('input', function() {
-            $('.bankTransferAmount').val($(this).val());
+
+        $(document).on('keyup', '.cashAmount', function() {
+            var cash =  Number($(this).val());
+            $('.cashAmount').val(cash);
+        });
+        $(document).on('keyup', '.bankTransferAmount', function() {
+            var cash =  Number($(this).val());
+            $('.bankTransferAmount').val(cash);
+        });
+        $(document).on('keyup', '.creditCardAmount', function() {
+            var cash =  Number($(this).val());
+            $('.creditCardAmount').val(cash);
         });
         $('.select2').select2({
             placeholder: "Please select an option"
@@ -1198,11 +1234,22 @@
         var counter = 0;
         $('.add').on('click', function () {
             counter++;
+            var ass = 0;
+            $('.payment-container').each(function() {
+                ass++;
+            });
 
-            let paymentMethods = new Set(); // ใช้ Set เพื่อเก็บค่าที่ไม่ซ้ำ
-            var paymentType = ' ';
+            console.log('จำนวน .payment-container: ' + ass);
+            if (ass >= 4) {
+                console.log('กำลังปิดปุ่ม .add'); // เพิ่มข้อความนี้เพื่อตรวจสอบว่าเข้าเงื่อนไขนี้หรือไม่
+                $('.add').prop('disabled', true);  // ปิดการใช้งานปุ่ม .add
+            } else {
+                console.log('ยังไม่ถึง 3 .payment-container');
 
-            $('.cashInput:visible, .bankTransferInput:visible, .creditCardInput:visible, .chequeInput:visible').each(function () {
+                let paymentMethods = new Set(); // ใช้ Set เพื่อเก็บค่าที่ไม่ซ้ำ
+                var paymentType = ' ';
+
+                $('.cashInput:visible, .bankTransferInput:visible, .creditCardInput:visible, .chequeInput:visible').each(function () {
                 if ($(this).hasClass('cashInput')) {
                     paymentType = 'cash';
                     paymentMethods.add('Cash Payment');
@@ -1216,16 +1263,125 @@
                     paymentType = 'Cheque';
                     paymentMethods.add('Cheque');
                 }
-            });
+                });
 
-            paymentMethods = Array.from(paymentMethods); // แปลง Set กลับเป็นอาร์เรย์
-            console.log(paymentMethods);
+                paymentMethods = Array.from(paymentMethods); // แปลง Set กลับเป็นอาร์เรย์
+                console.log(paymentMethods.length);
+                if (paymentMethods.length == 0) {
+                    console.log(1);
 
-                if (paymentMethods.length > 3) {
+                    const newPaymentForm = `
+                            <div class="payment-container mt-2" id="paymentcontainer_${counter}">
+
+                                <div class="d-grid-120px-230px my-2" style="position:relative">
+                                    <button type="button" class="btn remove "   id="remove-${counter}" style=" border: none; position: absolute;  top:50% ;right: 2px;transform: translateY(-50%);">
+                                        <i class="fa fa-minus-circle text-danger fa-lg"></i>
+                                    </button>
+                                    <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
+                                    <select name="paymentType_${counter}" id="paymentType_${counter}" class="paymentType select2" >
+                                        <option value="" disabled selected>Select Payment Type</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="bankTransfer">Bank Transfer</option>
+                                        <option value="creditCard">Credit Card</option>
+                                        <option value="cheque">Cheque</option>
+                                    </select>
+
+                                </div>
+                                <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
+                                <div class="cashInput" style="display: none;">
+                                    <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
+                                        <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                    </div>
+                                </div>
+                                <!-- Bank Transfer Input -->
+                                <div class="bankTransferInput" style="display: none;">
+                                    <div class="d-grid-2column bg-paymentType">
+                                        <div>
+                                            <label for="bank_${counter}" class="star-red">Bank</label>
+                                            <select id="bank_${counter}" name="bank_${counter}" class="bankName select2">
+                                                @foreach ($data_bank as $item)
+                                                    <option value="{{ $item->name_en }}" {{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Credit Card Input -->
+                                <div class="creditCardInput" style="display: none;">
+                                    <div class="d-grid-2column bg-paymentType">
+                                        <div>
+                                            <label for="creditCardNumber_${counter}" class="star-red">Credit Card Number</label>
+                                            <input type="text" id="creditCardNumber_${counter}" name="CardNumber_${counter}" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                        </div>
+                                        <div>
+                                            <label for="expiryDate_${counter}" class="star-red">Expiry Date</label>
+                                            <input type="text" name="Expiry_${counter}" id="expiryDate_${counter}" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+                                        </div>
+                                        <div>
+                                            <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="d-grid-2column bg-paymentType">
+                                        <div>
+                                            <label for="chequeNumber">Cheque Number</label>
+                                            <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                <option value="" disabled selected>Select</option>
+                                                @foreach ($data_cheque as $item)
+                                                    <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="chequeNumber">Cheque Date</label>
+                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                        </div>
+                                        <div>
+                                            <label for="chequeNumber">Cheque Bank</label>
+                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                        </div>
+                                        <div>
+                                            <label for="chequeAmount">Amount</label>
+                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                        </div>
+                                        <div>
+                                            <label for="chequeBank">To Account</label>
+                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                <option value="" disabled selected></option>
+                                                @foreach ($data_bank as $item)
+                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="chequeNumber">Date</label>
+                                            <div class="input-group">
+                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <!-- ไอคอนปฏิทิน -->
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        $('.container_new').append(newPaymentForm);
+                }
+                else if (paymentMethods.length > 3) {
                     console.log('กำลังใช้ช่องทางชำระเงิน: ' + paymentMethods.join(', ') + ' กฟก: ' + paymentMethods.length);
                 }else{
                     if (paymentMethods.length  < 0) {
-
                         if (paymentType == 'cash') {
                             const newPaymentForm = `
                                     <div class="payment-container mt-2" id="paymentcontainer_${counter}">
@@ -2481,6 +2637,7 @@
                         }
                     }
                 }
+            }
                 $('.select2').select2({
                     placeholder: "Please select an option"
                 });
@@ -2631,6 +2788,7 @@
             if (selectedType === 'cash') {
                 var cashAmount = parseFloat($('#cashAmount_' + index).val()) || 0;
                 total += cashAmount;
+
             }
             else if (selectedType === 'bankTransfer') {
                 var bankAmount = parseFloat($('#bankTransfer_' + index).val()) || 0;
@@ -2645,8 +2803,6 @@
                 total += chequeAmount;
             }
         });
-        console.log(total);
-
         $('#totalamount').val(total);
         Total();
     }
@@ -2788,27 +2944,26 @@
         }
     }
     function getAllPayments() {
+
         let payments = [];
         $('.paymentType').each(function () {
             let index = $(this).data('index');
             let paymentType = $(this).val();
             let paymentData = { type: paymentType };
             // ตรวจสอบว่าถูกติ๊กหรือไม่
-            console.log(paymentType);
+
 
             let container = $(this).closest('.payment-container');
+
             if (paymentType === 'bankTransfer') {
                 paymentData.bank = container.find('.bankName').val();
                 paymentData.amount = container.find('.bankTransferAmount').val();
                 paymentData.datanamebank = paymentData.bank + ' Bank Transfer - Together Resort Ltd';
             } else if (paymentType === 'creditCard') {
-
-                    paymentData.cardNumber = container.find('.creditCardNumber').val();
-                    paymentData.expiry = container.find('.expiryDate').val();
-                    paymentData.amount = container.find('.creditCardAmount').val();
-                    paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
-
-
+                paymentData.cardNumber = container.find('.creditCardNumber').val();
+                paymentData.expiry = container.find('.expiryDate').val();
+                paymentData.amount = container.find('.creditCardAmount').val();
+                paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
             } else if (paymentType === 'cheque') {
                 paymentData.cheque = container.find('.cheque').val();
                 paymentData.chequedate = container.find('.chequedate').val();

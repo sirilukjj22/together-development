@@ -1183,6 +1183,8 @@
                         paymentMethods.push('Cheque');
                     }
                 });
+                console.log(paymentMethods.length);
+
                 if (paymentMethods.length > 3) {
                     console.log('กำลังใช้ช่องทางชำระเงิน: ' + paymentMethods.join(', ') + ' กฟก: ' + paymentMethods.length);
                 }else{
