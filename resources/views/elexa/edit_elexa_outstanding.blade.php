@@ -358,6 +358,7 @@
     @if (!empty($elexa_debit_out))
         @foreach ($elexa_debit_out as $key => $item)
             <input type="hidden" id="debit-revenue-amount-{{ $key }}" name="debit_revenue_amount[]" value="{{ $item->amount }}">
+            <input type="hidden" id="debit-revenue-remark-{{ $key }}" name="debit_revenue_remark[]" value="{{ $item->remark }}">
         @endforeach
     @endif
 </form>
@@ -1067,6 +1068,10 @@
             return $(this).val();
         }).get();
 
+        var debit_remark = $('input[name="remark_debit_revenue[]"]').map(function() {
+            return $(this).val();
+        }).get();
+
         var tableSelect = $('#myDataTableOutstandingSelect').DataTable();
 
         if (total_selected_amount == sms_amount) {
@@ -1158,7 +1163,6 @@
 
                         debit_revenue.forEach(element => {
                             $('#form-elexa').append('<input type="hidden" name="debit_revenue_amount[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
-                            $('#form-elexa').append('<input type="hidden" name="debit_revenue_remark[]" value="' + element + '">');
 
                             table.rows.add(
                                 [
@@ -1171,6 +1175,10 @@
                                     ]
                                 ]
                             ).draw();
+                        }); 
+
+                        debit_remark.forEach(element => {
+                            $('#form-elexa').append('<input type="hidden" name="debit_revenue_remark[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
                         });
     
                         $('#ElexaRevenueList').modal('hide');

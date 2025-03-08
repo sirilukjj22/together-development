@@ -10,7 +10,7 @@
     <meta name="keyword" content="ALUI, Bootstrap 5, ReactJs, Angular, Laravel, VueJs, ASP .Net, Admin Dashboard, Admin Theme" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>HARMONY DEVELOPMENT</title>
-    <link rel="icon" href="{{ asset('assets/images/harmony/Logo.png') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('assets/images/harmony/logo_2.png') }}" type="image/x-icon" />
 
     <!-- Plugin Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}?v={{ time() }}">
@@ -98,7 +98,7 @@
             <div class="d-flex flex-column h-100">
                 <div class="text-center mb-2" id="mobileshow">
                     <a href="{{ route('sms-alert') }}" class="">
-                        <img src="{{ asset('assets/images/harmony/Logo.png') }}" alt="logo of Together Resort" width="120" class="text-center mobileHidden" />
+                        <img src="{{ asset('assets/images/harmony/Logo.png') }}" alt="logo of Together Resort" width="150" class="text-center mobileHidden" />
                     </a>
                 </div>
 
@@ -116,7 +116,7 @@
                                 <!-- Menu: Sub menu ul -->
                                 <ul class="sub-menu collapse" id="menu-General-ledger">
                                     @if (Auth::user()->roleMenu->sms_alert == 1)
-                                        <li><a class="ms-link" href="{{ route('sms-alert') }}">Bank Transaction Revenue</a></li>
+                                        <li><a class="ms-link" href="{{ route('harmony-sms-alert') }}">Bank Transaction Revenue</a></li>
                                     @endif
                                     @if (Auth::user()->roleMenu->revenue == 1)
                                         <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>

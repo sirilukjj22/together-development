@@ -1623,12 +1623,12 @@ class SMSHarmonyController extends Controller
 
     public function graphDateRangDetail($startdate, $enddate, $type, $account)
     {
-        return view('sms-forward.graph_daterang_detail', compact('startdate', 'enddate', 'type', 'account'));
+        return view('sms-forward-harmony.graph_daterang_detail', compact('startdate', 'enddate', 'type', 'account'));
     }
 
     public function forward()
     {
-        return view('sms-forward.sms-example');
+        return view('sms-forward-harmony.sms-example');
     }
 
     public function store(Request $request)
@@ -2607,7 +2607,7 @@ class SMSHarmonyController extends Controller
         $into_account = $request->into_account;
         $bank_note = $request->bank_note;
 
-        return view('sms-forward.index', compact(
+        return view('sms-forward-harmony.index', compact(
             'data_sms',
             'total_sms_amount',
             'data_sms_transfer',
@@ -2905,7 +2905,7 @@ class SMSHarmonyController extends Controller
         $search_date = $request->date;
         $into_account = $request->into_account;
 
-        return view('sms-forward.detail', compact('data_sms', 'total_sms', 'data_bank', 'title', 'filter_by', 'search_date', 'status', 'into_account'));
+        return view('sms-forward-harmony.detail', compact('data_sms', 'total_sms', 'data_bank', 'title', 'filter_by', 'search_date', 'status', 'into_account'));
     }
 
     public function agoda_detail(Request $request)
@@ -3048,6 +3048,6 @@ class SMSHarmonyController extends Controller
         $status = $request->status;
         $into_account = $request->into_account;
 
-        return view('sms-forward.agoda_detail', compact('data_sms', 'title', 'filter_by', 'search_date', 'status', 'into_account', 'data_bank'));
+        return view('sms-forward-harmony.agoda_detail', compact('data_sms', 'title', 'filter_by', 'search_date', 'status', 'into_account', 'data_bank'));
     }
 }

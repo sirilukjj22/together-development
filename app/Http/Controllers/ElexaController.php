@@ -366,7 +366,7 @@ class ElexaController extends Controller
                             'document_elexa' => $check_document_old->id,
                             'date' => $request->issue_date,
                             'amount' => $value,
-                            'remark' => null,
+                            'remark' => $request->debit_revenue_remark[$key] ?? null,
                             'created_by' => Auth::user()->id
                         ]);
                     }
@@ -385,7 +385,6 @@ class ElexaController extends Controller
                 $log = Log_elexa::SaveLog('edit', $check_document_old, $request);
 
             } else {
-                // dd($request);
                 $data = Document_elexa::create([
                     'doc_no' => $this->generateDocumentNumber(),
                     'issue_date' => $request->issue_date,
@@ -405,7 +404,7 @@ class ElexaController extends Controller
                             'document_elexa' => $data,
                             'date' => date('Y-m-d'),
                             'amount' => $value,
-                            'remark' => null,
+                            'remark' => $request->debit_revenue_remark[$key] ?? null,
                             'created_by' => Auth::user()->id
                         ]);
                     }
