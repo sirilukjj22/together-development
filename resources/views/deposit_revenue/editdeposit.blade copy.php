@@ -2851,83 +2851,87 @@
         });
     }
     function Total() {
-        var uniqueValues = new Set();
+
         var cashamount = parseFloat($('#totalamount').val()) || 0;
         var sumpayment = parseFloat($('#amout').val()) || 0;
+            // ประกาศ Array สำหรับเก็บค่า
         var amountsArray = [];
-        var cashArray = [];  // สร้างอาเรย์เพื่อเก็บค่าทั้งหมด
+        var cashArray = [];
         var creditCardArray = [];
         var bankTransferArray = [];
-        $("[id^='chequeamount_']").each(function () {
-            var value = $(this).val(); // ดึงค่าจาก input
-            if (value) {
-                value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
 
+        // ฟังก์ชันสำหรับรวบรวมค่าจาก Input
+        $("[id^='creditCardAmount_']").each(function (index) {
+            var value = $(this).val();
+            console.log(`Credit Card Amounts Input Raw Value [${index}]:`, value);
 
-                if (!isNaN(value)) {
-                    if (!uniqueValues.has(value) && value !== 0) {
-                        uniqueValues.add(value);
-                        amountsArray.push(value);
-                    }
-                    console.log(amountsArray);
-                }
-            }
-        });
-        $("[id^='creditCardAmount_']").each(function () {
-            var value = $(this).val(); // ดึงค่าจาก input
-            if (value) {
-                value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
-                console.log(value);
-
-                if (!isNaN(value)) {
-                    if (!uniqueValues.has(value) && value !== 0) {
-                        uniqueValues.add(value);
+            if (value !== undefined && value.trim() !== '') {
+                value = parseFloat(value.replace(/,/g, '')) || 0;
+                if (!isNaN(value) && value !== 0) {
+                    if (!creditCardArray.includes(value)) { // ตรวจสอบไม่ให้ซ้ำ
                         creditCardArray.push(value);
+                        console.log(`Credit Card Amounts Added Value [${index}]:`, value);
                     }
-
                 }
             }
         });
-        $("[id^='bankTransferAmount_']").each(function () {
-            var value = $(this).val(); // ดึงค่าจาก input
-            if (value) {
-                value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
+        $("[id^='cash_']").each(function (index) {
+            var value = $(this).val();
+            console.log(`Cash Amounts Input Raw Value [${index}]:`, value);
 
-                if (!isNaN(value)) {
-                    if (!uniqueValues.has(value) && value !== 0) {
-                        uniqueValues.add(value);
-                        bankTransferArray.push(value);
-                    }
-                    console.log(bankTransferArray);
-                }
-            }
-        });
-        $("[id^='cash_']").each(function () {
-            var value = $(this).val(); // ดึงค่าจาก input
-            if (value) {
-                value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
-
-                if (!isNaN(value)) {
-                    if (!uniqueValues.has(value) && value !== 0) {
-                        uniqueValues.add(value);
+            if (value !== undefined && value.trim() !== '') {
+                value = parseFloat(value.replace(/,/g, '')) || 0;
+                if (!isNaN(value) && value !== 0) {
+                    if (!cashArray.includes(value)) { // ตรวจสอบไม่ให้ซ้ำ
                         cashArray.push(value);
+                        console.log(`Cash Amounts Added Value [${index}]:`, value);
                     }
-                    console.log(cashArray);
+                }
+            }
+        });
+        $("[id^='bankTransferAmount_']").each(function (index) {
+            var value = $(this).val();
+            console.log(`Bank Transfer Amounts Input Raw Value [${index}]:`, value);
+
+            if (value !== undefined && value.trim() !== '') {
+                value = parseFloat(value.replace(/,/g, '')) || 0;
+                if (!isNaN(value) && value !== 0) {
+                    if (!bankTransferArray.includes(value)) { // ตรวจสอบไม่ให้ซ้ำ
+                        bankTransferArray.push(value);
+                        console.log(`Bank Transfer Amounts Added Value [${index}]:`, value);
+                    }
+                }
+            }
+        });
+        $("[id^='chequeamount_']").each(function (index) {
+            var value = $(this).val();
+            console.log(`Cheque Amounts Input Raw Value [${index}]:`, value);
+
+            if (value !== undefined && value.trim() !== '') {
+                value = parseFloat(value.replace(/,/g, '')) || 0;
+                if (!isNaN(value) && value !== 0) {
+                    if (!amountsArray.includes(value)) { // ตรวจสอบไม่ให้ซ้ำ
+                        amountsArray.push(value);
+                        console.log(`Cheque Amounts Added Value [${index}]:`, value);
+                    }
                 }
             }
         });
 
 
-
-        var sum =0;
+        // คำนวณยอดรวมของแต่ละกลุ่ม
         var amounts = amountsArray.reduce((sum, current) => sum + current, 0);
         var cash = cashArray.reduce((sum, current) => sum + current, 0);
         var credit = creditCardArray.reduce((sum, current) => sum + current, 0);
         var bank = bankTransferArray.reduce((sum, current) => sum + current, 0);
 
-        var sum = cash+amounts+bank+credit+cashamount;
-        var Outstanding = sumpayment-sum;
-        var all = sum;
+        // คำนวณยอดรวมทั้งหมด
+        var total = amounts + cash + credit + bank;
+
+
+
+        var Outstanding = sumpayment-total;
+        var all = total;
         let formattedOutstanding = Outstanding.toLocaleString('th-TH', { minimumFractionDigits: 2 });
         $('#total').text(formattedOutstanding);
         $('#totalamountall').text(all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB');

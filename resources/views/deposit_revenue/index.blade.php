@@ -17,11 +17,11 @@
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >
-                @if (session("susscess"))
-                <div class="alert alert-susscess" role="alert">
+                @if (session("success"))
+                <div class="alert alert-success" role="alert">
                     <h4 class="alert-heading">Save Receipt Paymentful.</h4>
                     <hr>
-                    <p class="mb-0">{{ session('susscess') }}</p>
+                    <p class="mb-0">{{ session('success') }}</p>
                 </div>
                 @endif
                 @if (session("error"))
