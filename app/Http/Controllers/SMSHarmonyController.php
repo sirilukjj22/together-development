@@ -95,14 +95,8 @@ class SMSHarmonyController extends Controller
                         $into = "none";
 
                         switch ($data_qr) {
-                            case '076355900016901':
-                                $into = "708-2-27357-4";
-                                break;
-                            case '076355900016902':
-                                $into = "708-2-26791-3";
-                                break;
-                            case '076355900016911':
-                                $into = "708-2-26792-1";
+                            case '076355400050101':
+                                $into = "156-277492-1";
                                 break;
                         }
 
@@ -152,14 +146,8 @@ class SMSHarmonyController extends Controller
                         $into = "none";
 
                         switch ($data_qr) {
-                            case '076355900016901':
-                                $into = "708-2-27357-4";
-                                break;
-                            case '076355900016902':
-                                $into = "708-2-26791-3";
-                                break;
-                            case '076355900016911':
-                                $into = "708-2-26792-1";
+                            case '076355400050101':
+                                $into = "156-277492-1";
                                 break;
                         }
 

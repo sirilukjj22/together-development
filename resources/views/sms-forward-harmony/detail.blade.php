@@ -367,11 +367,11 @@
                             <option value="0">เลือกข้อมูล</option>
                             <option value="1">Room Revenue</option>
                             <option value="2">All Outlet Revenue</option>
-                            <option value="3">Water Park Revenue</option>
+                            {{-- <option value="3">Water Park Revenue</option> --}}
                             <option value="4">Credit Revenue</option>
                             <option value="5">Agoda Revenue</option>
                             <option value="6">Front Desk Revenue</option>
-                            <option value="8">Elexa EGAT Revenue</option>
+                            {{-- <option value="8">Elexa EGAT Revenue</option> --}}
                             <option value="9">Other Revenue Bank Transfer</option>
                         </select>
                         <div class="dg-gc2-g2">

@@ -40,6 +40,7 @@ use App\Http\Controllers\ReportAgodaOutstandingController;
 use App\Http\Controllers\ReportAgodaPaidController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
+use App\Http\Controllers\ReportAuditRevenueDateHarmonyController;
 use App\Http\Controllers\ReportElexaAccountReceivableController;
 use App\Http\Controllers\ReportElexaOutstandingController;
 use App\Http\Controllers\ReportElexaPaidController;
@@ -316,7 +317,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-department-paginate-table', 'paginate_table')->name('user-department-paginate-table');
     });
 
-    ## Report (Together)
+    ## Report Audit Date (Together)
     Route::controller(ReportAuditRevenueDateController::class)->middleware('role:report')->group(function () {
         Route::get('report-audit-revenue-date', 'index')->name('report-audit-revenue-date');
         Route::post('report-audit-revenue-date-search', 'search')->name('report-audit-revenue-date-search');
@@ -324,8 +325,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('report-audit-search-table', 'search_table')->name('report-audit-search-table');
     });
 
-    ## Report (Harmony)
-    Route::controller(ReportAuditRevenueDateController::class)->middleware('role:report')->group(function () {
+    ## Report Audit Date (Harmony)
+    Route::controller(ReportAuditRevenueDateHarmonyController::class)->middleware('role:report')->group(function () {
         Route::get('harmony-report-audit-revenue-date', 'index')->name('harmony-report-audit-revenue-date');
         Route::post('harmony-report-audit-revenue-date-search', 'search')->name('harmony-report-audit-revenue-date-search');
         Route::post('harmony-report-audit-paginate-table', 'paginate_table')->name('harmony-report-audit-paginate-table');
@@ -405,6 +406,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report-billingfolio-index', 'billingfolio')->name('report-billingfolio-index');
         Route::post('report-billingfolio-search', 'search_billingfolio')->name('report-billingfolio-search');
     });
+
     ####################################################
 
     ## Master Booking Channal

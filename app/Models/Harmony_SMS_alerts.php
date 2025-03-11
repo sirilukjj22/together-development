@@ -64,10 +64,10 @@ class Harmony_SMS_alerts extends Model
             }
         }
 
-        if (empty($bank_name)) {
-            $check = Masters::where('category', 'bank')->whereNull('deleted_at')->where('name_en', "SCB")->select('id', 'name_en')->first();
-            $bank_name = $check->id ?? 0;
-        }
+        // if (empty($bank_name)) {
+        //     $check = Masters::where('category', 'bank')->whereNull('deleted_at')->where('name_en', "SCB")->select('id', 'name_en')->first();
+        //     $bank_name = $check->id ?? 0;
+        // }
 
         return $bank_name;
     }

@@ -573,6 +573,8 @@
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                             @elseif (file_exists($filename2))
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                            @else
+                                                                <img class="img-bank" src="../assets/images/no-image.jpg">
                                                             @endif
                                                             {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                         </div>
@@ -581,7 +583,7 @@
                                                         <div class="flex-jc p-left-4 center">
                                                             @if ($item->into_account == "871-0-11991-1")
                                                                 <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
-                                                            @elseif ($item->into_account == "436-0-75511-1")
+                                                            @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-277492-1")
                                                                 <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
                                                             @elseif ($item->into_account == "978-2-18099-9")
                                                                 <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
@@ -1346,9 +1348,9 @@
                             <option value="2">All Outlet Bank Transfer Revenue</option>
                             <option value="4">Credit Card Revenue</option>
                             <option value="5">Credit Card Agoda Revenue</option>
-                            <option value="3">Water Park Bank Transfer Revenue</option>
-                            <option value="7">Credit Card Water Park Revenue</option>
-                            <option value="8">Elexa EGAT Bank Transfer Revenue</option>
+                            {{-- <option value="3">Water Park Bank Transfer Revenue</option> --}}
+                            {{-- <option value="7">Credit Card Water Park Revenue</option> --}}
+                            {{-- <option value="8">Elexa EGAT Bank Transfer Revenue</option> --}}
                             <option value="9">Other Bank Transfer Revenue</option>
                         </select>
                         <div class="dg-gc2-g2">
@@ -1489,9 +1491,9 @@
                                 <option value="2" {{ isset($status) && $status == 2 ? 'selected' : '' }}>All Outlet Bank Transfer Revenue</option>
                                 <option value="4" {{ isset($status) && $status == 4 ? 'selected' : '' }}>Credit Card Revenue</option>
                                 <option value="5" {{ isset($status) && $status == 5 ? 'selected' : '' }}>Credit Card Agoda Revenue</option>
-                                <option value="3" {{ isset($status) && $status == 3 ? 'selected' : '' }}>Water Park Bank Transfer Revenue</option>
-                                <option value="7" {{ isset($status) && $status == 7 ? 'selected' : '' }}>Credit Card Water Park Revenue</option>
-                                <option value="8" {{ isset($status) && $status == 8 ? 'selected' : '' }}>Elexa EGAT Bank Transfer Revenue</option>
+                                {{-- <option value="3" {{ isset($status) && $status == 3 ? 'selected' : '' }}>Water Park Bank Transfer Revenue</option> --}}
+                                {{-- <option value="7" {{ isset($status) && $status == 7 ? 'selected' : '' }}>Credit Card Water Park Revenue</option> --}}
+                                {{-- <option value="8" {{ isset($status) && $status == 8 ? 'selected' : '' }}>Elexa EGAT Bank Transfer Revenue</option> --}}
                                 <option value="9" {{ isset($status) && $status == 9 ? 'selected' : '' }}>Other Bank Transfer Revenue</option>
                             </select>
 
