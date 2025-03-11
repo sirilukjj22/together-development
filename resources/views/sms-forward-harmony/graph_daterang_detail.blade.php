@@ -41,7 +41,7 @@
 
     <!-- card graph -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/graph/graphDateRangDetail.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/harmonyGraphDateRangDetail.js')}}"></script>
 
     <script>
         $(document).ready(function() {

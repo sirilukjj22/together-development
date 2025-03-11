@@ -1,14 +1,14 @@
 <?php	
 
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$dbname = "together_db";
+	// $servername = "localhost";
+	// $username = "root";
+	// $password = "";
+	// $dbname = "harmony_db";
 
-	// $servername = "103.230.120.52";
-	// $username = "together_user2";
-	// $password = "v[86I8iy[22";
-	// $dbname = "togetherdb2";
+	$servername = "103.230.120.52";
+	$username = "together_user2";
+	$password = "v[86I8iy[22";
+	$dbname = "harmonydb";
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
@@ -81,15 +81,21 @@
 	// fclose($myfile);
 
 	// $phone = "027777777";
-	// $text = "105.00 บ.จากxBorder ชำระผ่านQR เข้า076355900016902 06/10@11:09";
+	// $text = "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB 65,700.00บ ใช้ได้ 87,580.00บ";
 	// $exp_form = explode(" ", $text);
 	// dd($exp_form);
 
-	if ($phone == "027777777" || $phone == "SCBQRAlert") {
+	if ($phone == "027777777" || $phone == "SCBQRAlert" || $phone == "KBank" || $phone == "BANGKOKBANK") {
 		$exp_form = explode(" ", $text);
 
 		if (!empty($exp_form[0]) ) {
-			if ($exp_form[0] == "เงินโอนจาก" || $exp_form[0] == "เงินโอนยอด" || $exp_form[3] == "เข้า076355900016902" || $exp_form[4] == "เข้า076355900016902" || $exp_form[4] == "เข้า076355900016901" || $exp_form[4] == "เข้า076355900016911" || $exp_form[0] == "เงินเข้าบ/ช" || $exp_form[0] == "เช็คเข้าบ/ช") {
+			if ($exp_form[0] == "เงินโอนจาก" || $exp_form[0] == "เงินโอนยอด" 
+			|| isset($exp_form[4]) && $exp_form[4] == "รับโอนจาก" && isset($exp_form[3]) && $exp_form[3] == "X-0999"
+			|| isset($exp_form[2]) && preg_match('~เข้าบ/ชx755111.*$~', $exp_form[2], $matches) == 1 
+			|| $exp_form[0] == "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB" 
+			|| $exp_form[0] == "เงินเข้าบ/ช" 
+			|| $exp_form[0] == "เช็คเข้าบ/ช") {
+
 				$date = date('Y-m-d H:i:s');
 				$sql = "INSERT INTO sms_forward (messages, sender, chanel, is_status, created_at) VALUES ('$text', '$phone', 'SMS', 0, '$date')";
 

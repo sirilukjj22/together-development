@@ -358,7 +358,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
+                <form action="{{ route('harmony-sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
                     <div class="modal-body">
                         <label for="">ประเภทรายได้</label>
@@ -367,11 +367,11 @@
                             <option value="0">เลือกข้อมูล</option>
                             <option value="1">Room Revenue</option>
                             <option value="2">All Outlet Revenue</option>
-                            <option value="3">Water Park Revenue</option>
+                            {{-- <option value="3">Water Park Revenue</option> --}}
                             <option value="4">Credit Revenue</option>
                             <option value="5">Agoda Revenue</option>
                             <option value="6">Front Desk Revenue</option>
-                            <option value="8">Elexa EGAT Revenue</option>
+                            {{-- <option value="8">Elexa EGAT Revenue</option> --}}
                             <option value="9">Other Revenue Bank Transfer</option>
                         </select>
                         <div class="dg-gc2-g2">
@@ -411,11 +411,11 @@
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
-                                    <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
-                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
-                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
-                                    <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
+                                    <option value="">เลือกข้อมูล</option>
+                                    <option value="436-0-75511-1">ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
+                                    <option value="156-277492-1">ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="871-0-11991-1">ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
+                                    <option value="978-2-18099-9">ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
                             </div>
                             <div class="wf-py2 ">
@@ -608,7 +608,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{!! url('sms-update-time/"+id+"/"+time+"') !!}",
+                url: "{!! url('harmony-sms-update-time/"+id+"/"+time+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -624,7 +624,7 @@
 
         function change_split() {
             jQuery.ajax({
-                url: "{!! url('sms-update-split') !!}",
+                url: "{!! url('harmony-sms-update-split') !!}",
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -649,7 +649,7 @@
 
             jQuery.ajax({
                 type: "POST",
-                url: "{!! url('sms-other-revenue') !!}",
+                url: "{!! url('harmony-sms-other-revenue') !!}",
                 datatype: "JSON",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -671,7 +671,7 @@
         $(document).on('click', '#btn-save-transfer', function () {
             jQuery.ajax({
                 type: "POST",
-                url: "{!! url('sms-transfer') !!}",
+                url: "{!! url('harmony-sms-transfer') !!}",
                 datatype: "JSON",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -797,7 +797,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-edit/"+$id+"') !!}",
+                url: "{!! url('harmony-sms-edit/"+$id+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -842,7 +842,7 @@
         function change_status($id, $status) {
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
+                url: "{!! url('harmony-sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -863,7 +863,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                url: "{!! url('harmony-sms-get-remark-other-revenue/"+id+"') !!}",
                 datatype: "JSON",
                 cache: false,
                 async: false,
@@ -890,7 +890,7 @@
                 if (result.isConfirmed) {
                     jQuery.ajax({
                         type: "GET",
-                        url: "{!! url('sms-delete/"+$id+"') !!}",
+                        url: "{!! url('harmony-sms-delete/"+$id+"') !!}",
                         datatype: "JSON",
                         async: false,
                         success: function(result) {
@@ -974,7 +974,7 @@
 
                 jQuery.ajax({
                     type: "POST",
-                    url: "{!! route('sms-store') !!}",
+                    url: "{!! route('harmony-sms-store') !!}",
                     datatype: "JSON",
                     data: $('#form-id').serialize(),
                     async: false,

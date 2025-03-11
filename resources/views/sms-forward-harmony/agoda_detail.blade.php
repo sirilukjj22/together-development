@@ -332,7 +332,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
+                <form action="{{ route('harmony-sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
                     <div class="modal-body">
                         <label for="">ประเภทรายได้</label>
@@ -484,7 +484,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                        url: 'sms-search-table',
+                        url: 'harmony-sms-search-table',
                         type: 'POST',
                         dataType: "json",
                         cache: false,
@@ -589,7 +589,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{!! url('sms-update-time/"+id+"/"+time+"') !!}",
+                url: "{!! url('harmony-sms-update-time/"+id+"/"+time+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -600,7 +600,7 @@
 
         function change_split() {
             jQuery.ajax({
-                url: "{!! url('sms-update-split') !!}",
+                url: "{!! url('harmony-sms-update-split') !!}",
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -717,7 +717,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-edit/"+$id+"') !!}",
+                url: "{!! url('harmony-sms-edit/"+$id+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -762,7 +762,7 @@
         function change_status($id, $status) {
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
+                url: "{!! url('harmony-sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(result) {
@@ -778,7 +778,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                url: "{!! url('harmony-sms-get-remark-other-revenue/"+id+"') !!}",
                 datatype: "JSON",
                 cache: false,
                 async: false,
@@ -805,7 +805,7 @@
                 if (result.isConfirmed) {
                     jQuery.ajax({
                         type: "GET",
-                        url: "{!! url('sms-delete/"+$id+"') !!}",
+                        url: "{!! url('harmony-sms-delete/"+$id+"') !!}",
                         datatype: "JSON",
                         async: false,
                         success: function(result) {
@@ -889,7 +889,7 @@
 
         //         jQuery.ajax({
         //             type: "POST",
-        //             url: "{!! route('sms-store') !!}",
+        //             url: "{!! route('harmony-sms-store') !!}",
         //             datatype: "JSON",
         //             data: $('#form-id').serialize(),
         //             async: false,

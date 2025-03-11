@@ -464,7 +464,7 @@ class RevenuesHarmonyController extends Controller
         $filter_by = 'date';
         $search_date = date('d/m/Y').' - '.date('d/m/Y');
         
-        return view('revenue.'.$by_page, compact(
+        return view('revenue_harmony.'.$by_page, compact(
             'total_revenue_today', 
             'total_day', 
             'total_verified',
@@ -1686,7 +1686,7 @@ class RevenuesHarmonyController extends Controller
                 );
                 return $pdf->stream();
             } else {
-                return view('revenue.'.$by_page, compact(
+                return view('revenue_harmony.'.$by_page, compact(
                     'total_revenue_today', 
                     'total_day', 
                     'total_verified', 
@@ -1765,15 +1765,8 @@ class RevenuesHarmonyController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        // dd($request);
         $charge = 0;
         $agoda_charge = 0;
         $agoda_outstanding = 0;
@@ -2070,8 +2063,6 @@ class RevenuesHarmonyController extends Controller
 
             $filter_by = "thisYear";
         }
-
-        // dd($request);
 
         ## Cash
         if ($request->revenue_type == "cash_front") {

@@ -95,7 +95,7 @@
                                 </span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                <a class="dropdown-item" href="{{ route('sms-alert') }}">Today</a>
+                                <a class="dropdown-item" href="{{ route('harmony-sms-alert') }}">Today</a>
                                 {{-- <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a> --}}
                                 <a class="dropdown-item" href="#" onclick="search_daily('yesterday')">Yesterday</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
@@ -431,7 +431,7 @@
                                     @endphp
 
                                     @if ($filter_by == 'date' && count($exp_date) == 2 && $days_difference > 31)
-                                        <a href="{{ route('sms-daterang-detail', [$start_date->format('Y-m-d'), $end_date->format('Y-m-d'), $into_account ?? 0, $status ?? 0]) }}" type="button" class="ac-style">More</a>
+                                        <a href="{{ route('harmony-sms-daterang-detail', [$start_date->format('Y-m-d'), $end_date->format('Y-m-d'), $into_account ?? 0, $status ?? 0]) }}" type="button" class="ac-style">More</a>
                                     @endif
 
                                 </div>
@@ -573,13 +573,21 @@
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                             @elseif (file_exists($filename2))
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                            @else
+                                                                <img class="img-bank" src="../assets/images/no-image.jpg">
                                                             @endif
                                                             {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                         </div>
                                                     </td>
                                                     <td class="td-content-center">
                                                         <div class="flex-jc p-left-4 center">
-                                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                            @if ($item->into_account == "871-0-11991-1")
+                                                                <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                            @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-277492-1")
+                                                                <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                            @elseif ($item->into_account == "978-2-18099-9")
+                                                                <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                            @endif
                                                         </div>
                                                     </td>
                                                     <td class="td-content-center">
@@ -1072,7 +1080,7 @@
                                                                                     Credit Card Water <br>Park Revenue 
                                                                                 </li>
                                                                             @endif
-                                                                            @if (@@$role_revenue->other_revenue == 1)
+                                                                            @if (@$role_revenue->other_revenue == 1)
                                                                                 <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
                                                                                     Other Revenue <br> Bank Transfer
                                                                                 </li>
@@ -1318,7 +1326,6 @@
         </div>
     </div>
 
-
     <!-- Modal เพิ่มข้อมูล modal fade -->
     <div class="modal fade bd-example-modal-lg" id="exampleModalCenter5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter5Label" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -1329,7 +1336,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
+                <form action="{{ route('harmony-sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
                     <div class="modal-body">
                         <label for="">ประเภทรายได้</label> 
@@ -1341,9 +1348,9 @@
                             <option value="2">All Outlet Bank Transfer Revenue</option>
                             <option value="4">Credit Card Revenue</option>
                             <option value="5">Credit Card Agoda Revenue</option>
-                            <option value="3">Water Park Bank Transfer Revenue</option>
-                            <option value="7">Credit Card Water Park Revenue</option>
-                            <option value="8">Elexa EGAT Bank Transfer Revenue</option>
+                            {{-- <option value="3">Water Park Bank Transfer Revenue</option> --}}
+                            {{-- <option value="7">Credit Card Water Park Revenue</option> --}}
+                            {{-- <option value="8">Elexa EGAT Bank Transfer Revenue</option> --}}
                             <option value="9">Other Bank Transfer Revenue</option>
                         </select>
                         <div class="dg-gc2-g2">
@@ -1395,10 +1402,11 @@
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
-                                    <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
-                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
-                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
+                                    <option value="">เลือกข้อมูล</option>
+                                    <option value="436-0-75511-1">ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
+                                    <option value="156-277492-1">ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="871-0-11991-1">ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
+                                    <option value="978-2-18099-9">ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
                             </div>
                             <div class="wf-py2 ">
@@ -1439,7 +1447,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('sms-search-calendar') }}" method="POST" enctype="multipart/form-data" id="form-calendar">
+                <form action="{{ route('harmony-sms-search-calendar') }}" method="POST" enctype="multipart/form-data" id="form-calendar">
                     @csrf
                     <div class="modal-body">
                         <!-- Modal: เลือกวันที่ modal fade -->
@@ -1450,11 +1458,12 @@
                                 <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-year">Filter by Year</button>
                             </div>
                             <div class="center w-100" style="gap:0.3rem;">
-                                <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
+                                <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
-                                    <option value="708-2-26791-3" {{ isset($into_account) && $into_account == '708-2-26791-3' ? 'selected' : '' }}>SCB 708-2-26791-3</option>
-                                    <option value="708-2-26792-1" {{ isset($into_account) && $into_account == '708-2-26792-1' ? 'selected' : '' }}>SCB 708-2-26792-1</option>
-                                    <option value="708-2-27357-4" {{ isset($into_account) && $into_account == '708-2-27357-4' ? 'selected' : '' }}>SCB 708-2-27357-4</option>
+                                    <option value="436-0-75511-1" {{ isset($into_account) && $into_account == '436-0-75511-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
+                                    <option value="156-277492-1" {{ isset($into_account) && $into_account == '156-277492-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="871-0-11991-1" {{ isset($into_account) && $into_account == '871-0-11991-1' ? 'selected' : '' }}>ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
+                                    <option value="978-2-18099-9" {{ isset($into_account) && $into_account == '978-2-18099-9' ? 'selected' : '' }}>ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
 
                                 <!-- tooltip -->
@@ -1482,9 +1491,9 @@
                                 <option value="2" {{ isset($status) && $status == 2 ? 'selected' : '' }}>All Outlet Bank Transfer Revenue</option>
                                 <option value="4" {{ isset($status) && $status == 4 ? 'selected' : '' }}>Credit Card Revenue</option>
                                 <option value="5" {{ isset($status) && $status == 5 ? 'selected' : '' }}>Credit Card Agoda Revenue</option>
-                                <option value="3" {{ isset($status) && $status == 3 ? 'selected' : '' }}>Water Park Bank Transfer Revenue</option>
-                                <option value="7" {{ isset($status) && $status == 7 ? 'selected' : '' }}>Credit Card Water Park Revenue</option>
-                                <option value="8" {{ isset($status) && $status == 8 ? 'selected' : '' }}>Elexa EGAT Bank Transfer Revenue</option>
+                                {{-- <option value="3" {{ isset($status) && $status == 3 ? 'selected' : '' }}>Water Park Bank Transfer Revenue</option> --}}
+                                {{-- <option value="7" {{ isset($status) && $status == 7 ? 'selected' : '' }}>Credit Card Water Park Revenue</option> --}}
+                                {{-- <option value="8" {{ isset($status) && $status == 8 ? 'selected' : '' }}>Elexa EGAT Bank Transfer Revenue</option> --}}
                                 <option value="9" {{ isset($status) && $status == 9 ? 'selected' : '' }}>Other Bank Transfer Revenue</option>
                             </select>
 
@@ -1571,8 +1580,8 @@
 
     <!-- card graph -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/graph/graphUpdateDay.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('assets/graph/graphCondition.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/harmonyGraphUpdateDay.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/harmonyGraphCondition.js')}}"></script>
 
     <style>
         .content-col {
@@ -1922,7 +1931,7 @@
                 info: false,
                 // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
                 ajax: {
-                    url: 'sms-search-table',
+                    url: 'harmony-sms-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -2054,7 +2063,7 @@
             
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
+                url: "{!! url('harmony-sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2075,7 +2084,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                url: "{!! url('harmony-sms-get-remark-other-revenue/"+id+"') !!}",
                 datatype: "JSON",
                 cache: false,
                 async: false,
@@ -2105,7 +2114,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{!! url('sms-update-time/"+id+"/"+time+"') !!}",
+                url: "{!! url('harmony-sms-update-time/"+id+"/"+time+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2129,7 +2138,7 @@
 
         function change_split() {
             jQuery.ajax({
-                url: "{!! url('sms-update-split') !!}",
+                url: "{!! url('harmony-sms-update-split') !!}",
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -2154,7 +2163,7 @@
 
             jQuery.ajax({
                 type: "POST",
-                url: "{!! url('sms-other-revenue') !!}",
+                url: "{!! url('harmony-sms-other-revenue') !!}",
                 datatype: "JSON",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2177,7 +2186,7 @@
 
             jQuery.ajax({
                 type: "POST",
-                url: "{!! url('sms-transfer') !!}",
+                url: "{!! url('harmony-sms-transfer') !!}",
                 datatype: "JSON",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2381,7 +2390,7 @@
  
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-edit/"+$id+"') !!}",
+                url: "{!! url('harmony-sms-edit/"+$id+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2430,7 +2439,7 @@
                 if (result.isConfirmed) {
                     jQuery.ajax({
                         type: "GET",
-                        url: "{!! url('sms-delete/"+$id+"') !!}",
+                        url: "{!! url('harmony-sms-delete/"+$id+"') !!}",
                         datatype: "JSON",
                         async: false,
                         success: function(response) {
@@ -2526,7 +2535,7 @@
 
                 jQuery.ajax({
                     type: "POST",
-                    url: "{!! route('sms-store') !!}",
+                    url: "{!! route('harmony-sms-store') !!}",
                     datatype: "JSON",
                     data: $('#form-id').serialize(),
                     async: false,
@@ -2629,7 +2638,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-graphForcast/"+date_now+"') !!}",
+                url: "{!! url('harmony-sms-graphForcast/"+date_now+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2645,7 +2654,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-graphToday/"+date_now+"') !!}",
+                url: "{!! url('harmony-sms-graphToday/"+date_now+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {

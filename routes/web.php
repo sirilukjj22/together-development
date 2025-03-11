@@ -40,6 +40,7 @@ use App\Http\Controllers\ReportAgodaOutstandingController;
 use App\Http\Controllers\ReportAgodaPaidController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
+use App\Http\Controllers\ReportAuditRevenueDateHarmonyController;
 use App\Http\Controllers\ReportElexaAccountReceivableController;
 use App\Http\Controllers\ReportElexaOutstandingController;
 use App\Http\Controllers\ReportElexaPaidController;
@@ -51,6 +52,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\ReportDocumentController;
+use App\Http\Controllers\RevenuesHarmonyController;
 use App\Http\Controllers\SMSHarmonyController;
 
 /*
@@ -75,7 +77,7 @@ Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-
 
 // API Harmony
 Route::get('harmony-sms-forward', [SMSHarmonyController::class, 'forward'])->name('harmony-sms-forward');
-Route::get('hamony-sms-api-forward', [SMSHarmonyController::class, 'forward'])->name('harmony-sms-api-forward');
+Route::get('harmony-sms-api-forward', [SMSHarmonyController::class, 'forward'])->name('harmony-sms-api-forward');
 
 // Link PDF
 Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
@@ -159,7 +161,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('harmony-sms-paginate-table', 'paginate_table')->name('harmony-sms-paginate-table');
     });
 
-    # Revenue
+    # Revenue (Together)
     Route::controller(RevenuesController::class)->middleware('role:revenue')->group(function () {
         Route::get('revenue', 'index')->name('revenue'); // By Type
         Route::get('revenue-department', 'index')->name('revenue-department'); // By Department
@@ -175,6 +177,24 @@ Route::middleware(['auth'])->group(function () {
         // Table Search / Paginate
         Route::post('revenue-search-table', 'search_table')->name('revenue-search-table');
         Route::post('revenue-paginate-table', 'paginate_table')->name('revenue-paginate-table');
+    });
+
+    # Revenue (Harmony)
+    Route::controller(RevenuesHarmonyController::class)->middleware('role:revenue')->group(function () {
+        Route::get('harmony-revenue', 'index')->name('harmony-revenue'); // By Type
+        Route::get('harmony-revenue-department', 'index')->name('harmony-revenue-department'); // By Department
+        Route::post('harmony-revenue-search-calendar', 'search_calendar')->name('harmony-revenue-search-calendar');
+        Route::post('harmony-revenue-store', 'store')->name('harmony-revenue-store');
+        Route::get('harmony-revenue-edit/{id}', 'edit')->name('harmony-revenue-edit');
+        Route::get('harmony-revenue-export', 'export')->name('harmony-revenue-export');
+        Route::post('harmony-revenue-detail', 'detail')->name('harmony-revenue-detail');
+        Route::get('harmony-revenue-input-month/{month}', 'input_month')->name('harmony-revenue-input-month');
+        Route::post('harmony-revenue-daily-close', 'daily_close')->name('harmony-revenue-daily-close');
+        Route::post('harmony-revenue-daily-open', 'daily_open')->name('harmony-revenue-daily-open');
+
+        // Table Search / Paginate
+        Route::post('harmony-revenue-search-table', 'search_table')->name('harmony-revenue-search-table');
+        Route::post('harmony-revenue-paginate-table', 'paginate_table')->name('harmony-revenue-paginate-table');
     });
 
     # Debit Agoda Revenue
@@ -263,7 +283,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('master-paginate-table', 'paginate_table')->name('master-paginate-table');
     });
 
-
     ## Users
     Route::controller(UsersController::class)->middleware('role:user')->group(function () {
         Route::get('users/{menu}', 'index')->name('users');
@@ -298,12 +317,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-department-paginate-table', 'paginate_table')->name('user-department-paginate-table');
     });
 
-    ## Report
+    ## Report Audit Date (Together)
     Route::controller(ReportAuditRevenueDateController::class)->middleware('role:report')->group(function () {
         Route::get('report-audit-revenue-date', 'index')->name('report-audit-revenue-date');
         Route::post('report-audit-revenue-date-search', 'search')->name('report-audit-revenue-date-search');
         Route::post('report-audit-paginate-table', 'paginate_table')->name('report-audit-paginate-table');
         Route::post('report-audit-search-table', 'search_table')->name('report-audit-search-table');
+    });
+
+    ## Report Audit Date (Harmony)
+    Route::controller(ReportAuditRevenueDateHarmonyController::class)->middleware('role:report')->group(function () {
+        Route::get('harmony-report-audit-revenue-date', 'index')->name('harmony-report-audit-revenue-date');
+        Route::post('harmony-report-audit-revenue-date-search', 'search')->name('harmony-report-audit-revenue-date-search');
+        Route::post('harmony-report-audit-paginate-table', 'paginate_table')->name('harmony-report-audit-paginate-table');
+        Route::post('harmony-report-audit-search-table', 'search_table')->name('harmony-report-audit-search-table');
     });
 
     Route::controller(ReportHotelWaterparkRevenueController::class)->middleware('role:report')->group(function () {
@@ -379,6 +406,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report-billingfolio-index', 'billingfolio')->name('report-billingfolio-index');
         Route::post('report-billingfolio-search', 'search_billingfolio')->name('report-billingfolio-search');
     });
+
     ####################################################
 
     ## Master Booking Channal
