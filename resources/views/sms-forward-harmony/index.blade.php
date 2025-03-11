@@ -575,7 +575,9 @@
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                             @else
                                                                 <img class="img-bank" src="../assets/images/harmony/bank_transfer.png">
-                                                                Bank Transfer
+                                                                @if ($item->transfer_form_account == '' || $item->transfer_form_account == '-')
+                                                                    Bank Transfer
+                                                                @endif
                                                             @endif
                                                             {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                         </div>
@@ -786,7 +788,9 @@
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                                 @else
                                                                     <img class="img-bank" src="../assets/images/harmony/bank_transfer.png">
-                                                                    Bank Transfer
+                                                                    @if ($item->transfer_form_account == '' || $item->transfer_form_account == '-')
+                                                                        Bank Transfer
+                                                                    @endif
                                                                 @endif
                                                                 {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                             </div>
@@ -988,7 +992,9 @@
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
                                                                 @else
                                                                     <img class="img-bank" src="../assets/images/harmony/bank_transfer.png">
-                                                                    Bank Transfer
+                                                                    @if ($item->transfer_form_account == '' || $item->transfer_form_account == '-')
+                                                                        Bank Transfer
+                                                                    @endif
                                                                 @endif
                                                                 {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                             </div>

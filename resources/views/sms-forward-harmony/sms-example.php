@@ -81,7 +81,7 @@
 	// fclose($myfile);
 
 	// $phone = "027777777";
-	// $text = "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB 65,700.00บ ใช้ได้ 87,580.00บ";
+	// $text = "21/02/68 15:36 บช X-0999 รับโอนจาก X-6163 13,065.00 คงเหลือ 37,856.06 บ.";
 	// $exp_form = explode(" ", $text);
 	// dd($exp_form);
 
@@ -89,12 +89,15 @@
 		$exp_form = explode(" ", $text);
 
 		if (!empty($exp_form[0]) ) {
-			if ($exp_form[0] == "เงินโอนจาก" || $exp_form[0] == "เงินโอนยอด" 
-			|| isset($exp_form[4]) && $exp_form[4] == "รับโอนจาก" && isset($exp_form[3]) && $exp_form[3] == "X-0999"
+			if (isset($exp_form[0]) && $exp_form[0] == "เงินโอนจาก" 
+			|| isset($exp_form[0]) && $exp_form[0] == "เงินโอนยอด" 
+			|| isset($exp_form[3]) && $exp_form[3] == "X-0999" && isset($exp_form[4]) && $exp_form[4] == "เงินเข้า"
+			|| isset($exp_form[3]) && $exp_form[3] == "X-0999" && isset($exp_form[4]) && $exp_form[4] == "รับโอนจาก"
 			|| isset($exp_form[2]) && preg_match('~เข้าบ/ชx755111.*$~', $exp_form[2], $matches) == 1 
-			|| $exp_form[0] == "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB" 
-			|| $exp_form[0] == "เงินเข้าบ/ช" 
-			|| $exp_form[0] == "เช็คเข้าบ/ช") {
+			|| isset($exp_form[0]) && $exp_form[0] == "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB" 
+			|| isset($exp_form[0]) && $exp_form[0] == "เงินเข้าบ/ช" 
+			|| isset($exp_form[0]) && $exp_form[0] == "เช็คเข้าบ/ช"
+			|| isset($exp_form[4]) && $exp_form[4] == "เข้า076355400050101") {
 
 				$date = date('Y-m-d H:i:s');
 				$sql = "INSERT INTO sms_forward (messages, sender, chanel, is_status, created_at) VALUES ('$text', '$phone', 'SMS', 0, '$date')";

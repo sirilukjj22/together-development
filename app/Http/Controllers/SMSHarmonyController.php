@@ -226,14 +226,40 @@ class SMSHarmonyController extends Controller
                     ]);
 
                 } elseif ($value->sender == "KBank") {
-                    Harmony_SMS_alerts::create([
-                        'date' => $value->created_at,
-                        'transfer_from' => '-',
-                        'into_account' => Harmony_SMS_alerts::check_account($exp_form[3]),
-                        'amount' => str_replace(",", "", $exp_form[5]),
-                        'remark' => "Auto",
-                        'status' => 0
-                    ]);
+                    $date = DateTime::createFromFormat('d/m/y', $exp_form[0]);
+
+                    if ($date) {
+                        $year = '25'.$date->format('y');
+
+                        $yearInAD  = $year - 543;
+
+                        $date->setDate($yearInAD, $date->format('m'), $date->format('d'));
+                    }
+
+                    if (isset($exp_form[4]) && $exp_form[4] == "รับโอนจาก") {
+                        $letter = substr($exp_form[5], 0, 1);  // ตัวอักษร (ในที่นี้คือ "X")
+                        $numbers = substr($exp_form[5], 2);    // ตัวเลขหลังเครื่องหมายขีด (ในที่นี้คือ "6163")
+                        $formattedString = sprintf('xxx-x-x%s-%s', substr($numbers, 0, 3), substr($numbers, 3));
+
+                        Harmony_SMS_alerts::create([
+                            'date' => $date->format('Y-m-d').' '.Carbon::parse($exp_form[1])->format('H:i:s'),
+                            'transfer_from' => '-',
+                            'transfer_form_account' => $formattedString,
+                            'into_account' => Harmony_SMS_alerts::check_account($exp_form[3]),
+                            'amount' => str_replace(",", "", $exp_form[6]),
+                            'remark' => "Auto",
+                            'status' => 0
+                        ]);
+                    } else {
+                        Harmony_SMS_alerts::create([
+                            'date' => $date->format('Y-m-d').' '.Carbon::parse($exp_form[1])->format('H:i:s'),
+                            'transfer_from' => '-',
+                            'into_account' => Harmony_SMS_alerts::check_account($exp_form[3]),
+                            'amount' => str_replace(",", "", $exp_form[5]),
+                            'remark' => "Auto",
+                            'status' => 0
+                        ]);
+                    }
 
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1

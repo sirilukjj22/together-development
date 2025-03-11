@@ -190,6 +190,14 @@
                                     </ul>
                                 </li>
                             @endif --}}
+                            @if (Auth::user()->permission_branch == 3)
+                                <li>
+                                    <a class="m-link" href="{{ route('select-branch') }}">
+                                        <i class="fa fa-lg fa-refresh" style="font-weight: bold; color: white;"></i>
+                                        <span>Switch branch</span>
+                                    </a>
+                                </li>
+                            @endif
                             <li>
                                 <a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout">
                                     <i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i>
