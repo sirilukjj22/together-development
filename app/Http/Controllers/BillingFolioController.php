@@ -55,8 +55,8 @@ class BillingFolioController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
-        $Approved = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->get();
-        $ApprovedCount = receive_payment::query()->where('type','billing')->WhereIn('document_status',[1,2])->count();
+        $Approved = receive_payment::query()->WhereIn('document_status',[1,2])->get();
+        $ApprovedCount = receive_payment::query()->WhereIn('document_status',[1,2])->count();
         $ComplateCount = Quotation::query()->where('quotation.status_document', 9)->count();
         $Complate = Quotation::query()
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
@@ -208,7 +208,7 @@ class BillingFolioController extends Controller
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
             $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }
-        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('document_status',2)->where('Paid',0)->get();
+        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('document_status',1)->where('Paid',0)->get();
         $totalinvoices = 0;
         foreach ($invoices as $item) {
             $totalinvoices +=  $item->sumpayment;
@@ -356,6 +356,8 @@ class BillingFolioController extends Controller
         $Payment = $invoices->payment;
         $companyid = $invoices->company;
         $valid = $invoices->Expiration;
+        $IssueDate = $invoices->IssueDate;
+        $Expiration = $invoices->Expiration;
         $sumpayment = $invoices->sumpayment;
         $Payment = $invoices->payment;
         $amountproposal = $invoices->sumpayment;
@@ -486,9 +488,10 @@ class BillingFolioController extends Controller
         }
         $type = $Proposal->type_Proposal;
         $vat_type = $Proposal->vat_type;
+
         return view('billingfolio.create',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
                     ,'DepositID','REID','Invoice_ID','settingCompany','additional_type','additional_Nettotal','Cash','Complimentary','data_bank','chequeRe','chequeRestatus','data_cheque'
-                    ,'datasub','name_ID','name','type','vat_type'));
+                    ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration'));
     }
     public function EditPaidInvoice($id){
         $re = receive_payment::where('id',$id)->first();
@@ -858,12 +861,12 @@ class BillingFolioController extends Controller
     }
     public function saveone(Request $request) {
         $data = $request->all();
-        // dd( $data);
-        $additional = $request->additional || 0;
-        $cashcomp = $request->cashcomp || 0;
+
+        $additional = $request->additional ?? 0;
+        $cashcomp = $request->cashcomp ?? 0;
         $complimentary =  $additional-$cashcomp;
         $requestData = $request->all();
-
+        $additional_type = $request->additional_type;
         $groupedData = []; // ตัวแปรสำหรับจัดเก็บข้อมูลที่ใช้ index
 
         foreach ($requestData as $key => $value) {
@@ -961,8 +964,6 @@ class BillingFolioController extends Controller
                 ];
             }
         }
-
-
         $cash = 0;
         $cashbankTransfer = 0;
         $cashCard = 0;
@@ -975,17 +976,24 @@ class BillingFolioController extends Controller
             $cashcheque += isset($value['chequeamount']) ? (float)$value['chequeamount'] : 0;
             $cashnoshow += isset($value['NoShowAmount']) ? (float)$value['NoShowAmount'] : 0;
         }
-        $Amountall = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow+$additional;
-        $Amount = floatval($Amountall);
-        $RealAmount = $Amountall-$complimentary;
+        if ($additional_type == 'H/G') {
+            $Amountall = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow;
+            $Amount = floatval($Amountall);
+            $RealAmount = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow;
+        }else{
+            $Amountall = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow+$additional;
+            $Amount = floatval($Amountall);
+            $RealAmount = $cash+$cashbankTransfer+$cashCard+$cashcheque+$cashnoshow;
+        }
 
+        $guest = $request->Guest;
         $companyid = $request->Guest;
         $reservationNo = $request->reservationNo;
         $room = $request->roomNo;
         $numberOfGuests = $request->numberOfGuests;
         $arrival = $request->arrival;
         $departure = $request->departure;
-        $additional_type = $request->additional_type;
+
         $additional = $request->additional ?? 0;
         $note = $request->note;
         $paymentDate = $request->paymentDate;
@@ -1150,7 +1158,7 @@ class BillingFolioController extends Controller
                 $email = $guestdata->Company_Email;
             }
         }
-        dd( $data,$groupedData,$RealAmount,$name,$nameold);
+
         $currentDate = Carbon::now();
         $ID = 'RE-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
@@ -1167,64 +1175,15 @@ class BillingFolioController extends Controller
         }
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $REID = $ID.$year.$month.$newRunNumber;
+
         $invoices = document_invoices::where('Invoice_ID', $invoice)->first();
         $idinvoices = $invoices->id;
         $sumpayment = $invoices->sumpayment;
         $Quotation_ID = $invoices->Quotation_ID;
+        $proposaldata = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+        $type_Proposal =$proposaldata->type_Proposal;
         $created_at = Carbon::parse($invoices->created_at)->format('d/m/Y');
         $template = master_template::query()->latest()->first();
-        try {
-            $user = Auth::user()->id;
-            $save = new receive_payment();
-            $save->Receipt_ID = $REID;
-            $save->Invoice_ID = $invoice;
-            $save->Quotation_ID = $Quotation_ID;
-            $save->company = $companyid;
-            $save->Amount = $RealAmount;
-            $save->fullname = $nameold;
-            $save->additional_type = $additional_type;
-            $save->additional = $additional;
-            $save->complimentary = $complimentary ?? 0;
-            $save->document_amount = $Amount;
-            $save->reservationNo = $reservationNo;
-            $save->roomNo = $room;
-            $save->numberOfGuests = $numberOfGuests;
-            $save->arrival = $arrival;
-            $save->departure = $departure;
-            $save->type_Proposal = $type_Proposal;
-            $save->paymentDate = $paymentDate;
-            $save->Operated_by = $user;
-            $save->note = $note;
-            $save->save();
-        } catch (\Throwable $e) {
-            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
-        }
-        try {
-            foreach ($groupedData as $index) {
-                $item = new document_receive_item();
-                $item->receive_id = $REID;
-                $item->detail = $index['detail'];
-                $item->amount =     ($index['cashAmount'] ?? 0) +
-                                    ($index['bankTransferAmount'] ?? 0) +
-                                    ($index['creditCardAmount'] ?? 0) +
-                                    ($index['chequeamount'] ?? 0) +
-                                    ($index['NoShowAmount'] ?? 0);
-                $item->type = $index['paymentType'] ?? null;
-                if ($index['paymentType'] == 'bankTransfer') {
-                    $item->bank = $index['bank'] ?? null;
-                }elseif ($index['paymentType'] == 'cheque') {
-                    $item->bank = $index['chequebank_name'] ?? null;
-                }
-                $item->CardNumber = $index['CardNumber'] ?? null;
-                $item->Expiry = $index['Expiry'] ?? null;
-                $item->Cheque = $index['cheque'] ?? null;
-                $item->Deposit_date = $index['deposit_date'] ?? null;
-                $item->save();
-            }
-        } catch (\Throwable $e) {
-            receive_payment::where('Receipt_ID',$REID)->first()->delete();
-            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
-        }
         try {
             $Reservation_No = null;
             if ($reservationNo) {
@@ -1259,7 +1218,7 @@ class BillingFolioController extends Controller
                 $Comp_cash = 'Complimentary : '.$Complimentary;
             }
             $fullname = 'รหัส : '.$REID;
-            $amoute = 'ราคาที่จ่าย : '.number_format($Amount) . ' บาท';
+            $amoute = 'ราคาที่จ่าย : '.number_format($RealAmount) . ' บาท';
             $total = 'ราคาออกเอกสาร : '.number_format($sumpayment) . ' บาท';
             $edit ='รายการ';
 
@@ -1294,6 +1253,7 @@ class BillingFolioController extends Controller
                     $datacompany .= $variable;
                 }
             }
+
             $userid = Auth::user()->id;
             $save = new log_company();
             $save->Created_by = $userid;
@@ -1458,11 +1418,11 @@ class BillingFolioController extends Controller
             $Date = $paymentDate;
             $dateFormatted = $date->format('d/m/Y').' / ';
             $dateTime = $date->format('H:i');
-            $Amount = $sumpayment;
+            $Amount = $Amountall;
             $userid = Auth::user()->id;
             $user = User::where('id',$userid)->first();
 
-            $productItems = [];
+            $product = [];
             foreach ($groupedData as $value) {
                 $totalAmount =
                                 ($value['cashAmount'] ?? 0) +
@@ -1471,11 +1431,20 @@ class BillingFolioController extends Controller
                                 ($value['creditCardAmount'] ?? 0) +
                                 ($value['chequeamount'] ?? 0) +
                                 ($value['NoShowAmount'] ?? 0);
-                $productItems[] = [
+                $product[] = [
                     'detail' => $value['detail'],
                     'amount' => $totalAmount,
                 ];
             }
+            $additionaldetail = [];
+            if ($additional_type == 'Cash' || $additional_type == 'Cash Manual') {
+                $additionaldetail[] = [
+                    'detail' => 'Cash',
+                    'amount' => $additional,
+                ];
+            }
+            $productItems = array_merge($product, $additionaldetail);
+
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -1500,11 +1469,11 @@ class BillingFolioController extends Controller
                 'productItems'=>$productItems,
                 'invoice'=>$REID,
                 'Amount'=>$Amount,
-
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
-            $path = 'Log_PDF/billingfolio/';
+            $path = 'PDF/billingfolio/';
+            // return $pdf->stream();
             $pdf->save($path . $REID . '.pdf');
             $currentDateTime = Carbon::now();
             $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
@@ -1524,20 +1493,71 @@ class BillingFolioController extends Controller
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
         try {
+            $user = Auth::user()->id;
+            $save = new receive_payment();
+            $save->Receipt_ID = $REID;
+            $save->Invoice_ID = $invoice;
+            $save->Quotation_ID = $Quotation_ID;
+            $save->company = $companyid;
+            $save->Amount = $RealAmount;
+            $save->fullname = $nameold;
+            $save->additional_type = $additional_type;
+            $save->additional = $additional;
+            $save->complimentary = $complimentary ?? 0;
+            $save->additional_cash = $cashcomp ;
+            $save->document_amount = $Amount;
+            $save->reservationNo = $reservationNo;
+            $save->roomNo = $room;
+            $save->numberOfGuests = $numberOfGuests;
+            $save->arrival = $arrival;
+            $save->departure = $departure;
+            $save->type_Proposal = $type_Proposal;
+            $save->paymentDate = $paymentDate;
+            $save->Operated_by = $user;
+            $save->note = $note;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
+        }
+        try {
+            foreach ($groupedData as $index) {
+                $item = new document_receive_item();
+                $item->receive_id = $REID;
+                $item->detail = $index['detail'];
+                $item->amount =     ($index['cashAmount'] ?? 0) +
+                                    ($index['bankTransferAmount'] ?? 0) +
+                                    ($index['creditCardAmount'] ?? 0) +
+                                    ($index['chequeamount'] ?? 0) +
+                                    ($index['NoShowAmount'] ?? 0);
+                $item->type = $index['paymentType'] ?? null;
+                if ($index['paymentType'] == 'bankTransfer') {
+                    $item->bank = $index['bank'] ?? null;
+                }elseif ($index['paymentType'] == 'cheque') {
+                    $item->bank = $index['chequebank_name'] ?? null;
+                }
+                $item->CardNumber = $index['CardNumber'] ?? null;
+                $item->Expiry = $index['Expiry'] ?? null;
+                $item->Cheque = $index['cheque'] ?? null;
+                $item->Deposit_date = $index['deposit_date'] ?? null;
+                $item->save();
+            }
+        } catch (\Throwable $e) {
+            receive_payment::where('Receipt_ID',$REID)->first()->delete();
+            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
+        }
+        try {
             $saveRe = document_invoices::find($idinvoices);
-            $saveRe->status_receive = 2;
-            $saveRe->Paid = 1;
+            $saveRe->document_status = 3;
             $saveRe->save();
             foreach ($groupedData as $index) {
                 if (!empty($index['cheque'])) {
                     $chequeRe =receive_cheque::where('cheque_number',$index['cheque'])->where('status',1)->first();
                     $id_cheque = $chequeRe->id;
-                    $chequeBankReceivedname= Masters::where('name_en', $index['chequebank'])->first();
-                    $bank_received = $chequeBankReceivedname->id;
                     $savecheque = receive_cheque::find($id_cheque);
-                    $savecheque->bank_received =$bank_received;
-                    $savecheque->deposit_date =$index['deposit_date'];
+                    $savecheque->receive_payment =$index['chequebank'];
                     $savecheque->status = 2;
+                    $savecheque->deduct_date = $formattedDate;
+                    $savecheque->deduct_by = $userid;
                     $savecheque->save();
                 }
             }
@@ -1584,12 +1604,11 @@ class BillingFolioController extends Controller
             $total = $amountMain-$amountPaid;
             if ($total == 0) {
                 foreach ($receive as $value) {
-                   $value->document_status = 2;
-                   $value->save();
+                    $value->document_status = 2;
+                    $value->save();
                 }
                 $update = Quotation::find($id);
                 $update->status_document = 9;
-                $update->status_receive = 9;
                 $update->save();
                 return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }else{
