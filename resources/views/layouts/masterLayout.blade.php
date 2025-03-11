@@ -81,8 +81,7 @@
             <!-- Brand -->
             <div class="d-flex align-items-center">
                 <a href="{{ route('sms-alert') }}" class="">
-                    <img class="" src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort"
-                        width="50" />
+                    <img class="" src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort" width="50" />
                     <label class="text-white me-3 mobileLabelShow">Together Development</label>
                 </a>
             </div>
@@ -426,6 +425,14 @@
                                             </li>
 
                                     </ul>
+                                </li>
+                            @endif
+                            @if (Auth::user()->permission_branch == 3)
+                                <li>
+                                    <a class="m-link" href="{{ route('select-branch') }}">
+                                        <i class="fa fa-lg fa-refresh" style="font-weight: bold; color: white;"></i>
+                                        <span>Switch branch</span>
+                                    </a>
                                 </li>
                             @endif
                             <li>

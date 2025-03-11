@@ -71,6 +71,9 @@
                                                         <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
                                                     @elseif (file_exists($filename2))
                                                         <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
+                                                    @else
+                                                        <img class="img-bank" src="../assets/images/harmony/bank_transfer.png">
+                                                        Bank Transfer
                                                     @endif
                                                     {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                 </div>
@@ -148,17 +151,17 @@
                                                                             Credit Card Hotel Revenue
                                                                         </li>
                                                                     @endif
-                                                                    @if ($role_revenue->elexa == 1)
+                                                                    {{-- @if ($role_revenue->elexa == 1)
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
                                                                             Elexa EGAT Bank Transfer Revenue
                                                                         </li>
-                                                                    @endif
+                                                                    @endif --}}
                                                                     @if ($role_revenue->no_category == 1)
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
                                                                             No Category
                                                                         </li>
                                                                     @endif
-                                                                    @if ($role_revenue->water_park == 1)
+                                                                    {{-- @if ($role_revenue->water_park == 1)
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
                                                                             Water Park Bank Transfer Revenue
                                                                         </li>
@@ -167,7 +170,7 @@
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
                                                                             Credit Card Water Park Revenue
                                                                         </li>
-                                                                    @endif
+                                                                    @endif --}}
                                                                     @if ($role_revenue->transfer == 1)
                                                                         <li class="button-li" onclick="transfer_data({{ $item->id }})">Transfer</li>
                                                                     @endif

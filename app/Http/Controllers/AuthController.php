@@ -41,8 +41,6 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
-        //  phpinfo();
-        // dd($request);
         $request->validate([
             'name' => 'required',
             'password' => 'required',
@@ -51,13 +49,33 @@ class AuthController extends Controller
         $credentials = $request->only('name', 'password');
         if (Auth::attempt($credentials)) {
 
-            if (Auth::user()->permission == 3) { // แบ่งแยกหน้าเฉพาะของนิว
-                return redirect()->intended('/Company/index')
-                        ->withSuccess('You have Successfully loggedin');
+            if (Auth::user()->status == 1) {
+                User::where('id', Auth::user()->id)->update([
+                    'current_branch' => 0
+                ]);
+
+                if (Auth::user()->permission == 3) { // แบ่งแยกหน้าเฉพาะของนิว
+                    return redirect()->intended('/Company/index')->withSuccess('You have Successfully loggedin');
+                } else {
+                    if (Auth::user()->permission_branch == 3) {
+                        return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
+                    } elseif (Auth::user()->permission_branch == 2) {
+                        User::where('id', Auth::user()->id)->update([
+                            'current_branch' => 2
+                        ]);
+                        return redirect()->intended('harmony-sms-alert')->withSuccess('You have Successfully loggedin');
+                    } elseif (Auth::user()->permission_branch == 1) {
+                        User::where('id', Auth::user()->id)->update([
+                            'current_branch' => 1
+                        ]);
+                        return redirect()->intended('sms-alert')->withSuccess('You have Successfully loggedin');
+                    }
+                }
             } else {
-                return redirect()->intended('sms-alert')
-                        ->withSuccess('You have Successfully loggedin');
+                Auth::logout();
+                return redirect("login")->withSuccess('ไม่มีสิทธิ์ในการเข้าใช้งานระบบ กรุณาติดต่อผู้ดูแล !');
             }
+            
 
         }
 
