@@ -187,7 +187,7 @@ class SMSHarmonyController extends Controller
                             'into_qr' => $data_qr,
                             'amount' => str_replace(",", "", $exp_form[0]),
                             'remark' => "Auto",
-                            'status' => $into == "708-2-27357-4" ? 3 : 0
+                            'status' => $into == "156-277492-1" ? 3 : 0
                         ]);
 
                         Harmony_SMS_forwards::where('id', $value->id)->update([

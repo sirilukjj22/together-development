@@ -1400,10 +1400,11 @@
                                 <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
                                 <br>
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
-                                    <option value="0">เลือกข้อมูล</option>
-                                    <option value="708-2-26791-3">ธนาคารไทยพาณิชย์ (SCB) 708-2-26791-3</option>
-                                    <option value="708-2-26792-1">ธนาคารไทยพาณิชย์ (SCB) 708-2-26792-1</option>
-                                    <option value="708-2-27357-4">ธนาคารไทยพาณิชย์ (SCB) 708-2-27357-4</option>
+                                    <option value="">เลือกข้อมูล</option>
+                                    <option value="436-0-75511-1">ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
+                                    <option value="156-277492-1">ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="871-0-11991-1">ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
+                                    <option value="978-2-18099-9">ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
                             </div>
                             <div class="wf-py2 ">
@@ -1455,11 +1456,12 @@
                                 <button type="button" class="bt-tg-normal bg-tg-light sm flex-grow-1 filter" id="filter-year">Filter by Year</button>
                             </div>
                             <div class="center w-100" style="gap:0.3rem;">
-                                <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
+                                <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
-                                    <option value="708-2-26791-3" {{ isset($into_account) && $into_account == '708-2-26791-3' ? 'selected' : '' }}>SCB 708-2-26791-3</option>
-                                    <option value="708-2-26792-1" {{ isset($into_account) && $into_account == '708-2-26792-1' ? 'selected' : '' }}>SCB 708-2-26792-1</option>
-                                    <option value="708-2-27357-4" {{ isset($into_account) && $into_account == '708-2-27357-4' ? 'selected' : '' }}>SCB 708-2-27357-4</option>
+                                    <option value="436-0-75511-1" {{ isset($into_account) && $into_account == '436-0-75511-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
+                                    <option value="156-277492-1" {{ isset($into_account) && $into_account == '156-277492-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="871-0-11991-1" {{ isset($into_account) && $into_account == '871-0-11991-1' ? 'selected' : '' }}>ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
+                                    <option value="978-2-18099-9" {{ isset($into_account) && $into_account == '978-2-18099-9' ? 'selected' : '' }}>ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
 
                                 <!-- tooltip -->
