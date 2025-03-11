@@ -503,7 +503,7 @@
                                                         <div class="cashInput" style="display: none;">
                                                             <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                                 <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                                <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
                                                             </div>
                                                         </div>
 
@@ -516,7 +516,7 @@
                                                                 </div>
                                                                 <div>
                                                                     <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                                    <input type="text" id="Amount" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                    <input type="text" id="Amount" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -533,7 +533,7 @@
                                                                 </div>
                                                                 <div>
                                                                     <label for="creditCardAmount" class="star-red">Amount</label>
-                                                                    <input type="text" id="Amount" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                    <input type="text" id="Amount" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1207,7 +1207,11 @@
                                         </div>
                                         <div>
                                             <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1224,7 +1228,11 @@
                                         </div>
                                         <div>
                                             <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1298,7 +1306,11 @@
                                 <div class="cashInput" style="display: none;">
                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                     </div>
                                 </div>
                                 <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1315,7 +1327,11 @@
                                         </div>
                                         <div>
                                             <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1388,7 +1404,11 @@
                                 <div class="cashInput" style="display: none;">
                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                     </div>
                                 </div>
                                 <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1405,7 +1425,11 @@
                                         </div>
                                         <div>
                                             <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1479,7 +1503,11 @@
                                 <div class="cashInput" style="display: none;">
                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                     </div>
                                 </div>
                                 <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1496,7 +1524,11 @@
                                         </div>
                                         <div>
                                             <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1512,7 +1544,11 @@
                                         </div>
                                         <div>
                                             <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1553,7 +1589,11 @@
                                         </div>
                                         <div>
                                             <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1570,7 +1610,11 @@
                                         </div>
                                         <div>
                                             <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1644,7 +1688,11 @@
                                 <div class="cashInput" style="display: none;">
                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                        if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                        let parts = this.value.split('.');
+                                        if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                     </div>
                                 </div>
                                 <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1661,7 +1709,11 @@
                                         </div>
                                         <div>
                                             <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1734,7 +1786,11 @@
                                 <div class="cashInput" style="display: none;">
                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                     </div>
                                 </div>
                                 <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1751,7 +1807,11 @@
                                         </div>
                                         <div>
                                             <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1825,7 +1885,11 @@
                                 <div class="cashInput" style="display: none;">
                                     <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                         <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                        <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                     </div>
                                 </div>
                                 <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1842,7 +1906,11 @@
                                         </div>
                                         <div>
                                             <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                            <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1858,7 +1926,11 @@
                                         </div>
                                         <div>
                                             <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                            <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                 </div>
@@ -1904,7 +1976,11 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1990,7 +2066,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -2080,7 +2160,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -2097,7 +2181,11 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -2128,7 +2216,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -2204,7 +2296,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -2221,7 +2317,11 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -2250,7 +2350,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -2267,7 +2371,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -2389,7 +2497,11 @@
                                                 </div>
                                                 <div>
                                                     <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
@@ -2438,7 +2550,11 @@
                                                 </div>
                                                 <div>
                                                     <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                let parts = this.value.split('.');
+                                                if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>

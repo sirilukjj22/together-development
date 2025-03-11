@@ -106,6 +106,15 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <label for="Status">Cheque Number</label>
+                                                        <input type="text" class="form-control" id="chequeNumber" name="chequeNumber" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                    </div>
+
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <label for="Status">Branch No. </label>
+                                                        <input type="number" class="form-control" id="branch" name="branch">
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Bank Cheque</label>
                                                         <select name="bank" id="bank" class="select2" >
                                                             @foreach($data_bank as $item)
@@ -114,14 +123,6 @@
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Branch No. </label>
-                                                        <input type="number" class="form-control" id="branch" name="branch">
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Cheque Number</label>
-                                                        <input type="text" class="form-control" id="chequeNumber" name="chequeNumber" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
@@ -184,16 +185,16 @@
                                                         <input type="text" class="form-control" id="Referview" name="received" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Bank Cheque</label>
-                                                        <input type="text" class="form-control" id="BankChequeview" name="received" disabled>
+                                                        <label for="Status">Cheque Number</label>
+                                                        <input type="text" class="form-control" id="chequeNumberview" name="chequeNumber" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Branch No. </label>
                                                         <input type="text" class="form-control" id="branchview" name="branch" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Cheque Number</label>
-                                                        <input type="text" class="form-control" id="chequeNumberview" name="chequeNumber" disabled>
+                                                        <label for="Status">Bank Cheque</label>
+                                                        <input type="text" class="form-control" id="BankChequeview" name="received" disabled>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
@@ -284,6 +285,14 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <label for="Status">Cheque Number</label>
+                                                        <input type="text" class="form-control" id="chequeNumberedit" name="chequeNumber" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <label for="Status">Branch No. </label>
+                                                        <input type="number" class="form-control" id="branchedit" name="branch">
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Bank Cheque</label>
                                                         <select name="bank" id="bankedit" class="select2" >
                                                             @foreach($data_bank as $item)
@@ -292,14 +301,6 @@
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Branch No. </label>
-                                                        <input type="number" class="form-control" id="branchedit" name="branch">
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <label for="Status">Cheque Number</label>
-                                                        <input type="text" class="form-control" id="chequeNumberedit" name="chequeNumber" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>

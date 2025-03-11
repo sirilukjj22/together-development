@@ -1602,18 +1602,14 @@ class BillingFolioController extends Controller
             $amountMain=$Nettotal+$Additional_Nettotal;
             $amountPaid=$Amounttotal+$Comtotal;
             $total = $amountMain-$amountPaid;
-            if ($total == 0) {
-                foreach ($receive as $value) {
-                    $value->document_status = 2;
-                    $value->save();
-                }
-                $update = Quotation::find($id);
-                $update->status_document = 9;
-                $update->save();
-                return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-            }else{
-                return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            foreach ($receive as $value) {
+                $value->document_status = 2;
+                $value->save();
             }
+            $update = Quotation::find($id);
+            $update->status_document = 9;
+            $update->save();
+            return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
