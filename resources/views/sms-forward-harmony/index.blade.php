@@ -95,7 +95,7 @@
                                 </span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                <a class="dropdown-item" href="{{ route('sms-alert') }}">Today</a>
+                                <a class="dropdown-item" href="{{ route('harmony-sms-alert') }}">Today</a>
                                 {{-- <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a> --}}
                                 <a class="dropdown-item" href="#" onclick="search_daily('yesterday')">Yesterday</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
@@ -431,7 +431,7 @@
                                     @endphp
 
                                     @if ($filter_by == 'date' && count($exp_date) == 2 && $days_difference > 31)
-                                        <a href="{{ route('sms-daterang-detail', [$start_date->format('Y-m-d'), $end_date->format('Y-m-d'), $into_account ?? 0, $status ?? 0]) }}" type="button" class="ac-style">More</a>
+                                        <a href="{{ route('harmony-sms-daterang-detail', [$start_date->format('Y-m-d'), $end_date->format('Y-m-d'), $into_account ?? 0, $status ?? 0]) }}" type="button" class="ac-style">More</a>
                                     @endif
 
                                 </div>
@@ -579,7 +579,13 @@
                                                     </td>
                                                     <td class="td-content-center">
                                                         <div class="flex-jc p-left-4 center">
-                                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                            @if ($item->into_account == "871-0-11991-1")
+                                                                <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                            @elseif ($item->into_account == "436-0-75511-1")
+                                                                <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                            @elseif ($item->into_account == "978-2-18099-9")
+                                                                <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                            @endif
                                                         </div>
                                                     </td>
                                                     <td class="td-content-center">
@@ -1072,7 +1078,7 @@
                                                                                     Credit Card Water <br>Park Revenue 
                                                                                 </li>
                                                                             @endif
-                                                                            @if (@@$role_revenue->other_revenue == 1)
+                                                                            @if (@$role_revenue->other_revenue == 1)
                                                                                 <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
                                                                                     Other Revenue <br> Bank Transfer
                                                                                 </li>
@@ -1318,7 +1324,6 @@
         </div>
     </div>
 
-
     <!-- Modal เพิ่มข้อมูล modal fade -->
     <div class="modal fade bd-example-modal-lg" id="exampleModalCenter5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter5Label" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -1329,7 +1334,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
+                <form action="{{ route('harmony-sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
                     <div class="modal-body">
                         <label for="">ประเภทรายได้</label> 
@@ -1439,7 +1444,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('sms-search-calendar') }}" method="POST" enctype="multipart/form-data" id="form-calendar">
+                <form action="{{ route('harmony-sms-search-calendar') }}" method="POST" enctype="multipart/form-data" id="form-calendar">
                     @csrf
                     <div class="modal-body">
                         <!-- Modal: เลือกวันที่ modal fade -->
@@ -1571,8 +1576,8 @@
 
     <!-- card graph -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/graph/graphUpdateDay.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('assets/graph/graphCondition.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/harmonyGraphUpdateDay.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/harmonyGraphCondition.js')}}"></script>
 
     <style>
         .content-col {
@@ -1922,7 +1927,7 @@
                 info: false,
                 // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
                 ajax: {
-                    url: 'sms-search-table',
+                    url: 'harmony-sms-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -2054,7 +2059,7 @@
             
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
+                url: "{!! url('harmony-sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2075,7 +2080,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                url: "{!! url('harmony-sms-get-remark-other-revenue/"+id+"') !!}",
                 datatype: "JSON",
                 cache: false,
                 async: false,
@@ -2105,7 +2110,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{!! url('sms-update-time/"+id+"/"+time+"') !!}",
+                url: "{!! url('harmony-sms-update-time/"+id+"/"+time+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2129,7 +2134,7 @@
 
         function change_split() {
             jQuery.ajax({
-                url: "{!! url('sms-update-split') !!}",
+                url: "{!! url('harmony-sms-update-split') !!}",
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -2154,7 +2159,7 @@
 
             jQuery.ajax({
                 type: "POST",
-                url: "{!! url('sms-other-revenue') !!}",
+                url: "{!! url('harmony-sms-other-revenue') !!}",
                 datatype: "JSON",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2177,7 +2182,7 @@
 
             jQuery.ajax({
                 type: "POST",
-                url: "{!! url('sms-transfer') !!}",
+                url: "{!! url('harmony-sms-transfer') !!}",
                 datatype: "JSON",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2381,7 +2386,7 @@
  
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-edit/"+$id+"') !!}",
+                url: "{!! url('harmony-sms-edit/"+$id+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2430,7 +2435,7 @@
                 if (result.isConfirmed) {
                     jQuery.ajax({
                         type: "GET",
-                        url: "{!! url('sms-delete/"+$id+"') !!}",
+                        url: "{!! url('harmony-sms-delete/"+$id+"') !!}",
                         datatype: "JSON",
                         async: false,
                         success: function(response) {
@@ -2526,7 +2531,7 @@
 
                 jQuery.ajax({
                     type: "POST",
-                    url: "{!! route('sms-store') !!}",
+                    url: "{!! route('harmony-sms-store') !!}",
                     datatype: "JSON",
                     data: $('#form-id').serialize(),
                     async: false,
@@ -2629,7 +2634,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-graphForcast/"+date_now+"') !!}",
+                url: "{!! url('harmony-sms-graphForcast/"+date_now+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
@@ -2645,7 +2650,7 @@
 
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('sms-graphToday/"+date_now+"') !!}",
+                url: "{!! url('harmony-sms-graphToday/"+date_now+"') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(response) {

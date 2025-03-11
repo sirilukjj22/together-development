@@ -46,7 +46,7 @@ class Harmony_SMS_alerts extends Model
         return $this->hasOne(Harmony_SMS_alerts::class, 'id', 'split_ref_id');
     }
 
-    public static function check_bank($datakey){
+    public static function check_bank($datakey) {
         
         $query = Masters::where('category', 'bank')->whereNull('deleted_at')->select('id', 'name_en')->get();
 
@@ -75,12 +75,12 @@ class Harmony_SMS_alerts extends Model
     public static function check_account($datakey) {
 
         $account = "";
-        if ($datakey == "x267913") {
-            $account = "708-2-26791-3";
-        } elseif ($datakey == "x267921") {
-            $account = "708-2-26792-1";
-        } elseif ($datakey == "x273574") {
-            $account = "708-2-27357-4";
+        if ($datakey == "x755111") { // SCB
+            $account = "436-0-75511-1";
+        } elseif ($datakey == "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB") { // Bangkok Bank 
+            $account = "871-0-11991-1";
+        } elseif ($datakey == "X-0999") { // KBNK
+            $account = "978-2-18099-9";
         }
 
         return $account;

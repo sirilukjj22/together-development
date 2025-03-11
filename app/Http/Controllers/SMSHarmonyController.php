@@ -24,7 +24,7 @@ class SMSHarmonyController extends Controller
         foreach ($data_forward as $key => $value) {
             if (count($data_forward) > 0) {
                 $exp_form = explode(" ", $value->messages);
-                if (count($exp_form) == 11) {
+                if ($value->sender == "027777777" && count($exp_form) == 11 || $value->sender == "SCBQRAlert" && count($exp_form) == 11) {
 
                     if (isset($exp_form[1])) {
                         $fromAccount = $exp_form[1].' '.$exp_form[2];
@@ -43,7 +43,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                } elseif (count($exp_form) == 12) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 12 || $value->sender == "SCBQRAlert" && count($exp_form) == 12) {
                     Harmony_SMS_alerts::create([
                         'date' => $value->created_at,
                         'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[1]),
@@ -56,7 +56,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                } elseif (count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช") {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช" || $value->sender == "SCBQRAlert" && count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช") {
 
                     if (isset($exp_form[1])) {
                         $fromAccount = $exp_form[1].' '.$exp_form[2].' '.$exp_form[3];
@@ -75,7 +75,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                } elseif (count($exp_form) == 10) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 10 || $value->sender == "SCBQRAlert" && count($exp_form) == 10) {
                     Harmony_SMS_alerts::create([
                         'date' => $value->created_at,
                         'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[1]),
@@ -88,7 +88,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                }  elseif (count($exp_form) == 5) {
+                }  elseif ($value->sender == "027777777" && count($exp_form) == 5 || $value->sender == "SCBQRAlert" && count($exp_form) == 5) {
                     if ($exp_form[1] == "บ.จากxBorder") {
 
                         $data_qr = mb_substr($exp_form[3], 4);
@@ -120,7 +120,7 @@ class SMSHarmonyController extends Controller
                             'is_status' => 1
                         ]);
                     }
-                } elseif (count($exp_form) == 6) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 6 || $value->sender == "SCBQRAlert" && count($exp_form) == 6) {
                     if ($exp_form[0] == "เงินเข้าบ/ช") {
                         Harmony_SMS_alerts::create([
                             'date' => $value->created_at,
@@ -194,7 +194,7 @@ class SMSHarmonyController extends Controller
                             'is_status' => 1
                         ]);
                     }
-                } elseif (count($exp_form) == 8) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 8 || $value->sender == "SCBQRAlert" && count($exp_form) == 8) {
                     Harmony_SMS_alerts::create([
                         'date' => $value->created_at,
                         'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[5]),
@@ -207,7 +207,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                } elseif (count($exp_form) == 9) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 9 || $value->sender == "SCBQRAlert" && count($exp_form) == 9) {
                     Harmony_SMS_alerts::create([
                         'date' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
                         'transfer_from' => Harmony_SMS_alerts::check_bank("Credit"),
@@ -217,6 +217,34 @@ class SMSHarmonyController extends Controller
                         'date_into' => Carbon::parse($value->created_at)->subDays(1)->format('Y-m-d H:i:s'),
                         'transfer_remark' => "ยอดเครดิต",
                         'status' => 4
+                    ]);
+
+                    Harmony_SMS_forwards::where('id', $value->id)->update([
+                        'is_status' => 1
+                    ]);
+
+                } elseif ($value->sender == "BANGKOKBANK" && count($exp_form) == 4) {
+                    Harmony_SMS_alerts::create([
+                        'date' => $value->created_at,
+                        'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[0]),
+                        'into_account' => Harmony_SMS_alerts::check_account($exp_form[0]),
+                        'amount' => str_replace(",", "", $exp_form[1]),
+                        'remark' => "Auto",
+                        'status' => 0
+                    ]);
+
+                    Harmony_SMS_forwards::where('id', $value->id)->update([
+                        'is_status' => 1
+                    ]);
+
+                } elseif ($value->sender == "KBank") {
+                    Harmony_SMS_alerts::create([
+                        'date' => $value->created_at,
+                        'transfer_from' => '-',
+                        'into_account' => Harmony_SMS_alerts::check_account($exp_form[3]),
+                        'amount' => str_replace(",", "", $exp_form[5]),
+                        'remark' => "Auto",
+                        'status' => 0
                     ]);
 
                     Harmony_SMS_forwards::where('id', $value->id)->update([

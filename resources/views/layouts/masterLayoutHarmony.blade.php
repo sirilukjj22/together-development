@@ -119,15 +119,15 @@
                                         <li><a class="ms-link" href="{{ route('harmony-sms-alert') }}">Bank Transaction Revenue</a></li>
                                     @endif
                                     @if (Auth::user()->roleMenu->revenue == 1)
-                                        <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
+                                        <li><a class="ms-link" href="{{ route('harmony-revenue') }}">Hotel & Water Park Revenue</a></li>
                                     @endif
                                     @if (Auth::user()->roleMenu->audit_hotel_water_park_revenue == 1)
-                                        <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue</a></li>
+                                        <li><a class="ms-link" href="{{ route('harmony-report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue</a></li>
                                     @endif
                                 </ul>
                             </li>
 
-                            @if (Auth::user()->roleMenu->setting == 1)
+                            {{-- @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
                                     <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting" href="#"><i class="fa fa-lg fa-cogs"></i>
                                         <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
@@ -189,7 +189,7 @@
 
                                     </ul>
                                 </li>
-                            @endif
+                            @endif --}}
                             <li>
                                 <a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout">
                                     <i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i>
