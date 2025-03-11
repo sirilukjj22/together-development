@@ -50,13 +50,14 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
 
             if (Auth::user()->status == 1) {
-                User::where('id', Auth::user()->id)->update([
-                    'current_branch' => 0
-                ]);
 
                 if (Auth::user()->permission == 3) { // แบ่งแยกหน้าเฉพาะของนิว
                     return redirect()->intended('/Company/index')->withSuccess('You have Successfully loggedin');
                 } else {
+                    User::where('id', Auth::user()->id)->update([
+                        'current_branch' => 0
+                    ]);
+                    
                     if (Auth::user()->permission_branch == 3) {
                         return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
                     } elseif (Auth::user()->permission_branch == 2) {
