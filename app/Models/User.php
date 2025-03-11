@@ -31,7 +31,9 @@ class User extends Authenticatable
         'status',
         'permission',
         'permission_edit',
-        'edit_close_day'
+        'edit_close_day',
+        'permission_branch',
+        'current_branch'
     ];
 
     /**

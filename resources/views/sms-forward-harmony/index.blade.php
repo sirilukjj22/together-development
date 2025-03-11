@@ -658,17 +658,17 @@
                                                                             Credit Card Hotel <br> Revenue 
                                                                         </li>
                                                                     @endif
-                                                                    @if (@$role_revenue->elexa == 1)
+                                                                    {{-- @if (@$role_revenue->elexa == 1)
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
                                                                             Elexa EGAT Bank Transfer <br> Transfer Revenue
                                                                         </li>
-                                                                    @endif
+                                                                    @endif --}}
                                                                     @if (@$role_revenue->no_category == 1)
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
                                                                             No Category
                                                                         </li>
                                                                     @endif
-                                                                    @if (@$role_revenue->water_park == 1)
+                                                                    {{-- @if (@$role_revenue->water_park == 1)
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
                                                                             Water Park Bank <br> Transfer Revenue 
                                                                         </li>
@@ -677,7 +677,7 @@
                                                                         <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
                                                                             Credit Card Water <br>Park Revenue 
                                                                         </li>
-                                                                    @endif
+                                                                    @endif --}}
                                                                     @if (@@$role_revenue->other_revenue == 1)
                                                                         <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
                                                                             Other Revenue <br> Bank Transfer
@@ -862,17 +862,17 @@
                                                                                     Credit Card Hotel <br> Revenue 
                                                                                 </li>
                                                                             @endif
-                                                                            @if (@$role_revenue->elexa == 1)
+                                                                            {{-- @if (@$role_revenue->elexa == 1)
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
                                                                                     Elexa EGAT Bank Transfer <br> Transfer Revenue
                                                                                 </li>
-                                                                            @endif
+                                                                            @endif --}}
                                                                             @if (@$role_revenue->no_category == 1)
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
                                                                                     No Category
                                                                                 </li>
                                                                             @endif
-                                                                            @if (@$role_revenue->water_park == 1)
+                                                                            {{-- @if (@$role_revenue->water_park == 1)
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
                                                                                     Water Park Bank <br> Transfer Revenue 
                                                                                 </li>
@@ -881,7 +881,7 @@
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
                                                                                     Credit Card Water <br>Park Revenue 
                                                                                 </li>
-                                                                            @endif
+                                                                            @endif --}}
                                                                             @if (@@$role_revenue->other_revenue == 1)
                                                                                 <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
                                                                                     Other Revenue <br> Bank Transfer
@@ -1060,17 +1060,17 @@
                                                                                     Credit Card Hotel <br> Revenue 
                                                                                 </li>
                                                                             @endif
-                                                                            @if (@$role_revenue->elexa == 1)
+                                                                            {{-- @if (@$role_revenue->elexa == 1)
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
                                                                                     Elexa EGAT Bank Transfer <br> Transfer Revenue
                                                                                 </li>
-                                                                            @endif
+                                                                            @endif --}}
                                                                             @if (@$role_revenue->no_category == 1)
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
                                                                                     No Category
                                                                                 </li>
                                                                             @endif
-                                                                            @if (@$role_revenue->water_park == 1)
+                                                                            {{-- @if (@$role_revenue->water_park == 1)
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
                                                                                     Water Park Bank <br> Transfer Revenue 
                                                                                 </li>
@@ -1079,7 +1079,7 @@
                                                                                 <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
                                                                                     Credit Card Water <br>Park Revenue 
                                                                                 </li>
-                                                                            @endif
+                                                                            @endif --}}
                                                                             @if (@$role_revenue->other_revenue == 1)
                                                                                 <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
                                                                                     Other Revenue <br> Bank Transfer
@@ -1635,6 +1635,12 @@
         .label-grath-inside {
             text-align:left;
             color: black;
+        }
+
+        .swal-title-custom {
+            font-size: 19px;
+            font-weight: bold;
+            color: #202020; 
         }
     </style>
 

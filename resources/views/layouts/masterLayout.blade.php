@@ -81,8 +81,7 @@
             <!-- Brand -->
             <div class="d-flex align-items-center">
                 <a href="{{ route('sms-alert') }}" class="">
-                    <img class="" src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort"
-                        width="50" />
+                    <img class="" src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort" width="50" />
                     <label class="text-white me-3 mobileLabelShow">Together Development</label>
                 </a>
             </div>

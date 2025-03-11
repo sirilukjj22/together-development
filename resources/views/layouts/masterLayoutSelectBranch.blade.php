@@ -9,8 +9,8 @@
     <meta name="description" content="Responsive Bootstrap 5 admin template and web Application ui kit." />
     <meta name="keyword" content="ALUI, Bootstrap 5, ReactJs, Angular, Laravel, VueJs, ASP .Net, Admin Dashboard, Admin Theme" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>HARMONY DEVELOPMENT</title>
-    <link rel="icon" href="{{ asset('assets/images/harmony/logo_2.png') }}" type="image/x-icon" />
+    <title>TOGETHER DEVELOPMENT</title>
+    <link rel="icon" href="{{ asset('image/Logo1-01.png') }}" type="image/x-icon" />
 
     <!-- Plugin Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}?v={{ time() }}">
@@ -79,10 +79,6 @@
         <div class="navigation navbar navbar-light justify-content-center px-2 py-2 py-md-3 d-xl-none">
             <!-- Brand -->
             <div class="d-flex align-items-center">
-                <a href="{{ route('harmony-sms-alert') }}" class="">
-                    <img class="" src="{{ asset('assets/images/harmony/logo.png') }}" alt="logo of Harmony Resort" width="50" />
-                    <label class="text-white me-3 mobileLabelShow">Harmony Development</label>
-                </a>
             </div>
 
             <!-- Menu: icon -->
@@ -97,9 +93,6 @@
         <div class="sidebar px-4 py-2">
             <div class="d-flex flex-column h-100">
                 <div class="text-center mb-2" id="mobileshow">
-                    <a href="{{ route('harmony-sms-alert') }}" class="">
-                        <img src="{{ asset('assets/images/harmony/logo.png') }}" alt="logo of Harmony Resort" width="150" class="text-center mobileHidden" />
-                    </a>
                 </div>
 
                 <!-- Menu: tab content -->
@@ -107,89 +100,6 @@
                     <div class="tab-pane fade show active" id="nav-menu">
                         <!-- Menu: main ul -->
                         <ul class="menu-list">
-                            <li class="collapsed">
-                                <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-General-ledger" href="#">
-                                    <i class="fa fa-lg fa-bar-chart-o"></i> <span>General Ledger</span> 
-                                    <span class="arrow fa fa-angle-down ms-auto text-end"></span>
-                                </a>
-
-                                <!-- Menu: Sub menu ul -->
-                                <ul class="sub-menu collapse" id="menu-General-ledger">
-                                    @if (Auth::user()->roleMenu->sms_alert == 1)
-                                        <li><a class="ms-link" href="{{ route('harmony-sms-alert') }}">Bank Transaction Revenue</a></li>
-                                    @endif
-                                    @if (Auth::user()->roleMenu->revenue == 1)
-                                        <li><a class="ms-link" href="{{ route('harmony-revenue') }}">Hotel & Water Park Revenue</a></li>
-                                    @endif
-                                    @if (Auth::user()->roleMenu->audit_hotel_water_park_revenue == 1)
-                                        <li><a class="ms-link" href="{{ route('harmony-report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue</a></li>
-                                    @endif
-                                </ul>
-                            </li>
-
-                            {{-- @if (Auth::user()->roleMenu->setting == 1)
-                                <li class="collapsed">
-                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting" href="#"><i class="fa fa-lg fa-cogs"></i>
-                                        <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
-                                    </a>
-
-                                    <!-- Menu: Sub menu ul -->
-                                    <ul class="sub-menu collapse" id="menu-Setting">
-                                        @if (Auth::user()->roleMenu->user == 1)
-                                            <li class="collapsed">
-                                                <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-user-level-2" href="#"><span>User</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
-
-                                                <!-- Menu: Sub menu level 3 -->
-                                                <ul class="sub-menu collapse" id="menu-user-level-2">
-                                                    <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
-                                                    @if (Auth::user()->roleMenu->department == 1)
-                                                        <li><a class="ms-link" href="{{ route('user-department') }}">Department</a></li>
-                                                    @endif
-                                                </ul>
-                                            </li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->bank == 1)
-                                            <li><a class="ms-link" href="{{ route('master', 'bank') }}">Bank</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->quantity == 1)
-                                            <li><a class="ms-link"
-                                                    href="{{ route('Quantity','index') }}">Quantity</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->unit == 1)
-                                            <li><a class="ms-link"
-                                                    href="{{ route('Unit','index') }}">Unit</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->prefix == 1)
-                                            <li><a class="ms-link" href="{{ route('Mprefix','index') }}">Prename</a>
-                                            </li>
-                                        @endif
-
-                                        @if (Auth::user()->roleMenu->company_type == 1)
-                                            <li><a class="ms-link" href="{{ route('Mcomt','index') }}">Company Type</a>
-                                            </li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->company_market == 1)
-                                            <li><a class="ms-link" href="{{ route('Mmarket','index') }}">Company
-                                                    Market</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->company_event == 1)
-                                            <li><a class="ms-link" href="{{ route('MEvent','index') }}">Company
-                                                    Event</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->booking == 1)
-                                            <li><a class="ms-link" href="{{ route('Mbooking','index') }}">Booking</a>
-                                            </li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->document_template_pdf == 1)
-                                            <li><a class="ms-link"
-                                                    href="{{ route('Template.TemplateA1') }}">Template</a></li>
-                                        @endif
-                                            <li><a class="ms-link" href="{{ route('Mpromotion', 'index') }}">Promotion</a>
-                                            </li>
-
-                                    </ul>
-                                </li>
-                            @endif --}}
                             <li>
                                 <a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout">
                                     <i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i>
