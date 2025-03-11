@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Harmony_SMS_alerts;
+use App\Models\Harmony_tb_close_days;
 use App\Models\SMS_alerts;
 use App\Models\TB_close_days;
 use Illuminate\Console\Command;
@@ -38,8 +40,20 @@ class CloseDay extends Command
             'close_day' => 1
         ]);
 
+        Harmony_SMS_alerts::whereBetween('date', [$date_start, $date_end])->whereNull('date_into')->update([
+            'close_day' => 1
+        ]);
+
         ## Transfer
         SMS_alerts::whereDate('date_into', $adate)->where('transfer_status', 1)
+            ->orWhereDate('date', $adate)->where('transfer_status', 1)
+            ->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)
+            ->orWhereDate('date', $adate)->where('status', 4)->where('split_status', 0)
+            ->update([
+                'close_day' => 1
+            ]);
+
+        Harmony_SMS_alerts::whereDate('date_into', $adate)->where('transfer_status', 1)
             ->orWhereDate('date', $adate)->where('transfer_status', 1)
             ->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)
             ->orWhereDate('date', $adate)->where('status', 4)->where('split_status', 0)
@@ -52,8 +66,17 @@ class CloseDay extends Command
             'close_day' => 1
         ]);
 
+        Harmony_SMS_alerts::whereDate('date_into', $adate)->where('split_status', 1)->update([
+            'close_day' => 1
+        ]);
+
         ## Save Close Day
         TB_close_days::create([
+            'date' => $adate,
+            'status' => 1
+        ]);
+
+        Harmony_tb_close_days::create([
             'date' => $adate,
             'status' => 1
         ]);
