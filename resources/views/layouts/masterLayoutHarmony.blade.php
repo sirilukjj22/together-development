@@ -80,7 +80,7 @@
             <!-- Brand -->
             <div class="d-flex align-items-center">
                 <a href="{{ route('sms-alert') }}" class="">
-                    <img class="" src="{{ asset('assets/images/harmony/Logo.png') }}" alt="logo of Together Resort" width="50" />
+                    <img class="" src="{{ asset('assets/images/harmony/logo.png') }}" alt="logo of Together Resort" width="50" />
                     <label class="text-white me-3 mobileLabelShow">Harmony Development</label>
                 </a>
             </div>
@@ -98,7 +98,7 @@
             <div class="d-flex flex-column h-100">
                 <div class="text-center mb-2" id="mobileshow">
                     <a href="{{ route('sms-alert') }}" class="">
-                        <img src="{{ asset('assets/images/harmony/Logo.png') }}" alt="logo of Together Resort" width="150" class="text-center mobileHidden" />
+                        <img src="{{ asset('assets/images/harmony/logo.png') }}" alt="logo of Together Resort" width="150" class="text-center mobileHidden" />
                     </a>
                 </div>
 

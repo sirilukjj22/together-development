@@ -1,14 +1,14 @@
 <?php	
 
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$dbname = "harmony_db";
+	// $servername = "localhost";
+	// $username = "root";
+	// $password = "";
+	// $dbname = "harmony_db";
 
-	// $servername = "103.230.120.52";
-	// $username = "together_user2";
-	// $password = "v[86I8iy[22";
-	// $dbname = "harmonydb";
+	$servername = "103.230.120.52";
+	$username = "together_user2";
+	$password = "v[86I8iy[22";
+	$dbname = "harmonydb";
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
@@ -19,56 +19,56 @@
 	}
 
 	// สร้าง URL เต็มจากพารามิเตอร์ที่ส่งมา
-	// $full_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$full_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
-	// // แยก URL ที่มีพารามิเตอร์ออกจากกัน
-	// $exp = explode('?', $full_url);
-	// $exp2 = explode('&', $exp[1]);  // แยกแต่ละพารามิเตอร์ด้วย &
+	// แยก URL ที่มีพารามิเตอร์ออกจากกัน
+	$exp = explode('?', $full_url);
+	$exp2 = explode('&', $exp[1]);  // แยกแต่ละพารามิเตอร์ด้วย &
 
-	// // ตัดสัญลักษณ์ = และ & ออกจากแต่ละพารามิเตอร์
-	// $params = [];
-	// foreach ($exp2 as $param) {
-	// 	list($key, $value) = explode('=', $param); // แยก key และ value
-	// 	$params[$key] = $value; // เก็บค่าลงใน array
-	// }
+	// ตัดสัญลักษณ์ = และ & ออกจากแต่ละพารามิเตอร์
+	$params = [];
+	foreach ($exp2 as $param) {
+		list($key, $value) = explode('=', $param); // แยก key และ value
+		$params[$key] = $value; // เก็บค่าลงใน array
+	}
 
-	// if(isset($_GET["phone"])){
-	// 	echo "Phone : ".$_GET["phone"];
-	// } else {
-	// 	echo "Phone : ";
-	// }
+	if(isset($_GET["phone"])){
+		echo "Phone : ".$_GET["phone"];
+	} else {
+		echo "Phone : ";
+	}
 
-	// $phone = "N/A";
-	// if(isset($_POST["phone"])){
-	// 	$phone =  $_POST["phone"];
-	// }else if(isset($_GET["phone"])){
-	// 	$phone =  $_GET["phone"];
-	// } elseif (isset($params['phone'])) {
-	// 	$phone =  $params["phone"];
-	// }
+	$phone = "N/A";
+	if(isset($_POST["phone"])){
+		$phone =  $_POST["phone"];
+	}else if(isset($_GET["phone"])){
+		$phone =  $_GET["phone"];
+	} elseif (isset($params['phone'])) {
+		$phone =  $params["phone"];
+	}
 
-	// $text = "N/A";
-	// if(isset($_POST["text"])){
-	// 	$text =  $_POST["text"];
-	// }else if(isset($_GET["text"])){
-	// 	$text =  $_GET["text"];
-	// } elseif (isset($params['text'])) {
-	// 	$text =  urldecode($params["text"]);
-	// }
+	$text = "N/A";
+	if(isset($_POST["text"])){
+		$text =  $_POST["text"];
+	}else if(isset($_GET["text"])){
+		$text =  $_GET["text"];
+	} elseif (isset($params['text'])) {
+		$text =  urldecode($params["text"]);
+	}
 
-	// $device = "";
-	// if(isset($_POST["device"])){
-	// 	$device =  $_POST["device"];
-	// }
+	$device = "";
+	if(isset($_POST["device"])){
+		$device =  $_POST["device"];
+	}
 
-	// $sim = "N/A";
-	// if(isset($_POST["sim"])){
-	// 	$sim =  $_POST["sim"];
-	// }else if(isset($_GET["sim"])){
-	// 	$sim =  $_GET["sim"];
-	// } elseif (isset($params['sim'])) {
-	// 	$sim =  $params["sim"];
-	// }
+	$sim = "N/A";
+	if(isset($_POST["sim"])){
+		$sim =  $_POST["sim"];
+	}else if(isset($_GET["sim"])){
+		$sim =  $_GET["sim"];
+	} elseif (isset($params['sim'])) {
+		$sim =  $params["sim"];
+	}
 
 	// $myfile = fopen("testfile.txt", "w");
 	// fwrite($myfile, pack("CCC",0xef,0xbb,0xbf));  // convert to utf8
@@ -80,8 +80,8 @@
 	// }
 	// fclose($myfile);
 
-	$phone = "027777777";
-	$text = "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB 65,700.00บ ใช้ได้ 87,580.00บ";
+	// $phone = "027777777";
+	// $text = "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB 65,700.00บ ใช้ได้ 87,580.00บ";
 	// $exp_form = explode(" ", $text);
 	// dd($exp_form);
 
