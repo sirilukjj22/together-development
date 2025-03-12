@@ -207,7 +207,20 @@ class SMSController extends Controller
                     SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                } elseif (count($exp_form) == 9) {
+                } elseif (count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] != "x267921") {
+                    SMS_alerts::create([
+                        'date' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
+                        'transfer_from' => null,
+                        'into_account' => SMS_alerts::check_account($exp_form[3]),
+                        'amount' => str_replace(",", "", substr($exp_form[1], 3)),
+                        'remark' => "Auto",
+                        'status' => 0
+                    ]);
+
+                    SMS_forwards::where('id', $value->id)->update([
+                        'is_status' => 1
+                    ]);
+                } elseif (count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x267921") {
                     SMS_alerts::create([
                         'date' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
                         'transfer_from' => SMS_alerts::check_bank("Credit"),

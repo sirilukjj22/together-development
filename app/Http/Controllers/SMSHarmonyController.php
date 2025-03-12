@@ -195,7 +195,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                } elseif ($value->sender == "027777777" && count($exp_form) == 9 || $value->sender == "SCBQRAlert" && count($exp_form) == 9) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x774921" || $value->sender == "SCBQRAlert" && count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x774921") {
                     Harmony_SMS_alerts::create([
                         'date' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
                         'transfer_from' => Harmony_SMS_alerts::check_bank("Credit"),
