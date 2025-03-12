@@ -303,7 +303,7 @@
                                             <div class="outer-glow-circle"></div>
                                             <div class="circle-content">
                                                 <p class="circle-text">
-                                                <p class="f-w-bold fs-3">{{ number_format($Quotation->Nettotal - $totalinvoice , 2, '.', ',') }}</p>
+                                                <p class="f-w-bold fs-3">{{ number_format($totalinvoice , 2, '.', ',') }}</p>
                                                 <span class="subtext fs-6" >Total Amount</span>
                                                 </p>
                                             </div>
@@ -321,11 +321,11 @@
                                                 <span >Proposal ID ({{$QuotationID}})</span>
                                                 <span class=" hover-effect i  f-w-bold " style="color: #438985;" > {{ number_format($Quotation->Nettotal, 2, '.', ',') }}</span>
                                             </li>
-                                            @if ($invoices)
-                                                @foreach ( $invoices as $item)
+                                            @if ($DepositID)
+                                                @foreach ($DepositID as $key => $item)
                                                 <li class="pr-3">
-                                                    <span >Invoice ID ({{$item->Invoice_ID}})</span>
-                                                    <span class=" text-danger i f-w-bold"> - {{ number_format($item->payment, 2, '.', ',') }}</span>
+                                                    <span >Deposit Revenue ID ({{$item->Deposit_ID}})</span>
+                                                    <span class=" text-danger i f-w-bold"> - {{ number_format($item->amount, 2, '.', ',') }}</span>
                                                 </li>
                                                 @endforeach
                                             @endif
@@ -333,7 +333,7 @@
                                     </ul>
                                     <li class="outstanding-amount">
                                         <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                        <span class="text-success f-w-bold"> {{ number_format($Quotation->Nettotal - $totalinvoice, 2, '.', ',') }}</span>
+                                        <span class="text-success f-w-bold"> {{ number_format($totalinvoice, 2, '.', ',') }}</span>
                                         <input type="hidden" id="amount" name="amount" value="{{$Quotation->Nettotal - $totalinvoice}}">
                                     </li>
                                 </div>
@@ -554,7 +554,7 @@
                                             <tr>
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">
-                                                    Proposal ID : {{$QuotationID}} </span> กรุณาชำระมัดจำ งวดที่ {{$Deposit}}
+                                                    Proposal ID : {{$QuotationID}} </span>
                                                 </td>
                                                 <td style="text-align:right"><span id="Subtotal"></span> THB </td>
                                             </tr>
@@ -661,7 +661,7 @@
                                     </div>
                                     <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                                         <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                            Cancel
+                                            Back
                                         </button>
                                     </div>
                                     <div class="col-4"></div>

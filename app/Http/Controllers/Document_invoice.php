@@ -54,34 +54,56 @@ class Document_invoice extends Controller
         $Approved = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->where('quotation.status_document', 6)
+        ->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('document_invoice')
+                ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID');
+        })
         ->select(
             'quotation.*',
             'document_invoice.Quotation_ID as QID',
-            'document_invoice.document_status', // Separate this field for clarity
+            'document_invoice.document_status',
+            'document_invoice.sumpayment',// Separate this field for clarity
             DB::raw('1 as status'),
-            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.payment ELSE 0 END), 0) as total_payment'),
-            DB::raw('SUM(CASE WHEN document_invoice.document_status >= 1 THEN 1 ELSE 0 END) as invoice_count')
+            DB::raw('SUM(CASE WHEN document_invoice.document_status = 1 THEN 1 ELSE 0 END) as invoice_count')
         )
         ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_document')
         ->get();
-        $Approvedcount = Quotation::query()->where('status_document',6)->count();
+
+
 
         $Cancel = document_invoices::query()->where('document_status',0)->get();
-        $Cancelcount = document_invoices::query()->where('document_status',0)->count();
+
         $invoice = document_invoices::query()->get();
-        $invoicecount = document_invoices::query()->count();
+
         $Pending = document_invoices::query()->where('document_status',1)->get();
-        $invoicecheck = document_invoices::query()->get();
-       // ดึงข้อมูลจาก document_invoices รวมถึง Quotation_ID, total และ sumpayment
-        $Pendingcount = document_invoices::query()->where('document_status',1)->count();
-        $Generate = document_invoices::query()->where('document_status',2)->get();
 
-        $Generatecount = document_invoices::query()->where('document_status',2)->count();
-        $Complete = document_invoices::query()->where('document_status',3)->get();
+        $Generate = document_invoices::query()->where('document_status',3)->get();
 
-        $Completecount = document_invoices::query()->where('document_status',3)->count();
-        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','invoicecheck','Generate','Generatecount',
-        'Cancel','Cancelcount','Pending','Pendingcount'));
+
+        $Complete = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->where('quotation.status_document', 6)
+        ->whereExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('document_invoice')
+                ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID')
+                ->where('document_invoice.document_status', 1); // ✅ เงื่อนไขให้ document_status = 1 เท่านั้น
+        })
+        ->select(
+            'quotation.*',
+            'document_invoice.Quotation_ID as QID',
+            'document_invoice.document_status',
+            'document_invoice.sumpayment',
+            DB::raw('1 as status'),
+            DB::raw('SUM(CASE WHEN document_invoice.document_status = 1 THEN 1 ELSE 0 END) as invoice_count')
+        )
+        ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_document')
+        ->get();
+
+
+        return view('document_invoice.index',compact('Approved','invoice','Complete','Generate',
+        'Cancel','Pending'));
     }
     public function viewList($id)
     {
@@ -679,6 +701,7 @@ class Document_invoice extends Controller
         $Expiration=$invoice->Expiration;
         $sequence = $invoice->sequence;
         $userid = $invoice->Operated_by;
+        $totalinvoice = $invoice->sumpayment;
         $user = User::where('id',$userid)->first();
         $Quotation =  Quotation::where('Quotation_ID',$Quotation_ID)->first();
         $QuotationID = $Quotation->Quotation_ID;
@@ -757,17 +780,13 @@ class Document_invoice extends Controller
             $Additional_Nettotal = $Additional->Nettotal;
         }
         $invoices =document_invoices::where('Quotation_ID',$QuotationID)->whereIn('document_status',[1,2])->get();
-        $totalinvoice = 0;
-        if ($invoices) {
-            foreach ($invoices as $item) {
-                $totalinvoice +=  $item->payment;
-            }
-        }
+
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $Deposit_ID = $invoice->Deposit_ID;
         $array = array_map('trim', explode(',', $Deposit_ID));
         $DepositID = depositrevenue::whereIn('Deposit_ID', $array)->get();
         $Deposittotal = depositrevenue::whereIn('Deposit_ID', $array)->sum('payment');
+
         return view('document_invoice.view',compact('invoice','Selectdata','fullName','Identification','address','Quotation','Additional_Nettotal','totalinvoice','invoices','QuotationID','Additional_ID',
                     'vat_type','settingCompany','IssueDate','Expiration','InvoiceID','phone','Email','Deposit','user','valid','Fax_number','Contact_Name','Contact_phone','Contact_Email','DepositID','Deposittotal'));
     }
@@ -1636,67 +1655,62 @@ class Document_invoice extends Controller
             $quotation = document_invoices::find($id);
             $quotation->document_status = 0;
             $quotation->save();
-        }elseif ($document_status == 2) {
-            $quotation = document_invoices::find($id);
-            $quotation->document_status = 1;
-            $quotation->save();
-        }
-
-        return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
-    }
-    public function cancel(Request $request ,$id){
-        $data = Quotation::where('id',$id)->first();
-        $Quotation_ID = $data->Quotation_ID;
-        $userid = Auth::user()->id;
-        try {
-
-            if ($data->status_document == 1) {
-                $Quotation = Quotation::find($id);
-                $Quotation->status_document = 0;
-                $Quotation->remark = $request->note;
-                $Quotation->save();
-            }elseif ($data->status_document == 3) {
-                $Quotation = Quotation::find($id);
-                $Quotation->status_document = 0;
-                $Quotation->remark = $request->note;
-                $Quotation->save();
-            }elseif ($data->status_document == 6) {
-                if ($data->additional_discount > 0 || $data->SpecialDiscountBath > 0) {
-                    $Quotation = Quotation::find($id);
-                    $Quotation->status_document = 3;
-                    $Quotation->remark = $request->note;
-                    $Quotation->save();
-                }else{
-                    $Quotation = Quotation::find($id);
-                    $Quotation->status_document = 1;
-                    $Quotation->remark = $request->note;
-                    $Quotation->save();
-                }
-            }elseif ($data->status_document == 5) {
-                $Quotation = Quotation::find($id);
-                $Quotation->status_document = 6;
-                $Quotation->remark = $request->note;
-                $Quotation->save();
-            }
-
-        } catch (\Throwable $e) {
-            return redirect()->route('invoice.index')->with('error', $e->getMessage());
-        }
-
-
-        try {
-            $savelog = new log_company();
-            $savelog->Created_by = $userid;
-            $savelog->Company_ID = $Quotation_ID;
-            $savelog->type = 'Cancel';
-            $savelog->Category = 'Cancel :: Proposal';
-            $savelog->content = 'Cancel Document Proposal ID : '.$Quotation_ID.'+'.$request->note;
-            $savelog->save();
-        } catch (\Throwable $e) {
-            return redirect()->route('invoice.index')->with('error', $e->getMessage());
         }
         return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
     }
+    // public function cancel(Request $request ,$id){
+    //     $data = Quotation::where('id',$id)->first();
+    //     $Quotation_ID = $data->Quotation_ID;
+    //     $userid = Auth::user()->id;
+    //     try {
+
+    //         if ($data->status_document == 1) {
+    //             $Quotation = Quotation::find($id);
+    //             $Quotation->status_document = 0;
+    //             $Quotation->remark = $request->note;
+    //             $Quotation->save();
+    //         }elseif ($data->status_document == 3) {
+    //             $Quotation = Quotation::find($id);
+    //             $Quotation->status_document = 0;
+    //             $Quotation->remark = $request->note;
+    //             $Quotation->save();
+    //         }elseif ($data->status_document == 6) {
+    //             if ($data->additional_discount > 0 || $data->SpecialDiscountBath > 0) {
+    //                 $Quotation = Quotation::find($id);
+    //                 $Quotation->status_document = 3;
+    //                 $Quotation->remark = $request->note;
+    //                 $Quotation->save();
+    //             }else{
+    //                 $Quotation = Quotation::find($id);
+    //                 $Quotation->status_document = 1;
+    //                 $Quotation->remark = $request->note;
+    //                 $Quotation->save();
+    //             }
+    //         }elseif ($data->status_document == 5) {
+    //             $Quotation = Quotation::find($id);
+    //             $Quotation->status_document = 6;
+    //             $Quotation->remark = $request->note;
+    //             $Quotation->save();
+    //         }
+
+    //     } catch (\Throwable $e) {
+    //         return redirect()->route('invoice.index')->with('error', $e->getMessage());
+    //     }
+
+
+    //     try {
+    //         $savelog = new log_company();
+    //         $savelog->Created_by = $userid;
+    //         $savelog->Company_ID = $Quotation_ID;
+    //         $savelog->type = 'Cancel';
+    //         $savelog->Category = 'Cancel :: Proposal';
+    //         $savelog->content = 'Cancel Document Proposal ID : '.$Quotation_ID.'+'.$request->note;
+    //         $savelog->save();
+    //     } catch (\Throwable $e) {
+    //         return redirect()->route('invoice.index')->with('error', $e->getMessage());
+    //     }
+    //     return redirect()->route('invoice.index')->with('success', 'Data has been successfully saved.');
+    // }
     public function LOG($id)
     {
         $invoice = document_invoices::where('id', $id)->first();
@@ -1936,6 +1950,7 @@ class Document_invoice extends Controller
         $Expiration=$invoice->Expiration;
         $sequence = $invoice->sequence;
         $userid = $invoice->Operated_by;
+        $totalinvoice = $invoice->sumpayment;
         $user = User::where('id',$userid)->first();
         $Quotation =  Quotation::where('Quotation_ID',$Quotation_ID)->first();
         $QuotationID = $Quotation->Quotation_ID;
@@ -2014,13 +2029,6 @@ class Document_invoice extends Controller
             $Additional_Nettotal = $Additional->Nettotal;
         }
         $invoices =document_invoices::where('Quotation_ID',$QuotationID)->whereIn('document_status',[1,2])->get();
-        $totalinvoice = 0;
-        if ($invoices) {
-
-            foreach ($invoices as $item) {
-                $totalinvoice +=  $item->payment;
-            }
-        }
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $Deposit_ID = $invoice->Deposit_ID;
         $array = array_map('trim', explode(',', $Deposit_ID));
