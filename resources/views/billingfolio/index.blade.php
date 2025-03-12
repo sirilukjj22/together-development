@@ -20,14 +20,14 @@
             <div class="row align-items-center mb-2" >
                 @if (session("success"))
                 <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                    <h4 class="alert-heading">Save successful.</h4>
                     <hr>
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
                 @endif
                 @if (session("error"))
                     <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
+                        <h4 class="alert-heading">Save failed!</h4>
                         <hr>
                         <p class="mb-0">{{ session('error') }}</p>
                     </div>
@@ -45,9 +45,9 @@
             <div class="row clearfix">
                 <div class="col-sm-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-PD" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$ProposalCount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                        <li class="nav-item" id="nav3"><a class="nav-link " data-bs-toggle="tab" href="#nav-Receipt" role="tab" onclick="nav($id='nav3')"><span class="badge" style="background-color:#FF6633">{{$ApprovedCount}}</span> Receipt</a></li>{{--ประวัติการแก้ไข--}}
-                        <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav2')" role="tab"><span class="badge bg-success">{{$ComplateCount}}</span> Complete</a></li>
+                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-PD" role="tab" onclick="nav($id='nav1')"><i class="fa fa-circle fa-xs"style="color: #64748b;" ></i> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav3"><a class="nav-link " data-bs-toggle="tab" href="#nav-Receipt" role="tab" onclick="nav($id='nav3')"><i class="fa fa-circle fa-xs"style="color: #FF6633;" ></i> Receipt</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: #2C7F7A;" ></i> Complete</a></li>
 
                     </ul>
                     <div class="card mb-3">
@@ -65,6 +65,7 @@
                                                     <th>PI Doc.</th>
                                                     <th>RE Doc.</th>
                                                     <th class="text-center">PD Amount</th>
+                                                    <th class="text-center">DR Amount</th>
                                                     <th class="text-center">AD Amount</th>
                                                     <th class="text-center">Total Amount</th>
                                                     <th class="text-center">RE Amount</th>
@@ -87,7 +88,7 @@
                                                             ->sum('Nettotal');
                                                             $addtotal = $item->Nettotal + $Adtotal;  // Perform the addition first
                                                             $receive = $item->receive_amount;
-
+                                                            $revenue = $item->Nettotal - $item->sumpayment;
                                                         @endphp
                                                         <td>{{ $item->Quotation_ID}}</td>
                                                         @if ($item->type_Proposal == 'Company')
@@ -102,10 +103,13 @@
                                                             {{ number_format($item->Nettotal, 2) }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($Adtotal, 2) }}
+                                                            {{ number_format($revenue, 2) }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{$addtotal}}
+                                                            {{ number_format($Adtotal , 2) }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{number_format($addtotal - $revenue , 2)}}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             @if ($item->receive_amount == 0 )
@@ -115,7 +119,7 @@
                                                             @endif
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            {{ number_format($addtotal - $receive, 2) }}
+                                                            {{ number_format($addtotal - $revenue , 2) }}
                                                         </td>
 
                                                         <td style="text-align: center;">

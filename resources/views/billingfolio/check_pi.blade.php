@@ -35,13 +35,13 @@
                     <div class="span3">Billing Folio Check Documment</div>
                 </div>
                 <div class="col-auto">
-                    @if ($Nettotal-$totalReceipt !== 0 )
-                        @if ($Nettotal+$Additionaltotal-$totalReceipt-$totalReceiptCom !== 0 )
-                            <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
-                                <i class="fa fa-plus"></i> Create Invoice
-                            </button>
-                        @endif
+
+                    @if (!$invoices)
+                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
+                            <i class="fa fa-plus"></i> Create Invoice
+                        </button>
                     @endif
+
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -115,7 +115,7 @@
                                         <div class="outer-glow-circle"></div>
                                         <div class="circle-content">
                                             <p class="circle-text">
-                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal+$Additionaltotal-$totalReceipt-$totalReceiptCom, 2, '.', ',') }}</p>
+                                            <p class="f-w-bold fs-3">{{ number_format($totalinvoices-$totalReceipt, 2, '.', ',') }}</p>
                                             <span class="subtext fs-6" >Total Amount</span>
                                             </p>
                                         </div>
@@ -144,8 +144,12 @@
                                     </span>
                                     <span id="defaultContent">
                                         <li class="pr-3">
+                                            <span>Deposit Revenue</span>
+                                            <span class="text-danger f-w-bold"> - {{ number_format($Nettotal+$Additionaltotal-$totalinvoices, 2, '.', ',') }}</span>
+                                        </li>
+                                        <li class="pr-3">
                                             <span>Receipt</span>
-                                            <span class="text-danger f-w-bold">{{ number_format($totalReceipt+$totalReceiptCom, 2, '.', ',') }}</span>
+                                            <span class="text-danger f-w-bold"> - {{ number_format($totalReceipt, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
                                     @if ($additional_type == 'Cash')
@@ -182,11 +186,11 @@
                                 </ul>
                                 <li class="outstanding-amount">
                                     <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal+$Additionaltotal-$totalReceipt-$totalReceiptCom, 2, '.', ',') }}</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($totalinvoices-$totalReceipt, 2, '.', ',') }}</span>
                                 </li>
                             </div>
                         </div>
-                        @if ($status == '0')
+                        @if ($invoices)
                             <div class="card-body">
                                 <b>Invoice</b>
                                 <div class="wrap-table-together">
@@ -194,34 +198,39 @@
                                         <thead>
                                             <tr>
                                             <th style="text-align:center;" data-priority="1">Proforma Invoice ID</th>
-                                            <th style="text-align:center;">Payment</th>
-                                            <th style="text-align:center;">Status</th>
+                                            <th style="text-align:center;">PD Amount</th>
+                                            <th style="text-align:center;">DR Amount</th>
+                                            <th style="text-align:center;">AD Amount</th>
                                             <th style="text-align:center;">Total Amount</th>
+                                            <th style="text-align:center;">Status</th>
                                             <th style="text-align:center;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @if(!empty($invoices))
-                                            @foreach ($invoices as $key => $item2)
-                                                    <tr>
-                                                        <td style="text-align:left;">{{$item2->Invoice_ID}}</td>
-                                                        <td style="text-align:center;">{{ number_format($item2->payment, 2, '.', ',') }}</td>
-                                                        <td style="text-align:center;">
-                                                            <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                        </td>
-                                                        <td style="text-align:center;">{{ number_format($item2->payment, 2, '.', ',') }}</td>
-                                                        <td style="text-align:center;">
-                                                            <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                                <ul class="dropdown-menu border-0 shadow p-3">
-                                                                    <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}">Paid</a></li>
-                                                                    <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}">Bill Splitting</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                            @endforeach
-                                        @endif
+
+                                                <tr>
+                                                    <td style="text-align:left;">{{$invoices->Invoice_ID}}</td>
+                                                    <td style="text-align:center;">{{ number_format($invoices->payment, 2, '.', ',') }}</td>
+
+                                                    <td style="text-align:center;">{{ number_format($invoices->payment - $invoices->sumpayment, 2, '.', ',') }}</td>
+                                                    <td style="text-align:center;">{{ number_format($Additionaltotal , 2, '.', ',') }}</td>
+                                                    <td style="text-align:center;">{{ number_format($invoices->sumpayment + $Additionaltotal , 2, '.', ',') }}</td>
+                                                    <td style="text-align:center;">
+                                                        <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
+                                                    </td>
+                                                    <td style="text-align:center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Paid</a></li>
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Bill Splitting</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>

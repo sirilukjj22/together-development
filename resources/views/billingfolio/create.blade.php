@@ -369,6 +369,11 @@
                                                         </li>
                                                     </div>
                                                 @endif
+                                                @if ($additional_Nettotal == 0)
+                                                    <li class="parent-row">
+                                                        <span style="text-align: center;font-weight: bold;">Outstanding Amount </span>: <span id="total">{{ number_format($sumpayment, 2, '.', ',') }}</span>
+                                                    </li>
+                                                @endif
                                             </div>
                                         </section>
                                         <div class="box-form-issueBill">
@@ -433,7 +438,7 @@
                                                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked>
                                                         <label class="form-check-label" for="flexSwitchCheckChecked">Add Complimentary</label>
                                                     </div>
-                                                    @else
+                                                @elseif ($additional_type == 'H/G')
                                                     <div class="form-check form-switch mt-2 "  style="padding-left:35px">
                                                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked disabled>
                                                         <label class="form-check-label" for="flexSwitchCheckChecked">Add H/G Online</label>
@@ -2554,8 +2559,10 @@
             var bankTransferArray = [];
             var sumpayment = 0;
             var additional = 0;
-            if (checkbox.checked) {
-                sumpayment = overbillamount + invoiceamount;
+            if (checkbox !== null) {
+                if (checkbox.checked) {
+                    sumpayment = overbillamount + invoiceamount;
+                }
             } else {
                 sumpayment = invoiceamount;
             }
@@ -2590,11 +2597,13 @@
             });
             $("[id^='cash_']").each(function () {
                 var value = $(this).val(); // ดึงค่าจาก input
+                $('.cashAmount').val($(this).val());
                 if (value) {
                     value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
                     if (!isNaN(value)) {
                         cashArray.push(value); // เก็บค่าใน array
                     }
+
                 }
             });
             var sum =0;
@@ -2605,22 +2614,23 @@
 
 
 
-
-            if (checkbox.checked) {
-                if (!NoShowAmount.disabled) { // ถ้า NoShowAmount ไม่ถูกปิดการใช้งาน
-                    if (typeadditional =='H/G') {
-                        var sum = cash+amounts+bank+credit+cashamount+invoiceamount;
+            if (checkbox !== null) {
+                if (checkbox.checked) {
+                    if (!NoShowAmount.disabled) { // ถ้า NoShowAmount ไม่ถูกปิดการใช้งาน
+                        if (typeadditional =='H/G') {
+                            var sum = cash+amounts+bank+credit+cashamount+invoiceamount;
+                        }else{
+                            var sum = cash+amounts+bank+credit+cashamount+additional+invoiceamount;
+                        }
                     }else{
-                        var sum = cash+amounts+bank+credit+cashamount+additional+invoiceamount;
-                    }
-                }else{
-                    if (typeadditional =='H/G') {
-                        var sum = cash+amounts+bank+credit+cashamount;
-                    }else{
-                        var sum = cash+amounts+bank+credit+cashamount+additional;
+                        if (typeadditional =='H/G') {
+                            var sum = cash+amounts+bank+credit+cashamount;
+                        }else{
+                            var sum = cash+amounts+bank+credit+cashamount+additional;
+                        }
                     }
                 }
-            } else {
+            }else {
                 if (!NoShowAmount.disabled) { // ถ้า NoShowAmount ไม่ถูกปิดการใช้งาน
                     var sum = cash+amounts+bank+credit+cashamount+invoiceamount;
                 }else{
@@ -2728,24 +2738,27 @@
 
             });
             let cashAmount = parseFloat($('.cashAmount').val()) || 0;
-            var typeadditional = $('#additional_type').val();
-            if (checkbox.checked) {
-                if (typeadditional == 'H/G') {
-                    payments.push({
-                        type: 'cash',
-                        amount: cashAmount,
-                        datanamebank: 'Cash'
-                    });
-                }else{
-                    cashAmount += additionalamount;
-                    payments.push({
-                        type: 'cash',
-                        amount: cashAmount,
-                        datanamebank: 'Cash'
-                    });
-                }
+            console.log(cashAmount);
 
-            } else {
+            var typeadditional = $('#additional_type').val();
+            if (checkbox !== null) {
+                if (checkbox.checked) {
+                    if (typeadditional == 'H/G') {
+                        payments.push({
+                            type: 'cash',
+                            amount: cashAmount,
+                            datanamebank: 'Cash'
+                        });
+                    }else{
+                        cashAmount += additionalamount;
+                        payments.push({
+                            type: 'cash',
+                            amount: cashAmount,
+                            datanamebank: 'Cash'
+                        });
+                    }
+                }
+            }else {
                 $('.payment-container').each(function () {
                     let paymentType = $(this).find('.paymentType').val();
                     if (paymentType == 'cash') {

@@ -73,20 +73,20 @@ class BillingFolioController extends Controller
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
         ->leftJoin('proposal_overbill', 'quotation.Quotation_ID', '=', 'proposal_overbill.Quotation_ID')
-        ->where('document_invoice.document_status', 2)
+        ->where('document_invoice.document_status', 1)
         ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
             'proposal_overbill.Nettotal as Adtotal',
+            'document_invoice.sumpayment',
             DB::raw('document_receive.fullname as fullname'),
             DB::raw('COUNT(document_receive.Quotation_ID) as receive_count'),
             DB::raw('SUM(document_receive.document_amount) as receive_amount'),
-            DB::raw('COUNT(CASE WHEN document_invoice.document_status = 2 THEN document_invoice.Quotation_ID END) as invoice_count')
+            DB::raw('COUNT(CASE WHEN document_invoice.document_status = 1 THEN document_invoice.Quotation_ID END) as invoice_count')
 
         )
         ->groupBy('quotation.Quotation_ID')
         ->get();
-
         $ProposalCount = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
@@ -160,10 +160,6 @@ class BillingFolioController extends Controller
             $subtotal = $totalAmount;
             $Nettotal = $subtotal;
         }elseif ($vat == 52) {
-            // $total =  $totalAmount;
-            // $subtotal = $totalAmount;
-            // $AddTax =$subtotal*7/100;
-            // $Nettotal = $subtotal+$AddTax;
             $total =  $totalAmount;
             $subtotal = $totalAmount;
             $AddTax = $subtotal/1.07;
@@ -208,24 +204,16 @@ class BillingFolioController extends Controller
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
             $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }
-        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('document_status',1)->where('Paid',0)->get();
-        $totalinvoices = 0;
-        foreach ($invoices as $item) {
-            $totalinvoices +=  $item->sumpayment;
-        }
-        if ($invoices->contains('Paid', 0)) {
-            // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
-            $status = 0;
-        } else {
-            $status = 1;
-        }
-        $Receipt = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
+        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('document_status',1)->first();
+        $totalinvoices = $invoices->sumpayment;
+
+
+        $Receipt = receive_payment::where('Quotation_ID', $Proposal_ID)->first();
         $totalReceipt = 0;
-        $totalReceiptCom = 0;
-        foreach ($Receipt as $item) {
-            $totalReceipt +=  $item->Amount;
-            $totalReceiptCom +=  $item->complimentary;
+        if ($Receipt) {
+            $totalReceipt = $Receipt->document_amount;
         }
+
         //-----------------------------------------------
         $room = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'R' . '%')->get();
         $Meals = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'M' . '%')->get();
@@ -340,14 +328,10 @@ class BillingFolioController extends Controller
                 $statusover = 1;
             }
         }
-
-
-
-
-        return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
+        return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','Proposal','ProposalID',
                     'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
                     ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt','Additionaltotal','Receiptover','statusover','Additional_ID',
-                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','additional_type','totalinvoices','Cash','Com','totalReceiptCom'));
+                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','additional_type','totalinvoices','Cash','Com'));
     }
     public function create($id){
         $invoices = document_invoices::where('id', $id)->first();
@@ -1609,7 +1593,7 @@ class BillingFolioController extends Controller
             $update = Quotation::find($id);
             $update->status_document = 9;
             $update->save();
-            return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('BillingFolio.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
@@ -2051,7 +2035,7 @@ class BillingFolioController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
-        return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('BillingFolio.index')->with('success', 'Data has been successfully saved.');
     }
     public function view($id){
         $receive = receive_payment::where('id',$id)->first();
