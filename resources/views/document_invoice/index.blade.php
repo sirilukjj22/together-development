@@ -180,7 +180,9 @@
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
-                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">PD Amount</th>
+                                            <th class="text-center">DR Amount</th>
+                                            <th class="text-center">PI Amount</th>
                                             <th class="text-center">Operated By</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Action</th>
@@ -201,7 +203,12 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
-
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment, 2) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment - $item->sumpayment, 2) }}
+                                                </td>
                                                 <td style="text-align: center;">
                                                     {{ number_format($item->sumpayment, 2) }}
                                                 </td>
@@ -310,8 +317,9 @@
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
-
-                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">PD Amount</th>
+                                            <th class="text-center">DR Amount</th>
+                                            <th class="text-center">PI Amount</th>
                                             <th class="text-center">Operated By</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Action</th>
@@ -332,7 +340,12 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
-
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment, 2) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment - $item->sumpayment, 2) }}
+                                                </td>
                                                 <td style="text-align: center;">
                                                     {{ number_format($item->sumpayment, 2) }}
                                                 </td>
@@ -410,8 +423,9 @@
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
-
-                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">PD Amount</th>
+                                            <th class="text-center">DR Amount</th>
+                                            <th class="text-center">PI Amount</th>
                                             <th class="text-center">Operated By</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Action</th>
@@ -432,7 +446,12 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
-
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment, 2) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment - $item->sumpayment, 2) }}
+                                                </td>
                                                 <td style="text-align: center;"> {{ number_format($item->payment , 2) }}</td>
                                                 <td style="text-align: center;">
                                                     @if (@$item->userOperated->name == null)
@@ -563,8 +582,9 @@
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
-
-                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">PD Amount</th>
+                                            <th class="text-center">DR Amount</th>
+                                            <th class="text-center">PI Amount</th>
                                             <th class="text-center">Operated By</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Action</th>
@@ -585,7 +605,12 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td style="text-align: center;">{{ $item->IssueDate }}</td>
-
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment, 2) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->payment - $item->sumpayment, 2) }}
+                                                </td>
                                                 <td style="text-align: center;">
                                                     {{ number_format($item->sumpayment, 2) }}
                                                 </td>
