@@ -120,7 +120,7 @@ class Harmony_SMS_alerts extends Model
 
         $adate = date('Y-m-d', strtotime($date));
 
-        $check_data = TB_close_days::where('date', $adate)->first();
+        $check_data = Harmony_tb_close_days::where('date', $adate)->first();
 
         if (!empty($check_data)) {
             return 1;

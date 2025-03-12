@@ -290,7 +290,7 @@ Route::middleware(['auth'])->group(function () {
 
     ## Users
     Route::controller(UsersController::class)->middleware(['role:user', 'checkTogetherOrHarmony'])->group(function () {
-        Route::get('users/{menu}', 'index')->name('users');
+        Route::get('users/{menu}/{branch}', 'index')->name('users');
         Route::get('user-create', 'create')->name('user-create');
         Route::get('user-edit/{id}', 'edit')->name('user-edit');
         Route::get('user-detail/{id}', 'detail')->name('user-detail');

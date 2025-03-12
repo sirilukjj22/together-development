@@ -22,7 +22,7 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($menu)
+    public function index($menu, $branch)
     {
         $users = User::where('status', 1)->get();
 
@@ -31,18 +31,28 @@ class UsersController extends Controller
         if (count($exp) > 1) {
             $search = $exp[1];
 
-            if ($search == "all") {
-                $users = User::get();
-            }elseif ($search == 'ac') {
-                $users = User::where('status', 1)->get();
-            }else {
-                $users = User::where('status', 0)->get();
+            $query = User::query();
+
+            if ($search == 'ac') {
+                $query->where('status', 1);
+            }elseif ($search == 'no') {
+                $query->where('status', 0);
             }
+
+            if ($branch == 1) {
+                $query->where('permission_branch', 1)->orWhere('permission_branch', 3);
+            } elseif ($branch == 2) {
+                $query->where('permission_branch', 2)->orWhere('permission_branch', 3);
+            } elseif ($branch == 3) {
+                $query->where('permission_branch', 3);
+            }
+
+            $users = $query->get();
         }
 
         $title = "User";
 
-        return view('users.index', compact('users', 'title', 'menu'));
+        return view('users.index', compact('users', 'title', 'menu', 'branch'));
     }
 
     /**
@@ -127,6 +137,7 @@ class UsersController extends Controller
                 'permission' => $request->permission,
                 'permission_edit' => $request->permission_edit ?? 0,
                 'edit_close_day' => $request->close_day ?? 0,
+                'permission_branch' => $request->branch ?? 0,
             ]);
     
             if ($request->password != '') {

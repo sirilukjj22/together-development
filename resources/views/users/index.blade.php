@@ -68,25 +68,16 @@
                         <div class="flex-between-2end">
                             <div class="flex-end">
                                 <div class="filter-section bd-select-cl d-flex mb-2 mr-2 " style=" gap: 0.3em;">
-                                    <div class="dropdown">
-                                        <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
-                                            @if ($menu == 'users_all')
-                                                All
-                                            @elseif ($menu == 'users_ac')
-                                                Active
-                                            @elseif ($menu == 'users_no')
-                                                Disabled
-                                            @else
-                                                Status
-                                            @endif
-                                            <i class="fas fa-angle-down arrow-dropdown"></i>
-                                        </button>
-                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_all') }}">All</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_ac') }}">Active</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_no') }}">Disabled</a></li>
-                                        </ul>
-                                    </div>
+                                    <select name="" id="status" onchange="searchUser()">
+                                        <option value="users_all" {{ $menu == 'users_all' ? 'selected' : '' }}>Status All</option>
+                                        <option value="users_ac" {{ $menu == 'users_ac' ? 'selected' : '' }}>Active</option>
+                                        <option value="users_no" {{ $menu == 'users_no' ? 'selected' : '' }}>Disabled</option>
+                                    </select>
+                                    <select name="" id="branch" onchange="searchUser()" style="width: 150px;">
+                                        <option value="0" {{ $branch == 0 ? 'selected' : '' }}>Branch All</option>
+                                        <option value="1" {{ $branch == 1 ? 'selected' : '' }}>Together</option>
+                                        <option value="2" {{ $branch == 2 ? 'selected' : '' }}>Harmony</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -97,6 +88,7 @@
                                         <th style="text-align: center;" data-priority="1">#</th>
                                         <th style="text-align: center;" data-priority="1">Name</th>
                                         <th style="text-align: center;">Permission</th>
+                                        <th style="text-align: center;">Branch</th>
                                         <th style="text-align: center;">Status</th>
                                         <th style="text-align: center;" data-priority="1">Action</th>
                                     </tr>
@@ -107,6 +99,21 @@
                                             <td class="td-content-center" >{{ $key + 1 }}</td>
                                             <td class="td-content-center text-start">{{ $item->name }}</td>
                                             <td class="td-content-center text-start">{{ @$item->permissionName->department }}</td>
+                                            <td class="td-content-center text-start">
+                                                @switch($item->permission_branch)
+                                                    @case(1)
+                                                        Together
+                                                        @break
+                                                    @case(2)
+                                                        Harmony
+                                                        @break
+                                                    @case(3)
+                                                        Together, Harmony
+                                                        @break
+                                                    @default
+                                                        
+                                                @endswitch
+                                            </td>
                                             <td class="td-content-center">
                                                 @if ($item->status == 1)
                                                     <span class="wrap-status-active">Active</span>
@@ -142,6 +149,13 @@
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
 
     <script>
+        function searchUser() {
+            var status = $('#status').val();
+            var branch = $('#branch').val();
+
+            window.location.href = "{!! url('users/"+status+"/"+ branch +"') !!}";
+        }
+
         function btnChangeStatus(id) {
             Swal.fire({
                 icon: "info",

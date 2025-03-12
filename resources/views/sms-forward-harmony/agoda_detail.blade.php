@@ -430,7 +430,7 @@
     @endif
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableHarmony.js')}}"></script>
 
     <script>
         $(document).ready(function() {

@@ -141,7 +141,7 @@
 
                                                 <!-- Menu: Sub menu level 3 -->
                                                 <ul class="sub-menu collapse" id="menu-user-level-2">
-                                                    <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
+                                                    <li><a class="ms-link" href="{{ route('users', ['index', '0']) }}">User</a></li>
                                                     @if (Auth::user()->roleMenu->department == 1)
                                                         <li><a class="ms-link" href="{{ route('user-department') }}">Department</a></li>
                                                     @endif

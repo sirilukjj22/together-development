@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Harmony_revenues;
 use App\Models\Harmony_revenue_credit;
 use App\Models\Harmony_SMS_alerts;
-use App\Models\TB_outstanding_balance;
+use App\Models\Harmony_tb_outstanding_balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -357,8 +357,8 @@ class RevenuesHarmonyController extends Controller
 
         // Outstanding Balance From Last Year
         $lastYear = date('Y', strtotime('-1 year'));
-        $agoda_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('agoda_balance');
-        $elexa_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('elexa_balance');
+        $agoda_outstanding_last_year = Harmony_tb_outstanding_balance::where('year', $lastYear)->sum('agoda_balance');
+        $elexa_outstanding_last_year = Harmony_tb_outstanding_balance::where('year', $lastYear)->sum('elexa_balance');
 
         $total_revenue_today = Harmony_revenues::whereDate('date', date('Y-m-d'))->select(
             DB::raw("
@@ -1426,8 +1426,8 @@ class RevenuesHarmonyController extends Controller
 
         // Outstanding Balance From Last Year
         $lastYear = date('Y', strtotime('-1 year'));
-        $agoda_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('agoda_balance');
-        $elexa_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('elexa_balance');
+        $agoda_outstanding_last_year = Harmony_tb_outstanding_balance::where('year', $lastYear)->sum('agoda_balance');
+        $elexa_outstanding_last_year = Harmony_tb_outstanding_balance::where('year', $lastYear)->sum('elexa_balance');
 
         $total_revenue_today = Harmony_revenues::whereBetween('date', [$FromFormatDate, $ToFormatDate])->select(
             DB::raw("

@@ -49,7 +49,7 @@ class Harmony_revenues extends Model
         $symbol = $day_now == "01" ? "=" : "<=";
 
         ## Today
-        $sum_revenue_today = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
+        $sum_revenue_today = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
             ->where('revenue_credit.revenue_type', $type)->whereDate('revenue.date', $date)
             ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
 
@@ -59,18 +59,18 @@ class Harmony_revenues extends Model
             $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
-            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
+            $sum_revenue = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
                 ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$adate, $adate2])
                 ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
 
         } else {
-            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
+            $sum_revenue = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
                 ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
                 ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
         }
 
         ## Month
-        $revenue_month_query = Revenues::query();
+        $revenue_month_query = Harmony_revenues::query();
         $revenue_month_query->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type);
         
         if ($filter_by == "date" || $filter_by == "today") {
@@ -87,7 +87,7 @@ class Harmony_revenues extends Model
         $sum_revenue_month = $revenue_month_query->first();
 
         ## Year
-        $revenue_year_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type);
+        $revenue_year_query = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type);
 
             if ($filter_by == "date") {
                 $revenue_year_query->whereDate('revenue.date', '<=', $date);
@@ -130,7 +130,7 @@ class Harmony_revenues extends Model
         $symbol = $day_now == "01" ? "=" : "<=";
 
         ## Today
-        $sum_revenue_today = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+        $sum_revenue_today = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
             ->where('revenue_credit.revenue_type', $type)->where('revenue.date', $date)
             ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))
             ->first();
@@ -141,20 +141,20 @@ class Harmony_revenues extends Model
             $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
-            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+            $sum_revenue = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
                 ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$adate, $adate2])
                 ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))
                 ->first();
 
         } else {
-            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+            $sum_revenue = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
                 ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
                 ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))
                 ->first();
         }
 
         ## Month
-        $revenue_month_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', $type);
+        $revenue_month_query = Harmony_revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', $type);
 
             if ($filter_by == "date" || $filter_by == "today") {
                 $revenue_month_query->whereDay('revenue.date', '<=', $day_now)->whereMonth('revenue.date', $month)->whereYear('revenue.date', $year);
@@ -170,7 +170,7 @@ class Harmony_revenues extends Model
         $sum_revenue_month = $revenue_month_query->first();
 
         ## Year
-        $revenue_year_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', $type);
+        $revenue_year_query = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', $type);
 
         if ($filter_by == "date") {
             $revenue_year_query->whereDate('revenue.date', '<=', $date);
@@ -191,7 +191,7 @@ class Harmony_revenues extends Model
         $sum_revenue_year = $revenue_year_query->first();
 
         ## No paid
-        $sum_revenue_no_paid_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+        $sum_revenue_no_paid_month = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
         ->where('revenue_credit.revenue_type', $type)->whereDate('revenue.date', '<=', $date)->where('revenue_credit.receive_payment', 0)
         ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))->first();
 
@@ -216,7 +216,7 @@ class Harmony_revenues extends Model
 
     public static function getManualTotalAgoda() {
 
-        $sum_revenue_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+        $sum_revenue_month = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
         ->where('revenue_credit.revenue_type', 1)->where('revenue_credit.receive_payment', 0)
         ->select(DB::raw("SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))->first();
 
@@ -231,7 +231,7 @@ class Harmony_revenues extends Model
         $symbol = $day_now == "01" ? "=" : "<=";
 
         ## Today
-        $sum_revenue_today = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+        $sum_revenue_today = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
             ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->where('revenue.date', $date)
             ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
 
@@ -241,18 +241,18 @@ class Harmony_revenues extends Model
             $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
-            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+            $sum_revenue = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$adate, $adate2])
                 ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
 
         } else {
-            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+            $sum_revenue = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
                 ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
         }
 
         ## Month
-        $revenue_month_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type);
+        $revenue_month_query = Harmony_revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type);
 
             if ($filter_by == "date" || $filter_by == "today") {
                 $revenue_month_query->whereDay('revenue.date', '<=', $day_now)->whereMonth('revenue.date', $month)->whereYear('revenue.date', $year);
@@ -267,7 +267,7 @@ class Harmony_revenues extends Model
         $revenue_month_query->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"));
         $sum_revenue_month = $revenue_month_query->first();
 
-        $revenue_year_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type);
+        $revenue_year_query = Harmony_revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type);
 
             if ($filter_by == "date") {
                 $revenue_year_query->whereDate('revenue.date', '<=', $date);
@@ -309,7 +309,7 @@ class Harmony_revenues extends Model
 
     public static function getManualTotalEv() {
 
-        $sum_revenue_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)
+        $sum_revenue_month = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)
         ->where('revenue_credit.revenue_type', 8)
         ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
 

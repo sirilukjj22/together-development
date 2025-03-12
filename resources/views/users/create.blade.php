@@ -13,7 +13,7 @@
                     <div class="span3">Create User</div>
                 </div>
                 <div class="col-auto">
-                    <a href="{{ route('users', 'index') }}" type="button"
+                    <a href="javascript:history.back(1)" type="button"
                         class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
@@ -86,7 +86,16 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div  class="d-grid-2column" >
+                                    <div class="form-group">
+                                        <label for="branch" class="star-red">Branch</label>
+                                        <select name="branch" id="branch">
+                                            <option value="">Select</option>
+                                            <option value="1">Together</option>
+                                            <option value="2">Harmony</option>
+                                            <option value="3">All</option>
+                                        </select>
+                                    </div>
+                                    <div  class="d-grid-2column">
                                         <div class="form-group" style="height: 4.7em;">
                                             <label for="discount">Discount (%)</label>
                                             <input type="text" min="0" max="100" class="form-control" name="discount" value="0">
@@ -98,6 +107,7 @@
                                     </div>
                                 </section>
                             </div>
+
                             <div class="permissions-select">
                                 <div>
                                     <p>
@@ -254,6 +264,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="flex-end">
                                 <button class="bg-plain grey-color  no-select">Cancle</button>
                                 <button class="bg-plain no-select">Save</button>
@@ -306,12 +317,26 @@
             border: none;
             border-radius: 4px;
         }
+
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 7px;
+            box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.1), inset -2px -2px 8px rgba(255, 255, 255, 0.429);
+            background: #f5f9f9;
+            font-size: 16px;
+            transition: all 0.3sease;
+            height: 100%;
+            text-align: start;
+        }
     </style>
 
     <script>
         $(document).ready(function () {
             $('#access-rights').select2();
             $('#access-use-rights').select2();
+            $('#branch').select2();
 
             // ฟังก์ชันสำหรับแสดง/ซ่อนส่วนของ menu-permissions และ revenue-section
             $('#open-menu-permissions').on('click', function () {

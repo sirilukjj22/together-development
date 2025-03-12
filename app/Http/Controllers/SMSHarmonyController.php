@@ -30,9 +30,16 @@ class SMSHarmonyController extends Controller
                         $fromAccount = $exp_form[1].' '.$exp_form[2];
                     }
 
+                    $check_transfer_from = Harmony_SMS_alerts::check_bank($exp_form[1]);
+                    $from_account = $check_transfer_from;
+
+                    if ($check_transfer_from == '' && $fromAccount != '') {
+                        $from_account = 5;
+                    }
+
                     Harmony_SMS_alerts::create([
                         'date' => $value->created_at,
-                        'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[1]),
+                        'transfer_from' => $from_account,
                         'transfer_form_account' => $fromAccount,
                         'into_account' => Harmony_SMS_alerts::check_account($exp_form[6]),
                         'amount' => str_replace(",", "", substr($exp_form[4], 3)),
@@ -57,7 +64,6 @@ class SMSHarmonyController extends Controller
                         'is_status' => 1
                     ]);
                 } elseif ($value->sender == "027777777" && count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช" || $value->sender == "SCBQRAlert" && count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช") {
-
                     if (isset($exp_form[1])) {
                         $fromAccount = $exp_form[1].' '.$exp_form[2].' '.$exp_form[3];
                     }
@@ -88,7 +94,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                }  elseif ($value->sender == "027777777" && count($exp_form) == 5 || $value->sender == "SCBQRAlert" && count($exp_form) == 5) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 5 || $value->sender == "SCBQRAlert" && count($exp_form) == 5) {
                     if ($exp_form[1] == "บ.จากxBorder") {
 
                         $data_qr = mb_substr($exp_form[3], 4);
@@ -115,7 +121,32 @@ class SMSHarmonyController extends Controller
                         ]);
                     }
                 } elseif ($value->sender == "027777777" && count($exp_form) == 6 || $value->sender == "SCBQRAlert" && count($exp_form) == 6) {
-                    if ($exp_form[0] == "เงินเข้าบ/ช") {
+                    if ($exp_form[1] == "บ.จากxBorder") {
+
+                        $data_qr = mb_substr($exp_form[4], 4);
+                        $into = "none";
+
+                        switch ($data_qr) {
+                            case '076355400050101':
+                                $into = "156-277492-1";
+                                break;
+                        }
+
+                        Harmony_SMS_alerts::create([
+                            'date' => $value->created_at,
+                            'transfer_from' => 22,
+                            'into_account' => $into,
+                            'into_qr' => $data_qr,
+                            'amount' => str_replace(",", "", $exp_form[0]),
+                            'remark' => "Auto",
+                            'status' => 2
+                        ]);
+
+                        Harmony_SMS_forwards::where('id', $value->id)->update([
+                            'is_status' => 1
+                        ]);
+
+                    } elseif ($exp_form[0] == "เงินเข้าบ/ช") {
                         Harmony_SMS_alerts::create([
                             'date' => $value->created_at,
                             'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[5]),
@@ -128,6 +159,7 @@ class SMSHarmonyController extends Controller
                         Harmony_SMS_forwards::where('id', $value->id)->update([
                             'is_status' => 1
                         ]);
+
                     } if ($exp_form[0] == "เช็คเข้าบ/ช") {
                         Harmony_SMS_alerts::create([
                             'date' => $value->created_at,
@@ -141,6 +173,7 @@ class SMSHarmonyController extends Controller
                         Harmony_SMS_forwards::where('id', $value->id)->update([
                             'is_status' => 1
                         ]);
+
                     } elseif (isset($exp_form[3]) && $exp_form[3] == "ชำระผ่านQR") { // SCBQRAlert
                         $data_qr = mb_substr($exp_form[4], 4);
                         $into = "none";
@@ -175,7 +208,7 @@ class SMSHarmonyController extends Controller
                             'into_qr' => $data_qr,
                             'amount' => str_replace(",", "", $exp_form[0]),
                             'remark' => "Auto",
-                            'status' => $into == "156-277492-1" ? 3 : 0
+                            'status' => $into == "156-277492-1" ? 2 : 0
                         ]);
 
                         Harmony_SMS_forwards::where('id', $value->id)->update([
@@ -195,6 +228,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
+
                 } elseif ($value->sender == "027777777" && count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x774921" || $value->sender == "SCBQRAlert" && count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x774921") {
                     Harmony_SMS_alerts::create([
                         'date' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
@@ -686,12 +720,23 @@ class SMSHarmonyController extends Controller
                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
                 } elseif (file_exists($filename2)) {
                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                } else {
+                    $img_bank = '<img class="img-bank" src="../assets/images/harmony/bank_transfer.png">';
+                       if ($value->transfer_form_account == '' || $value->transfer_form_account == '-') {
+                           $img_bank .= 'Bank Transfer';
+                       }
                 }
 
                 $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.' '.@$value->transfer_form_account.'</div>';
 
                 // เข้าบัญชี
-                $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                if ($value->into_account == "978-2-18099-9") {
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
+                } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                } elseif ($value->into_account == "871-0-11991-1") {
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
+                }
 
                 // ประเภทรายได้
                 if ($value->status == 0) { $revenue_name = '-'; } 
@@ -1077,12 +1122,23 @@ class SMSHarmonyController extends Controller
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
                     } elseif (file_exists($filename2)) {
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                    } else {
+                         $img_bank = '<img class="img-bank" src="../assets/images/harmony/bank_transfer.png">';
+                            if ($value->transfer_form_account == '' || $value->transfer_form_account == '-') {
+                                $img_bank .= 'Bank Transfer';
+                            }
                     }
     
                     $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.' '.@$value->transfer_form_account.'</div>';
     
                     // เข้าบัญชี
-                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                    if ($value->into_account == "978-2-18099-9") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
+                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                    } elseif ($value->into_account == "871-0-11991-1") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
+                    }
     
                     // ประเภทรายได้
                     if ($value->status == 0) { $revenue_name = '-'; } 

@@ -52,7 +52,17 @@ class AuthController extends Controller
             if (Auth::user()->status == 1) {
 
                 if (Auth::user()->permission == 3) { // แบ่งแยกหน้าเฉพาะของนิว
-                    return redirect()->intended('/Company/index')->withSuccess('You have Successfully loggedin');
+                    if (Auth::user()->permission_branch == 2) {
+                        User::where('id', Auth::user()->id)->update([
+                            'current_branch' => 2
+                        ]);
+                        return redirect()->intended('harmony-sms-alert')->withSuccess('You have Successfully loggedin');
+                    } elseif (Auth::user()->permission_branch == 1) {
+                        User::where('id', Auth::user()->id)->update([
+                            'current_branch' => 1
+                        ]);
+                        return redirect()->intended('sms-alert')->withSuccess('You have Successfully loggedin');
+                    }
                 } else {
                     User::where('id', Auth::user()->id)->update([
                         'current_branch' => 0
@@ -76,8 +86,6 @@ class AuthController extends Controller
                 Auth::logout();
                 return redirect("login")->withSuccess('ไม่มีสิทธิ์ในการเข้าใช้งานระบบ กรุณาติดต่อผู้ดูแล !');
             }
-            
-
         }
 
         return redirect("login")->withSuccess('Email Address หรือ Password ไม่ต้อง !');
@@ -123,6 +131,7 @@ class AuthController extends Controller
 
     public function create(array $data)
     {
+        // dd($data);
       try {
         $image_name = '';
         if (!empty($data['signature']) && $data['signature'] instanceof \Illuminate\Http\UploadedFile) {
@@ -147,6 +156,8 @@ class AuthController extends Controller
             'permission' => $data['permission'],
             'permission_edit' => $data['permission_edit'] ?? 0,
             'edit_close_day' => $data['close_day'] ?? 0,
+            'permission_branch' => $data['branch'] ?? 0,
+            'current_branch' => 0,
             'status' => 1
           ])->id;
 

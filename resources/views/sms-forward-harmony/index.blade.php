@@ -1586,7 +1586,7 @@
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableHarmony.js')}}"></script>
 
     <!-- Sweet Alert 2 -->
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
