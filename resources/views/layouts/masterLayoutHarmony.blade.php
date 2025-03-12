@@ -127,7 +127,7 @@
                                 </ul>
                             </li>
 
-                            {{-- @if (Auth::user()->roleMenu->setting == 1)
+                            @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
                                     <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting" href="#"><i class="fa fa-lg fa-cogs"></i>
                                         <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
@@ -148,48 +148,14 @@
                                                 </ul>
                                             </li>
                                         @endif
+                                        
                                         @if (Auth::user()->roleMenu->bank == 1)
                                             <li><a class="ms-link" href="{{ route('master', 'bank') }}">Bank</a></li>
                                         @endif
-                                        @if (Auth::user()->roleMenu->quantity == 1)
-                                            <li><a class="ms-link"
-                                                    href="{{ route('Quantity','index') }}">Quantity</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->unit == 1)
-                                            <li><a class="ms-link"
-                                                    href="{{ route('Unit','index') }}">Unit</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->prefix == 1)
-                                            <li><a class="ms-link" href="{{ route('Mprefix','index') }}">Prename</a>
-                                            </li>
-                                        @endif
-
-                                        @if (Auth::user()->roleMenu->company_type == 1)
-                                            <li><a class="ms-link" href="{{ route('Mcomt','index') }}">Company Type</a>
-                                            </li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->company_market == 1)
-                                            <li><a class="ms-link" href="{{ route('Mmarket','index') }}">Company
-                                                    Market</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->company_event == 1)
-                                            <li><a class="ms-link" href="{{ route('MEvent','index') }}">Company
-                                                    Event</a></li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->booking == 1)
-                                            <li><a class="ms-link" href="{{ route('Mbooking','index') }}">Booking</a>
-                                            </li>
-                                        @endif
-                                        @if (Auth::user()->roleMenu->document_template_pdf == 1)
-                                            <li><a class="ms-link"
-                                                    href="{{ route('Template.TemplateA1') }}">Template</a></li>
-                                        @endif
-                                            <li><a class="ms-link" href="{{ route('Mpromotion', 'index') }}">Promotion</a>
-                                            </li>
-
                                     </ul>
                                 </li>
-                            @endif --}}
+                            @endif
+
                             @if (Auth::user()->permission_branch == 3)
                                 <li>
                                     <a class="m-link" href="{{ route('select-branch') }}">
