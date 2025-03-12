@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\CheckRole::class,
         'together' => \App\Http\Middleware\TogetherMiddleware::class,
         'harmony' => \App\Http\Middleware\HarmonyMiddleware::class,
+        'checkTogetherOrHarmony' => \App\Http\Middleware\CheckTogetherOrHarmony::class,
         'branch' => \App\Http\Middleware\PermissionBranch::class,
     ];
 }

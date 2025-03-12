@@ -556,7 +556,7 @@
                                                 @foreach ($data_sms as $key => $item)
                                                     @if ($item->split_status == 3)
                                                         <tr style="text-align: center;" class="table-secondary">
-                                                        @else
+                                                    @else
                                                         <tr style="text-align: center;">
                                                     @endif
     
@@ -573,6 +573,11 @@
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                             @elseif (file_exists($filename2))
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                            @else
+                                                                <img class="img-bank" src="../assets/images/bank_transfer.png">
+                                                                @if ($item->transfer_from == '')
+                                                                    Bank Transfer
+                                                                @endif
                                                             @endif
                                                             {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                         </div>

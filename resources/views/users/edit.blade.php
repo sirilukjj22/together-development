@@ -1,4 +1,9 @@
-@extends('layouts.masterLayout')
+@php
+    $layout = (Auth::user()->current_branch == 1) ? 'layouts.masterLayout' : 'layouts.masterLayoutHarmony';
+@endphp
+
+@extends($layout)
+
 @section('content')
     <div id="content-index" class="d-flex py-3">
         <div class="container-xl">

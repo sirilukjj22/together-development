@@ -268,7 +268,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     ## Master Data
-    Route::controller(MasterController::class)->middleware(['role:setting', 'together:1|harmony:2'])->group(function () {
+    Route::controller(MasterController::class)->middleware(['role:setting', 'checkTogetherOrHarmony'])->group(function () {
         Route::get('master/{menu}', 'index')->name('master');
         Route::get('master/check/{category}/{field}/{datakey}', 'validate_field');
         // Route::get('master/check2/{category}/{field}/{datakey}/{type_name}', [MasterController::class, 'validate_field2']);
@@ -289,7 +289,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     ## Users
-    Route::controller(UsersController::class)->middleware(['role:user', 'together:1|harmony:2'])->group(function () {
+    Route::controller(UsersController::class)->middleware(['role:user', 'checkTogetherOrHarmony'])->group(function () {
         Route::get('users/{menu}', 'index')->name('users');
         Route::get('user-create', 'create')->name('user-create');
         Route::get('user-edit/{id}', 'edit')->name('user-edit');
@@ -305,11 +305,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-paginate-table', 'paginate_table')->name('user-paginate-table');
     });
     // Add User
-    Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post')->middleware(['role:user', 'together:1|harmony:2']);
+    Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post')->middleware(['role:user', 'checkTogetherOrHarmony']);
 
 
     ## User Department
-    Route::controller(UserDepartmentsController::class)->middleware(['role:department', 'together:1|harmony:2'])->group(function () {
+    Route::controller(UserDepartmentsController::class)->middleware(['role:department', 'checkTogetherOrHarmony'])->group(function () {
         Route::get('user-department', 'index')->name('user-department');
         Route::get('user-department-create', 'create')->name('user-department-create');
         Route::get('user-department-edit/{id}', 'edit')->name('user-department-edit');
@@ -415,7 +415,7 @@ Route::middleware(['auth'])->group(function () {
     ####################################################
 
     ## Master Booking Channal
-    Route::controller(master_booking::class)->middleware(['role:setting', 'together:1|harmony:2'])->group(function () {
+    Route::controller(master_booking::class)->middleware(['role:setting', 'checkTogetherOrHarmony'])->group(function () {
         Route::get('/Mbooking/{menu}', 'index')->name('Mbooking');
         Route::post('/Mbooking/master_booking/save', 'Mbookingsave')->name('Mbooking.save');
         Route::get('/Mbooking/update/{id}/{datakey}/{dataEN}/{code}', 'update')->name('Master.Mbooking_update');
