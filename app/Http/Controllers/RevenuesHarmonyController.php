@@ -2414,28 +2414,28 @@ class RevenuesHarmonyController extends Controller
         $exp = explode("_", $request->revenue_type);
 
         if ($exp[0] == "mc" && $request->revenue_type != "mc_agoda_charge" && $request->revenue_type != "mc_elexa_charge") {
-            return view('revenue.manual_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.manual_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "mc_agoda_charge") {
-            return view('revenue.manual_agoda_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.manual_agoda_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "mc_elexa_charge") {
-            return view('revenue.manual_elexa_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.manual_elexa_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "agoda_outstanding") {
-            return view('revenue.agoda_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.agoda_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "elexa_outstanding") {
-            return view('revenue.elexa_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.elexa_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "type") {
-            return view('revenue.type_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.type_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "verified") {
-            return view('revenue.verified_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.verified_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "cash") {
-            return view('revenue.detail_cash', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.detail_cash', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "fee") {
-            return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         }  elseif ($revenue_name == "agoda_fee") {
-            return view('revenue.fee_agoda_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.fee_agoda_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } 
         else {
-            return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+            return view('revenue_harmony.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         }
     }
 
@@ -2792,12 +2792,23 @@ class RevenuesHarmonyController extends Controller
                             $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
                         } elseif (file_exists($filename2)) {
                             $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                        } else {
+                             $img_bank = '<img class="img-bank" src="../assets/images/harmony/bank_transfer.png">';
+                                if ($value->transfer_form_account == '' || $value->transfer_form_account == '-') {
+                                    $img_bank .= 'Bank Transfer';
+                                }
                         }
         
                         $transfer_bank = '<div class="flex-jc p-left-4">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
         
                         // เข้าบัญชี
-                        $into_account = '<div class="flex-jc p-left-4"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                        if ($value->into_account == "978-2-18099-9") {
+                            $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
+                        } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                            $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                        } elseif ($value->into_account == "871-0-11991-1") {
+                            $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
+                        }
         
                         // ประเภทรายได้
                         if ($value->status == 0) { $revenue_name = '-'; } 
@@ -3387,12 +3398,23 @@ class RevenuesHarmonyController extends Controller
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
                     } elseif (file_exists($filename2)) {
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                    } else {
+                         $img_bank = '<img class="img-bank" src="../assets/images/harmony/bank_transfer.png">';
+                            if ($value->transfer_form_account == '' || $value->transfer_form_account == '-') {
+                                $img_bank .= 'Bank Transfer';
+                            }
                     }
 
                     $transfer_bank = '<div class="flex-jc p-left-4">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
 
                     // เข้าบัญชี
-                    $into_account = '<div class="flex-jc p-left-4"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                    if ($value->into_account == "978-2-18099-9") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
+                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                    } elseif ($value->into_account == "871-0-11991-1") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
+                    }
 
                     // ประเภทรายได้
                     if ($value->status == 0) { $revenue_name = '-'; } 

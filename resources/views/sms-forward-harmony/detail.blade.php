@@ -1,4 +1,4 @@
-@extends('layouts.masterLayout')
+@extends('layouts.masterLayoutHarmony')
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">

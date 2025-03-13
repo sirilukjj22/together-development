@@ -120,7 +120,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueManual.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueManualHarmony.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -165,7 +165,7 @@
                 paging: false,
                 info: false,
                 ajax: {
-                    url: '/revenue-search-table',
+                    url: '/harmony-revenue-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
