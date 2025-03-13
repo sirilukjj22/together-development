@@ -34,6 +34,7 @@ $(document).ready(function () {
       },
     ],
   });
+  
   $(".dropdown-menu").appendTo("body");
   function adjustDataTable() {
     $.fn.dataTable

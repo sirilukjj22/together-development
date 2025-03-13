@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Harmony_revenues;
-use App\Models\Harmony_revenue_credit;
-use App\Models\Harmony_SMS_alerts;
-use App\Models\Harmony_tb_outstanding_balance;
+use App\Models\Harmony\Harmony_revenue_credit;
+use App\Models\Harmony\Harmony_revenues;
+use App\Models\Harmony\Harmony_SMS_alerts;
+use App\Models\Harmony\Harmony_tb_outstanding_balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -390,18 +390,7 @@ class RevenuesHarmonyController extends Controller
         $date_to = date('Y-m-d');
 
         // Hotel Fee
-        $total_hotel_fee = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-            ->whereIn('revenue_credit.status', [1, 2, 6])
-            ->whereDate('date', date('Y-m-d'))
-            ->groupBy('revenue.date')
-            ->select(
-                'revenue.date', 
-                'revenue.total_credit', 
-                'revenue_credit.batch', 
-                'revenue_credit.revenue_type', 
-                'revenue_credit.status',
-                DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))
-            ->get()->sum('amount');
+        $total_hotel_fee = Harmony_revenues::whereDate('date', date('Y-m-d'))->sum('total_credit');
 
         $credit_revenue = Harmony_revenues::whereDate('date', date('Y-m-d'))->select('total_credit')->first();
         $credit_revenue_today = $credit_revenue;
@@ -1112,310 +1101,346 @@ class RevenuesHarmonyController extends Controller
         $no_type_array = [];
         $transaction_array = [];
 
-            for ($i=1; $i <= 31; $i++) { 
-                if ($i == 1) {
-                    $check_sms = Harmony_SMS_alerts::whereBetween('date', [date("Y-m-d", strtotime("-1 day", strtotime($FromMonth))).' 21:00:00', date($FromMonth.' 20:59:59')])->whereNull('date_into')
-                        ->orWhereDate('date_into', $FromMonth)->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))
-                        ->groupBy('status')->get();
+        for ($i=1; $i <= 60; $i++) { 
+            if ($i == 1) {
+                $check_sms = Harmony_SMS_alerts::whereBetween('date', [date("Y-m-d", strtotime("-1 day", strtotime($FromMonth))).' 21:00:00', date($FromMonth.' 20:59:59')])->whereNull('date_into')
+                    ->orWhereDate('date_into', $FromMonth)->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))
+                    ->groupBy('status')->get();
 
-                    $sum_bill = 0;
-                    foreach ($check_sms as $key => $value) {
-                        // Guest Deposit
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
-                            $room_array[$i] = [
-                                'total_room' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // All Outlet
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
-                            $fb_array[$i] = [
-                                'total_fb' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Water Park
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
-                            $wp_array[$i] = [
-                                'total_wp' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Credit Card Hotel
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
-                            $credit_array[$i] = [
-                                'total_credit' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Agoda
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
-                            $agoda_array[$i] = [
-                                'total_agoda' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Front Desk
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
-                            $front_array[$i] = [
-                                'total_front' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Credit Card Water Park
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
-                            $credit_wp_array[$i] = [
-                                'total_credit_wp' => $check_sms[$key]['total_amount'],
-                            ];
-                        } 
-                        // Elexa
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
-                            $ev_array[$i] = [
-                                'total_ev' => $check_sms[$key]['total_amount'],
-                            ];
-                        } 
-                        // Other
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
-                            $other_array[$i] = [
-                                'total_other' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // No Category
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
-                            $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                        } 
+                $sum_bill = 0;
+                foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
+                        $room_array[$i] = [
+                            'total_room' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // All Outlet
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
+                        $fb_array[$i] = [
+                            'total_fb' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
+                        $wp_array[$i] = [
+                            'total_wp' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
+                        $credit_array[$i] = [
+                            'total_credit' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                        $agoda_array[$i] = [
+                            'total_agoda' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                        $front_array[$i] = [
+                            'total_front' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                        $credit_wp_array[$i] = [
+                            'total_credit_wp' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                        $ev_array[$i] = [
+                            'total_ev' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                            'date' => $FromMonth
+                        ];
+                    }
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                        $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill'], 'date' => $FromMonth];
+                    } 
 
-                        $sum_bill += $check_sms[$key]['transaction_bill'];
+                    $sum_bill += $check_sms[$key]['transaction_bill'];
 
-                        // เช็คค่า 0
-                        if (!isset($room_array[$i])) {
-                            $room_array[$i] = [ 'total_room' => 0, ];
-                        }
-
-                        if (!isset($fb_array[$i])) {
-                            $fb_array[$i] = [ 'total_fb' => 0, ];
-                        }
-
-                        if (!isset($wp_array[$i])) {
-                            $wp_array[$i] = [ 'total_wp' => 0, ];
-                        }
-
-                        if (!isset($credit_array[$i])) {
-                            $credit_array[$i] = [ 'total_credit' => 0, ];
-                        }
-
-                        if (!isset($agoda_array[$i])) {
-                            $agoda_array[$i] = [ 'total_agoda' => 0, ];
-                        }
-
-                        if (!isset($front_array[$i])) {
-                            $front_array[$i] = [ 'total_front' => 0, ];
-                        }
-
-                        if (!isset($credit_wp_array[$i])) {
-                            $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
-                        } 
-
-                        if (!isset($ev_array[$i])) {
-                            $ev_array[$i] = [ 'total_ev' => 0, ];
-                        }
-
-                        if (!isset($other_array[$i])) {
-                            $other_array[$i] = [ 'total_other' => 0, ];
-                        }
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, 'date' => $FromMonth];
                     }
 
-                    $transaction_array[$i] = ['bill' => $sum_bill];
-                    
-                } else {
-                    $check_sms = Harmony_SMS_alerts::whereBetween('date', [date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date($FormatDate->format('Y-m-').str_pad($i, 2, '0', STR_PAD_LEFT).' 20:59:59')])->whereNull('date_into')
-                    ->orWhereDate('date_into', date($FormatDate->format('Y-m-').str_pad($i, 2, '0', STR_PAD_LEFT)))
-                    ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
-
-                    $sum_bill = 0;
-                    foreach ($check_sms as $key => $value) {
-                        // Guest Deposit
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
-                            $room_array[$i] = [
-                                'total_room' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // All Outlet
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
-                            $fb_array[$i] = [
-                                'total_fb' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Water Park
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
-                            $wp_array[$i] = [
-                                'total_wp' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Credit Card Hotel
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
-                            $credit_array[$i] = [
-                                'total_credit' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Agoda
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
-                            $agoda_array[$i] = [
-                                'total_agoda' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Front Desk
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
-                            $front_array[$i] = [
-                                'total_front' => $check_sms[$key]['total_amount'],
-                            ];
-                        }
-                        // Credit Card Water Park
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
-                            $credit_wp_array[$i] = [
-                                'total_credit_wp' => $check_sms[$key]['total_amount'],
-                            ];
-                        } 
-                        // Elexa
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
-                            $ev_array[$i] = [
-                                'total_ev' => $check_sms[$key]['total_amount'],
-                            ];
-                        } 
-                        // Other
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
-                            $other_array[$i] = [
-                                'total_other' => $check_sms[$key]['total_amount'],
-                            ];
-                        } 
-                        // No Category
-                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
-                            $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                        } 
-
-                        $sum_bill += $check_sms[$key]['transaction_bill'];
-
-                        // เช็คค่า 0
-                        if (!isset($room_array[$i])) {
-                            $room_array[$i] = [ 'total_room' => 0, ];
-                        }
-
-                        if (!isset($fb_array[$i])) {
-                            $fb_array[$i] = [ 'total_fb' => 0, ];
-                        }
-
-                        if (!isset($wp_array[$i])) {
-                            $wp_array[$i] = [ 'total_wp' => 0, ];
-                        }
-
-                        if (!isset($credit_array[$i])) {
-                            $credit_array[$i] = [ 'total_credit' => 0, ];
-                        }
-
-                        if (!isset($agoda_array[$i])) {
-                            $agoda_array[$i] = [ 'total_agoda' => 0, ];
-                        }
-
-                        if (!isset($front_array[$i])) {
-                            $front_array[$i] = [ 'total_front' => 0, ];
-                        }
-
-                        if (!isset($credit_wp_array[$i])) {
-                            $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
-                        } 
-
-                        if (!isset($ev_array[$i])) {
-                            $ev_array[$i] = [ 'total_ev' => 0, ];
-                        }
-
-                        if (!isset($other_array[$i])) {
-                            $other_array[$i] = [ 'total_other' => 0, ];
-                        }
-                        
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, 'date' => $FromMonth];
                     }
-                    $transaction_array[$i] = ['bill' => $sum_bill];
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, 'date' => $FromMonth];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $credit_array[$i] = [ 'total_credit' => 0, 'date' => $FromMonth];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, 'date' => $FromMonth];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, 'date' => $FromMonth];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, 'date' => $FromMonth];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, 'date' => $FromMonth];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, 'date' => $FromMonth];
+                    }
                 }
+
+                $transaction_array[$i] = ['bill' => $sum_bill];
+                
+            } else {
+                $check_sms = Harmony_SMS_alerts::whereBetween('date', [date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT)))), date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT).' 20:59:59')])->whereNull('date_into')
+                ->orWhereDate('date_into', date($FormatDate->format('Y-m-').str_pad($i, 2, '0', STR_PAD_LEFT)))
+                ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
+
+                $sum_bill = 0;
+                foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
+                        $room_array[$i] = [
+                            'total_room' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    }
+                    // All Outlet
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
+                        $fb_array[$i] = [
+                            'total_fb' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    }
+                    // Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
+                        $wp_array[$i] = [
+                            'total_wp' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
+                        $credit_array[$i] = [
+                            'total_credit' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                        $agoda_array[$i] = [
+                            'total_agoda' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                        $front_array[$i] = [
+                            'total_front' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                        $credit_wp_array[$i] = [
+                            'total_credit_wp' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                        $ev_array[$i] = [
+                            'total_ev' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                        ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                        $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill'], 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    } 
+
+                    $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $credit_array[$i] = [ 'total_credit' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, 'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))];
+                    }                        
+                }
+                $transaction_array[$i] = ['bill' => $sum_bill];
             }
+        }
 
-            $room_transfer = 0;
-            $fb_transfer = 0;
-            $wp_transfer = 0;
-            $room_credit = 0;
+        $room_transfer = 0;
+        $fb_transfer = 0;
+        $wp_transfer = 0;
+        $room_credit = 0;
 
-            if (isset($room_array)) {
-                foreach ($room_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($room_array)) {
+            foreach ($room_array as $key => $value) {
+                if ($value['total_room'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'room_transfer' => $value['total_room']
                     ]);
                 }
             }
+        }
 
-            if (isset($fb_array)) {
-                foreach ($fb_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($fb_array)) {
+            foreach ($fb_array as $key => $value) {
+                if ($value['total_fb'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'fb_transfer' => $value['total_fb']
                     ]);
                 }
             }
+        }
 
-            if (isset($wp_array)) {
-                foreach ($wp_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($wp_array)) {
+            foreach ($wp_array as $key => $value) {
+                if ($value['total_wp'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'wp_transfer' => $value['total_wp']
                     ]);
                 }
             }
+        }
 
-            if (isset($credit_array)) {
-                foreach ($credit_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($credit_array)) {
+            foreach ($credit_array as $key => $value) {
+                if ($value['total_credit'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'total_credit' => $value['total_credit']
                     ]);
                 }
             }
+        }
 
-            if (isset($front_array)) {
-                foreach ($front_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($front_array)) {
+            foreach ($front_array as $key => $value) {
+                if ($value['total_front'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'front_transfer' => $value['total_front']
                     ]);
                 }
             }
+        }
 
-            if (isset($agoda_array)) {
-                foreach ($agoda_array as $key => $value) {
-                    // dd($value['total_agoda']);
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($agoda_array)) {
+            foreach ($agoda_array as $key => $value) {
+                if ($value['total_agoda'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'total_credit_agoda' => $value['total_agoda']
                     ]);
                 }
             }
+        }
 
-            if (isset($ev_array)) {
-                foreach ($ev_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($ev_array)) {
+            foreach ($ev_array as $key => $value) {
+                if ($value['total_ev'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'total_elexa' => $value['total_ev']
                     ]);
                 }
             }
+        }
 
-            if (isset($other_array)) {
-                foreach ($other_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($other_array)) {
+            foreach ($other_array as $key => $value) {
+                if ($value['total_other'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'other_revenue' => $value['total_other']
                     ]);
                 }
             }
+        }
 
-            if (isset($transaction_array)) {
-                foreach ($transaction_array as $key => $value) {
+        if (isset($transaction_array)) {
+            foreach ($transaction_array as $key => $value) {
+                if ($value['bill'] > 0) {
                     Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
                         'total_transaction' => $value['bill']
                     ]);
                 }
             }
+        }
 
-            if (isset($no_type_array)) {
-                foreach ($no_type_array as $key => $value) {
-                    Harmony_revenues::where('date', date($FormatDate->format('Y-m').'-'.$key))->update([
+        if (isset($no_type_array)) {
+            foreach ($no_type_array as $key => $value) {
+                if ($value['no_type'] > 0) {
+                    Harmony_revenues::where('date', $value['date'])->update([
                         'total_no_type' => $value['no_type']
                     ]);
                 }
             }
+        }
 
         $date1 = date('Y-m-d', strtotime(date($FormatDate->format('Y-m').'-01')));
         $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($FormatDate->format('Y-m').'-01')))));
@@ -1457,18 +1482,7 @@ class RevenuesHarmonyController extends Controller
          + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
 
         ## Hotel Fee ##
-        $total_hotel_fee = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-            ->whereIn('revenue_credit.status', [1, 2, 6])
-            ->whereBetween('date', [$FromFormatDate, $ToFormatDate])
-            ->groupBy('revenue.date')
-            ->select(
-                'revenue.date', 
-                'revenue.total_credit', 
-                'revenue_credit.batch', 
-                'revenue_credit.revenue_type', 
-                'revenue_credit.status',
-                DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))
-            ->get()->sum('amount');
+        $total_hotel_fee = Harmony_revenues::whereBetween('date', [$FromFormatDate, $ToFormatDate])->sum('total_credit');
 
         ## ข้อมูลในตาราง
 
@@ -2228,31 +2242,17 @@ class RevenuesHarmonyController extends Controller
 
         ## Fee
         if($request->revenue_type == "credit_hotel_fee") {
-            $data_query = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-                ->whereIn('revenue_credit.status', [1, 2, 6])
-                ->whereBetween('revenue.date', [$FromFormatDate, $ToFormatDate])
-                ->groupBy('revenue.date')
-                ->select(
-                    'revenue.date', 
-                    'revenue.total_credit', 
-                    'revenue_credit.batch', 
-                    'revenue_credit.revenue_type', 
-                    'revenue_credit.status',
-                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount, SUM(revenue.total_credit)'))
-                ->paginate(10);
+            $data_query = Harmony_revenues::whereBetween('revenue.date', [$FromFormatDate, $ToFormatDate])
+                // ->where('revenue.total_credit')
+                ->select('revenue.id', 'revenue.date', 'revenue.total_credit')
+                ->get();
 
-            $total_query = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-                ->whereIn('revenue_credit.status', [1, 2, 6])
-                ->whereBetween('revenue.date', [$FromFormatDate, $ToFormatDate])
-                ->groupBy('revenue.date')
-                ->select(
-                    'revenue.date', 
-                    'revenue.total_credit', 
-                    'revenue_credit.batch', 
-                    'revenue_credit.revenue_type', 
-                    'revenue_credit.status',
-                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))
-                ->get()->sum('amount');
+            $total_credit = Harmony_revenues::whereBetween('revenue.date', [$FromFormatDate, $ToFormatDate])->sum('total_credit');
+            $total_charge = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                                    ->whereIn('revenue_credit.status', [1, 2, 6])
+                                    ->whereBetween('revenue.date', [$FromFormatDate, $ToFormatDate])->sum('revenue_credit.credit_amount');
+
+            $total_query = $total_charge - $total_credit;
 
             $title = "Credit Card Hotel Fee";
             $status = "credit_hotel_fee";

@@ -65,7 +65,7 @@
         function select_branch($branch) {
             Swal.fire({
                 icon: "info",
-                title: 'Are you sure you want to switch to '+ $branch +' ?',
+                title: 'Are you sure you want to switch to '+ $branch +' Resort ?',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm',
                 cancelButtonText: 'Cancel',

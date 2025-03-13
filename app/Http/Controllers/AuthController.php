@@ -64,9 +64,9 @@ class AuthController extends Controller
                         return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
                     }
                 } else {
-                    User::where('id', Auth::user()->id)->update([
-                        'current_branch' => 0
-                    ]);
+                    // User::where('id', Auth::user()->id)->update([
+                    //     'current_branch' => 0
+                    // ]);
                     
                     if (Auth::user()->permission_branch == 3) {
                         return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');

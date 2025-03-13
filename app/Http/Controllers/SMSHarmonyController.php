@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Masters;
-use App\Models\Revenues;
 use App\Models\Role_permission_revenue;
-use App\Models\Harmony_SMS_alerts;
-use App\Models\Harmony_SMS_forwards;
+use App\Models\Harmony\Harmony_SMS_alerts;
+use App\Models\Harmony\Harmony_SMS_forwards;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Cast\Double;
 
 class SMSHarmonyController extends Controller
 {

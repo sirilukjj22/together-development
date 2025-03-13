@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Harmony;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,11 +48,11 @@ class Harmony_SMS_alerts extends Model
 
     public static function check_bank($datakey) {
         
-        $query = Masters::where('category', 'bank')->whereNull('deleted_at')->select('id', 'name_en')->get();
+        $query = \App\Models\Masters::where('category', 'bank')->whereNull('deleted_at')->select('id', 'name_en')->get();
 
         $bank_name = '';
         if (strtoupper($datakey) == "TMB") {
-            $check = Masters::where('name_en', 'TTB')->select('id')->first();
+            $check = \App\Models\Masters::where('name_en', 'TTB')->select('id')->first();
             $bank_name = $check->id;
 
         } else {
@@ -88,31 +88,31 @@ class Harmony_SMS_alerts extends Model
 
     public function transfer_bank()
     {
-        return $this->hasOne(Masters::class, 'id', 'transfer_from');
+        return $this->hasOne(\App\Models\Masters::class, 'id', 'transfer_from');
     }
 
     // เช็คเลขที่เอกสารของ Agoda
     public function DocumentNoAgoda()
     {
-        return $this->hasOne(Document_agoda::class, 'sms_id', 'id');
+        return $this->hasOne(\App\Models\Document_agoda::class, 'sms_id', 'id');
     }
 
     // เช็คเลขที่เอกสารของ Elexa
     public function DocumentNoElexa()
     {
-        return $this->hasOne(Document_elexa::class, 'sms_id', 'id');
+        return $this->hasOne(\App\Models\Document_elexa::class, 'sms_id', 'id');
     }
 
     // เช็คสถานะ Lock/Unlock ของ Agoda
     public function statusLockAgoda()
     {
-        return $this->hasOne(Document_agoda::class, 'sms_id', 'id');
+        return $this->hasOne(\App\Models\Document_agoda::class, 'sms_id', 'id');
     }
 
     // เช็คสถานะ Lock/Unlock ของ Agoda
     public function statusLockElexa()
     {
-        return $this->hasOne(Document_elexa::class, 'sms_id', 'id');
+        return $this->hasOne(\App\Models\Document_elexa::class, 'sms_id', 'id');
     }
 
     ## Check Close Day

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Harmony;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -90,7 +90,7 @@ class Harmony_revenues extends Model
         $revenue_year_query = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type);
 
             if ($filter_by == "date") {
-                $revenue_year_query->whereDate('revenue.date', '<=', $date);
+                $revenue_year_query->whereYear('revenue.date', $year)->whereDate('revenue.date', '<=', $date);
 
             } elseif ($filter_by == "month") {
                 $F_YTD = date('Y-01-01', strtotime($date_from));
@@ -173,7 +173,7 @@ class Harmony_revenues extends Model
         $revenue_year_query = Harmony_revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', $type);
 
         if ($filter_by == "date") {
-            $revenue_year_query->whereDate('revenue.date', '<=', $date);
+            $revenue_year_query->whereYear('revenue.date', $year)->whereDate('revenue.date', '<=', $date);
 
         } elseif ($filter_by == "month") {
             $F_YTD = date('Y-01-01', strtotime($date_from));
@@ -270,7 +270,7 @@ class Harmony_revenues extends Model
         $revenue_year_query = Harmony_revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type);
 
             if ($filter_by == "date") {
-                $revenue_year_query->whereDate('revenue.date', '<=', $date);
+                $revenue_year_query->whereYear('revenue.date', $year)->whereDate('revenue.date', '<=', $date);
 
             } elseif ($filter_by == "month") {
                 $F_YTD = date('Y-01-01', strtotime($date_from));
