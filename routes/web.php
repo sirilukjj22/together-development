@@ -93,7 +93,7 @@ Route::get('/Deposit/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class
 Route::middleware(['auth'])->group(function () {
 
     # Select Branch
-    Route::controller(BranchController::class)->middleware('branch:3')->group(function () {
+    Route::controller(BranchController::class)->group(function () {
         Route::get('select-branch', 'index')->name('select-branch');
         Route::get('confirm-branch/{branch}', 'confirm_branch')->name('confirm-branch');
     });

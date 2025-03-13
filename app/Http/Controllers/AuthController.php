@@ -56,12 +56,12 @@ class AuthController extends Controller
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 2
                         ]);
-                        return redirect()->intended('harmony-sms-alert')->withSuccess('You have Successfully loggedin');
+                        return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
                     } elseif (Auth::user()->permission_branch == 1) {
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 1
                         ]);
-                        return redirect()->intended('sms-alert')->withSuccess('You have Successfully loggedin');
+                        return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
                     }
                 } else {
                     User::where('id', Auth::user()->id)->update([
@@ -74,12 +74,12 @@ class AuthController extends Controller
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 2
                         ]);
-                        return redirect()->intended('harmony-sms-alert')->withSuccess('You have Successfully loggedin');
+                        return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
                     } elseif (Auth::user()->permission_branch == 1) {
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 1
                         ]);
-                        return redirect()->intended('sms-alert')->withSuccess('You have Successfully loggedin');
+                        return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
                     }
                 }
             } else {

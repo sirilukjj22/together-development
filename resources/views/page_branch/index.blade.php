@@ -17,7 +17,10 @@
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-2">
-                    <a href="#" onclick="select_branch('Together')">
+                    <a href="#" 
+                    @if(Auth::user()->permission_branch == 3 || Auth::user()->permission_branch == 1)
+                        onclick="select_branch('Together')"
+                    @endif >
                         <div class="card text-center shadow-sm lift d-flex flex-column h-100">
                             <div class="card-body py-4">
                                 <img src="{{ asset('logo_crop.png') }}" alt="Avatar" class="" width="100">
@@ -29,7 +32,10 @@
                     </a>
                 </div>
                 <div class="col-md-2">
-                    <a href="#" onclick="select_branch('Harmony')">
+                    <a href="#" 
+                        @if(Auth::user()->permission_branch == 3 || Auth::user()->permission_branch == 2)
+                            onclick="select_branch('Harmony')"
+                        @endif >
                         <div class="card text-center shadow-sm lift d-flex flex-column h-100">
                             <div class="card-body py-4">
                                 <img src="{{ asset('assets/images/harmony/logo_2.png') }}" alt="Avatar" class="mt-4" width="130">
