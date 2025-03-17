@@ -81,6 +81,8 @@ class Harmony_SMS_alerts extends Model
             $account = "871-0-11991-1";
         } elseif ($datakey == "X-0999") { // KBNK
             $account = "978-2-18099-9";
+        } elseif ($datakey == "เข้าบ/ชx774921" || $datakey == "x774921") {
+            $account = "156-277492-1";
         }
 
         return $account;
