@@ -462,7 +462,7 @@
                                     <div>Credit Card Hotel Fee</div>
                                 </div>
                                 <div class="t-end">
-                                    {{ number_format($total_hotel_fee, 2) }}
+                                    {{ number_format($sum_charge - $total_hotel_fee, 2) }}
                                 </div>
                             </div>
                             <div class="box-card2 bg-box" onclick="revenue_detail('water_park_fee')">

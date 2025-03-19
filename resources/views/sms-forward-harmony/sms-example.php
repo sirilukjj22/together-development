@@ -97,7 +97,8 @@
 			|| isset($exp_form[0]) && $exp_form[0] == "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB" 
 			|| isset($exp_form[0]) && $exp_form[0] == "เงินเข้าบ/ช" 
 			|| isset($exp_form[0]) && $exp_form[0] == "เช็คเข้าบ/ช"
-			|| isset($exp_form[4]) && $exp_form[4] == "เข้า076355400050101") {
+			|| isset($exp_form[4]) && $exp_form[4] == "เข้า076355400050101"
+			|| isset($exp_form[2]) && $exp_form[2] == "เข้าบ/ชx774921") {
 
 				$date = date('Y-m-d H:i:s');
 				$sql = "INSERT INTO sms_forward (messages, sender, chanel, is_status, created_at) VALUES ('$text', '$phone', 'SMS', 0, '$date')";

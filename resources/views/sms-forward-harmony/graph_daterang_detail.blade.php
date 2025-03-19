@@ -1,4 +1,4 @@
-@extends('layouts.masterLayout')
+@extends('layouts.masterLayoutHarmony')
 
 @section('content')
 

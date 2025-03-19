@@ -85,6 +85,8 @@ Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::cla
 Route::get('/Invoice/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
 Route::get('/Deposit/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'Deposit'])->name('Deposit.link');
 
+Route::get('loopRevenueAmount', [RevenuesHarmonyController::class, 'loopRevenueAmount']);
+
 // Test Gmail
 // Route::get('/google/redirect', [GmailController::class, 'redirectToGoogle'])->name('google.auth');
 // Route::get('/google/callback', [GmailController::class, 'handleGoogleCallback']);
@@ -93,7 +95,7 @@ Route::get('/Deposit/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class
 Route::middleware(['auth'])->group(function () {
 
     # Select Branch
-    Route::controller(BranchController::class)->middleware('branch:3')->group(function () {
+    Route::controller(BranchController::class)->group(function () {
         Route::get('select-branch', 'index')->name('select-branch');
         Route::get('confirm-branch/{branch}', 'confirm_branch')->name('confirm-branch');
     });
@@ -290,7 +292,7 @@ Route::middleware(['auth'])->group(function () {
 
     ## Users
     Route::controller(UsersController::class)->middleware(['role:user', 'checkTogetherOrHarmony'])->group(function () {
-        Route::get('users/{menu}', 'index')->name('users');
+        Route::get('users/{menu}/{branch}', 'index')->name('users');
         Route::get('user-create', 'create')->name('user-create');
         Route::get('user-edit/{id}', 'edit')->name('user-edit');
         Route::get('user-detail/{id}', 'detail')->name('user-detail');

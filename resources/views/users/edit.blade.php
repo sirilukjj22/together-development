@@ -13,7 +13,7 @@
                     <div class="span3">Edit User</div>
                 </div>
                 <div class="col-auto">
-                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-color-green text-white lift">Back</a>
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -83,6 +83,15 @@
                                                     <option value="{{ $item->id }}" {{ $user->permission == $item->id ? 'selected' : '' }}>{{ $item->department }}</option>
                                                 @endif
                                             @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="branch" class="star-red">Branch</label>
+                                        <select name="branch" id="branch">
+                                            <option value="">Select</option>
+                                            <option value="1" {{ $user->permission_branch == 1 ? 'selected' : '' }}>Together</option>
+                                            <option value="2" {{ $user->permission_branch == 2 ? 'selected' : '' }}>Harmony</option>
+                                            <option value="3" {{ $user->permission_branch == 3 ? 'selected' : '' }}>All</option>
                                         </select>
                                     </div>
                                     <div  class="d-grid-2column" >
@@ -311,12 +320,26 @@
             border: none;
             border-radius: 4px;
         }
+
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 7px;
+            box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.1), inset -2px -2px 8px rgba(255, 255, 255, 0.429);
+            background: #f5f9f9;
+            font-size: 16px;
+            transition: all 0.3sease;
+            height: 100%;
+            text-align: start;
+        }
     </style>
 
     <script>
         $(document).ready(function () {
             $('#access-rights').select2();
             $('#access-use-rights').select2();
+            $('#branch').select2();
 
             // ฟังก์ชันสำหรับแสดง/ซ่อนส่วนของ menu-permissions และ revenue-section
             $('#open-menu-permissions').on('click', function () {

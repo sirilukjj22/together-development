@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Harmony;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +34,7 @@ class Harmony_revenue_credit extends Model
 
     public static function getAgodaReceiveDate($smsID) 
     {
-        $query = Revenue_credit::where('sms_revenue', $smsID)->where('status', 5)->where('receive_payment', 1)->select('id', 'date_receive')->first();
+        $query = Harmony_revenue_credit::where('sms_revenue', $smsID)->where('status', 5)->where('receive_payment', 1)->select('id', 'date_receive')->first();
 
         $result = !empty($query) ? $query->date_receive : 0;
 
@@ -43,7 +43,7 @@ class Harmony_revenue_credit extends Model
 
     public static function getElexaReceiveDate($smsID) 
     {
-        $query = Revenue_credit::where('sms_revenue', $smsID)->where('status', 8)->where('receive_payment', 1)->select('id', 'date_receive')->first();
+        $query = Harmony_revenue_credit::where('sms_revenue', $smsID)->where('status', 8)->where('receive_payment', 1)->select('id', 'date_receive')->first();
 
         $result = !empty($query) ? $query->date_receive : 0;
 

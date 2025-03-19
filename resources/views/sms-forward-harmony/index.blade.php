@@ -586,7 +586,7 @@
                                                         <div class="flex-jc p-left-4 center">
                                                             @if ($item->into_account == "871-0-11991-1")
                                                                 <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
-                                                            @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-277492-1")
+                                                            @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-2-77492-1")
                                                                 <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
                                                             @elseif ($item->into_account == "978-2-18099-9")
                                                                 <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
@@ -797,7 +797,13 @@
                                                         </td>
                                                         <td class="td-content-center">
                                                             <div class="flex-jc p-left-4 center">
-                                                                <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                                @if ($item->into_account == "871-0-11991-1")
+                                                                    <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                                @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-2-77492-1")
+                                                                    <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                                @elseif ($item->into_account == "978-2-18099-9")
+                                                                    <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                                @endif
                                                             </div>
                                                         </td>
                                                         <td class="td-content-center">
@@ -1001,7 +1007,13 @@
                                                         </td>
                                                         <td class="td-content-center">
                                                             <div class="flex-jc p-left-4 center">
-                                                                <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                                @if ($item->into_account == "871-0-11991-1")
+                                                                    <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                                @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-2-77492-1")
+                                                                    <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                                @elseif ($item->into_account == "978-2-18099-9")
+                                                                    <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                                @endif
                                                             </div>
                                                         </td>
                                                         <td class="td-content-center">
@@ -1417,7 +1429,7 @@
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="">เลือกข้อมูล</option>
                                     <option value="436-0-75511-1">ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
-                                    <option value="156-277492-1">ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="156-2-77492-1">ธนาคารไทยพาณิชย์ (SCB) 156-2-77492-1</option>
                                     <option value="871-0-11991-1">ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
                                     <option value="978-2-18099-9">ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
@@ -1474,7 +1486,7 @@
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
                                     <option value="436-0-75511-1" {{ isset($into_account) && $into_account == '436-0-75511-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
-                                    <option value="156-277492-1" {{ isset($into_account) && $into_account == '156-277492-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="156-2-77492-1" {{ isset($into_account) && $into_account == '156-2-77492-1' ? 'selected' : '' }}>ธนาคารไทยพาณิชย์ (SCB) 156-2-77492-1</option>
                                     <option value="871-0-11991-1" {{ isset($into_account) && $into_account == '871-0-11991-1' ? 'selected' : '' }}>ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
                                     <option value="978-2-18099-9" {{ isset($into_account) && $into_account == '978-2-18099-9' ? 'selected' : '' }}>ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
@@ -1586,7 +1598,7 @@
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableHarmony.js')}}"></script>
 
     <!-- Sweet Alert 2 -->
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>

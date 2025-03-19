@@ -1,4 +1,4 @@
-@extends('layouts.masterLayout')
+@extends('layouts.masterLayoutHarmony')
 @section('content')
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
@@ -80,7 +80,13 @@
                                             </td>
                                             <td class="td-content-center">
                                                 <div class="flex-jc p-left-4 center">
-                                                    <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
+                                                    @if ($item->into_account == "871-0-11991-1")
+                                                        <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                    @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-2-77492-1")
+                                                        <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                    @elseif ($item->into_account == "978-2-18099-9")
+                                                        <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td class="td-content-center">
@@ -416,7 +422,7 @@
                                 <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
                                     <option value="">เลือกข้อมูล</option>
                                     <option value="436-0-75511-1">ธนาคารไทยพาณิชย์ (SCB) 436-0-75511-1</option>
-                                    <option value="156-277492-1">ธนาคารไทยพาณิชย์ (SCB) 156-277492-1</option>
+                                    <option value="156-2-77492-1">ธนาคารไทยพาณิชย์ (SCB) 156-2-77492-1</option>
                                     <option value="871-0-11991-1">ธนาคารกรุงเทพ (BBL) 871-0-11991-1</option>
                                     <option value="978-2-18099-9">ธนาคารกสิกรไทย (KBNK) 978-2-18099-9</option>
                                 </select>
@@ -467,7 +473,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script src="{{ asset('assets/helper/searchTable.js')}}"></script>
+    <script src="{{ asset('assets/helper/searchTableHarmony.js')}}"></script>
 
     <script>
         $(document).ready(function() {

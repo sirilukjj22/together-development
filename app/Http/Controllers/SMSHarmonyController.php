@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Masters;
-use App\Models\Revenues;
 use App\Models\Role_permission_revenue;
-use App\Models\Harmony_SMS_alerts;
-use App\Models\Harmony_SMS_forwards;
+use App\Models\Harmony\Harmony_SMS_alerts;
+use App\Models\Harmony\Harmony_SMS_forwards;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Cast\Double;
 
 class SMSHarmonyController extends Controller
 {
@@ -30,9 +28,16 @@ class SMSHarmonyController extends Controller
                         $fromAccount = $exp_form[1].' '.$exp_form[2];
                     }
 
+                    $check_transfer_from = Harmony_SMS_alerts::check_bank($exp_form[1]);
+                    $from_account = $check_transfer_from;
+
+                    if ($check_transfer_from == '' && $fromAccount != '') {
+                        $from_account = 5;
+                    }
+
                     Harmony_SMS_alerts::create([
                         'date' => $value->created_at,
-                        'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[1]),
+                        'transfer_from' => $from_account,
                         'transfer_form_account' => $fromAccount,
                         'into_account' => Harmony_SMS_alerts::check_account($exp_form[6]),
                         'amount' => str_replace(",", "", substr($exp_form[4], 3)),
@@ -57,7 +62,6 @@ class SMSHarmonyController extends Controller
                         'is_status' => 1
                     ]);
                 } elseif ($value->sender == "027777777" && count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช" || $value->sender == "SCBQRAlert" && count($exp_form) == 13 && isset($exp_form[8]) && $exp_form[7] == "เข้าบ/ช") {
-
                     if (isset($exp_form[1])) {
                         $fromAccount = $exp_form[1].' '.$exp_form[2].' '.$exp_form[3];
                     }
@@ -88,7 +92,7 @@ class SMSHarmonyController extends Controller
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
-                }  elseif ($value->sender == "027777777" && count($exp_form) == 5 || $value->sender == "SCBQRAlert" && count($exp_form) == 5) {
+                } elseif ($value->sender == "027777777" && count($exp_form) == 5 || $value->sender == "SCBQRAlert" && count($exp_form) == 5) {
                     if ($exp_form[1] == "บ.จากxBorder") {
 
                         $data_qr = mb_substr($exp_form[3], 4);
@@ -96,7 +100,7 @@ class SMSHarmonyController extends Controller
 
                         switch ($data_qr) {
                             case '076355400050101':
-                                $into = "156-277492-1";
+                                $into = "156-2-77492-1";
                                 break;
                         }
 
@@ -115,7 +119,32 @@ class SMSHarmonyController extends Controller
                         ]);
                     }
                 } elseif ($value->sender == "027777777" && count($exp_form) == 6 || $value->sender == "SCBQRAlert" && count($exp_form) == 6) {
-                    if ($exp_form[0] == "เงินเข้าบ/ช") {
+                    if ($exp_form[1] == "บ.จากxBorder") {
+
+                        $data_qr = mb_substr($exp_form[4], 4);
+                        $into = "none";
+
+                        switch ($data_qr) {
+                            case '076355400050101':
+                                $into = "156-2-77492-1";
+                                break;
+                        }
+
+                        Harmony_SMS_alerts::create([
+                            'date' => $value->created_at,
+                            'transfer_from' => 22,
+                            'into_account' => $into,
+                            'into_qr' => $data_qr,
+                            'amount' => str_replace(",", "", $exp_form[0]),
+                            'remark' => "Auto",
+                            'status' => 2
+                        ]);
+
+                        Harmony_SMS_forwards::where('id', $value->id)->update([
+                            'is_status' => 1
+                        ]);
+
+                    } elseif ($exp_form[0] == "เงินเข้าบ/ช") {
                         Harmony_SMS_alerts::create([
                             'date' => $value->created_at,
                             'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[5]),
@@ -128,6 +157,7 @@ class SMSHarmonyController extends Controller
                         Harmony_SMS_forwards::where('id', $value->id)->update([
                             'is_status' => 1
                         ]);
+
                     } if ($exp_form[0] == "เช็คเข้าบ/ช") {
                         Harmony_SMS_alerts::create([
                             'date' => $value->created_at,
@@ -141,13 +171,14 @@ class SMSHarmonyController extends Controller
                         Harmony_SMS_forwards::where('id', $value->id)->update([
                             'is_status' => 1
                         ]);
+
                     } elseif (isset($exp_form[3]) && $exp_form[3] == "ชำระผ่านQR") { // SCBQRAlert
                         $data_qr = mb_substr($exp_form[4], 4);
                         $into = "none";
 
                         switch ($data_qr) {
                             case '076355400050101':
-                                $into = "156-277492-1";
+                                $into = "156-2-77492-1";
                                 break;
                         }
 
@@ -175,7 +206,7 @@ class SMSHarmonyController extends Controller
                             'into_qr' => $data_qr,
                             'amount' => str_replace(",", "", $exp_form[0]),
                             'remark' => "Auto",
-                            'status' => $into == "156-277492-1" ? 3 : 0
+                            'status' => $into == "156-2-77492-1" ? 2 : 0
                         ]);
 
                         Harmony_SMS_forwards::where('id', $value->id)->update([
@@ -194,7 +225,8 @@ class SMSHarmonyController extends Controller
 
                     Harmony_SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
-                    ]);
+                    ]); 
+
                 } elseif ($value->sender == "027777777" && count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x774921" || $value->sender == "SCBQRAlert" && count($exp_form) == 9 && isset($exp_form[3]) && $exp_form[3] == "x774921") {
                     Harmony_SMS_alerts::create([
                         'date' => Carbon::parse($value->created_at)->format('Y-m-d H:i:s'),
@@ -203,6 +235,30 @@ class SMSHarmonyController extends Controller
                         'amount' => str_replace(",", "", substr($exp_form[1], 3)),
                         'remark' => "Auto",
                         'date_into' => Carbon::parse($value->created_at)->subDays(1)->format('Y-m-d H:i:s'),
+                        'transfer_remark' => "ยอดเครดิต",
+                        'status' => 4
+                    ]);
+
+                    Harmony_SMS_forwards::where('id', $value->id)->update([
+                        'is_status' => 1
+                    ]);
+
+                } elseif ($value->sender == "027777777" && count($exp_form) == 4 && isset($exp_form[2]) && $exp_form[2] == "เข้าบ/ชx774921") {
+                    $parts = preg_split('/[@]/', $exp_form[3]);
+
+                    $date = $parts[0]; // "16/03"
+                    $time = $parts[1]; // "02:48"
+
+                    $year = now()->year; // ดึงปีปัจจุบัน (2025)
+                    $formattedDate = Carbon::createFromFormat('d/m/Y', "$date/$year")->format('Y-m-d');
+
+                    Harmony_SMS_alerts::create([
+                        'date' => $formattedDate." ".$time.":00",
+                        'transfer_from' => Harmony_SMS_alerts::check_bank("Credit"),
+                        'into_account' => Harmony_SMS_alerts::check_account($exp_form[2]),
+                        'amount' => preg_replace('/[^\d.]/', '', $exp_form[1]),
+                        'remark' => "Auto",
+                        'date_into' => Carbon::parse($formattedDate)->subDays(1)->format('Y-m-d H:i:s'),
                         'transfer_remark' => "ยอดเครดิต",
                         'status' => 4
                     ]);
@@ -308,7 +364,7 @@ class SMSHarmonyController extends Controller
         $total_wp = Harmony_SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 3)
             ->sum('amount');
-        $total_credit = Harmony_SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "708-2-26792-1")
+        $total_credit = Harmony_SMS_alerts::whereDate('date_into', [$from, $to])->where('into_account', "156-2-77492-1")
             ->where('status', 4)->sum('amount');
         $total_agoda = Harmony_SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 5)
@@ -325,8 +381,8 @@ class SMSHarmonyController extends Controller
         $total_ev = Harmony_SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 8)
             ->sum('amount');
-        $total_credit = Harmony_SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-2-26792-1")->where('status', 4)->sum('amount');
-        $total_credit_transaction = Harmony_SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-2-26792-1")->where('status', 4)->count();
+        $total_credit = Harmony_SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "156-2-77492-1")->where('status', 4)->sum('amount');
+        $total_credit_transaction = Harmony_SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "156-2-77492-1")->where('status', 4)->count();
         $total_transfer = Harmony_SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)->sum('amount'); // ยอดที่ Transfer เข้าของวันนี้
         $total_transfer2 = Harmony_SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->count(); // จำนวนที่ Transfer ไปวันอื่น
         $total_split = Harmony_SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('split_status', 1)->sum('amount');
@@ -686,12 +742,23 @@ class SMSHarmonyController extends Controller
                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
                 } elseif (file_exists($filename2)) {
                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                } else {
+                    $img_bank = '<img class="img-bank" src="../assets/images/harmony/bank_transfer.png">';
+                       if ($value->transfer_form_account == '' || $value->transfer_form_account == '-') {
+                           $img_bank .= 'Bank Transfer';
+                       }
                 }
 
                 $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.' '.@$value->transfer_form_account.'</div>';
 
                 // เข้าบัญชี
-                $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                if ($value->into_account == "978-2-18099-9") {
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
+                } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-2-77492-1") {
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                } elseif ($value->into_account == "871-0-11991-1") {
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
+                }
 
                 // ประเภทรายได้
                 if ($value->status == 0) { $revenue_name = '-'; } 
@@ -966,7 +1033,7 @@ class SMSHarmonyController extends Controller
                 $query_sms->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('transfer_status', 1);
             } else {
                 if ($request->status == "credit_card_hotel_transfer_transaction") {
-                    $query_sms->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4);
+                    $query_sms->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->where('status', 4);
                 } elseif ($request->status == "total_transaction") {
                     $query_sms->whereBetween('date', [$smsFromDate, $smsToDate])->whereNull('date_into')->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate]);
                 } elseif ($request->status == "transfer_transaction") {
@@ -1077,12 +1144,23 @@ class SMSHarmonyController extends Controller
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
                     } elseif (file_exists($filename2)) {
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                    } else {
+                         $img_bank = '<img class="img-bank" src="../assets/images/harmony/bank_transfer.png">';
+                            if ($value->transfer_form_account == '' || $value->transfer_form_account == '-') {
+                                $img_bank .= 'Bank Transfer';
+                            }
                     }
     
                     $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.' '.@$value->transfer_form_account.'</div>';
     
                     // เข้าบัญชี
-                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                    if ($value->into_account == "978-2-18099-9") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
+                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-2-77492-1") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+                    } elseif ($value->into_account == "871-0-11991-1") {
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
+                    }
     
                     // ประเภทรายได้
                     if ($value->status == 0) { $revenue_name = '-'; } 
@@ -2387,10 +2465,10 @@ class SMSHarmonyController extends Controller
         $query_credit = Harmony_SMS_alerts::query();
 
             if ($request->status != '') { 
-                $query_credit->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $FromFormatDate])->where('into_account', "708-2-26792-1")->where('status', $request->status)->where('transfer_status', 1);
+                $query_credit->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $FromFormatDate])->where('into_account', "156-2-77492-1")->where('status', $request->status)->where('transfer_status', 1);
                 $query_credit->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate]);
             } else {
-                $query_credit->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $FromFormatDate])->where('into_account', "708-2-26792-1")->where('transfer_status', 1)->where('status', 4);
+                $query_credit->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $FromFormatDate])->where('into_account', "156-2-77492-1")->where('transfer_status', 1)->where('status', 4);
                 $query_credit->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate]);
             }
 
@@ -2446,11 +2524,11 @@ class SMSHarmonyController extends Controller
         $query_wp_credit = Harmony_SMS_alerts::query();
 
             if ($request->status != '') { 
-                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 7);
-                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', $request->status)->where('status', 7);
+                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->whereNull('date_into')->where('status', $request->status)->where('status', 7);
+                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "156-2-77492-1")->where('status', $request->status)->where('status', 7);
             } else {
-                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->whereNull('date_into')->where('status', 7);
-                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "708-2-26792-1")->where('status', 7);
+                $query_wp_credit->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->whereNull('date_into')->where('status', 7);
+                $query_wp_credit->orWhereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->where('into_account', "156-2-77492-1")->where('status', 7);
             }
 
         $total_wp_credit = $query_wp_credit->sum('amount');
@@ -2525,7 +2603,7 @@ class SMSHarmonyController extends Controller
         $total_transfer = $query_transfer_revenue->sum('amount');
 
         ## Credit Transaction
-        $query_credit_transaction = Harmony_SMS_alerts::query()->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4);
+        $query_credit_transaction = Harmony_SMS_alerts::query()->whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->where('status', 4);
         $total_credit_transaction = $query_credit_transaction->count();
 
         ## Transfer Revenue2
@@ -2862,9 +2940,9 @@ class SMSHarmonyController extends Controller
             $status = 2;
 
         } elseif ($request->revenue_type == "credit") {
-            $data_sms = Harmony_SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('transfer_status', 1)->where('status', 4)
+            $data_sms = Harmony_SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->where('transfer_status', 1)->where('status', 4)
                 ->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->orderBy('date', 'asc')->paginate(10);
-            $total_sms = Harmony_SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('transfer_status', 1)->where('status', 4)
+            $total_sms = Harmony_SMS_alerts::whereBetween(DB::raw('DATE(date_into)'), [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->where('transfer_status', 1)->where('status', 4)
                 ->orWhere('status', 4)->where('split_status', 0)->whereBetween(DB::raw('DATE(date_into)'), [$FromFormatDate, $ToFormatDate])->sum('amount');
             $title = "Credit Card Hotel Revenue";
             $status = 4;
@@ -2914,8 +2992,8 @@ class SMSHarmonyController extends Controller
             $status = 'transfer_transaction';
 
         } elseif ($request->revenue_type == "credit_transaction") {
-            $data_sms = Harmony_SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4)->paginate(10);
-            $total_sms = Harmony_SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "708-2-26792-1")->where('status', 4)->sum('amount');
+            $data_sms = Harmony_SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->where('status', 4)->paginate(10);
+            $total_sms = Harmony_SMS_alerts::whereBetween('date', [$smsFromDate, $smsToDate])->where('into_account', "156-2-77492-1")->where('status', 4)->sum('amount');
             $title = "Credit Card Hotel Transfer Transaction";
             $status = 'credit_card_hotel_transfer_transaction';
 

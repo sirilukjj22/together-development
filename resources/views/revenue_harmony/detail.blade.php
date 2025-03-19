@@ -59,16 +59,27 @@
                                                 ?>
                                                 <div class="flex-jc p-left-4">
                                                     @if (file_exists($filename))
-                                                        <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
+                                                        <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                     @elseif (file_exists($filename2))
-                                                        <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
+                                                        <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                    @else
+                                                        <img class="img-bank" src="../assets/images/harmony/bank_transfer.png">
+                                                        @if ($item->transfer_form_account == '' || $item->transfer_form_account == '-')
+                                                            Bank Transfer
+                                                        @endif
                                                     @endif
                                                     {{ @$item->transfer_bank->name_en.' '.@$item->transfer_form_account }}
                                                 </div>
                                             </td>
                                             <td class="td-content-center">
                                                 <div class="flex-jc p-left-4 center">
-                                                    <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
+                                                    @if ($item->into_account == "871-0-11991-1")
+                                                        <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                    @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-2-77492-1")
+                                                        <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                    @elseif ($item->into_account == "978-2-18099-9")
+                                                        <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td class="td-content-center">
@@ -150,7 +161,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueDetail.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueDetailHarmony.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -195,7 +206,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                        url: '/' + getUrl +'-search-table',
+                        url: '/harmony-' + getUrl +'-search-table',
                         type: 'POST',
                         dataType: "json",
                         cache: false,
