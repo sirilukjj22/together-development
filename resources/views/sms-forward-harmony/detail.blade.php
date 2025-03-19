@@ -80,7 +80,13 @@
                                             </td>
                                             <td class="td-content-center">
                                                 <div class="flex-jc p-left-4 center">
-                                                    <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
+                                                    @if ($item->into_account == "871-0-11991-1")
+                                                        <img class="img-bank" src="../image/bank/BBL.png"> {{ 'BBL ' . $item->into_account }}
+                                                    @elseif ($item->into_account == "436-0-75511-1" || $item->into_account == "156-2-77492-1")
+                                                        <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                    @elseif ($item->into_account == "978-2-18099-9")
+                                                        <img class="img-bank" src="../image/bank/KBNK.jpg"> {{ 'KBNK ' . $item->into_account }}
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td class="td-content-center">
