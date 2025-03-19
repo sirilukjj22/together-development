@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-auto">
 
-                    @if (!$invoices)
+                    @if (!$invoices && !$Receipt)
                         <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('invoice.index') }}'">
                             <i class="fa fa-plus"></i> Create Invoice
                         </button>
@@ -208,7 +208,6 @@
                                         </thead>
                                         <tbody>
                                             @if(!empty($invoices))
-
                                                 <tr>
                                                     <td style="text-align:left;">{{$invoices->Invoice_ID}}</td>
                                                     <td style="text-align:center;">{{ number_format($invoices->payment, 2, '.', ',') }}</td>
@@ -224,12 +223,11 @@
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Paid</a></li>
-                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Bill Splitting</a></li>
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/multi/'.$invoices->id) }}">Bill Splitting</a></li>
                                                             </ul>
                                                         </div>
                                                     </td>
                                                 </tr>
-
                                             @endif
                                         </tbody>
                                     </table>
@@ -253,22 +251,23 @@
                                 </thead>
                                 <tbody>
                                     @if(!empty($Receipt))
-                                        @foreach ($Receipt as $key => $item3)
+
+
                                             <tr>
-                                                <th style="text-align:left;">{{$item3->Receipt_ID}}</th>
-                                                <th style="text-align:left;">{{$item3->Invoice_ID}}</th>
-                                                <th style="text-align:center;">{{$item3->paymentDate}}</th>
+                                                <th style="text-align:left;">{{$Receipt->Receipt_ID}}</th>
+                                                <th style="text-align:left;">{{$Receipt->Invoice_ID}}</th>
+                                                <th style="text-align:center;">{{$Receipt->paymentDate}}</th>
                                                 <th style="text-align:center;">
                                                     <span class="badge rounded-pill bg-success">Approved</span>
                                                 </th>
-                                                <th style="text-align:center;">{{ number_format($item3->Amount+$item3->complimentary, 2, '.', ',') }}</th>
+                                                <th style="text-align:center;">{{ number_format($Receipt->Amount+$Receipt->complimentary, 2, '.', ',') }}</th>
                                                 <th style="text-align:left;">
-                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item3->id) }}">
+                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$Receipt->id) }}">
                                                         View
                                                     </a>
                                                 </th>
                                             </tr>
-                                        @endforeach
+
                                     @endif
                                 </tbody>
                             </table>
@@ -850,11 +849,11 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
-                icon: "question",
+                title: "Do you want to go back?",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "ตกลง",
-                cancelButtonText: "ยกเลิก",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
                 confirmButtonColor: "#2C7F7A",
                 dangerMode: true
             }).then((result) => {

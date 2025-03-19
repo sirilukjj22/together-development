@@ -918,6 +918,7 @@ class CompanyController extends Controller
     public function Tax(Request $request,$id)
     {
         $data = $request->all();
+        dd($Taxpayer_Identification);
         $Company = companys::where('id',$id)->first();
         $Profile_IDMain = $Company->Profile_ID;
         $ids = $Company->id;
@@ -952,7 +953,7 @@ class CompanyController extends Controller
                     $save->Zip_Code = $request->zip_codeA;
                 }
                 $save->Company_Email = $request->EmailAgent;
-                $save->Taxpayer_Identification = str_replace('-', '', $request->Identification);
+                $save->Taxpayer_Identification = $request->Identification;
                 $save->save();
 
                 foreach ($request->phoneTax as $index => $phoneNumber) {

@@ -222,8 +222,8 @@
                                                 <td style="text-align: center;">
                                                     @if ($item->document_status == 1)
                                                         <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                    @elseif ($item->document_status == 2)
-                                                        <span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>
+                                                    @elseif ($item->document_status == 3)
+                                                        <span class="badge rounded-pill " style="background-color: #0ea5e9">Receive payment</span>
                                                     @elseif ($item->document_status == 0)
                                                         <span class="badge rounded-pill  bg-danger" >Cancel</span>
                                                     @endif

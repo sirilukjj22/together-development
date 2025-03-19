@@ -69,8 +69,8 @@ class Additional extends Controller
         ->where('quotation.status_guest', 1)
         ->whereNull('proposal_overbill.Quotation_ID') // กรองเฉพาะที่ไม่มีใน proposal_overbill
         ->count();
-        $Pending = receive_payment::query()->where('type','Additional')->get();
-        $Pendingcount = receive_payment::query()->where('type','Additional')->count();
+        // $Pending = receive_payment::query()->where('type','Additional')->get();
+        // $Pendingcount = receive_payment::query()->where('type','Additional')->count();
         $Awaiting = proposal_overbill::query()->where('status_document',2)->get();
         $Awaitingcount = proposal_overbill::query()->where('status_document',2)->count();
         $Approved = proposal_overbill::query()->where('status_document',3)->get();
@@ -82,7 +82,7 @@ class Additional extends Controller
 
         $Complete = proposal_overbill::query()->where('status_guest',1)->get();
         $Completecount = proposal_overbill::query()->where('status_guest',1)->count();
-        return view('additional_charge.index',compact('Proposal','Pending','Proposalcount','Pendingcount','Awaiting','Awaitingcount','Approved','Approvedcount','Reject','Rejectcount',
+        return view('additional_charge.index',compact('Proposal','Proposalcount','Awaiting','Awaitingcount','Approved','Approvedcount','Reject','Rejectcount',
                     'Cancel','Cancelcount','Complete','Completecount'));
     }
     public function create($id){

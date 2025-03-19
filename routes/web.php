@@ -938,13 +938,17 @@ Route::controller(Document_invoice::class)->middleware(['role:document', 'togeth
 ##-------------------------------document receipt-----------------
 Route::controller(BillingFolioController::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/BillingFolio/index', 'index')->name('BillingFolio.index');
-    Route::get('/Document/BillingFolio/issuebill', 'issuebill')->name('BillingFolio.issuebill');
+    Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/multi/{id}', 'createmulti')->name('BillingFolio.createmulti');
+    Route::post('/Document/BillingFolio/Proposal/invoice/Generate/createmulti/bill/{id}', 'spiltebill')->name('BillingFolio.spiltebill');
     Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}', 'create')->name('BillingFolio.PaidInvoice');
     Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/{id}', 'EditPaidInvoice')->name('BillingFolio.EditPaidInvoice');
     Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}', 'PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
+    Route::get('/Document/BillingFolio/Proposal/invoice/select/data/guest/{id}', 'SelectData')->name('BillingFolio.SelectData');
     Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/cheque/{id}', 'cheque');
     Route::get('/Document/BillingFolio/Proposal/invoice/preview/{id}', 'previewPdf')->name('BillingFolio.previewPdf');
     Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}', 'CheckPI')->name('BillingFolio.CheckPI');
+    // //-------------------------------------save------------------------------------
+    Route::post('/Document/BillingFolio/Proposal/invoice/Generate/multi/bill/save', 'savemulti')->name('BillingFolio.savemulti');
     // //-------------------------------------save------------------------------------
     Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'saveone')->name('BillingFolio.saveone');
     //-----------------------------------------update------------------------------------
@@ -953,29 +957,6 @@ Route::controller(BillingFolioController::class)->middleware(['role:document', '
     Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}', 'view')->name('receipt.view');
     Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}', 'log')->name('receipt.log');
     Route::get('/Receipt/Quotation/view/quotation/view/{id}', 'QuotationView')->name('receipt.QuotationView');
-
-    Route::post('billing-search-table', 'search_table_billing');
-    Route::post('billing-paginate-table', 'paginate_table_billing');
-
-    Route::post('billingPD-search-table', 'search_table_billingpd');
-    Route::post('billingPD-paginate-table', 'paginate_table_billingpd');
-
-
-    //--------------------------LogPdf-----------
-    Route::post('billing-Log-search-table', 'search_table_paginate_log_pdf');
-    Route::post('billing-Log-paginate-table', 'paginate_log_pdf_table_billing');
-    //--------------------------LogDoc-----------
-    Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
-    Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
-
-    Route::post('billing-Approved-search-table', 'search_table_paginate_approved');
-    Route::post('billing-Approved-paginate-table', 'paginate_approved_table_proposal');
-
-    Route::post('billing-reject-search-table', 'search_table_paginate_reject');
-    Route::post('billing-reject-paginate-table', 'paginate_reject_table_proposal');
-
-    Route::post('billing-Cancel-search-table', 'search_table_paginate_Cancel');
-    Route::post('billing-Cancel-paginate-table', 'paginate_Cancel_table_proposal');
 });
 Route::controller(Additional::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/Additional/Charge/index', 'index')->name('Additional.index');
