@@ -1251,7 +1251,7 @@ class RevenuesHarmonyController extends Controller
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-2-26792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['total_amount'],
-                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT))
+                            'date' => date($FormatDate->format('Y-m-').str_pad($i - 1, 2, '0', STR_PAD_LEFT)),
                         ];
                     }
                     // Agoda
@@ -2804,7 +2804,7 @@ class RevenuesHarmonyController extends Controller
                         // เข้าบัญชี
                         if ($value->into_account == "978-2-18099-9") {
                             $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
-                        } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                        } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-2-77492-1") {
                             $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
                         } elseif ($value->into_account == "871-0-11991-1") {
                             $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
@@ -3410,7 +3410,7 @@ class RevenuesHarmonyController extends Controller
                     // เข้าบัญชี
                     if ($value->into_account == "978-2-18099-9") {
                         $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
-                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-2-77492-1") {
                         $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
                     } elseif ($value->into_account == "871-0-11991-1") {
                         $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
@@ -3681,5 +3681,16 @@ class RevenuesHarmonyController extends Controller
         ];
 
         return $data;
+    }
+
+    public function loopRevenueAmount() 
+    {
+       $data = Harmony_SMS_alerts::where('status', 4)->get();
+
+        foreach ($data as $key => $value) {
+            Harmony_revenues::where('date', date('Y-m-d', strtotime($value->date_into)))->update([
+                'total_credit' => $value->amount
+            ]);
+        }
     }
 }

@@ -85,6 +85,8 @@ Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::cla
 Route::get('/Invoice/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
 Route::get('/Deposit/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'Deposit'])->name('Deposit.link');
 
+Route::get('loopRevenueAmount', [RevenuesHarmonyController::class, 'loopRevenueAmount']);
+
 // Test Gmail
 // Route::get('/google/redirect', [GmailController::class, 'redirectToGoogle'])->name('google.auth');
 // Route::get('/google/callback', [GmailController::class, 'handleGoogleCallback']);

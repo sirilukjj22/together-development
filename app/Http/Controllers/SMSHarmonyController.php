@@ -100,7 +100,7 @@ class SMSHarmonyController extends Controller
 
                         switch ($data_qr) {
                             case '076355400050101':
-                                $into = "156-277492-1";
+                                $into = "156-2-77492-1";
                                 break;
                         }
 
@@ -126,7 +126,7 @@ class SMSHarmonyController extends Controller
 
                         switch ($data_qr) {
                             case '076355400050101':
-                                $into = "156-277492-1";
+                                $into = "156-2-77492-1";
                                 break;
                         }
 
@@ -178,7 +178,7 @@ class SMSHarmonyController extends Controller
 
                         switch ($data_qr) {
                             case '076355400050101':
-                                $into = "156-277492-1";
+                                $into = "156-2-77492-1";
                                 break;
                         }
 
@@ -206,7 +206,7 @@ class SMSHarmonyController extends Controller
                             'into_qr' => $data_qr,
                             'amount' => str_replace(",", "", $exp_form[0]),
                             'remark' => "Auto",
-                            'status' => $into == "156-277492-1" ? 2 : 0
+                            'status' => $into == "156-2-77492-1" ? 2 : 0
                         ]);
 
                         Harmony_SMS_forwards::where('id', $value->id)->update([
@@ -754,7 +754,7 @@ class SMSHarmonyController extends Controller
                 // เข้าบัญชี
                 if ($value->into_account == "978-2-18099-9") {
                     $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
-                } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-2-77492-1") {
                     $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
                 } elseif ($value->into_account == "871-0-11991-1") {
                     $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';
@@ -1156,7 +1156,7 @@ class SMSHarmonyController extends Controller
                     // เข้าบัญชี
                     if ($value->into_account == "978-2-18099-9") {
                         $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/KBNK.jpg">KBNK '.$value->into_account.'</div>';
-                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-277492-1") {
+                    } elseif ($value->into_account == "436-0-75511-1" || $value->into_account == "156-2-77492-1") {
                         $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
                     } elseif ($value->into_account == "871-0-11991-1") {
                         $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/BBL.png">BBL '.$value->into_account.'</div>';

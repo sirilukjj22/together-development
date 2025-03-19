@@ -75,6 +75,7 @@ class Harmony_SMS_alerts extends Model
     public static function check_account($datakey) {
 
         $account = "";
+        
         if ($datakey == "x755111") { // SCB
             $account = "436-0-75511-1";
         } elseif ($datakey == "ฝาก/โอนเงินเข้าบ/ชX9911ผ่านMB") { // Bangkok Bank 
@@ -82,7 +83,7 @@ class Harmony_SMS_alerts extends Model
         } elseif ($datakey == "X-0999") { // KBNK
             $account = "978-2-18099-9";
         } elseif ($datakey == "เข้าบ/ชx774921" || $datakey == "x774921") {
-            $account = "156-277492-1";
+            $account = "156-2-77492-1";
         }
 
         return $account;
