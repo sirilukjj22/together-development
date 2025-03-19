@@ -1236,8 +1236,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="chequeInput" class="chequeInput" style="display: none;">
-                                    <div class="d-grid-2column bg-paymentType">
+                            <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="bg-paymentType">
                                         <div>
                                             <label for="chequeNumber">Cheque Number</label>
                                             <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1247,40 +1247,30 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Date</label>
-                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Bank</label>
-                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeAmount">Amount</label>
-                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeBank">To Account</label>
-                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                <option value="" disabled selected></option>
-                                                @foreach ($data_bank as $item)
-                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                        <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             `;
@@ -1335,8 +1325,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="chequeInput" class="chequeInput" style="display: none;">
-                                    <div class="d-grid-2column bg-paymentType">
+                            <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="bg-paymentType">
                                         <div>
                                             <label for="chequeNumber">Cheque Number</label>
                                             <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1346,40 +1336,30 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Date</label>
-                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Bank</label>
-                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeAmount">Amount</label>
-                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeBank">To Account</label>
-                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                <option value="" disabled selected></option>
-                                                @foreach ($data_bank as $item)
-                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                        <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             `;
@@ -1433,8 +1413,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="chequeInput" class="chequeInput" style="display: none;">
-                                    <div class="d-grid-2column bg-paymentType">
+                            <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="bg-paymentType">
                                         <div>
                                             <label for="chequeNumber">Cheque Number</label>
                                             <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1444,40 +1424,30 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Date</label>
-                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Bank</label>
-                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeAmount">Amount</label>
-                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeBank">To Account</label>
-                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                <option value="" disabled selected></option>
-                                                @foreach ($data_bank as $item)
-                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                        <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             `;
@@ -1618,8 +1588,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="chequeInput" class="chequeInput" style="display: none;">
-                                    <div class="d-grid-2column bg-paymentType">
+                            <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="bg-paymentType">
                                         <div>
                                             <label for="chequeNumber">Cheque Number</label>
                                             <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1629,40 +1599,30 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Date</label>
-                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Bank</label>
-                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeAmount">Amount</label>
-                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeBank">To Account</label>
-                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                <option value="" disabled selected></option>
-                                                @foreach ($data_bank as $item)
-                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                        <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             `;
@@ -1717,8 +1677,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="chequeInput" class="chequeInput" style="display: none;">
-                                    <div class="d-grid-2column bg-paymentType">
+                            <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="bg-paymentType">
                                         <div>
                                             <label for="chequeNumber">Cheque Number</label>
                                             <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1728,40 +1688,30 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Date</label>
-                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Bank</label>
-                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeAmount">Amount</label>
-                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeBank">To Account</label>
-                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                <option value="" disabled selected></option>
-                                                @foreach ($data_bank as $item)
-                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                        <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             `;
@@ -1815,8 +1765,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="chequeInput" class="chequeInput" style="display: none;">
-                                    <div class="d-grid-2column bg-paymentType">
+                            <div id="chequeInput" class="chequeInput" style="display: none;">
+                                    <div class="bg-paymentType">
                                         <div>
                                             <label for="chequeNumber">Cheque Number</label>
                                             <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1826,40 +1776,30 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Date</label>
-                                            <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Cheque Bank</label>
-                                            <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeAmount">Amount</label>
-                                            <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                        </div>
-                                        <div>
-                                            <label for="chequeBank">To Account</label>
-                                            <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                <option value="" disabled selected></option>
-                                                @foreach ($data_bank as $item)
-                                                    <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for="chequeNumber">Date</label>
-                                            <div class="input-group">
-                                                <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                        <!-- ไอคอนปฏิทิน -->
-                                                    </span>
-                                                </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             `;
@@ -1985,16 +1925,18 @@
                                         </div>
                                     </div>
                                     <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
-                                            <div>
-                                                <label for="chequeNumber">Cheque Number</label>
-                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                    <option value="" disabled selected>Select</option>
-                                                    @foreach ($data_cheque as $item)
-                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                    <div class="bg-paymentType">
+                                        <div>
+                                            <label for="chequeNumber">Cheque Number</label>
+                                            <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                <option value="" disabled selected>Select</option>
+                                                @foreach ($data_cheque as $item)
+                                                    <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
                                             <div>
                                                 <label for="chequeNumber">Cheque Date</label>
                                                 <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
@@ -2016,20 +1958,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
+                                </div>
                                 </div>
                             `;
                             $('.payment-container:last').after(newPaymentForm);
@@ -2077,16 +2007,18 @@
                                     <!-- Credit Card Input -->
 
                                     <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
-                                            <div>
-                                                <label for="chequeNumber">Cheque Number</label>
-                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                    <option value="" disabled selected>Select</option>
-                                                    @foreach ($data_cheque as $item)
-                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                    <div class="bg-paymentType">
+                                        <div>
+                                            <label for="chequeNumber">Cheque Number</label>
+                                            <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                <option value="" disabled selected>Select</option>
+                                                @foreach ($data_cheque as $item)
+                                                    <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
                                             <div>
                                                 <label for="chequeNumber">Cheque Date</label>
                                                 <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
@@ -2108,20 +2040,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
+                                </div>
                                 </div>
                             `;
                             $('.payment-container:last').after(newPaymentForm);
@@ -2227,16 +2147,18 @@
                                     <!-- Credit Card Input -->
 
                                     <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
-                                            <div>
-                                                <label for="chequeNumber">Cheque Number</label>
-                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                    <option value="" disabled selected>Select</option>
-                                                    @foreach ($data_cheque as $item)
-                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                    <div class="bg-paymentType">
+                                        <div>
+                                            <label for="chequeNumber">Cheque Number</label>
+                                            <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                <option value="" disabled selected>Select</option>
+                                                @foreach ($data_cheque as $item)
+                                                    <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
                                             <div>
                                                 <label for="chequeNumber">Cheque Date</label>
                                                 <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
@@ -2258,20 +2180,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
+                                </div>
                                 </div>
                             `;
                             $('.payment-container:last').after(newPaymentForm);
@@ -2398,7 +2308,7 @@
                                             <button type="button" class="btn remove "   id="remove-${counter}" style=" border: none; position: absolute;  top:50% ;right: 2px;transform: translateY(-50%);">
                                                 <i class="fa fa-minus-circle text-danger fa-lg"></i>
                                             </button>
-                                          <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
+                                        <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
                                             <select name="paymentType_${counter}" id="paymentType_${counter}" class="paymentType select2" >
                                                 <option value="" disabled selected>Select Payment Type</option>
                                                 <option value="cheque">Cheque</option>
@@ -2409,51 +2319,41 @@
                                         <!-- Credit Card Input -->
 
                                         <div id="chequeInput" class="chequeInput" style="display: none;">
-                                            <div class="d-grid-2column bg-paymentType">
-                                                <div>
-                                                    <label for="chequeNumber">Cheque Number</label>
-                                                    <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                        <option value="" disabled selected>Select</option>
-                                                        @foreach ($data_cheque as $item)
-                                                            <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label for="chequeNumber">Cheque Date</label>
-                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                                </div>
-                                                <div>
-                                                    <label for="chequeNumber">Cheque Bank</label>
-                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                                </div>
-                                                <div>
-                                                    <label for="chequeAmount">Amount</label>
-                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                                </div>
-                                                <div>
-                                                    <label for="chequeBank">To Account</label>
-                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                        <option value="" disabled selected></option>
-                                                        @foreach ($data_bank as $item)
-                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label for="chequeNumber">Date</label>
-                                                    <div class="input-group">
-                                                        <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                <i class="fas fa-calendar-alt"></i>
-                                                                <!-- ไอคอนปฏิทิน -->
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <div class="bg-paymentType">
+                                        <div>
+                                            <label for="chequeNumber">Cheque Number</label>
+                                            <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                <option value="" disabled selected>Select</option>
+                                                @foreach ($data_cheque as $item)
+                                                    <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class ="d-grid-2column ">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Date</label>
+                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeNumber">Cheque Bank</label>
+                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeAmount">Amount</label>
+                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                            </div>
+                                            <div>
+                                                <label for="chequeBank">To Account</label>
+                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                    <option value="" disabled selected></option>
+                                                    @foreach ($data_bank as $item)
+                                                        <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
+                                </div>
                                     </div>
                                 `;
                                 $('.payment-container:last').after(newPaymentForm);
@@ -2473,7 +2373,7 @@
                                             <button type="button" class="btn remove "   id="remove-${counter}" style=" border: none; position: absolute;  top:50% ;right: 2px;transform: translateY(-50%);">
                                                 <i class="fa fa-minus-circle text-danger fa-lg"></i>
                                             </button>
-                                          <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
+                                        <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
                                             <select name="paymentType_${counter}" id="paymentType_${counter}" class="paymentType select2" >
                                                 <option value="" disabled selected>Select Payment Type</option>
                                                 <option value="creditCard">Credit Card</option>
@@ -2525,7 +2425,7 @@
                                             <button type="button" class="btn remove "   id="remove-${counter}" style=" border: none; position: absolute;  top:50% ;right: 2px;transform: translateY(-50%);">
                                                 <i class="fa fa-minus-circle text-danger fa-lg"></i>
                                             </button>
-                                          <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
+                                        <label for="paymentType_${counter}" class="star-red " >Payment Type</label>
                                             <select name="paymentType_${counter}" id="paymentType_${counter}" class="paymentType select2" >
                                                 <option value="" disabled selected>Select Payment Type</option>
 
