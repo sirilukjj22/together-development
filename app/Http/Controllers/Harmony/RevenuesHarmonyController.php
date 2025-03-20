@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Harmony;
 
+use App\Http\Controllers\Controller;
 use App\Models\Harmony\Harmony_revenue_credit;
 use App\Models\Harmony\Harmony_revenues;
 use App\Models\Harmony\Harmony_SMS_alerts;

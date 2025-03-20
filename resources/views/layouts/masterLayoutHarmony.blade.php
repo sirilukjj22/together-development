@@ -107,6 +107,24 @@
                     <div class="tab-pane fade show active" id="nav-menu">
                         <!-- Menu: main ul -->
                         <ul class="menu-list">
+                            @if (Auth::user()->roleMenu->debtor == 1)
+                                <li class="collapsed">
+                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Debtor"
+                                        href="#"><i class="fa fa-lg fa-file-text"></i> <span>Debtor</span> <span
+                                            class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Debtor">
+                                        @if (Auth::user()->roleMenu->agoda == 1)
+                                            <li><a class="ms-link" href="{{ route('harmony-debit-agoda') }}">Agoda</a></li>
+                                        @endif
+                                        @if (Auth::user()->roleMenu->elexa == 1)
+                                            <li><a class="ms-link" href="{{ route('harmony-debit-elexa') }}">Elexa EGAT</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+
                             <li class="collapsed">
                                 <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-General-ledger" href="#">
                                     <i class="fa fa-lg fa-bar-chart-o"></i> <span>General Ledger</span> 
