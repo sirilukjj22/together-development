@@ -79,7 +79,7 @@
         <div class="navigation navbar navbar-light justify-content-center px-2 py-2 py-md-3 d-xl-none">
             <!-- Brand -->
             <div class="d-flex align-items-center">
-                <a href="{{ route('harmony-sms-alert') }}" class="">
+                <a href="{{ route('dashboard') }}" class="">
                     <img class="" src="{{ asset('assets/images/harmony/logo.png') }}" alt="logo of Harmony Resort" width="50" />
                     <label class="text-white me-3 mobileLabelShow">Harmony Development</label>
                 </a>
@@ -97,7 +97,7 @@
         <div class="sidebar px-4 py-2">
             <div class="d-flex flex-column h-100">
                 <div class="text-center mb-2" id="mobileshow">
-                    <a href="{{ route('harmony-sms-alert') }}" class="">
+                    <a href="{{ route('dashboard') }}" class="">
                         <img src="{{ asset('assets/images/harmony/logo.png') }}" alt="logo of Harmony Resort" width="150" class="text-center mobileHidden" />
                     </a>
                 </div>
@@ -107,11 +107,18 @@
                     <div class="tab-pane fade show active" id="nav-menu">
                         <!-- Menu: main ul -->
                         <ul class="menu-list">
+                            <li>
+                                <a class="m-link" href="{{ route('dashboard') }}">
+                                    <i class="fa fa-lg fa-home" style="font-weight: bold; color: white;"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
                             @if (Auth::user()->roleMenu->debtor == 1)
                                 <li class="collapsed">
-                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Debtor"
-                                        href="#"><i class="fa fa-lg fa-file-text"></i> <span>Debtor</span> <span
-                                            class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Debtor" href="#">
+                                        <i class="fa fa-lg fa-file-text"></i> <span>Debtor</span> 
+                                        <span class="arrow fa fa-angle-down ms-auto text-end"></span>
+                                    </a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Debtor">

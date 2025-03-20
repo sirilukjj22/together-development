@@ -33,6 +33,7 @@ use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Deposit_Revenue;
 use App\Http\Controllers\GmailController;
 use App\Http\Controllers\LinkPDFProposal;
@@ -103,6 +104,10 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(BranchController::class)->group(function () {
         Route::get('select-branch', 'index')->name('select-branch');
         Route::get('confirm-branch/{branch}', 'confirm_branch')->name('confirm-branch');
+    });
+
+    Route::controller(DashboardController::class)->middleware('checkTogetherOrHarmony')->group(function () {
+        Route::get('dashboard', 'index')->name('dashboard');
     });
 
     # SMS Alert (Together)
