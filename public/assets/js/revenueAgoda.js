@@ -269,24 +269,18 @@ function updateMonthValues(data, color = "", backgroundColor = "") {
 }
 // ฟังก์ชันอัปเดต Summary Totals
 function updateSummaryTotals() {
-  const accountReTotal = dataByYear[selectedYear].paid.reduce(
-    (sum, value) => sum + value, 0
-  );
-  const pendingTotal = dataByYear[selectedYear].pending.reduce(
-    (sum, value) => sum + value, 0
-  );
-
-  const outstandingTotal = dataByYear[selectedYear].outstanding.reduce(
-    (sum, value) => sum + value, 0
-  );
+  const accountReTotal = dataByYear[selectedYear].paid.reduce((sum, value) => sum + value, 0);
+  const pendingTotal = dataByYear[selectedYear].pending.reduce((sum, value) => sum + value, 0);
+  const outstandingTotal = dataByYear[selectedYear].outstanding.reduce((sum, value) => sum + value, 0);
 
   const paidTotal = accountReTotal + pendingTotal;
   const totalRevenue = paidTotal + outstandingTotal;
+
   document.querySelector("#AccountRe span:nth-child(2)").textContent = formatNumberCol(accountReTotal);
   document.querySelector("#agodaCharge span:nth-child(2)").textContent = formatNumberCol(parseFloat(inputTotalAgodaCharge).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
   document.querySelector("#agodaPaid span:nth-child(2)").textContent = formatNumberCol(paidTotal);
   document.querySelector("#pendingAccount span:nth-child(2)").textContent = formatNumberCol(pendingTotal);
-  // document.querySelector("#outstandingBalance span:nth-child(2)").textContent = formatNumberCol(outstandingTotal);
+  document.querySelector("#outstandingBalance span:nth-child(2)").textContent = formatNumberCol(outstandingTotal);
 }
 
 // ฟังก์ชันอัปเดตข้อมูลกราฟ
