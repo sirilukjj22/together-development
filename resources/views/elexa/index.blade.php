@@ -106,9 +106,9 @@
                                 <div>
                                     <div class="flex-center text-center mb-2">
                                         <select id="yearSelect" style="max-width: 130px;">
-                                            <option value="2024"> ปี 2024</option>
-                                            <option value="2025"> ปี 2025</option>
-                                            <option value="2026"> ปี 2026</option>
+                                            @for ($i = 2024; $i <= (date('Y') + 1); $i++)
+                                                <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>ปี {{ $i }}</option>
+                                            @endfor
                                         </select>
                                     </div>
                                     <div class="card-month-agoda">
@@ -167,8 +167,9 @@
                             <div class="filter-section bd-select-cl d-flex mb-2 mr-2 " style=" gap: 0.3em;">
                                 <select id="elexaRevenueYearFilter" class="form-select" style="width: max-content;" onchange="filterElexaRevenueSearch()">
                                     <option value="all">All Years</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2025">2025</option>
+                                    @for ($i = 2024; $i <= (date('Y') + 1); $i++)
+                                        <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
+                                    @endfor
                                 </select>
                             </div>
                         </div>

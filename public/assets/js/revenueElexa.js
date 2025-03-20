@@ -4,6 +4,8 @@ var inputTotalAccountReceivable = Number($('#input-total-account-receivable').va
 var inputTotalPendingAccountReceivable = Number($('#input-total-pending-account-receivable').val());
 var inputTotalOutstandingAll = Number($('#input-total-elexa-outstanding').val());
 
+let selectedYear = new Date().getFullYear(); // ปีเริ่มต้น
+
 function getGraphMonthSales(typeRevenue) {
   var revenueData = "";
 
@@ -218,7 +220,7 @@ const dataByYear = {
     outstanding: getGraphMonthCharge(2026, 'data_outstanding'),
   },
 };
-let selectedYear = "2024"; // ปีเริ่มต้น
+
 // ฟังก์ชันคำนวณ Total Charge Data
 function calculateTotalChargeData(year) {
   return dataByYear[year].paid.map(

@@ -984,7 +984,7 @@ class ElexaController extends Controller
 
             // Revenue
             $elexa = $elexa_outstanding->keyBy('month');
-            $elexa_year = $elexa_outstanding->keyBy('year');
+            // $elexa_year = $elexa_outstanding->keyBy('year');
 
             // เก็บค่าเป็น Array
             $data_sms = [];
@@ -992,34 +992,42 @@ class ElexaController extends Controller
             $data_outstanding = [];
 
             $sum = 0;
+            $sms_summary = $elexa_outstanding_sum;
             
-            for ($y = 2024; $y <= 2026; $y += 1) { 
+            for ($y = 2024; $y <= date('Y', strtotime('+1 year')); $y += 1) { 
                 for ($i = 1; $i <= 12; $i++) { 
-                    if ($sms_year->has($y)) {
-                        $data_sms[$y][] = $sms->has($i) ? $sms[$i]->total_sum : 0;
+                    if ($sms_year->has($y) && $sms->has($i)) {
+                        $data_sms[$y][] = $sms->has($i) && $sms[$i]->year == $y ? $sms[$i]->total_sum : 0;
                     } else {
                         $data_sms[$y][] = 0;
                     }
 
-                    if ($sms_paid_year->has($y)) {
-                        $data_sms_paid[$y][] = $sms_paid->has($i) ? $sms_paid[$i]->total_sum : 0;
+                    if ($sms_paid_year->has($y) && $sms_paid->has($i)) {
+                        $data_sms_paid[$y][] = $sms_paid->has($i) && $sms_paid[$i]->year == $y ? $sms_paid[$i]->total_sum : 0;
                     } else {
                         $data_sms_paid[$y][] = 0;
                     }
 
-                    if ($sms_pending_year->has($y)) {
-                        $data_sms_pending[$y][] = $sms_pending->has($i) ? $sms_pending[$i]->total_sum : 0;
+                    if ($sms_pending_year->has($y) && $sms_pending->has($i)) {
+                        $data_sms_pending[$y][] = $sms_pending->has($i) && $sms_pending[$i]->year == $y ? $sms_pending[$i]->total_sum : 0;
                     } else {
                         $data_sms_pending[$y][] = 0;
                     }
 
                     if ($sms_year->has($y)) {
-                        $elexa_outstanding_sum -= ($sms->has($i) ? (double)$sms[$i]->total_sum : 0);
-                        if ($elexa_outstanding_sum > 0 && $i == date('m')) {
-                            $data_outstanding[$y][] = $elexa_outstanding_sum;
-                        } else {
+                        $sms_summary -= ($sms->has($i) && $sms[$i]->year == $y ? round($sms[$i]->total_sum, 2) : 0);
+                        $sms_summary = round($sms_summary, 2);
+
+                        if ($sms_summary >= 0 && $elexa->has($i) && $elexa[$i]->year == $y && $y != date('Y') && $i != date('m') || $elexa->has($i) && $elexa[$i]->year == $y && $y != date('Y') && $i != date('m')) {
                             $data_outstanding[$y][] = 0;
+                        } else {
+                            if ($y == date('Y') && $i == date('m')) {
+                                $data_outstanding[$y][] = $sms_summary;
+                            } else {
+                                $data_outstanding[$y][] = 0;
+                            }
                         }
+
                     } else {
                         $data_outstanding[$y][] = 0;
                     }

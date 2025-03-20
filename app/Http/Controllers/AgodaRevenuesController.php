@@ -1012,7 +1012,7 @@ class AgodaRevenuesController extends Controller
             $sum = 0;
             $sms_summary = $agoda_outstanding_sum;
             
-            for ($y = 2024; $y <= 2026; $y += 1) { 
+            for ($y = 2024; $y <= date('Y', strtotime('+1 year')); $y += 1) { 
                 for ($i = 1; $i <= 12; $i++) { 
                     if ($sms_year->has($y) && $sms->has($i)) {
                         $data_sms[$y][] = $sms->has($i) && $sms[$i]->year == $y ? $sms[$i]->total_sum : 0;
@@ -1045,6 +1045,7 @@ class AgodaRevenuesController extends Controller
                                 $data_outstanding[$y][] = 0;
                             }
                         }
+
                     } else {
                         $data_outstanding[$y][] = 0;
                     }
