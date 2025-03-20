@@ -772,7 +772,7 @@ class AgodaRevenuesController extends Controller
                                                                         <a href="/debit-agoda-update-receive/'.$value->id.'/'.$month.'/'.$year.'" class="dropdown-item">Create</a>
                                                                     </li>';
                                                 } else {
-                                                    $checkReceiveDate = Revenue_credit::getAgodaReceiveDate($value->id);
+                                                    // $checkReceiveDate = Revenue_credit::getAgodaReceiveDate($value->id);
 
                                                     //  Permission 1 และ 2 สามารถเห็นปุ่ม Lock/Unlock ได้
                                                     if (Auth::user()->permission == 1 || Auth::user()->permission == 2) {
@@ -865,7 +865,101 @@ class AgodaRevenuesController extends Controller
         ]);
     }
 
-    // Graph Monthly Agoda Charge 2026
+    // Graph Monthly Agoda Charge
+    // public function graph_month_charge()
+    // {
+    //     // ยอด SMS ทั้งหมด
+    //     $sms_query = SMS_alerts::where('status', 5)
+    //         ->select('amount', DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
+    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+    //         ->get();
+
+    //     // ยอด SMS ที่กดรับชำระแล้ว สถานะเป็น paid
+    //     $sms_paid_query = SMS_alerts::where('status', 5)
+    //         ->where('status_receive_agoda', 1)
+    //         ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
+    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+    //         ->get();
+
+    //     // ยอด SMS ที่ยังไม่ได้กดรับชำระแล้ว สถานะเป็น pending
+    //     $sms_pending_query = SMS_alerts::where('status', 5)
+    //         ->where('status_receive_agoda', 0)
+    //         ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
+    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+    //         ->get();
+
+    //     $agoda_outstanding = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+    //         ->where('revenue_credit.status', 5)
+    //         ->select(DB::raw('YEAR(revenue.date) as year'), DB::raw('MONTH(revenue.date) as month'),  DB::raw('SUM(revenue_credit.agoda_outstanding) as total_agoda_outstanding'))
+    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
+    //         ->get();
+
+    //     $agoda_outstanding_sum = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+    //         ->where('revenue_credit.status', 5)->select('revenue_credit.agoda_outstanding')
+    //         ->sum('revenue_credit.agoda_outstanding');
+
+    //         // SMS
+    //         $sms = $sms_query->keyBy('month');
+    //         $sms_year = $sms_query->keyBy('year');
+    //         $sms_paid = $sms_paid_query->keyBy('month');
+    //         $sms_paid_year = $sms_paid_query->keyBy('year');
+    //         $sms_pending = $sms_pending_query->keyBy('month');
+    //         $sms_pending_year = $sms_pending_query->keyBy('year');
+
+    //         // Revenue
+    //         $agoda = $agoda_outstanding->keyBy('month');
+    //         $agoda_year = $agoda_outstanding->keyBy('year');
+
+    //         // เก็บค่าเป็น Array
+    //         $data_sms = [];
+    //         $data_sms_pending = [];
+    //         $data_outstanding = [];
+
+    //         $sum = 0;
+            
+    //         for ($y = 2024; $y <= 2026; $y += 1) { 
+    //             for ($i = 1; $i <= 12; $i++) { 
+    //                 if ($sms_year->has($y)) {
+    //                     $data_sms[$y][] = $sms->has($i) ? $sms[$i]->total_sum : 0;
+    //                 } else {
+    //                     $data_sms[$y][] = 0;
+    //                 }
+
+    //                 if ($sms_paid_year->has($y)) {
+    //                     $data_sms_paid[$y][] = $sms_paid->has($i) ? $sms_paid[$i]->total_sum : 0;
+    //                 } else {
+    //                     $data_sms_paid[$y][] = 0;
+    //                 }
+
+    //                 if ($sms_pending_year->has($y)) {
+    //                     $data_sms_pending[$y][] = $sms_pending->has($i) ? $sms_pending[$i]->total_sum : 0;
+    //                 } else {
+    //                     $data_sms_pending[$y][] = 0;
+    //                 }
+
+    //                 if ($sms_year->has($y)) {
+    //                     // $sum = ($agoda->has($i) ? (double)$agoda[$i]->total_agoda_outstanding : 0) - ($sms_paid->has($i) && $sms_paid_year->has($y) ? (double)$sms_paid[$i]->total_sum : 0);
+    //                     $agoda_outstanding_sum -= ($sms->has($i) ? (double)$sms[$i]->total_sum : 0);
+    //                     if ($agoda_outstanding_sum > 0 && $i == date('m')) {
+    //                         $data_outstanding[$y][] = $agoda_outstanding_sum;
+    //                     } else {
+    //                         $data_outstanding[$y][] = 0;
+    //                     }
+    //                 } else {
+    //                     $data_outstanding[$y][] = 0;
+    //                 }
+    //             }
+    //         }
+
+    //     return response()->json([
+    //         'data_sms_paid' => $data_sms_paid,
+    //         'data_sms' => $data_sms,
+    //         'data_sms_pending' => $data_sms_pending,
+    //         'data_outstanding' => $data_outstanding,
+    //         'status' => 200,
+    //     ]);
+    // }
+
     public function graph_month_charge()
     {
         // ยอด SMS ทั้งหมด
@@ -908,7 +1002,7 @@ class AgodaRevenuesController extends Controller
 
             // Revenue
             $agoda = $agoda_outstanding->keyBy('month');
-            $agoda_year = $agoda_outstanding->keyBy('year');
+            // $agoda_year = $agoda_outstanding->keyBy('year');
 
             // เก็บค่าเป็น Array
             $data_sms = [];
@@ -916,34 +1010,40 @@ class AgodaRevenuesController extends Controller
             $data_outstanding = [];
 
             $sum = 0;
+            $sms_summary = $agoda_outstanding_sum;
             
             for ($y = 2024; $y <= 2026; $y += 1) { 
                 for ($i = 1; $i <= 12; $i++) { 
-                    if ($sms_year->has($y)) {
-                        $data_sms[$y][] = $sms->has($i) ? $sms[$i]->total_sum : 0;
+                    if ($sms_year->has($y) && $sms->has($i)) {
+                        $data_sms[$y][] = $sms->has($i) && $sms[$i]->year == $y ? $sms[$i]->total_sum : 0;
                     } else {
                         $data_sms[$y][] = 0;
                     }
 
                     if ($sms_paid_year->has($y)) {
-                        $data_sms_paid[$y][] = $sms_paid->has($i) ? $sms_paid[$i]->total_sum : 0;
+                        $data_sms_paid[$y][] = $sms_paid->has($i) && $sms_paid[$i]->year == $y ? $sms_paid[$i]->total_sum : 0;
                     } else {
                         $data_sms_paid[$y][] = 0;
                     }
 
                     if ($sms_pending_year->has($y)) {
-                        $data_sms_pending[$y][] = $sms_pending->has($i) ? $sms_pending[$i]->total_sum : 0;
+                        $data_sms_pending[$y][] = $sms_pending->has($i) && $sms_pending[$i]->year == $y ? $sms_pending[$i]->total_sum : 0;
                     } else {
                         $data_sms_pending[$y][] = 0;
                     }
 
                     if ($sms_year->has($y)) {
-                        // $sum = ($agoda->has($i) ? (double)$agoda[$i]->total_agoda_outstanding : 0) - ($sms_paid->has($i) && $sms_paid_year->has($y) ? (double)$sms_paid[$i]->total_sum : 0);
-                        $agoda_outstanding_sum -= ($sms->has($i) ? (double)$sms[$i]->total_sum : 0);
-                        if ($agoda_outstanding_sum > 0 && $i == date('m')) {
-                            $data_outstanding[$y][] = $agoda_outstanding_sum;
-                        } else {
+                        $sms_summary -= ($sms->has($i) && $sms[$i]->year == $y ? round($sms[$i]->total_sum, 2) : 0);
+                        $sms_summary = round($sms_summary, 2);
+
+                        if ($sms_summary >= 0 && $agoda->has($i) && $agoda[$i]->year == $y || $agoda->has($i) && $agoda[$i]->year == $y) {
                             $data_outstanding[$y][] = 0;
+                        } else {
+                            if ($y == date('Y') && $i == date('m')) {
+                                $data_outstanding[$y][] = $sms_summary;
+                            } else {
+                                $data_outstanding[$y][] = 0;
+                            }
                         }
                     } else {
                         $data_outstanding[$y][] = 0;
