@@ -774,20 +774,19 @@ Route::controller(Deposit_Revenue::class)->middleware(['role:document', 'togethe
     Route::get('/Document/deposit_revenue/cheque/{id}', 'cheque');
     Route::post('/Deposit/save', 'save')->name('Deposit.save');
     Route::get('/Deposit/view/invoice/deposit/{id}', 'viewinvoicedeposit')->name('Deposit.viewinvoicedeposit');
-    Route::get('/Deposit/view/revenue/deposit/{id}', 'viewrevenuedeposit')->name('Deposit.viewrevenuedeposit');
     Route::get('/Deposit/LOG/{id}', 'log')->name('Deposit.log');
     Route::post('/Deposit/update/{id}', 'update')->name('Deposit.update');
     Route::get('/Deposit/Send/Email/{id}', 'email')->name('Deposit.email');
     Route::post('/Document/deposit/send/detail/email/{id}', 'sendemail')->name('Deposit.sendemail');
     Route::get('/Document/deposit/cover/document/PDF/{id}', 'sheetpdf')->name('Deposit.sheet');
-    Route::get('/Deposit/generate/Revenue/{id}', 'generate')->name('Deposit.generate');
-    Route::post('/Deposit/generate/Revenue/save/{id}', 'generate_dr')->name('Deposit.generate_dr');
     Route::post('/Document/Deposit/cancel/{id}', 'cancel')->name('Deposit.cancel');
     Route::get('/Document/Deposit/Revise/{id}', 'Revise')->name('Deposit.Revise');
     Route::get('/Document/Deposit/quotation', 'Quotation')->name('Deposit.Quotation');
     Route::get('/Document/deposit_revenue/Data/createnew/{id}', 'deposit_pd');
-    Route::get('/Deposit/edit/revenue/deposit/{id}', 'depositedit')->name('Deposit.depositedit');
-    Route::post('/Deposit/generate/Revenue/edit/save/{id}', 'edit_generate_dr')->name('Deposit.edit_generate_dr');
+    // Route::get('/Deposit/edit/revenue/deposit/{id}', 'depositedit')->name('Deposit.depositedit');
+
+    // Route::post('/Deposit/generate/Revenue/edit/save/{id}', 'edit_generate_dr')->name('Deposit.edit_generate_dr');
+    // Route::post('/Deposit/generate/Revenue/save/{id}', 'generate_dr')->name('Deposit.generate_dr');
 });
 #DummyQuotaion
 Route::controller(DummyQuotationController::class)->middleware(['role:document', 'together:1'])->group(function () {
@@ -959,6 +958,11 @@ Route::controller(BillingFolioController::class)->middleware(['role:document', '
     Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}', 'view')->name('receipt.view');
     Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}', 'log')->name('receipt.log');
     Route::get('/Receipt/Quotation/view/quotation/view/{id}', 'QuotationView')->name('receipt.QuotationView');
+    //---------------------deposit one paid---------------------------
+    Route::get('/Document/BillingFolio/Deposit/generate/Revenue/{id}', 'deposit_re')->name('BillingFolio.generate');
+    Route::post('/Document/BillingFolio/Proposal/Deposit/Revenue/generate/save', 'savedeposit')->name('BillingFolio.savedeposit');
+    Route::get('/Document/BillingFolio/deposit/view/{id}', 'depositView')->name('BillingFolio.depositView');
+
 });
 Route::controller(Additional::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/Additional/Charge/index', 'index')->name('Additional.index');

@@ -549,15 +549,15 @@
                                             </li>
                                             <li>
                                                 <span>Printed Date</span>
-                                                <span  id="date">02/06/2024</span>
+                                                <span  id="date">{{$dateFormatted}}</span>
                                             </li>
                                             <li>
                                                 <span>Printed time</span>
-                                                <span  id="dateM">13:26:24 PM</span>
+                                                <span  id="dateM">{{$dateTime}} PM</span>
                                             </li>
                                             <li>
                                                 <span>Tax invoice Date</span>
-                                                <span  id="Invoicedate">02/06/2024</span>
+                                                <span  id="Invoicedate">{{$re->valid}}</span>
                                             </li>
                                             </ul>
                                         </div>

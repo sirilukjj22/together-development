@@ -62,9 +62,11 @@
                                                     <th style="text-align: center;"data-priority="1">No</th>
                                                     <th data-priority="1">Proposal ID</th>
                                                     <th data-priority="1">Company / Individual</th>
+                                                    <th>RI Doc.</th>
                                                     <th>PI Doc.</th>
                                                     <th>RE Doc.</th>
                                                     <th class="text-center">PD Amount</th>
+                                                    <th class="text-center">RI Amount</th>
                                                     <th class="text-center">DR Amount</th>
                                                     <th class="text-center">AD Amount</th>
                                                     <th class="text-center">Total Amount</th>
@@ -96,11 +98,14 @@
                                                         @else
                                                             <td style="text-align: left;">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                         @endif
-
+                                                        <td>{{ $item->receiveinvoice_count }}</td>
                                                         <td>{{ $item->invoice_count }}</td>
                                                         <td>{{ $receive_count }}</td>
                                                         <td style="text-align: center;">
                                                             {{ number_format($item->Nettotal, 2) }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            {{ number_format($item->receiveinvoice_amount, 2) }}
                                                         </td>
                                                         <td style="text-align: center;">
                                                             {{ number_format($revenue, 2) }}
@@ -143,6 +148,7 @@
                                                     <th style="text-align: center;"data-priority="1">No</th>
                                                     <th data-priority="1">Receipt ID</th>
                                                     <th>Proposal ID</th>
+                                                    <th class="text-center">Reference ID</th>
                                                     <th data-priority="1">Company / Individual</th>
                                                     <th>Payment Date</th>
                                                     <th class="text-center">Amount</th>
@@ -160,6 +166,7 @@
                                                         </td>
                                                         <td>{{ $item->Receipt_ID}}</td>
                                                         <td>{{ $item->Quotation_ID}}</td>
+                                                        <td >{{$item->Deposit_ID ?? $item->Invoice_ID}}</td>
                                                         <td style="text-align: left;">{{$item->fullname}}</td>
                                                         <td>{{ $item->paymentDate }}</td>
                                                         <td style="text-align: center;">

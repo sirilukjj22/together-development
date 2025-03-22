@@ -2321,9 +2321,10 @@ class QuotationController extends Controller
             $name = $namefirst.' '.$namelast;
         }else{
             $companys = companys::where('Profile_ID',$comid)->first();
-            $emailCom = $companys->Company_Email;
+
             $contact = $companys->Profile_ID;
             $Contact_name = representative::where('Company_ID',$contact)->where('status',1)->first();
+            $emailCom = $Contact_name->Email;
             $namefirst = $Contact_name->First_name;
             $namelast = $Contact_name->Last_name;
             $name = $namefirst.' '.$namelast;

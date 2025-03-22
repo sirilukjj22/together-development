@@ -91,6 +91,7 @@
                                             <th style="text-align: center;"data-priority="1">No</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
+                                            <th>DR Doc.</th>
                                             <th>PI Doc.</th>
                                             <th class="text-center">PD Amount</th>
                                             <th class="text-center">DR Amount</th>
@@ -113,6 +114,7 @@
                                                 @else
                                                     <td style="text-align: left;">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
+                                                <td>{{ $item->deposit_count }}</td>
                                                 <td>{{ $item->invoice_count }}</td>
                                                 <td style="text-align: center;">
                                                     {{ number_format($item->Nettotal, 2) }}
@@ -145,11 +147,11 @@
                                                                 @endif
 
                                                                 @if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1)
-                                                                    @if($item->invoice_count == 0)
+                                                                    @if($item->deposit_count == 0)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 2 || $rolePermission == 3 && $canEditProposal == 1)
-                                                                    @if($item->invoice_count == 0)
+                                                                    @if($item->deposit_count == 0)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                     @endif
                                                                 @endif

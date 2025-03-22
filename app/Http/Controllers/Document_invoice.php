@@ -52,25 +52,26 @@ class Document_invoice extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
-        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
-        ->where('quotation.status_document', 6)
-        ->whereNotExists(function ($query) {
-            $query->select(DB::raw(1))
-                ->from('document_invoice')
-                ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID');
-        })
-        ->select(
-            'quotation.*',
-            'document_invoice.Quotation_ID as QID',
-            'document_invoice.document_status',
-            'document_invoice.sumpayment',// Separate this field for clarity
-            DB::raw('1 as status'),
-            DB::raw('SUM(CASE WHEN document_invoice.document_status = 1 THEN 1 ELSE 0 END) as invoice_count')
-        )
-        ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_document')
-        ->get();
-
-
+    ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+    ->leftJoin('deposit_revenue', 'quotation.Quotation_ID', '=', 'deposit_revenue.Quotation_ID') // ตรงนี้แก้ไข
+    ->where('quotation.status_document', 6)
+    ->whereNotExists(function ($query) {
+        $query->select(DB::raw(1))
+            ->from('document_invoice')
+            ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID');
+    })
+    ->select(
+        'quotation.*',
+        'deposit_revenue.*',
+        'document_invoice.Quotation_ID as QID',
+        'document_invoice.document_status',
+        'document_invoice.sumpayment',
+        DB::raw('1 as status'),
+        DB::raw('SUM(CASE WHEN document_invoice.document_status = 1 THEN 1 ELSE 0 END) as invoice_count'),
+        DB::raw('SUM(CASE WHEN deposit_revenue.document_status = 1 THEN 1 ELSE 0 END) as deposit_count')
+    )
+    ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_document')
+    ->get();
 
         $Cancel = document_invoices::query()->where('document_status',0)->get();
 
@@ -333,7 +334,7 @@ class Document_invoice extends Controller
             {
 
                 $balance = $request->balance;
-                $sum = $request->sum;
+                $sum = $request->sum ?? 0;
                 if ($sum== null) {
                     return redirect()->back()->with('error', 'กรุณากรอกข้อมูลให้ครบ');
                 }
@@ -345,8 +346,8 @@ class Document_invoice extends Controller
                 $Deposit = $datarequest['Deposit'] ?? null;
                 $Nettotal = $datarequest['amount'] ?? null;
                 $Payment = $datarequest['Payment'] ?? null;
-                $Balance = $Nettotal-$Payment;
-
+                $depositamount = $Nettotal-$sum;
+                $Balance = $Nettotal-$depositamount;
                 $formattedProductData = [];
                 if ($deposit !== 0) {
                     foreach ($deposit as $item) {
@@ -372,10 +373,10 @@ class Document_invoice extends Controller
                 if ($InvoiceID) {
                     $fullname = 'รหัส : '.$InvoiceID.' + '.'อ้างอิงจาก : '.$Proposal_ID;
                 }
-
+                $list = 'รหัสรายการที่หักบิล';
                 $datacompany = '';
 
-                $variables = [$fullname, $Nettotalcheck, $Paymentcheck, $Balancecheck];
+                $variables = [$fullname, $Nettotalcheck, $Paymentcheck, $Balancecheck,$list];
                 $formattedProductDataString = implode(' + ', $formattedProductData);
 
                 // รวม $formattedProductDataString เข้าไปใน $variables
@@ -388,6 +389,7 @@ class Document_invoice extends Controller
                         $datacompany .= $variable;
                     }
                 }
+
                 $userids = Auth::user()->id;
                 $save = new log_company();
                 $save->Created_by = $userids;

@@ -34,7 +34,7 @@
                                         <label for="ถึง">ถึง : </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        <input type="text" class="form-control" value="{{$emailCom}}"disabled>
+                                        <input type="text" class="form-control" value="{{$emailCon}}"disabled>
                                         <input type="hidden" name="emailCom" class="form-control" value="{{$emailCon}}">
                                     </div>
                                 </div>

@@ -986,7 +986,6 @@
                                             <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
                                                 Back
                                             </button>
-
                                             <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                         </div>
                                         <div class="col-4"></div>

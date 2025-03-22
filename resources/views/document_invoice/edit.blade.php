@@ -908,7 +908,6 @@
                                 </tr>
                             `;
                             $('#display-deposit').append(newRow);  // เพิ่มแถวใน tbody
-
                         });
                         payment();
                     },

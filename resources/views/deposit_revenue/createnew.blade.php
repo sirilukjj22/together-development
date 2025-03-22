@@ -1247,7 +1247,7 @@
 
                     $('#QuotationID').val(proposal_id);
                     $('#quotation_ID').text(proposal_id);
-                    $('#_number').text(response.Deposit);
+                    $('#deposit_number').text(response.Deposit);
                     let selectHtml = `<select name="Guest" id="Guest" class="form-select" onchange="data()" required>`;
                     selectHtml += `<option value="${nameID}">${fullname}</option>`;
 

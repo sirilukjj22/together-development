@@ -115,7 +115,7 @@
                                         <div class="outer-glow-circle"></div>
                                         <div class="circle-content">
                                             <p class="circle-text">
-                                            <p class="f-w-bold fs-3">{{ number_format($totalinvoices-$totalReceipt, 2, '.', ',') }}</p>
+                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal-$totalReceipt, 2, '.', ',') }}</p>
                                             <span class="subtext fs-6" >Total Amount</span>
                                             </p>
                                         </div>
@@ -137,20 +137,20 @@
                                             <span >Additional ({{$Additional_ID}})</span>
                                             <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($Additionaltotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
                                         </li>
+
                                         <li class="pr-3">
                                             <span >Total</span>
                                             <span class="text-danger f-w-bold">{{ number_format($Nettotal+$Additionaltotal, 2, '.', ',') }}</span>
                                         </li>
                                     </span>
                                     <span id="defaultContent">
-                                        <li class="pr-3">
-                                            <span>Deposit Revenue</span>
-                                            <span class="text-danger f-w-bold"> - {{ number_format($Nettotal+$Additionaltotal-$totalinvoices, 2, '.', ',') }}</span>
-                                        </li>
-                                        <li class="pr-3">
-                                            <span>Receipt</span>
-                                            <span class="text-danger f-w-bold"> - {{ number_format($totalReceipt, 2, '.', ',') }}</span>
-                                        </li>
+                                        @if ($AdditionaltotalReceipt)
+                                            <li class="pr-3">
+                                                <span>Receipt</span>
+                                                <span class="text-danger f-w-bold"> - {{ number_format($totalReceipt, 2, '.', ',') }}</span>
+                                            </li>
+                                        @endif
+
                                     </span>
                                     @if ($additional_type == 'Cash')
                                         <span id="toggleContent" style="display: none;">
@@ -186,10 +186,120 @@
                                 </ul>
                                 <li class="outstanding-amount">
                                     <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                    <span class="text-success f-w-bold"> {{ number_format($totalinvoices-$totalReceipt, 2, '.', ',') }}</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal-$totalReceipt, 2, '.', ',') }}</span>
                                 </li>
                             </div>
                         </div>
+                        @if ($deposit_revenue_amount)
+                            <div class="card-body">
+                                <b>Deposit Revenue</b>
+                                <div class="wrap-table-together">
+                                    <table id="" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                                <th data-priority="1">Deposit Revenue ID</th>
+                                                <th data-priority="1">Proposal ID</th>
+                                                <th data-priority="1">Company / Individual</th>
+                                                <th class="text-center">Amount</th>
+                                                <th class="text-center">Issue Date</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($deposit_revenue))
+
+                                                @foreach ($deposit_revenue as $key => $item)
+                                                <tr>
+                                                    <td>{{ $item->Deposit_ID}}</td>
+                                                    <td>{{ $item->Quotation_ID}}</td>
+                                                    <td style="text-align: left;">{{ $item->fullname}}</td>
+                                                    <td style="text-align: center;">
+                                                        {{ number_format($item->amount, 2) }}
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        {{ $item->Issue_date}}
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        {{ $item->ExpirationDate}}
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->document_status == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
+                                                        @elseif ($item->document_status == 2)
+                                                            <span class="badge rounded-pill "style="background-color: #0ea5e9"> Await Deduct</span>
+                                                        @endif
+                                                    </td>
+                                                    @php
+                                                        $CreateBy = Auth::user()->id;
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Deposit Revenue', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Deposit Revenue', Auth::user()->id);
+                                                    @endphp
+                                                    <td style="text-align:center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                @if ($item->document_status == 1)
+                                                                    @if (!($Nettotal - $totalReceipt <= 0))
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/deposit/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create Combined Receipt</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
+                        @if ($AdditionaltotalReceipt)
+                            <div class="card-body">
+                                <b>Receipt</b>
+                                <table id="ReceiptTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
+                                    <thead >
+                                        <tr>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Proforma Invoice ID</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Reference ID</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @if(!empty($Receiptover))
+                                            @foreach ($Receiptover as $key => $item4)
+                                            <tr>
+                                                <td style="text-align:left;">{{$item4->Receipt_ID}}</td>
+                                                <td style="text-align:left;">{{$item4->Quotation_ID}}</td>
+                                                <td style="text-align:left;">{{$item4->Deposit_ID ?? $item4->Invoice_ID}}</td>
+                                                <td style="text-align:center;">{{$item4->paymentDate}}</td>
+                                                <td style="text-align:center;">
+                                                    <span class="badge rounded-pill bg-success">Approved</span>
+                                                </td>
+                                                <td style="text-align:center;">{{ number_format($item4->Amount , 2, '.', ',') }}</td>
+                                                <td style="text-align:left;">
+                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item4->id) }}">
+                                                        View
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
                         @if ($invoices)
                             <div class="card-body">
                                 <b>Invoice</b>
@@ -236,78 +346,64 @@
 
                             </div>
                         @endif
-                        <div class="card-body">
-                            <b>Receipt</b>
-                            <table id="ReceiptTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
-                                <thead >
-                                    <tr>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Proforma Invoice ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(!empty($Receipt))
-
-
+                        @if (!empty($Additional))
+                            <div class="card-body">
+                                <b>Additional</b>
+                                <table id="ReceiptTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
+                                    <thead >
+                                        <tr>
+                                            <th class="text-center" data-priority="1">Additional ID</th>
+                                            <th class="text-center" data-priority="1">Proposal ID</th>
+                                            <th data-priority="1">Company / Individual</th>
+                                            <th class="text-center">Issue Date</th>
+                                            <th class="text-center">Expiration Date</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Operated By</th>
+                                            <th class="text-center">Document Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Additional))
+                                            @foreach ($Additional as $key => $item4)
                                             <tr>
-                                                <th style="text-align:left;">{{$Receipt->Receipt_ID}}</th>
-                                                <th style="text-align:left;">{{$Receipt->Invoice_ID}}</th>
-                                                <th style="text-align:center;">{{$Receipt->paymentDate}}</th>
-                                                <th style="text-align:center;">
-                                                    <span class="badge rounded-pill bg-success">Approved</span>
-                                                </th>
-                                                <th style="text-align:center;">{{ number_format($Receipt->Amount+$Receipt->complimentary, 2, '.', ',') }}</th>
-                                                <th style="text-align:left;">
-                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$Receipt->id) }}">
-                                                        View
-                                                    </a>
-                                                </th>
+                                                <td style="text-align: center;">{{ $item4->Additional_ID }}</td>
+                                                <td style="text-align: center;">{{ $item4->Quotation_ID }}</td>
+                                                @if ($item4->type_Proposal == 'Company')
+                                                    <td style="text-align: left;">{{ @$item4->company->Company_Name}}</td>
+                                                @else
+                                                    <td style="text-align: left;">{{ @$item4->guest->First_name.' '.@$item4->guest->Last_name}}</td>
+                                                @endif
+                                                <td>{{ $item4->issue_date }}</td>
+                                                <td style="text-align: center;">{{ $item4->Expirationdate }}</td>
+                                                <td style="text-align: center;">   {{ number_format($item4->Nettotal, 2) }}</td>
+                                                <td >{{ @$item4->userOperated->name }}</td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill " style="background-color: #2C7F7A">Complete</span>
+                                                </td>
+                                                @php
+                                                    $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Additional', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Additional', Auth::user()->id);
+                                                @endphp
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item4->id) }}">View</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/Additional/Charge/document/PDF/'.$item4->id) }}">Export</a></li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
                                             </tr>
-
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        @if ($statusover == '0')
-                        <div class="card-body">
-                            <b>Additional</b>
-                            <table id="ReceiptTable" class="example ui striped table nowrap unstackable hover" style="width:100%">
-                                <thead >
-                                    <tr>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Additional ID</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(!empty($Receiptover))
-                                        @foreach ($Receiptover as $key => $item4)
-                                            <tr>
-                                                <th style="text-align:left;">{{$item4->Receipt_ID}}</th>
-                                                <th style="text-align:left;">{{$item4->Quotation_ID}}</th>
-                                                <th style="text-align:center;">{{$item4->paymentDate}}</th>
-                                                <th style="text-align:center;">
-                                                    <span class="badge rounded-pill bg-success">Approved</span>
-                                                </th>
-                                                <th style="text-align:center;">{{ number_format($item4->Amount , 2, '.', ',') }}</th>
-                                                <th style="text-align:left;">
-                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolioOverbill/Proposal/invoice/export/'.$item4->id) }}">
-                                                        View
-                                                    </a>
-                                                </th>
-                                            </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
                         @endif
                     </div>
                 </div>

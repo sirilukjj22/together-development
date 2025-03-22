@@ -44,7 +44,7 @@
                 <div class="col-auto">
                     <div class="d-flex align-items-center">
                         <div class="dropdown">
-                            <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
+                            <button class="bd-button dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                 @if ($menu == 'Company.all')
                                     All
                                 @elseif ($menu == 'Company.ac')
@@ -54,7 +54,6 @@
                                 @else
                                     Status
                                 @endif
-                        <i class="fas fa-angle-down arrow-dropdown"></i>
                             </button>
                             <ul class="dropdown-menu border-0 shadow p-3">
                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('Company', 'Company.all') }}">All</a></li>
@@ -63,7 +62,6 @@
                             </ul>
                         </div>
                     </div>
-
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
