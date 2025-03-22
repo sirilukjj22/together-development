@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class BranchController extends Controller
+class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        return view('page_branch.index');
+        return view('dashboard.dashboard');
     }
 
     /**
@@ -23,17 +17,9 @@ class BranchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function confirm_branch($branch)
+    public function create()
     {
-        try {
-            User::where('id', Auth::user()->id)->update([
-                'current_branch' => $branch == "Together" ? 1 : 2
-            ]);
-        } catch (\Throwable $th) {
-            return $th;
-        }
-
-        return redirect('dashboard');
+        //
     }
 
     /**

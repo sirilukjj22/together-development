@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Harmony;
 
+use App\Http\Controllers\Controller;
 use App\Models\Masters;
 use App\Models\Role_permission_revenue;
 use App\Models\Harmony\Harmony_SMS_alerts;
@@ -267,19 +268,41 @@ class SMSHarmonyController extends Controller
                         'is_status' => 1
                     ]);
 
-                } elseif ($value->sender == "BANGKOKBANK" && count($exp_form) == 4) {
-                    Harmony_SMS_alerts::create([
-                        'date' => $value->created_at,
-                        'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[0]),
-                        'into_account' => Harmony_SMS_alerts::check_account($exp_form[0]),
-                        'amount' => str_replace(",", "", $exp_form[1]),
-                        'remark' => "Auto",
-                        'status' => 0
-                    ]);
+                } elseif ($value->sender == "BANGKOKBANK") {
+                    if (count($exp_form) == 4 && $exp_form[0] == "เงินโอนเข้าบ/ชX1199ผ่านระบบ") { // Credit Card
+                        $parts = preg_split('/[@]/', $exp_form[3]);
+                        $time = $parts[1]; // "02:48"
+                        $formattedDate = Carbon::parse($value->created_at)->format('Y-m-d');
 
-                    Harmony_SMS_forwards::where('id', $value->id)->update([
-                        'is_status' => 1
-                    ]);
+                        Harmony_SMS_alerts::create([
+                            'date' => $formattedDate." ".$time.":00",
+                            'transfer_from' => Harmony_SMS_alerts::check_bank("Credit"),
+                            'into_account' => Harmony_SMS_alerts::check_account($exp_form[0]),
+                            'amount' => preg_replace('/[^\d.]/', '', $exp_form[1]),
+                            'remark' => "Auto",
+                            'date_into' => Carbon::parse($formattedDate)->subDays(1)->format('Y-m-d H:i:s'),
+                            'transfer_remark' => "ยอดเครดิต",
+                            'status' => 4
+                        ]);
+    
+                        Harmony_SMS_forwards::where('id', $value->id)->update([
+                            'is_status' => 1
+                        ]);
+                        
+                    } elseif (count($exp_form) == 4) {
+                        Harmony_SMS_alerts::create([
+                            'date' => $value->created_at,
+                            'transfer_from' => Harmony_SMS_alerts::check_bank($exp_form[0]),
+                            'into_account' => Harmony_SMS_alerts::check_account($exp_form[0]),
+                            'amount' => str_replace(",", "", $exp_form[1]),
+                            'remark' => "Auto",
+                            'status' => 0
+                        ]);
+    
+                        Harmony_SMS_forwards::where('id', $value->id)->update([
+                            'is_status' => 1
+                        ]);
+                    }
 
                 } elseif ($value->sender == "KBank") {
                     $date = DateTime::createFromFormat('d/m/y', $exp_form[0]);

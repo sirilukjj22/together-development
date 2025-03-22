@@ -80,7 +80,7 @@
         <div class="navigation navbar navbar-light justify-content-center px-2 py-2 py-md-3 d-xl-none">
             <!-- Brand -->
             <div class="d-flex align-items-center">
-                <a href="{{ route('sms-alert') }}" class="">
+                <a href="{{ route('dashboard') }}" class="">
                     <img class="" src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort" width="50" />
                     <label class="text-white me-3 mobileLabelShow">Together Development</label>
                 </a>
@@ -98,9 +98,8 @@
         <div class="sidebar px-4 py-2">
             <div class="d-flex flex-column h-100">
                 <div class="text-center mb-2" id="mobileshow">
-                    <a href="{{ route('sms-alert') }}" class="">
-                        <img src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort" width="120"
-                            class="text-center mobileHidden" />
+                    <a href="{{ route('dashboard') }}" class="">
+                        <img src="{{ asset('assets/images/Logo.png') }}" alt="logo of Together Resort" width="120" class="text-center mobileHidden" />
                     </a>
                 </div>
 
@@ -109,7 +108,12 @@
                     <div class="tab-pane fade show active" id="nav-menu">
                         <!-- Menu: main ul -->
                         <ul class="menu-list">
-
+                            <li>
+                                <a class="m-link" href="{{ route('dashboard') }}">
+                                    <i class="fa fa-lg fa-home" style="font-weight: bold; color: white;"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
                             @if (Auth::user()->roleMenu->profile == 1)
                                 <li class="collapsed">
                                     <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Profile"

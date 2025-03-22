@@ -1,4 +1,4 @@
-@extends('layouts.masterLayout')
+@extends('layouts.masterLayoutHarmony')
 @php
     $excludeDatatable = false;
 @endphp
@@ -10,7 +10,7 @@
                     <div class="title-top-table">{{ $title ?? '' }}</div>
                 </div>
                 <div class="col-auto">
-                    <a href="{{ route('debit-elexa-revenue') }}" class="bt-tg-normal">Action</a>
+                    <a href="{{ route('harmony-debit-agoda-revenue') }}" class="bt-tg-normal">Action</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -19,37 +19,37 @@
     <div id="content-index" class="body-header d-flex">
         <div class="container-xl">
             <section class="">
-                <!-- Overview elexa Sale -->
+                <!-- Overview agoda Sale -->
                 <section class="mb-4">
                     <div class="mb-3">
-                        <h4 class="title-top-table">Overview Elexa Sale</h4>
+                        <h4 class="title-top-table">Overview agoda Sale</h4>
                     </div>
                     <div class="wrap-overview-agoda-sale">
                         <div class="wrap-card-revenue">
                             <div class="agoda-revenue">
-                                <span>Elexa Revenue</span> <!-- Elexa Charge -->
+                                <span>Agoda Revenue</span> <!-- Agoda Charge -->
                                 <span>{{ number_format($total_outstanding_all, 2) }}</span>
-                                <input type="hidden" id="input-total-elexa-charge-revenue" value="{{ $total_outstanding_all }}">
+                                <input type="hidden" id="input-total-agoda-charge-revenue" value="{{ $total_outstanding_all }}">
                             </div>
                             <div class="agoda-paid">
-                                <span>Elexa Paid</span> <!-- Elexa SMS -->
-                                <span>{{ number_format($total_elexa_revenue, 2) }}</span>
-                                <input type="hidden" id="input-total-elexa-paid" value="{{ $total_elexa_revenue }}">
+                                <span>Agoda Paid</span> <!-- Agoda SMS -->
+                                <span>{{ number_format($total_agoda_revenue, 2) }}</span>
+                                <input type="hidden" id="input-total-agoda-paid" value="{{ $total_agoda_revenue }}">
                             </div>
-                            <div class="agoda-ac-rec"> 
-                                <span>Account Receivable</span> <!-- Elexa ที่กดรับชำระแล้ว -->
+                            <div class="agoda-ac-rec">
+                                <span>Account Receivable</span> <!-- Agoda ที่กดรับชำระแล้ว -->
                                 <span>{{ number_format($totalAccountReceivableAll, 2) }}</span>
                                 <input type="hidden" id="input-total-account-receivable" value="{{ $totalAccountReceivableAll }}">
                             </div>
-                            <div class="agoda-pending-ac-rec"> <!-- Elexa ยอดที่เข้าแล้ว แต่ยังไม่ได้กดรับชำระ สถานะเป็น Pending -->
+                            <div class="agoda-pending-ac-rec"> <!-- Agoda ยอดที่เข้าแล้ว แต่ยังไม่ได้กดรับชำระ สถานะเป็น Pending -->
                                 <span>Pending Account Receivable</span>
                                 <span>{{ number_format(($totalPendingAccountReceivableAll), 2) }}</span>
                                 <input type="hidden" id="input-total-pending-account-receivable" value="{{ ($totalPendingAccountReceivableAll) }}">
                             </div>
                             <div class="agoda-outstanding">
-                                <span>Elexa Outstanding</span> <!-- Elexa Charge ลบ Elexa SMS -->
-                                <span>{{ number_format(($total_outstanding_all - $total_elexa_revenue), 2) }}</span>
-                                <input type="hidden" id="input-total-elexa-outstanding" value="{{ ($total_outstanding_all - $total_elexa_revenue) }}">
+                                <span>Agoda Outstanding</span> <!-- Agoda Charge ลบ Agoda SMS -->
+                                <span>{{ number_format(($total_outstanding_all - $total_agoda_revenue), 2) }}</span>
+                                <input type="hidden" id="input-total-agoda-outstanding" value="{{ ($total_outstanding_all - $total_agoda_revenue) }}">
                             </div>
                         </div>
                         <div style="max-width: 300px">
@@ -61,31 +61,31 @@
                     </div>
                 </section>
                 
-                <!-- Credit Elexa Revenue Outstanding -->
+                <!-- Credit Agoda Revenue Outstanding -->
                 <section class="mb-4">
                     <div class="mb-3">
-                        <h4 class="title-top-table">Credit Elexa Revenue Outstanding</h4>
+                        <h4 class="title-top-table">Credit Agoda Revenue Outstanding</h4>
                     </div>
                     <div class="d-flex box-sh p-2">
                         <div class="CreditAgodaOutstanding">
                             <div>
                                 <div class="wrap-card-graph-revenue mb-2">
                                     <div>
-                                        <span>Elexa Charge</span> <!-- Elexa Charge ยังไม่หักค่าธรรมเนียม -->
-                                        <span>{{ number_format($total_elexa_charge_all, 2) }}</span>
+                                        <span>Agoda Charge</span> <!-- Agoda Charge ยังไม่หักค่าธรรมเนียม -->
+                                        <span>{{ number_format($total_agoda_charge_all, 2) }}</span>
                                     </div>
                                     <div>
-                                        <span>Elexa Fee</span>
-                                        <span>{{ number_format($total_elexa_fee, 2) }}</span>
+                                        <span>Agoda Fee</span>
+                                        <span>{{ number_format($total_agoda_fee, 2) }}</span>
                                     </div>
                                     <div id="agodaCharge">
-                                        <span>Elexa Revenue</span>
+                                        <span>Agoda Revenue</span>
                                         <span>0.00</span>
                                     </div>
                                 </div>
                                 <div class="wrap-card-revenue">
                                     <div id="agodaPaid" class="agoda-paid">
-                                        <span>Elexa Paid</span>
+                                        <span>Agoda Paid</span>
                                         <span>0.00</span>
                                     </div>
                                     <div id="AccountRe" class="agoda-ac-rec">
@@ -94,11 +94,11 @@
                                     </div>
                                     <div id="pendingAccount" class="agoda-pending-ac-rec">
                                         <span>Pending Account Receivable</span>
-                                        <span>{{ number_format(($total_elexa_revenue - $total_elexa_debit_outstanding), 2) }}</span>
+                                        <span>{{ number_format(($total_agoda_revenue - $total_agoda_debit_outstanding), 2) }}</span>
                                     </div>
                                     <div id="outstandingBalance" class="agoda-outstanding">
-                                        <span>Elexa Outstanding Balance</span>
-                                        <span>{{ number_format(($total_outstanding_all - $total_elexa_revenue), 2) }}</span>
+                                        <span>Agoda Outstanding Balance</span>
+                                        <span>{{ number_format(($total_outstanding_all - $total_agoda_revenue), 2) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -162,25 +162,24 @@
                 {{-- Table 1 --}}
                 <section class="mb-4">
                     <div class="flex-between-2end">
-                        <h4 class="title-top-table">Elexa Revenue</h4>
+                        <h4 class="title-top-table">Agoda Revenue</h4>
                         <div class="flex-end">
                             <div class="filter-section bd-select-cl d-flex mb-2 mr-2 " style=" gap: 0.3em;">
-                                <select id="elexaRevenueYearFilter" class="form-select" style="width: max-content;" onchange="filterElexaRevenueSearch()">
+                                <select id="agodaRevenueYearFilter" class="form-select" style="width: max-content;" onchange="filterAgodaRevenueSearch()">
                                     <option value="all">All Years</option>
-                                    @for ($i = 2024; $i <= (date('Y') + 1); $i++)
-                                        <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
-                                    @endfor
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="wrap-table-together">
-                        <table id="elexaRevenueTable" class="table-together table-style">
+                        <table id="agodaRevenueTable" class="table-together table-style">
                             <thead>
                                 <tr>
                                     <th data-priority="1">#</th>
                                     <th data-priority="2">Month</th>
-                                    <th data-priority="2">Elexa paid</th>
+                                    <th data-priority="2">Agoda paid</th>
                                     <th data-priority="4">Items</th>
                                     <th data-priority="3">Status</th>
                                     <th data-priority="1">Details</th>
@@ -193,7 +192,7 @@
                                     $totalAllReceive = 0;
                                 @endphp
 
-                                @foreach ($elexa_revenue as $key => $item)
+                                @foreach ($agoda_revenue as $key => $item)
                                     @php
                                         $total = $item->total_sum;
                                         $totalAllItem += $item->total_item;
@@ -227,7 +226,7 @@
                                 <tr>
                                     <td class="text-center" style="padding: 10px;">Total</td>
                                     <td></td>
-                                    <td class="text-end format-number-table" id="tfoot-total-revenue">{{ $total_elexa_revenue }}</td>
+                                    <td class="text-end format-number-table" id="tfoot-total-revenue">{{ $total_agoda_revenue }}</td>
                                     <td class="text-center" id="tfoot-total-item">{{ $totalAllReceive }}/{{ $totalAllItem }}</td>
                                     <td></td>
                                     <td></td>
@@ -240,15 +239,15 @@
                 {{-- Table 2 --}}
                 <section class="mb-4">
                     <div class="flex-between-2end">
-                        <h4 class="title-top-table">Elexa outstanding revenue</h4>
+                        <h4 class="title-top-table">Agoda outstanding revenue</h4>
                         <div class="flex-end">
                             <div class="filter-section bd-select-cl d-flex mb-2 mr-2 " style=" gap: 0.3em;">
-                                <select id="elexaOutstandingYearFilter" class="form-select" style="width: max-content;" onchange="filterElexaOutstandingSearch()">
+                                <select id="agodaOutstandingYearFilter" class="form-select" style="width: max-content;" onchange="filterAgodaOutstandingSearch()">
                                     <option value="all">All Years</option>
                                     <option value="2024">2024</option>
                                     <option value="2025">2025</option>
                                 </select>
-                                <select id="elexaOutstandingMonthFilter" class="form-select " style="width: max-content;" onchange="filterElexaOutstandingSearch()">
+                                <select id="agodaOutstandingMonthFilter" class="form-select " style="width: max-content;" onchange="filterAgodaOutstandingSearch()">
                                     <option value="all">All Months</option>
                                     <option value="1">January</option>
                                     <option value="2">February</option>
@@ -267,23 +266,27 @@
                         </div>
                     </div>
                     <div class="wrap-table-together">
-                        <table id="elexaOutstandingTable" class="table-together table-style">
+                        <table id="agodaOutstandingTable" class="table-together table-style">
                             <thead>
                                 <tr class="text-capitalize">
                                     <th data-priority="1">#</th>
                                     <th data-priority="1">วันที่ทำรายการ</th>
-                                    <th data-priority="3">Order ID</th>
+                                    <th data-priority="3">Booking number</th>
+                                    <th data-priority="4">Check in date</th>
+                                    <th data-priority="5">Check out date</th>
                                     <th data-priority="1">amount</th>
                                     <th data-priority="2">status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($elexa_outstanding as $key => $item)
+                                @foreach ($agoda_outstanding as $key => $item)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                         <td>{{ $item->batch }}</td>
-                                        <td class="text-end target-class">{{ $item->ev_revenue }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
+                                        <td class="text-end target-class">{{ $item->agoda_outstanding }}</td>
                                         <td><span class="wrap-status-unpaid">unpaid</span></td>
                                     </tr>
                                 @endforeach
@@ -292,8 +295,8 @@
                                 <tr>
                                     <td></td>
                                     <td class="text-center" style="padding: 10px">Total</td>
-                                    <td></td>
-                                    <td class="text-end format-number-table" id="tfoot-total-outstanding">{{ $total_elexa_outstanding_revenue }}</td>
+                                    <td colspan="3"></td>
+                                    <td class="text-end format-number-table" id="tfoot-total-outstanding">{{ $total_agoda_outstanding_revenue }}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -304,15 +307,15 @@
                 {{-- Table 3 --}}
                 <section class="mb-4">
                     <div class="flex-between-2end">
-                        <h4 class="title-top-table">Debit Elexa Outstanding </h4>
+                        <h4 class="title-top-table">Debit Agoda Outstanding </h4>
                         <div class="flex-end">
                             <div class="filter-section bd-select-cl d-flex mb-2 mr-2 " style=" gap: 0.3em;">
-                                <select id="elexaDebitYearFilter" class="form-select" style="width: max-content;" onchange="filterElexaDebitSearch()">
+                                <select id="agodaDebitYearFilter" class="form-select" style="width: max-content;" onchange="filterAgodaDebitSearch()">
                                     <option value="all">All Years</option>
                                     <option value="2024">2024</option>
                                     <option value="2025">2025</option>
                                 </select>
-                                <select id="elexaDebitMonthFilter" class="form-select " style="width: max-content;" onchange="filterElexaDebitSearch()">
+                                <select id="agodaDebitMonthFilter" class="form-select " style="width: max-content;" onchange="filterAgodaDebitSearch()">
                                     <option value="all">All Months</option>
                                     <option value="1">January</option>
                                     <option value="2">February</option>
@@ -331,23 +334,27 @@
                         </div>
                     </div>
                     <div class="wrap-table-together">
-                        <table id="elexaDebitTable" class="example table-together table-style">
+                        <table id="agodaDebitTable" class="example table-together table-style">
                             <thead>
                                 <tr class="text-capitalize">
                                     <th data-priority="1">#</th>
                                     <th data-priority="1">วันที่ทำรายการ</th>
-                                    <th data-priority="3">Order ID</th>
+                                    <th data-priority="3">Booking number</th>
+                                    <th data-priority="4">Check in date</th>
+                                    <th data-priority="5">Check out date</th>
                                     <th data-priority="1">amount</th>
                                     <th data-priority="2">status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($elexa_debit as $key => $item)
+                                @foreach ($agoda_debit as $key => $item)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                         <td>{{ $item->batch }}</td>
-                                        <td class="text-end target-class">{{ $item->ev_revenue }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
+                                        <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
+                                        <td class="text-end target-class">{{ $item->agoda_outstanding }}</td>
                                         <td><span class="wrap-status-paid">paid</span></td>
                                     </tr>
                                 @endforeach
@@ -356,8 +363,8 @@
                                 <tr>
                                     <td></td>
                                     <td class="text-center" style="padding: 10px">Total </td>
-                                    <td></td>
-                                    <td class="text-end format-number-table" id="tfoot-total-debit">{{ $total_elexa_debit_outstanding }}</td>
+                                    <td colspan="3"></td>
+                                    <td class="text-end format-number-table" id="tfoot-total-debit">{{ $total_agoda_debit_outstanding }}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -417,7 +424,7 @@
 
     <!-- Custom Scripts -->
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
-    <script src="{{ asset('assets/js/revenueElexa.js') }}"></script>
+    <script src="{{ asset('assets/js/revenueAgoda.js') }}"></script>
 
 <script>
     function currencyFormat(num) {
@@ -429,13 +436,13 @@
         $.fn.dataTable.tables({ visible: true, api: true, }).columns.adjust().responsive.recalc();
     }
 
-    function filterElexaRevenueSearch() {
-        var year = $('#elexaRevenueYearFilter').val();
+    function filterAgodaRevenueSearch() {
+        var year = $('#agodaRevenueYearFilter').val();
         var search_value = $('#dt-search-0').val();
-        var table_name = "elexaRevenueTable";
+        var table_name = "agodaRevenueTable";
 
-        $('#elexaRevenueTable').DataTable().destroy();
-        var table = $("#elexaRevenueTable").DataTable({
+        $('#agodaRevenueTable').DataTable().destroy();
+        var table = $("#agodaRevenueTable").DataTable({
             paging: true,
             searching: true,
             ordering: true,
@@ -444,7 +451,7 @@
             serverSide: false,
             responsive: true,
             ajax: {
-                url: 'debtor-elexa-search-table',
+                url: 'debtor-agoda-search-table',
                 type: 'POST',
                 data: {
                     search_value: search_value,
@@ -492,7 +499,7 @@
             columns: [
                 { data: 'number' },
                 { data: 'month' },
-                { data: 'elexa_paid' },
+                { data: 'agoda_paid' },
                 { data: 'item' },
                 { data: 'status' },
                 { data: 'btn_detail' },
@@ -520,14 +527,14 @@
         $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
     }
 
-    function filterElexaOutstandingSearch() {
-        var year = $('#elexaOutstandingYearFilter').val();
-        var month = $('#elexaOutstandingMonthFilter').val();
+    function filterAgodaOutstandingSearch() {
+        var year = $('#agodaOutstandingYearFilter').val();
+        var month = $('#agodaOutstandingMonthFilter').val();
         var search_value = $('#dt-search-1').val();
-        var table_name = "elexaOutstandingTable";
+        var table_name = "agodaOutstandingTable";
 
-        $('#elexaOutstandingTable').DataTable().destroy();
-        var table = $("#elexaOutstandingTable").DataTable({
+        $('#agodaOutstandingTable').DataTable().destroy();
+        var table = $("#agodaOutstandingTable").DataTable({
             paging: true,
             searching: true,
             ordering: true,
@@ -536,7 +543,7 @@
             serverSide: false,
             responsive: true,
             ajax: {
-                url: 'debtor-elexa-search-table',
+                url: 'debtor-agoda-search-table',
                 type: 'POST',
                 data: {
                     search_value: search_value,
@@ -555,9 +562,9 @@
                 $('#tfoot-total-outstanding').text(total);
             },
             columnDefs: [
-                            { targets: [3], className: 'text-end' },
+                            { targets: [5], className: 'text-end' },
                             {
-                                targets: [3], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
+                                targets: [5], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
                                 createdCell: function(td, cellData, rowData, row, col) {
                                     if ($.isNumeric(cellData)) {
                                         // แสดงตัวเลขพร้อม comma
@@ -572,7 +579,9 @@
             columns: [
                 { data: 'number' },
                 { data: 'date' },
-                { data: 'orderID' },
+                { data: 'booking' },
+                { data: 'check_in' },
+                { data: 'check_out' },
                 { data: 'amount' },
                 { data: 'status' },
             ],
@@ -583,14 +592,14 @@
         $('label[for^="dt-length-"], label[for^="dt-search-"]').hide();
     }
 
-    function filterElexaDebitSearch() {
-        var year = $('#elexaDebitYearFilter').val();
-        var month = $('#elexaDebitMonthFilter').val();
+    function filterAgodaDebitSearch() {
+        var year = $('#agodaDebitYearFilter').val();
+        var month = $('#agodaDebitMonthFilter').val();
         var search_value = $('#dt-search-2').val();
-        var table_name = "elexaDebitTable";
+        var table_name = "agodaDebitTable";
 
-        $('#elexaDebitTable').DataTable().destroy();
-        var table = $("#elexaDebitTable").DataTable({
+        $('#agodaDebitTable').DataTable().destroy();
+        var table = $("#agodaDebitTable").DataTable({
             paging: true,
             searching: true,
             ordering: true,
@@ -599,7 +608,7 @@
             serverSide: false,
             responsive: true,
             ajax: {
-                url: 'debtor-elexa-search-table',
+                url: 'debtor-agoda-search-table',
                 type: 'POST',
                 data: {
                     search_value: search_value,
@@ -618,9 +627,9 @@
                 $('#tfoot-total-debit').text(total);
             },
             columnDefs: [
-                            { targets: [3], className: 'text-end' },
+                            { targets: [5], className: 'text-end' },
                             {
-                                targets: [3], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
+                                targets: [5], // ใช้กับคอลัมน์ที่ต้องการแสดงตัวเลข
                                 createdCell: function(td, cellData, rowData, row, col) {
                                     if ($.isNumeric(cellData)) {
                                         // แสดงตัวเลขพร้อม comma
@@ -635,7 +644,9 @@
             columns: [
                 { data: 'number' },
                 { data: 'date' },
-                { data: 'orderID' },
+                { data: 'booking' },
+                { data: 'check_in' },
+                { data: 'check_out' },
                 { data: 'amount' },
                 { data: 'status' },
             ],
@@ -679,7 +690,7 @@
 
         jQuery.ajax({
             type:   "GET",
-            url:    "{!! url('debtor-elexa-search-detail-child/"+parentGroupId+"') !!}",
+            url:    "{!! url('debtor-agoda-search-detail-child/"+parentGroupId+"') !!}",
             datatype:   "JSON",
             async:  false,
             success: function(response) {
@@ -691,11 +702,11 @@
                             <td class="text-start">${moment(val.date).format('DD/MM/YYYY H:mm:ss')}</td>
                             <td class="text-end">${currencyFormat(val.amount)}</td>
                             <td>
-                                ${val.status_receive_elexa == 1 ? '<span class="wrap-status-paid">paid</span>' : '<span class="wrap-status-pending">pending</span>'}
+                                ${val.status_receive_agoda == 1 ? '<span class="wrap-status-paid">paid</span>' : '<span class="wrap-status-pending">pending</span>'}
                             </td>
                             <td></td>
                             <td>
-                                <a href="/debit-elexa-detail/${val.id}">
+                                <a href="/harmony-debit-agoda-detail/${val.id}">
                                     <i class="fa fa-file-text-o" style="font-size:24px;color:rgb(95, 94, 94)"></i>
                                 </a>
                             </td>

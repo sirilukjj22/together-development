@@ -33,6 +33,7 @@ use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\Additional;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Deposit_Revenue;
 use App\Http\Controllers\GmailController;
 use App\Http\Controllers\LinkPDFProposal;
@@ -41,7 +42,6 @@ use App\Http\Controllers\ReportAgodaOutstandingController;
 use App\Http\Controllers\ReportAgodaPaidController;
 use App\Http\Controllers\ReportAgodaRevenueController;
 use App\Http\Controllers\ReportAuditRevenueDateController;
-use App\Http\Controllers\ReportAuditRevenueDateHarmonyController;
 use App\Http\Controllers\ReportElexaAccountReceivableController;
 use App\Http\Controllers\ReportElexaOutstandingController;
 use App\Http\Controllers\ReportElexaPaidController;
@@ -53,8 +53,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\ReportDocumentController;
-use App\Http\Controllers\RevenuesHarmonyController;
-use App\Http\Controllers\SMSHarmonyController;
+
+
+## Harmony
+use App\Http\Controllers\Harmony\HarmonyAgodaRevenuesController;
+use App\Http\Controllers\Harmony\HarmonyElexaController;
+use App\Http\Controllers\Harmony\RevenuesHarmonyController;
+use App\Http\Controllers\Harmony\SMSHarmonyController;
+use App\Http\Controllers\Harmony\ReportAuditRevenueDateHarmonyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +104,10 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(BranchController::class)->group(function () {
         Route::get('select-branch', 'index')->name('select-branch');
         Route::get('confirm-branch/{branch}', 'confirm_branch')->name('confirm-branch');
+    });
+
+    Route::controller(DashboardController::class)->middleware('checkTogetherOrHarmony')->group(function () {
+        Route::get('dashboard', 'index')->name('dashboard');
     });
 
     # SMS Alert (Together)
@@ -267,6 +277,69 @@ Route::middleware(['auth'])->group(function () {
 
         // Logs
         Route::get('debtor-elexa-logs/{id}', 'logs')->name('debtor-elexa-logs');
+    });
+
+    # Debit Agoda Revenue (Harmony)
+    Route::controller(HarmonyAgodaRevenuesController::class)->middleware('role:agoda', 'harmony:2')->group(function () {
+        Route::get('harmony-debit-agoda', 'index')->name('harmony-debit-agoda');
+        Route::get('harmony-debit-agoda-revenue', 'index_list_days')->name('harmony-debit-agoda-revenue'); // แสดงรายการรายได้จาก SMS
+        Route::get('harmony-debit-agoda-update/{month}/{year}', 'index_update_agoda')->name('harmony-debit-agoda-update');
+        Route::get('harmony-debit-agoda-update-receive/{id}', 'index_receive')->name('harmony-debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('harmony-debit-agoda-detail/{id}', 'index_detail_receive')->name('harmony-debit-agoda-detail'); // แสดงรายละเอียด
+        Route::post('harmony-debit-agoda-store', 'receive_payment')->name('harmony-debit-agoda-store'); // บันทึกข้อมูล
+        Route::get('harmony-debit-select-agoda-outstanding/{id}', 'select_agoda_outstanding')->name('harmony-debit-select-agoda-outstanding');
+        Route::post('harmony-debit-confirm-select-agoda-outstanding', 'confirm_select_agoda_outstanding')->name('harmony-debit-confirm-select-agoda-outstanding'); // Confirm รายการที่เลือก
+        Route::get('harmony-debit-select-agoda-received/{id}', 'select_agoda_received')->name('harmony-debit-select-agoda-received');
+        // Route::get('harmony-debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('harmony-debit-status-agoda-receive');
+
+        // Graph
+        Route::get('harmony-debtor-agoda-graph-month-sales', 'graph_month_sales')->name('harmony-debtor-agoda-graph-month-sales');
+        Route::get('harmony-debtor-agoda-graph-month-charge', 'graph_month_charge')->name('harmony-debtor-agoda-graph-month-charge');
+
+        // Lock & Unlock
+        Route::get('harmony-debtor-agoda-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('harmony-debtor-agoda-change-status-lock');
+
+        // Logs
+        Route::get('harmony-debtor-agoda-logs/{id}', 'logs')->name('harmony-debtor-agoda-logs');
+
+        // Search Child
+        Route::get('harmony-debtor-agoda-search-detail-child/{id}', 'search_detail')->name('harmony-debtor-agoda-search-detail-child');
+
+        // Search, Paginate
+        Route::post('harmony-debtor-agoda-search-table', 'search_table')->name('harmony-debtor-agoda-search-table');
+    });
+
+    # Debit Elexa (Harmony)
+    Route::controller(HarmonyElexaController::class)->middleware('role:elexa', 'harmony:2')->group(function () {
+        Route::get('harmony-debit-elexa', 'index')->name('harmony-debit-elexa');
+        Route::get('harmony-debit-elexa-revenue', 'index_list_days')->name('harmony-debit-elexa-revenue');
+        Route::get('harmony-debit-elexa-update/{month}/{year}', 'index_update_elexa')->name('harmony-debit-elexa-update');
+        Route::get('harmony-debit-elexa-update-receive/{id}', 'index_receive')->name('harmony-debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('harmony-debit-elexa-detail/{id}', 'index_detail_receive')->name('harmony-debit-elexa-detail'); // แสดงรายละเอียด
+        Route::post('harmony-debit-elexa-store', 'receive_payment')->name('harmony-debit-elexa-store');
+        Route::get('harmony-debit-select-elexa-outstanding/{id}', 'select_elexa_outstanding')->name('harmony-debit-select-elexa-outstanding');
+        Route::post('harmony-debit-select-all-elexa-outstanding', 'select_all_elexa_outstanding')->name('harmony-debit-select-all-elexa-outstanding'); // เลือกมากกว่า 1 รายการ
+        Route::post('harmony-debit-confirm-select-elexa-outstanding', 'confirm_select_elexa_outstanding')->name('harmony-debit-confirm-select-elexa-outstanding'); // Confirm รายการที่เลือก
+        Route::get('harmony-debit-status-elexa-receive/{status}', 'status_elexa_receive')->name('harmony-debit-status-elexa-receive');
+
+        // Get Data
+        Route::post('harmony-debit-get-outstanding', 'get_outstanding')->name('harmony-debit-get-outstanding'); // Outstanding ทั้งหมด
+
+        // Graph
+        Route::get('harmony-debtor-elexa-graph-month-sales', 'graph_month_sales')->name('harmony-debtor-elexa-graph-month-sales');
+        Route::get('harmony-debtor-elexa-graph-month-charge', 'graph_month_charge')->name('harmony-debtor-elexa-graph-month-charge');
+
+        // Lock & Unlock
+        Route::get('harmony-debtor-elexa-change-status-lock/{id}/{status}', 'change_lock_unlock')->name('harmony-debtor-elexa-change-status-lock');
+
+        // Search Child
+        Route::get('harmony-debtor-elexa-search-detail-child/{id}', 'search_detail')->name('harmony-debtor-elexa-search-detail-child');
+
+        // Search, Paginate
+        Route::post('harmony-debtor-elexa-search-table', 'search_table')->name('harmony-debtor-elexa-search-table');
+
+        // Logs
+        Route::get('harmony-debtor-elexa-logs/{id}', 'logs')->name('harmony-debtor-elexa-logs');
     });
 
     ## Master Data

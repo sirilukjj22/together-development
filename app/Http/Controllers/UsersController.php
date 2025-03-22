@@ -292,7 +292,7 @@ class UsersController extends Controller
             return $th->getMessage();
         }
 
-        return redirect(url('users', 'index'))->with('success', 'ระบบได้ทำการแก้ไขรายการชื่อ '.$request->name_th.' ในระบบเรียบร้อยแล้ว');
+        return redirect(url('users', ['index', 0]))->with('success', 'ระบบได้ทำการแก้ไขรายการชื่อ '.$request->name_th.' ในระบบเรียบร้อยแล้ว');
     }
 
     public function change_status($id)

@@ -1,4 +1,4 @@
-@extends('layouts.masterLayout')
+@extends('layouts.masterLayoutHarmony')
 @php
     $excludeDatatable = false;
 @endphp
@@ -10,7 +10,7 @@
                     <div class="title-top-table">{{ $title ?? '' }}</div>
                 </div>
                 <div class="col-auto">
-                    <a href="{{ route('debit-elexa-revenue') }}" class="bt-tg-normal">Action</a>
+                    <a href="{{ route('harmony-debit-elexa-revenue') }}" class="bt-tg-normal">Action</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -695,7 +695,7 @@
                             </td>
                             <td></td>
                             <td>
-                                <a href="/debit-elexa-detail/${val.id}">
+                                <a href="/harmony-debit-elexa-detail/${val.id}">
                                     <i class="fa fa-file-text-o" style="font-size:24px;color:rgb(95, 94, 94)"></i>
                                 </a>
                             </td>

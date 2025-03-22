@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Harmony;
 
-use App\Models\Document_elexa;
-use App\Models\Elexa_debit_revenue;
-use App\Models\Log_elexa;
-use App\Models\Revenue_credit;
-use App\Models\SMS_alerts;
+use App\Http\Controllers\Controller;
+use App\Models\Harmony\Harmony_document_elexa;
+use App\Models\Harmony\Harmony_elexa_debit_revenue;
+use App\Models\Harmony\Harmony_log_elexa;
+use App\Models\Harmony\Harmony_revenue_credit;
+use App\Models\Harmony\Harmony_SMS_alerts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ElexaController extends Controller
+class HarmonyElexaController extends Controller
 {
     public function index()
     {
-        $query_revenue = SMS_alerts::query()->where('status', 8)
+        $query_revenue = Harmony_SMS_alerts::query()->where('status', 8)
             ->select('sms_alert.*', 
                 DB::raw("MONTH(date) as month, SUM(amount) as total_sum, COUNT(id) as total_item"),
                 DB::raw("SUM(CASE WHEN status_receive_elexa = 1 THEN status_receive_elexa ELSE 0 END) as total_receive"))
@@ -25,21 +26,21 @@ class ElexaController extends Controller
         $total_elexa_revenue = $query_revenue->get()->sum('total_sum');
         $elexa_revenue = $query_revenue->get();
 
-        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_outstanding = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0)
             ->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
                 'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
-        $elexa_debit = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_debit = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1)
             ->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 
                 'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
-        $sms_revenue_all = SMS_alerts::where('status', 8)->select('amount', 'status_receive_elexa')->get();
+        $sms_revenue_all = Harmony_SMS_alerts::where('status', 8)->select('amount', 'status_receive_elexa')->get();
 
-        $elexa_all = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_all = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)
             ->select('revenue_credit.receive_payment', 'revenue_credit.ev_revenue', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee',)
             ->get();
@@ -73,7 +74,7 @@ class ElexaController extends Controller
 
         $title = "Elexa EGAT";
 
-        return view('elexa.index', compact(
+        return view('elexa_harmony.index', compact(
             'totalAccountReceivableAll', 'totalPendingAccountReceivableAll',
             'elexa_revenue', 'elexa_outstanding', 'elexa_debit', 
             'total_elexa_revenue', 'total_outstanding_all', 'total_elexa_charge_all',
@@ -90,7 +91,7 @@ class ElexaController extends Controller
         $length = $request->input('length');         // จำนวนข้อมูลที่ต้องการแสดงในแต่ละหน้า
 
         // สร้าง query สำหรับการค้นหา
-        $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 0);
 
         if (isset($request->receiveID) && !empty($request->receiveID)) {
@@ -119,7 +120,7 @@ class ElexaController extends Controller
         }
 
         // การนับจำนวนทั้งหมดและจำนวนที่กรองแล้ว
-        $recordsTotal = Revenue_credit::count();
+        $recordsTotal = Harmony_revenue_credit::count();
         $recordsFiltered = $query->count();
 
         $query->select('revenue_credit.id', 'revenue_credit.batch','revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee',  'revenue_credit.ev_vat', 
@@ -184,38 +185,38 @@ class ElexaController extends Controller
     // หน้าเลือกที่จะทำรายการ
     public function index_list_days()
     {
-        $query = SMS_alerts::query()->where('status', 8);
+        $query = Harmony_SMS_alerts::query()->where('status', 8);
         
         $total_elexa_revenue = $query->get()->sum('amount');
         $elexa_revenue = $query->orderBy('date', 'asc')->get();
 
         $title = "Elexa EGAT Revenue";
 
-        return view('elexa.list_elexa', compact('elexa_revenue', 'total_elexa_revenue', 'title'));
+        return view('elexa_harmony.list_elexa', compact('elexa_revenue', 'total_elexa_revenue', 'title'));
     }
 
     // หน้าเลือกรายการที่จะรับชำระ (Create/Edit)
     public function index_receive($id)
     {
-        $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount', 'status_receive_elexa', DB::raw('DATE(date) as sms_date'))->first();
+        $elexa_revenue = Harmony_SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount', 'status_receive_elexa', DB::raw('DATE(date) as sms_date'))->first();
 
         // เลขที่เอกสาร
         if ($elexa_revenue->status_receive_elexa == 0) {
             $document_query = '';
             $document_no = $this->generateDocumentNumber();
         } else {
-            $document_query = Document_elexa::where('sms_id', $id)->select('id', 'doc_no', 'debit_amount')->first();
+            $document_query = Harmony_document_elexa::where('sms_id', $id)->select('id', 'doc_no', 'debit_amount')->first();
             $document_no = !empty($document_query) ? $document_query->doc_no : '';
         }
 
-        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_outstanding = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 0)
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
                 'revenue_credit.ev_revenue', 'revenue_credit.ev_fee',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
-        $elexa_debit_revenue = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_debit_revenue = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 1)
             ->where('revenue_credit.sms_revenue', $id)
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
@@ -223,7 +224,7 @@ class ElexaController extends Controller
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
-        $elexa_all = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_all = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
                 'revenue_credit.ev_revenue', 'revenue_credit.ev_fee',
@@ -231,7 +232,7 @@ class ElexaController extends Controller
             ->orderBy('revenue.date', 'asc')->get();
 
         if (!empty($document_query->id)) {
-            $elexa_debit_out = Elexa_debit_revenue::where('document_elexa', $document_query->id)->get();
+            $elexa_debit_out = Harmony_elexa_debit_revenue::where('document_elexa', $document_query->id)->get();
         } else {
             $elexa_debit_out = '';
         }
@@ -250,12 +251,12 @@ class ElexaController extends Controller
             $total_outstanding_all += $value->elexa_outstanding;
         }
 
-        return view('elexa.edit_elexa_outstanding', compact('document_query', 'elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'elexa_debit_out', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
+        return view('elexa_harmony.edit_elexa_outstanding', compact('document_query', 'elexa_revenue', 'elexa_outstanding', 'elexa_debit_revenue', 'elexa_all', 'elexa_debit_out', 'document_no', 'total_outstanding_all', 'total_elexa_outstanding_revenue', 'total_elexa_debit_outstanding', 'title'));
     }
 
     public function select_elexa_outstanding($id) {
 
-        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_outstanding = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.id', $id)->where('revenue_credit.status', 8)
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')->first();
@@ -268,7 +269,7 @@ class ElexaController extends Controller
 
     public function select_all_elexa_outstanding(Request $request) {
 
-        $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereIn('revenue_credit.id', $request->selectedItems)
             ->where('revenue_credit.status', 8);
 
@@ -308,9 +309,9 @@ class ElexaController extends Controller
         $exp = explode('group', $group);
         $id = $exp[1];
         
-        $check = SMS_alerts::where('id', $id)->select('date', 'date_into')->first();
+        $check = Harmony_SMS_alerts::where('id', $id)->select('date', 'date_into')->first();
 
-        $data_child = SMS_alerts::whereMonth('date', Carbon::parse($check->date)->format('m'))
+        $data_child = Harmony_SMS_alerts::whereMonth('date', Carbon::parse($check->date)->format('m'))
                         ->whereYear('date', Carbon::parse($check->date)->format('Y'))->where('status', 8)
                         ->select('id', 'date', 'amount', 'status_receive_elexa')->get();
 
@@ -323,7 +324,7 @@ class ElexaController extends Controller
     public function confirm_select_elexa_outstanding(Request $request) 
     {
         if (!empty($request->receive_select_id)) {
-            $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            $elexa_outstanding = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
                 ->whereIn('revenue_credit.id', $request->receive_select_id)->where('revenue_credit.status', 8)
                 ->select('revenue_credit.id', 'revenue_credit.batch',
                     'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.receive_payment',
@@ -346,10 +347,10 @@ class ElexaController extends Controller
     {
         if (isset($request->receive_id)) {
 
-            $check_document_old = Document_elexa::where('sms_id', $request->sms_id)->first();
+            $check_document_old = Harmony_document_elexa::where('sms_id', $request->sms_id)->first();
 
             if (!empty($check_document_old)) {
-               Document_elexa::where('sms_id', $request->sms_id)->update([
+               Harmony_document_elexa::where('sms_id', $request->sms_id)->update([
                     'issue_date' => $request->issue_date,
                     'sms_id' => $request->sms_id,
                     'debit_amount' => $request->debit_out_amount ?? 0,
@@ -358,11 +359,11 @@ class ElexaController extends Controller
                     'created_by' => Auth::user()->id
                 ]);
 
-                Elexa_debit_revenue::where('document_elexa', $check_document_old->id)->delete();
+                Harmony_elexa_debit_revenue::where('document_elexa', $check_document_old->id)->delete();
                 
                 if (isset($request->debit_revenue_amount)) {
                     foreach ($request->debit_revenue_amount as $key => $value) {
-                        Elexa_debit_revenue::create([
+                        Harmony_elexa_debit_revenue::create([
                             'document_elexa' => $check_document_old->id,
                             'date' => $request->issue_date,
                             'amount' => $value,
@@ -372,7 +373,7 @@ class ElexaController extends Controller
                     }
                 }
 
-                $check_detail_old = Revenue_credit::where('sms_revenue', $request->sms_id)->select('id')->get();
+                $check_detail_old = Harmony_revenue_credit::where('sms_revenue', $request->sms_id)->select('id')->get();
 
                 if ($check_detail_old->isNotEmpty()) {
                     $check_document_old->receive_id = [$check_detail_old->pluck('id')->toArray()]; // ใช้ pluck เพื่อดึง id ทั้งหมด
@@ -382,10 +383,10 @@ class ElexaController extends Controller
 
                 $request['id'] = $check_document_old->id;
 
-                $log = Log_elexa::SaveLog('edit', $check_document_old, $request);
+                $log = Harmony_log_elexa::SaveLog('edit', $check_document_old, $request);
 
             } else {
-                $data = Document_elexa::create([
+                $data = Harmony_document_elexa::create([
                     'doc_no' => $this->generateDocumentNumber(),
                     'issue_date' => $request->issue_date,
                     'sms_id' => $request->sms_id,
@@ -400,7 +401,7 @@ class ElexaController extends Controller
 
                 if (isset($request->debit_revenue_amount)) {
                     foreach ($request->debit_revenue_amount as $key => $value) {
-                        Elexa_debit_revenue::create([
+                        Harmony_elexa_debit_revenue::create([
                             'document_elexa' => $data,
                             'date' => date('Y-m-d'),
                             'amount' => $value,
@@ -410,12 +411,12 @@ class ElexaController extends Controller
                     }
                 }
 
-                $log = Log_elexa::SaveLog('add', 0, $request);
+                $log = Harmony_log_elexa::SaveLog('add', 0, $request);
             }
             
             if ($log) {
                 // อัพเดทรายการเดิมให้เป็น 0 ก่อน
-                Revenue_credit::where('sms_revenue', $request->sms_id)->update([
+                Harmony_revenue_credit::where('sms_revenue', $request->sms_id)->update([
                     'date_receive' => null,
                     'receive_payment' => 0,
                     'sms_revenue' => null
@@ -423,10 +424,10 @@ class ElexaController extends Controller
             }
 
             foreach ($request->receive_id as $key => $value) {
-                $check_data = Revenue_credit::where('id', $value)->first();
+                $check_data = Harmony_revenue_credit::where('id', $value)->first();
 
                 if ($check_data->receive_payment == 0) {
-                    Revenue_credit::where('id', $value)->update([
+                    Harmony_revenue_credit::where('id', $value)->update([
                         'date_receive' => date('Y-m-d'),
                         'receive_payment' => 1,
                         'sms_revenue' => $request->sms_id
@@ -434,7 +435,7 @@ class ElexaController extends Controller
                 }
 
                 // เปลี่ยนสถานะ SMS เป็น 1 = รับชำระแล้ว
-                SMS_alerts::where('id', $request->sms_id)->update([
+                Harmony_SMS_alerts::where('id', $request->sms_id)->update([
                     'status_receive_elexa' => 1
                 ]);
             }
@@ -455,7 +456,7 @@ class ElexaController extends Controller
     // หน้าดูรายละเอียด
     public function index_detail_receive($id)
     {
-        $elexa_query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+        $elexa_query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)->where('revenue_credit.receive_payment', 1)->where('revenue_credit.sms_revenue', $id)
             ->select('revenue_credit.id', 'revenue_credit.batch',
                 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.receive_payment',
@@ -464,16 +465,16 @@ class ElexaController extends Controller
         $total_elexa_outstanding = $elexa_query->sum('revenue_credit.ev_revenue');
         $elexa_outstanding = $elexa_query->orderBy('revenue.date', 'asc')->get();
 
-        $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount', DB::raw('DATE(date) as sms_date'))->first();
+        $elexa_revenue = Harmony_SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount', DB::raw('DATE(date) as sms_date'))->first();
 
         $title = "Debit Elexa EGAT Revenue";
 
-        return view('elexa.detail_elexa_outstanding', compact('elexa_outstanding', 'elexa_revenue', 'total_elexa_outstanding', 'title'));
+        return view('elexa_harmony.detail_elexa_outstanding', compact('elexa_outstanding', 'elexa_revenue', 'total_elexa_outstanding', 'title'));
     }
 
     public function status_elexa_receive($status) {
 
-        $elexa_received = Revenue_credit::where('revenue_credit.status', 8)->where('receive_payment', $status)
+        $elexa_received = Harmony_revenue_credit::where('revenue_credit.status', 8)->where('receive_payment', $status)
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue')->orderBy('revenue_id', 'asc')->get();
 
@@ -488,13 +489,13 @@ class ElexaController extends Controller
     {
         
         try {
-            Document_elexa::where('sms_id', $id)->update([
+            Harmony_document_elexa::where('sms_id', $id)->update([
                 'status_lock' => $status
             ]);
 
-            $check = Document_elexa::where('sms_id', $id)->first();
+            $check = Harmony_document_elexa::where('sms_id', $id)->first();
 
-            Log_elexa::create([
+            Harmony_log_elexa::create([
                 'document_id' => $check->id,
                 'type' => $status == 0 ? "Unlock" : "Lock",
                 'changed_attributes' => "Status (Lock/Unlock) : " . $status == 0 ? "Unlock" : "Lock", // บันทึกเฉพาะฟิลด์ที่มีการเปลี่ยนแปลง
@@ -516,13 +517,13 @@ class ElexaController extends Controller
     // หน้า Log
     public function logs($id)
     {
-        $document_elexa = Document_elexa::where('sms_id', $id)->first();
+        $document_elexa = Harmony_document_elexa::where('sms_id', $id)->first();
 
-        $log_elexa = Log_elexa::where('document_id', $document_elexa->id)->get();
+        $log_elexa = Harmony_log_elexa::where('document_id', $document_elexa->id)->get();
 
         $title = "Logs";
 
-        return view('elexa.log_elexa', compact('document_elexa', 'log_elexa', 'title'));
+        return view('elexa_harmony.log_elexa', compact('document_elexa', 'log_elexa', 'title'));
     }
 
     // Generate Document No 
@@ -531,7 +532,7 @@ class ElexaController extends Controller
         $yearMonth = now()->format('y') . now()->format('m'); // ตัวอย่าง: 2411
 
         // ค้นหาเลขที่เอกสารล่าสุดที่ขึ้นต้นด้วย EV-ปีเดือน
-        $lastDocument = Document_elexa::where('doc_no', 'LIKE', "EV-$yearMonth%")
+        $lastDocument = Harmony_document_elexa::where('doc_no', 'LIKE', "EV-$yearMonth%")
             ->orderBy('doc_no', 'desc')->first();
 
         // ตรวจสอบลำดับล่าสุด
@@ -556,7 +557,7 @@ class ElexaController extends Controller
 
         if ($request->table_name == "elexaRevenueTable") {
             if (!empty($request->search_value)) {
-                $query = SMS_alerts::query()->where('status', 8)
+                $query = Harmony_SMS_alerts::query()->where('status', 8)
                     ->select('sms_alert.*', 
                         DB::raw("MONTH(date) as month, SUM(amount) as total_sum, COUNT(id) as total_item"),
                         DB::raw("SUM(CASE WHEN status_receive_elexa = 1 THEN status_receive_elexa ELSE 0 END) as total_receive"))
@@ -572,7 +573,7 @@ class ElexaController extends Controller
                     $total_count = $query->get()->count();
                     $data_query = $query->get();
             } else {
-                $query = SMS_alerts::query()->where('status', 8);
+                $query = Harmony_SMS_alerts::query()->where('status', 8);
     
                     if (!empty($request->year) && $request->year != 'all') {
                         $query->whereYear('date', $request->year);
@@ -593,7 +594,7 @@ class ElexaController extends Controller
 
             if (!empty($request->search_value)) {
 
-                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                $query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
                     ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0);
 
                     if ($request->year == 'all' && $request->month == 'all') { // ทั้งหมด
@@ -624,7 +625,7 @@ class ElexaController extends Controller
                 $data_query = $query->get();
 
             } else {
-                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                $query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
                     ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 0);
 
                     if (!empty($request->month) && $request->month != 'all') {
@@ -650,7 +651,7 @@ class ElexaController extends Controller
 
             if (!empty($request->search_value)) {
 
-                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                $query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
                     ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1);
 
                     if ($request->year == 'all' && $request->month == 'all') { // ทั้งหมด
@@ -681,7 +682,7 @@ class ElexaController extends Controller
                 $data_query = $query->get();
 
             } else {
-                $query = Revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                $query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
                     ->where('revenue_credit.status', 8) ->where('revenue_credit.receive_payment', 1);
 
                     if (!empty($request->month) && $request->month != 'all') {
@@ -704,7 +705,7 @@ class ElexaController extends Controller
 
         elseif ($request->table_name == "elexaRevenueDayTable") {
             if (!empty($request->search_value)) {
-                $query = SMS_alerts::query()->where('status', 8);
+                $query = Harmony_SMS_alerts::query()->where('status', 8);
 
                     if (!empty($request->year) && $request->year != 'all') 
                     {
@@ -727,7 +728,7 @@ class ElexaController extends Controller
                     $total_count = $query->get()->count();
                     $data_query = $query->get();
             } else {
-                $query = SMS_alerts::query()->where('status', 8);
+                $query = Harmony_SMS_alerts::query()->where('status', 8);
     
                     if (!empty($request->year) && $request->year != 'all') 
                     {
@@ -854,7 +855,7 @@ class ElexaController extends Controller
                                                                         <a href="/debit-elexa-update-receive/'.$value->id.'/'.$month.'/'.$year.'" class="dropdown-item">Create</a>
                                                                     </li>';
                                                 } else {
-                                                    $checkReceiveDate = Revenue_credit::getElexaReceiveDate($value->id);
+                                                    $checkReceiveDate = Harmony_revenue_credit::getElexaReceiveDate($value->id);
 
                                                     //  Permission 1 และ 2 สามารถเห็นปุ่ม Lock/Unlock ได้
                                                     if (Auth::user()->permission == 1 || Auth::user()->permission == 2) {
@@ -915,7 +916,7 @@ class ElexaController extends Controller
     // Graph Month Sales
     public function graph_month_sales()
     {
-        $elexa_query = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+        $elexa_query = Harmony_revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
             ->where('revenue_credit.status', 8)
             ->select(DB::raw('YEAR(revenue.date) as year'), DB::raw('MONTH(revenue.date) as month'), DB::raw('SUM(revenue_credit.ev_revenue) as total_ev_revenue'))
             ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
@@ -945,32 +946,32 @@ class ElexaController extends Controller
     public function graph_month_charge()
     {
         // ยอด SMS ทั้งหมด
-        $sms_query = SMS_alerts::where('status', 8)
+        $sms_query = Harmony_SMS_alerts::where('status', 8)
             ->select('amount', DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
             ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
             ->get();
 
         // ยอด SMS ที่กดรับชำระแล้ว สถานะเป็น paid
-        $sms_paid_query = SMS_alerts::where('status', 8)
+        $sms_paid_query = Harmony_SMS_alerts::where('status', 8)
             ->where('status_receive_elexa', 1)
             ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
             ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
             ->get();
 
         // ยอด SMS ที่ยังไม่ได้กดรับชำระแล้ว สถานะเป็น pending
-        $sms_pending_query = SMS_alerts::where('status', 8)
+        $sms_pending_query = Harmony_SMS_alerts::where('status', 8)
             ->where('status_receive_elexa', 0)
             ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
             ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
             ->get();
 
-        $elexa_outstanding = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+        $elexa_outstanding = Harmony_revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
             ->where('revenue_credit.status', 8)
             ->select(DB::raw('YEAR(revenue.date) as year'), DB::raw('MONTH(revenue.date) as month'),  DB::raw('SUM(revenue_credit.ev_revenue) as total_ev_revenue'))
             ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
             ->get();
 
-        $elexa_outstanding_sum = Revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
+        $elexa_outstanding_sum = Harmony_revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
             ->where('revenue_credit.status', 8)->select('revenue_credit.ev_revenue')
             ->sum('revenue_credit.ev_revenue');
 

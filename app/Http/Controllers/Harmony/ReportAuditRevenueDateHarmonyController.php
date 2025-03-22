@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Harmony;
 
-use App\Models\Harmony_revenues;
+use App\Http\Controllers\Controller;
+
+use App\Models\Harmony\Harmony_revenues;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

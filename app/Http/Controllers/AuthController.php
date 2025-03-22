@@ -57,6 +57,7 @@ class AuthController extends Controller
                             'current_branch' => 2
                         ]);
                         return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
+                        
                     } elseif (Auth::user()->permission_branch == 1) {
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 1
@@ -70,11 +71,14 @@ class AuthController extends Controller
                     
                     if (Auth::user()->permission_branch == 3) {
                         return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
+
                     } elseif (Auth::user()->permission_branch == 2) {
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 2
                         ]);
+
                         return redirect()->intended('select-branch')->withSuccess('You have Successfully loggedin');
+
                     } elseif (Auth::user()->permission_branch == 1) {
                         User::where('id', Auth::user()->id)->update([
                             'current_branch' => 1
@@ -108,11 +112,10 @@ class AuthController extends Controller
         $check = $this->create($data);
 
         if ($check == "Success") {
-            return redirect(url('users', 'index'))->with('success', 'ระบบได้ทำการบันทึกเรียบร้อยแล้ว');
+            return redirect(url('users', ['index', 0]))->with('success', 'ระบบได้ทำการบันทึกเรียบร้อยแล้ว');
         } else {
-            return redirect(url('users', 'index'))->with('error', $check);
+            return redirect(url('users', ['index', 0]))->with('error', $check);
         }
-
     }
 
     /**

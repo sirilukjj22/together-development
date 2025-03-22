@@ -4,6 +4,8 @@ var inputTotalAccountReceivable = Number($('#input-total-account-receivable').va
 var inputTotalPendingAccountReceivable = Number($('#input-total-pending-account-receivable').val());
 var inputTotalOutstandingAll = Number($('#input-total-agoda-outstanding').val());
 
+let selectedYear = new Date().getFullYear(); // ปีเริ่มต้น
+
 function getGraphMonthSales(typeRevenue) {
   var revenueData = "";
 
@@ -47,6 +49,7 @@ function getGraphMonthCharge(year, typeRevenue) {
             } if (typeRevenue == "data_sms_pending") {
               revenueData = response.data_sms_pending[2024];
             }
+
           } if (year == 2025) {
               if (typeRevenue == "data_sms") {
                 revenueData = response.data_sms[2025];
@@ -57,6 +60,7 @@ function getGraphMonthCharge(year, typeRevenue) {
               } if (typeRevenue == "data_sms_pending") {
                 revenueData = response.data_sms_pending[2025];
               }
+
           } if (year == 2026) {
               if (typeRevenue == "data_sms") {
                 revenueData = response.data_sms[2026];
@@ -218,7 +222,7 @@ const dataByYear = {
     outstanding: getGraphMonthCharge(2026, 'data_outstanding'),
   },
 };
-let selectedYear = "2024"; // ปีเริ่มต้น
+
 // ฟังก์ชันคำนวณ Total Charge Data
 function calculateTotalChargeData(year) {
   return dataByYear[year].paid.map(
@@ -254,9 +258,9 @@ function updateMonthValues(data, color = "", backgroundColor = "") {
       const formattedValue = formatNumberCol(data[index]);
       valueElement.textContent = formattedValue;
     }
-    const firstChild = button
-      .closest(".chart-button")
-      ?.querySelector(":nth-child(1)");
+
+    const firstChild = button.closest(".chart-button") ?.querySelector(":nth-child(1)");
+
     if (firstChild) {
       firstChild.style.color = color || "";
       firstChild.style.backgroundColor = backgroundColor || "";
@@ -265,56 +269,33 @@ function updateMonthValues(data, color = "", backgroundColor = "") {
 }
 // ฟังก์ชันอัปเดต Summary Totals
 function updateSummaryTotals() {
-  const accountReTotal = dataByYear[selectedYear].paid.reduce(
-    (sum, value) => sum + value,
-    0
-  );
-  const pendingTotal = dataByYear[selectedYear].pending.reduce(
-    (sum, value) => sum + value, 0
-  );
-
-  const outstandingTotal = dataByYear[selectedYear].outstanding.reduce(
-    (sum, value) => sum + value, 0
-  );
+  const accountReTotal = dataByYear[selectedYear].paid.reduce((sum, value) => sum + value, 0);
+  const pendingTotal = dataByYear[selectedYear].pending.reduce((sum, value) => sum + value, 0);
+  const outstandingTotal = dataByYear[selectedYear].outstanding.reduce((sum, value) => sum + value, 0);
 
   const paidTotal = accountReTotal + pendingTotal;
   const totalRevenue = paidTotal + outstandingTotal;
-  document.querySelector("#AccountRe span:nth-child(2)").textContent =
-    formatNumberCol(accountReTotal);
-  document.querySelector("#agodaCharge span:nth-child(2)").textContent =
-    formatNumberCol(parseFloat(inputTotalAgodaCharge).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-  document.querySelector("#agodaPaid span:nth-child(2)").textContent =
-    formatNumberCol(paidTotal);
-  document.querySelector("#pendingAccount span:nth-child(2)").textContent =
-    formatNumberCol(pendingTotal);
-  // document.querySelector("#outstandingBalance span:nth-child(2)").textContent =
-  //   formatNumberCol(outstandingTotal);
+
+  document.querySelector("#AccountRe span:nth-child(2)").textContent = formatNumberCol(accountReTotal);
+  document.querySelector("#agodaCharge span:nth-child(2)").textContent = formatNumberCol(parseFloat(inputTotalAgodaCharge).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+  document.querySelector("#agodaPaid span:nth-child(2)").textContent = formatNumberCol(paidTotal);
+  document.querySelector("#pendingAccount span:nth-child(2)").textContent = formatNumberCol(pendingTotal);
+  document.querySelector("#outstandingBalance span:nth-child(2)").textContent = formatNumberCol(outstandingTotal);
 }
+
 // ฟังก์ชันอัปเดตข้อมูลกราฟ
 function updateChart(datasets, title) {
   salesChart.data.datasets = datasets;
   salesChart.options.plugins.title.text = title;
   salesChart.update();
 }
+
 // สร้างกราฟเริ่มต้น
 const ctx = document.getElementById("salesLineChart2").getContext("2d");
 let salesChart = new Chart(ctx, {
   type: "bar",
   data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Paid",
