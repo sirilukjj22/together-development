@@ -1085,10 +1085,18 @@
             }else{
                 id = status;
             }
+            console.log(status);
+            console.log(id);
+
             $.ajax({
                 url: '{{ route("Deposit.Quotation") }}',
-                method: 'GET',
-                data: { value: id },
+                method: 'POST',
+                data: {
+                    value: id
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(response) {
                     if (response.products.length > 0) {
                         let table = $('#QuotationTable').DataTable();

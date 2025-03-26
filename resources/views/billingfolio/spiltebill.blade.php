@@ -267,6 +267,15 @@
         #01e4c2
     ); /* สีเข้มขึ้นเมื่อ Hover */
     }
+    #table-revenueEditBill th {
+    border-top: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+    text-transform: uppercase;
+    }
+    #table-revenueEditBill td {
+    border-top: 1px solid #fff !important;
+    text-transform: capitalize;
+    }
 </style>
 @section('content')
 <div id="content-index" class="body-header border-bottom d-flex py-3">

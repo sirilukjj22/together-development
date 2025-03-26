@@ -854,7 +854,7 @@ Route::controller(Deposit_Revenue::class)->middleware(['role:document', 'togethe
     Route::get('/Document/deposit/cover/document/PDF/{id}', 'sheetpdf')->name('Deposit.sheet');
     Route::post('/Document/Deposit/cancel/{id}', 'cancel')->name('Deposit.cancel');
     Route::get('/Document/Deposit/Revise/{id}', 'Revise')->name('Deposit.Revise');
-    Route::get('/Document/Deposit/quotation', 'Quotation')->name('Deposit.Quotation');
+    Route::post('/Document/Deposit/quotation', 'Quotation')->name('Deposit.Quotation');
     Route::get('/Document/deposit_revenue/Data/createnew/{id}', 'deposit_pd');
     // Route::get('/Deposit/edit/revenue/deposit/{id}', 'depositedit')->name('Deposit.depositedit');
 
@@ -1036,6 +1036,13 @@ Route::controller(BillingFolioController::class)->middleware(['role:document', '
     Route::post('/Document/BillingFolio/Proposal/Deposit/Revenue/generate/save', 'savedeposit')->name('BillingFolio.savedeposit');
     Route::get('/Document/BillingFolio/deposit/view/{id}', 'depositView')->name('BillingFolio.depositView');
 
+    Route::get('/Document/BillingFolio/Deposit/edit/{id}', 'deposit_edit')->name('BillingFolio.deposit_edit');
+    Route::post('/Document/BillingFolio/Deposit/update/{id}', 'deposit_update')->name('BillingFolio.deposit_update');
+ //---------------------Additional one paid---------------------------
+    Route::get('/Document/BillingFolio/Additional/Charge/edit/{id}', 'additional_edit')->name('BillingFolio.additional_edit');
+    Route::post('/Document/BillingFolio/Additional/Charge/update/{id}', 'additional_update')->name('BillingFolio.additional_update');
+    Route::get('/Document/BillingFolio/Additional/generate/Receive/{id}', 'additional_re')->name('BillingFolio.additional_re');
+    Route::post('/Document/BillingFolio/Additional/generate/save', 'additional_save')->name('BillingFolio.additional_save');
 });
 Route::controller(Additional::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/Additional/Charge/index', 'index')->name('Additional.index');

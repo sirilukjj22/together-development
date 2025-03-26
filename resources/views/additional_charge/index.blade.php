@@ -77,12 +77,12 @@
             <div class="row clearfix">
                 <div class="col-sm-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                        <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
-                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge bg-success" >{{$Approvedcount}}</span> Approved</a></li>{{--Doc. number--}}
-                        <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav5')" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                        <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav6')" role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                        <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" onclick="nav($id='nav7')" role="tab"><span class="badge "style="background-color:#2C7F7A" >{{$Completecount}}</span> Complete</a></li>
+                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><i class="fa fa-circle fa-xs"style="color: #64748b;"></i> Proposal</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><i class="fa fa-circle fa-xs" style="color: yellow" ></i>  Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
+                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;"></i> Pending</a></li>{{--Doc. number--}}
+                        <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: #1d4ed8;"></i> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                        <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav6')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;"></i> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                        <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" onclick="nav($id='nav7')" role="tab"><i class="fa fa-circle fa-xs"style="color: #2C7F7A;"></i> Complete</a></li>
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -253,7 +253,7 @@
                                                         <td style="text-align: center;">   {{ number_format($item->Nettotal, 2) }}</td>
                                                         <td >{{ @$item->userOperated->name }}</td>
                                                         <td style="text-align: center;">
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633"> Pending</span>
                                                         </td>
                                                         @php
                                                             $CreateBy = Auth::user()->id;

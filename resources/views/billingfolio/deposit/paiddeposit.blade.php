@@ -175,7 +175,7 @@
                 </div>
                 <div class="col-auto">
                     <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
-                        <span >Issue Bill</span>
+                        <span>Receive</span>
                     </button>
                 </div>
             </div> <!-- .row end -->
@@ -712,7 +712,7 @@
             $('#paymentDate').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
-                autoUpdateInput: false,
+                autoUpdateInput: true,
                 autoApply: true,
                 drops: 'up',
                 locale: {

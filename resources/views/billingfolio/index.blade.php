@@ -176,7 +176,7 @@
                                                             {{ @$item->userOperated->name }}
                                                         </td>
                                                         <td style="text-align: center;">
-                                                            <span class="badge rounded-pill bg-success">Confirm</span>
+                                                            <span class="badge rounded-pill bg-success">Successful</span>
                                                         </td>
                                                         @php
                                                             $CreateBy = Auth::user()->id;

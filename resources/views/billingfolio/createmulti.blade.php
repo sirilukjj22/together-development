@@ -484,7 +484,7 @@
                                                     <div class="payment-container mt-2">
                                                         <div class="d-grid-120px-230px my-2" style="">
                                                             <label for="paymentType " class="star-red " >Payment Type </label>
-                                                            <select name="paymentType" id="paymentType" class="paymentType select2">
+                                                            <select name="paymentType" id="paymentType" class="paymentType form-select">
                                                                 <option value="" disabled selected>Select Payment Type</option>
                                                                 <option value="cash">Cash</option>
                                                                 <option value="bankTransfer">Bank Transfer</option>
@@ -572,7 +572,7 @@
                                     </div>
                                     <div class="modal-footer mt-0" style="background-color: rgb(255, 255, 255);">
                                         <button type="button" class="bt-tg bt-grey sm" data-dismiss="modal"> Close </button>
-                                        <button type="button"  class="bt-tg sm modal_but" data-dismiss="modal" >Preview</button>
+                                        <button type="button"  class="bt-tg sm modal_but" data-dismiss="modal" >Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -666,7 +666,7 @@
             $('#paymentDate').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
-                autoUpdateInput: false,
+                autoUpdateInput: true,
                 autoApply: true,
                 drops: 'up',
                 locale: {
@@ -2518,7 +2518,7 @@
                     payments.push(paymentData);
                 }
             });
-            console.log(payments);
+
             $('#paymentsDataInput').val(JSON.stringify(payments));
             getAllPaymentsTpye();
         }
@@ -2596,16 +2596,6 @@
                 }
             });
 
-            if (checkbox.checked) {
-                if (typeadditional !== 'H/G') {
-                    Amount = additionalamount;
-                    payments.push({
-                        type: 'Complimentary',
-                        amount: Amount,
-                        datanamebank: 'Cash'
-                    });
-                }
-            }
 
 console.log(payments);
 

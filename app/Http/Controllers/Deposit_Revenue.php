@@ -55,7 +55,7 @@ class Deposit_Revenue extends Controller
     public function create($id)
     {
         $currentDate = Carbon::now();
-        $ID = 'DR-';
+        $ID = 'DI-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
         $month = $formattedDate->format('m'); // เดือน
         $year = $formattedDate->format('y');
@@ -179,7 +179,7 @@ class Deposit_Revenue extends Controller
     }
     public function createnew(){
         $currentDate = Carbon::now();
-        $ID = 'DR-';
+        $ID = 'DI-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
         $month = $formattedDate->format('m'); // เดือน
         $year = $formattedDate->format('y');
@@ -2362,6 +2362,7 @@ class Deposit_Revenue extends Controller
 
     public function Quotation(Request $request){
         $data = $request->all();
+
         if (isset($data['value']) && $data['value'] == 'all') {
             $Quotation = Quotation::with('guest','company')->where('status_document',6)->get();
         } elseif (isset($data['value']) && $data['value'] == 'company') {

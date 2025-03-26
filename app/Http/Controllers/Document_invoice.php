@@ -52,26 +52,47 @@ class Document_invoice extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
-    ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
-    ->leftJoin('deposit_revenue', 'quotation.Quotation_ID', '=', 'deposit_revenue.Quotation_ID') // ตรงนี้แก้ไข
-    ->where('quotation.status_document', 6)
-    ->whereNotExists(function ($query) {
-        $query->select(DB::raw(1))
-            ->from('document_invoice')
-            ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID');
-    })
-    ->select(
-        'quotation.*',
-        'deposit_revenue.*',
-        'document_invoice.Quotation_ID as QID',
-        'document_invoice.document_status',
-        'document_invoice.sumpayment',
-        DB::raw('1 as status'),
-        DB::raw('SUM(CASE WHEN document_invoice.document_status = 1 THEN 1 ELSE 0 END) as invoice_count'),
-        DB::raw('SUM(CASE WHEN deposit_revenue.document_status = 1 THEN 1 ELSE 0 END) as deposit_count')
-    )
-    ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_document')
-    ->get();
+            ->leftJoinSub(
+                DB::table('document_invoice')
+                    ->select(
+                        'Quotation_ID',
+                        DB::raw('SUM(CASE WHEN document_status = 1 THEN 1 ELSE 0 END) as invoice_count'),
+                        DB::raw('SUM(sumpayment) as total_payment')
+                    )
+                    ->groupBy('Quotation_ID'),
+                'document_invoice',
+                'quotation.Quotation_ID',
+                '=',
+                'document_invoice.Quotation_ID'
+            )
+            ->leftJoinSub(
+                DB::table('deposit_revenue')
+                    ->select(
+                        'Quotation_ID',
+                        DB::raw('SUM(CASE WHEN document_status = 1 THEN 1 ELSE 0 END) as deposit_count')
+                    )
+                    ->groupBy('Quotation_ID'),
+                'deposit_revenue',
+                'quotation.Quotation_ID',
+                '=',
+                'deposit_revenue.Quotation_ID'
+            )
+            ->where('quotation.status_document', 6)
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('document_invoice')
+                    ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID');
+            })
+            ->select(
+                'quotation.*',
+                DB::raw('COALESCE(document_invoice.invoice_count, 0) as invoice_count'),
+                DB::raw('COALESCE(document_invoice.total_payment, 0) as total_payment'),
+                DB::raw('COALESCE(deposit_revenue.deposit_count, 0) as deposit_count'),
+                DB::raw('1 as status')
+            )
+            ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_document')
+            ->get();
+
 
         $Cancel = document_invoices::query()->where('document_status',0)->get();
 
@@ -253,7 +274,6 @@ class Document_invoice extends Controller
         }
         $user = Auth::user();
         $Deposit_ID = depositrevenue::where('Quotation_ID',$QuotationID)->where('document_status',2)->where('receipt',0)->get();
-
         return view('document_invoice.create',compact('InvoiceID','fullName','Identification','address','Quotation','Selectdata','QuotationID','Additional_ID','Additional_Nettotal','settingCompany','invoices','totalinvoice',
                     'phone','Contact_phone','Fax_number','Email','Contact_Name','Deposit','vat_type','user','Contact_Email','Deposit_ID'));
     }

@@ -446,7 +446,7 @@
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                                     @if ($invoice !== 1)
                                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                                     @endif
@@ -478,7 +478,7 @@
                                                                                         <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                     @endif
                                                                                     @if ($item->status_document == 6)
-                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                                         @if ($invoice !== 1)
                                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                                         @endif
@@ -509,7 +509,7 @@
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                                     @if ($invoice !== 1)
                                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                                     @endif
@@ -1027,7 +1027,7 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                             @if ($invoice !== 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                             @endif
@@ -1044,7 +1044,7 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                             @if ($invoice !== 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                             @endif
@@ -1060,7 +1060,7 @@
                                                                     @if ($canEditProposal == 1)
                                                                         @if ($item->status_document !== 2)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Revenue</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                             @if ($invoice !== 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Profoma Invoice</a></li>
                                                                             @endif

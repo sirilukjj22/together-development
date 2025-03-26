@@ -2323,7 +2323,6 @@ class Additional extends Controller
             return redirect()->route('BillingFolioOver.index')->with('error',$e->getMessage());
         }
         try {
-
             $settingCompany = Master_company::orderBy('id', 'desc')->first();
             $parts = explode('-', $guest);
             $firstPart = $parts[0];

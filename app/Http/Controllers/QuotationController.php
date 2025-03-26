@@ -1219,7 +1219,7 @@ class QuotationController extends Controller
         if ($check || $Adcheck) {
             return redirect()->route('Proposal.index')->with('success', 'Data has been successfully saved.');
         }else{
-            return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'Data has been successfully saved.');
+            return redirect()->route('Proposal.email', ['id' => $ids])->with('success', 'Data has been successfully saved.');
         }
     }
     //------------------------------แก้ไข--------------------
@@ -2265,7 +2265,7 @@ class QuotationController extends Controller
         if ($check || $Adcheck) {
             return redirect()->route('Proposal.index')->with('success', 'Data has been successfully saved.');
         }else{
-            return redirect()->route('Proposal.viewproposal', ['id' => $Quotationid])->with('success', 'Data has been successfully saved.');
+            return redirect()->route('Proposal.email', ['id' => $Quotationid])->with('success', 'Data has been successfully saved.');
         }
 
     }

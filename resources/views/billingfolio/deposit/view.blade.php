@@ -739,7 +739,7 @@
                         </div>
                         <div class="styled-hr"></div>
                         <div class="row mt-4">
-                            <table class=" table table-hover align-middle mb-0" style="width:100%">
+                            <table class="table-revenueEditBill" style="width:100%">
                                 <thead >
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">No.</th>

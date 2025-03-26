@@ -115,7 +115,7 @@
                                         <div class="outer-glow-circle"></div>
                                         <div class="circle-content">
                                             <p class="circle-text">
-                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal-$totalReceipt, 2, '.', ',') }}</p>
+                                            <p class="f-w-bold fs-3">{{ number_format($Nettotal+$Additionaltotal-$totalReceipt, 2, '.', ',') }}</p>
                                             <span class="subtext fs-6" >Total Amount</span>
                                             </p>
                                         </div>
@@ -186,7 +186,7 @@
                                 </ul>
                                 <li class="outstanding-amount">
                                     <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal-$totalReceipt, 2, '.', ',') }}</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($Nettotal+$Additionaltotal-$totalReceipt, 2, '.', ',') }}</span>
                                 </li>
                             </div>
                         </div>
@@ -244,8 +244,8 @@
                                                                 @if ($item->document_status == 1)
                                                                     @if (!($Nettotal - $totalReceipt <= 0))
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/deposit/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create Combined Receipt</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create Receive</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                     @endif
                                                                 @endif
@@ -282,10 +282,10 @@
                                             <tr>
                                                 <td style="text-align:left;">{{$item4->Receipt_ID}}</td>
                                                 <td style="text-align:left;">{{$item4->Quotation_ID}}</td>
-                                                <td style="text-align:left;">{{$item4->Deposit_ID ?? $item4->Invoice_ID}}</td>
+                                                <td style="text-align:left;">{{$item4->Deposit_ID ?? $item4->Invoice_ID ?? $item4->Additional_ID}}</td>
                                                 <td style="text-align:center;">{{$item4->paymentDate}}</td>
                                                 <td style="text-align:center;">
-                                                    <span class="badge rounded-pill bg-success">Approved</span>
+                                                    <span class="badge rounded-pill bg-success">Successful</span>
                                                 </td>
                                                 <td style="text-align:center;">{{ number_format($item4->Amount , 2, '.', ',') }}</td>
                                                 <td style="text-align:left;">
@@ -365,21 +365,25 @@
                                     </thead>
                                     <tbody>
                                         @if(!empty($Additional))
-                                            @foreach ($Additional as $key => $item4)
                                             <tr>
-                                                <td style="text-align: center;">{{ $item4->Additional_ID }}</td>
-                                                <td style="text-align: center;">{{ $item4->Quotation_ID }}</td>
-                                                @if ($item4->type_Proposal == 'Company')
-                                                    <td style="text-align: left;">{{ @$item4->company->Company_Name}}</td>
+                                                <td style="text-align: center;">{{ $Additional->Additional_ID }}</td>
+                                                <td style="text-align: center;">{{ $Additional->Quotation_ID }}</td>
+                                                @if ($Additional->type_Proposal == 'Company')
+                                                    <td style="text-align: left;">{{ @$Additional->company->Company_Name}}</td>
                                                 @else
-                                                    <td style="text-align: left;">{{ @$item4->guest->First_name.' '.@$item4->guest->Last_name}}</td>
+                                                    <td style="text-align: left;">{{ @$Additional->guest->First_name.' '.@$Additional->guest->Last_name}}</td>
                                                 @endif
-                                                <td>{{ $item4->issue_date }}</td>
-                                                <td style="text-align: center;">{{ $item4->Expirationdate }}</td>
-                                                <td style="text-align: center;">   {{ number_format($item4->Nettotal, 2) }}</td>
-                                                <td >{{ @$item4->userOperated->name }}</td>
+                                                <td>{{ $Additional->issue_date }}</td>
+                                                <td style="text-align: center;">{{ $Additional->Expirationdate }}</td>
+                                                <td style="text-align: center;">   {{ number_format($Additional->Nettotal, 2) }}</td>
+                                                <td >{{ @$Additional->userOperated->name }}</td>
                                                 <td style="text-align: center;">
-                                                    <span class="badge rounded-pill " style="background-color: #2C7F7A">Complete</span>
+                                                    @if ($Additional->status_guest == 1)
+                                                        <span class="badge rounded-pill bg-success">Successful</span>
+                                                    @else
+                                                        <span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>
+                                                    @endif
+
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
@@ -392,14 +396,14 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($canViewProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item4->id) }}">View</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/Additional/Charge/document/PDF/'.$item4->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$Additional->id) }}">View</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Additional/Charge/edit/'.$Additional->id) }}">Edit</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Additional/generate/Receive/'.$Additional->id) }}">Create Receive</a></li>
                                                             @endif
                                                         </ul>
                                                     </div>
                                                 </td>
                                             </tr>
-                                            @endforeach
                                         @endif
                                     </tbody>
                                 </table>
