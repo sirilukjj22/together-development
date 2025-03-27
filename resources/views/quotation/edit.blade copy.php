@@ -1415,7 +1415,12 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
         $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            var checkinDate = document.getElementById('inputcalendartext').value;
+            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
+
+            var enddayName = checkoutDate.format('dddd');
+            var DiscountAmount = document.getElementById('DiscountAmount').value;
+            var Add_discount = document.getElementById('Add_discount').value;
             $('#Checkin').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
@@ -1423,14 +1428,31 @@
                 autoApply: true,
                 minDate: moment().startOf('day'),
                 locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น DD/MM/YYYY
+                },
+                isInvalidDate: function(date) {
+                    if (checkinDate == 'Weekday') {
+                        if (checkinDate === 'Weekday' && ['Friday','Saturday','Sunday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวันในช่วงนี้
+                        }
+                    }else if (checkinDate == 'Weekend') {
+                        if (checkinDate === 'Weekend' && ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวันในช่วงนี้
+                        }
+                    }else if (checkinDate == 'Weekday-Weekend' && enddayName == 'Saturday'|| enddayName == 'Monday') {
+                        if (checkinDate === 'Weekday-Weekend' && ['Monday','Sunday', 'Tuesday', 'Wednesday', 'Friday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวัน
+                        }
+                    }
                 }
             });
             $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                var datefirst = picker.startDate.format('DD/MM/YYYY');
+                $(this).val(datefirst);
+                $('#CheckinNew').val(datefirst);
                 var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
-                $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
-                CheckDate();
+                $('#inputmonth').val(currentMonthIndex + 1);
+                CheckDateAdditional();
             });
             $(document).on('wheel', function(e) {
                 // Check if the date picker is open
@@ -1441,6 +1463,9 @@
             });
         });
         $(function() {
+            var checkinValue = document.getElementById('Checkin').value;
+            var DiscountAmount = document.getElementById('DiscountAmount').value;
+            var Add_discount = document.getElementById('Add_discount').value;
             $('#Checkout').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
@@ -1449,11 +1474,89 @@
                 minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                },
+                isInvalidDate: function(date) {
+                    var CheckinNew = document.getElementById('CheckinNew').value;
+                    var checkDate = document.getElementById('inputcalendartext').value;
+                    var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+                    var indayName = momentCheckinNew.format('dddd'); // รับค่าเป็นชื่อวัน
+                    if (checkDate === 'Weekday') {
+                        if (indayName === 'Thursday') {
+                            if ([ 'Saturday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }else{
+                            return false;
+                        }
+                    } else if (checkDate === 'Weekend') {
+                        if (indayName === 'Friday') {
+                            return false;
+                        }else{
+                            if ([ 'Monday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }
+                    } else if (checkDate === 'Weekday-Weekend'){
+                        if (indayName === 'Thursday') {
+                            if (['Monday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        } else {
+                            if (['Saturday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }
+                    }else{
+                        if (['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                            return true;
+                        }
+                    }
                 }
             });
             $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-                CheckDate();
+                var dateend = picker.startDate.format('DD/MM/YYYY');
+                $(this).val(dateend);
+                $('#CheckoutNew').val(dateend);
+
+                var checkDate = document.getElementById('inputcalendartext').value;
+                var CheckinNew = document.getElementById('CheckinNew').value;
+
+                // แปลงวันที่ CheckinNew และ dateend เป็น moment object
+                var datefirst = moment(CheckinNew, 'DD/MM/YYYY');
+                var dateendMoment = moment(dateend, 'DD/MM/YYYY');
+
+                // ตรวจสอบว่า checkinDate คือ 'Weekday-Weekend'
+                if (checkDate === 'Weekday-Weekend') {
+                    // ตรวจสอบว่า datefirst และ dateend ถูกต้อง
+                    if (datefirst.isValid() && dateendMoment.isValid()) {
+                        // คำนวณความแตกต่างระหว่าง datefirst และ dateend เป็นจำนวนวัน
+                        var diffDays = dateendMoment.diff(datefirst, 'days');
+
+                        // เช็คว่าห่างกันไม่เกิน 3 วันหรือไม่
+                        if (diffDays <= 3) {
+                            console.log('วันห่างกันไม่เกิน 3 วัน');
+                            // คุณสามารถทำสิ่งที่ต้องการได้ที่นี่ เช่น อนุญาตให้เลือกวันที่
+                        } else {
+                            alert('วันสิ้นสุดไม่สามารถห่างจากวันเริ่มต้นเกิน 3 วันได้');
+                            // เพิ่มโค้ดสำหรับการแสดงข้อผิดพลาด หรือการแจ้งเตือน
+                        }
+                    } else {
+                        console.error('วันที่ไม่ถูกต้อง');
+                    }
+                }
+                var daymonthName = datefirst.format('MMMM'); // ชื่อเดือนเต็ม เช่น January, February
+                var endmonthName = dateendMoment.format('MMMM');   // ชื่อเดือนเต็ม เช่น January, February
+                var monthDiff = dateendMoment.diff(datefirst, 'months');
+                var month;
+
+                if (daymonthName === endmonthName) {
+                    month = monthDiff; // เดือนเดียวกัน
+                } else {
+                    month = monthDiff + 1; // ข้ามเดือน
+                }
+
+                $('#checkmonth').val(month);
+                CheckDateAdditional();
             });
             $(document).on('wheel', function(e) {
                 // Check if the date picker is open
@@ -1463,52 +1566,18 @@
                 }
             });
         });
-
-        function CheckDate() {
+        function CheckDateAdditional() {
             var CheckinNew = document.getElementById('Checkin').value;
             var CheckoutNew = document.getElementById('Checkout').value;
-
             var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
             var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
-
-            // Retrieve the full month names
-            var daymonthName = momentCheckinNew.format('MMMM');  // Full month name like January
-            var endmonthName = momentCheckoutNew.format('MMMM'); // Full month name like January
-
-            // Retrieve the full day names
-            var dayName = momentCheckinNew.format('dddd'); // Full day name like Monday
-            var enddayName = momentCheckoutNew.format('dddd'); // Full day name like Monday
-
-            // Calculate the difference in months
-            var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
-            $('#checkmonth').val(monthDiff);
-
-            // Weekday or weekend logic
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else {
-                    $('#calendartext').text("Weekday");
-                    $('#Date_type').val("Weekday");
-                }
-            } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else {
-                    $('#calendartext').text("Weekend");
-                    $('#Date_type').val("Weekend");
-
-                }
-            }
-
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
             const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
-
-
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
+
+            console.log(CheckoutNew);
+
             if (checkoutDate > checkinDate) {
                 const timeDiff = checkoutDate - checkinDate;
                 const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -1520,8 +1589,6 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text(nights + ' คืน');
                 $('#daypoguest').text(totalDays + ' วัน');
@@ -1533,16 +1600,11 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
                 $('#daypoguest').text(totalDays + ' วัน');
                 $('#nightpoguest').text('0 คืน');
             } else {
-
-
                 if (CheckoutNew) {
                     $('#Day').val('0');
                     $('#Night').val('0');
@@ -1566,34 +1628,26 @@
         function month() {
             var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
             var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
-            var CheckinNew = document.getElementById('Checkin').value;
-            var CheckoutNew = document.getElementById('Checkout').value;
             var start = moment(); // เริ่มที่วันที่ปัจจุบัน
             var end; // ประกาศตัวแปร end
-
-            if (!CheckinNew || !CheckoutNew) {
-                start = moment(); // เริ่มที่วันนี้
-                end = moment().add(7, 'days');
-            }else{
-                var currentMonthIndex = start.month();
-                var monthDiff = inputmonth - currentMonthIndex;
-                // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
-                if (monthDiff < 0) {
-                    monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
-                }
-                console.log(monthDiff);
-
-                if (monthDiff <= 1) {
-                    start = moment(); // เริ่มที่วันนี้
-                    end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
-                } else if (monthDiff >= 2 && monthDiff < 3 ) {
-                    start = moment(); // เริ่มที่วันนี้
-                    end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
-                } else {
-                    start = moment(); // เริ่มที่วันนี้
-                    end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
-                }
+            var currentMonthIndex = start.month();
+            var monthDiff = inputmonth - currentMonthIndex;
+              // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
+            if (monthDiff < 0) {
+                monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
             }
+
+            if (monthDiff <= 1) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
+            } else if (monthDiff >= 2 && monthDiff < 3 ) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
+            } else {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
+            }
+
             function cb(start, end) {
                 $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
                 $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
@@ -2009,15 +2063,10 @@
                                 if (valpax == null) {
                                     valpax = 0;
                                 }
-                                if (maximum_discount > 0) {
-                                    discountInput = '<div class="input-group">' +
+                                discountInput = '<div class="input-group">' +
                                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;">' +
                                                         '<span class="input-group-text">%</span>' +
                                                         '</div>';
-                                }else{
-                                    discountInput ='<input type="hidden" class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;">';
-                                }
-
 
                                 quantity = '<div class="input-group">' +
                                             '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +

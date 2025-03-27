@@ -417,13 +417,24 @@ class QuotationController extends Controller
     public function save(Request $request){
         $data = $request->all();
 
+
+        $maxDiscount = max($request->discountmain);
         $preview=$request->preview;
         $ProposalID =$request->Quotation_ID;
         $adult = (int) $request->input('Adult', 0); // ใช้ค่าเริ่มต้นเป็น 0 ถ้าค่าไม่ถูกต้อง
         $children = (int) $request->input('Children', 0);
-        $SpecialDiscount = $request->SpecialDiscount;
+        $SpecialDiscount = $request->User_discount +$request->Add_discount;
         $SpecialDiscountBath = ($request->DiscountAmount == 0) ? null : $request->DiscountAmount;
-        $Add_discount = $request->Add_discount;
+        $Add_discount = 0;
+        if ($maxDiscount <= $SpecialDiscount) {
+            if ($maxDiscount <= $request->User_discount) {
+                $Add_discount = 0;
+            }else{
+                $Add_discount = $request->Add_discount;
+            }
+        }else{
+            $Add_discount = $request->Add_discount;
+        }
         $userid = Auth::user()->id;
         $Proposal_ID = Quotation::where('Quotation_ID',$ProposalID)->first();
         if ($Proposal_ID) {
@@ -1240,14 +1251,25 @@ class QuotationController extends Controller
     }
     public function update(Request $request,$id)
     {
+
+        $maxDiscount = max($request->discountmain);
         $preview = $request->preview;
         $Quotationid =$id;
         $Quotation_ID=$request->Quotation_ID;
         $adult=$request->Adult;
         $children=$request->Children;
-        $SpecialDiscount = $request->SpecialDiscount;
+        $SpecialDiscount = $request->User_discount +$request->Add_discount;
         $SpecialDiscountBath = $request->DiscountAmount;
-        $Add_discount = $request->Add_discount;
+        $Add_discount = 0;
+        if ($maxDiscount <= $SpecialDiscount) {
+            if ($maxDiscount <= $request->User_discount) {
+                $Add_discount = 0;
+            }else{
+                $Add_discount = $request->Add_discount;
+            }
+        }else{
+            $Add_discount = $request->Add_discount;
+        }
         $data = $request->all();
 
         $userid = Auth::user()->id;
@@ -1730,6 +1752,7 @@ class QuotationController extends Controller
             $save->Operated_by = $userid;
             $save->Refler_ID=$Quotation_ID;
             $save->comment = $request->comment;
+            $save->Date_type = $request->Date_type ?? $request->inputcalendartext;
             if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
