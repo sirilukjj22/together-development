@@ -30,25 +30,44 @@ class HarmonyAgodaRevenuesController extends Controller
 
         $agoda_outstanding = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5) ->where('revenue_credit.receive_payment', 0)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')
-            ->orderBy('revenue.date', 'asc')->get();
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment',
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue', 
+                'revenue.date'
+            )->orderBy('revenue.date', 'asc')->get();
 
         $agoda_debit = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5) ->where('revenue_credit.receive_payment', 1)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')
-            ->orderBy('revenue.date', 'asc')->get();
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment',
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue', 
+                'revenue.date'
+            )->orderBy('revenue.date', 'asc')->get();
 
         $sms_revenue_all = Harmony_SMS_alerts::query()->where('status', 5)
             ->select('amount', 'status_receive_agoda')->get();
 
         $agoda_all = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5)
-            ->select('revenue_credit.receive_payment', 'revenue_credit.agoda_outstanding', 'revenue_credit.agoda_charge')
-            ->get();
+            ->select(
+                'revenue_credit.receive_payment', 
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.agoda_charge'
+            )->get();
 
 
             $totalAccountReceivableAll = 0;
@@ -81,10 +100,16 @@ class HarmonyAgodaRevenuesController extends Controller
         $title = "Agoda";
 
         return view('agoda_harmony.index', compact(
-            'totalAccountReceivableAll', 'totalPendingAccountReceivableAll',
-            'agoda_revenue', 'agoda_outstanding', 'agoda_debit', 
-            'total_agoda_revenue', 'total_outstanding_all', 'total_agoda_charge_all',
-            'total_agoda_outstanding_revenue', 'total_agoda_debit_outstanding',
+            'totalAccountReceivableAll', 
+            'totalPendingAccountReceivableAll',
+            'agoda_revenue', 
+            'agoda_outstanding', 
+            'agoda_debit', 
+            'total_agoda_revenue', 
+            'total_outstanding_all', 
+            'total_agoda_charge_all',
+            'total_agoda_outstanding_revenue', 
+            'total_agoda_debit_outstanding',
             'total_agoda_fee',
             'title'
         ));
@@ -118,25 +143,46 @@ class HarmonyAgodaRevenuesController extends Controller
 
         $agoda_outstanding = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5)->where('revenue_credit.receive_payment', 0)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')
-            ->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment',
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue'
+            )->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
 
         $agoda_debit_revenue = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5)->where('revenue_credit.receive_payment', 1)
             ->where('revenue_credit.sms_revenue', $id)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')
-            ->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment',
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue'
+            )->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
 
         $agoda_all = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')
-            ->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment',
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue'
+            )->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
 
         $title = "Debit Agoda Revenue";
 
@@ -160,9 +206,17 @@ class HarmonyAgodaRevenuesController extends Controller
     {
         $agoda_query = Harmony_revenue_credit::query()->leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 5)->where('revenue_credit.receive_payment', 1)->where('revenue_credit.sms_revenue', $id)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue');
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment', 
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue'
+            );
             
         $total_agoda_outstanding = $agoda_query->sum('revenue_credit.agoda_outstanding');
         $agoda_outstanding = $agoda_query->orderBy('revenue_credit.agoda_check_in', 'asc')->get();
@@ -259,9 +313,17 @@ class HarmonyAgodaRevenuesController extends Controller
     public function select_agoda_received($id) 
     {
         $agoda_received = Harmony_revenue_credit::where('sms_revenue', $id)->where('revenue_credit.status', 5)->where('receive_payment', 1)
-        ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-        'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-        'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')->orderBy('revenue_id', 'asc')->get();
+            ->select(
+                'revenue_credit.id', 
+                'revenue_credit.batch', 
+                'revenue_credit.agoda_check_in', 
+                'revenue_credit.agoda_check_out',
+                'revenue_credit.revenue_type', 
+                'revenue_credit.agoda_charge', 
+                'revenue_credit.receive_payment',
+                'revenue_credit.agoda_outstanding', 
+                'revenue_credit.sms_revenue'
+            )->orderBy('revenue_id', 'asc')->get();
 
             return response()->json([
                 'data' => $agoda_received,
@@ -272,9 +334,17 @@ class HarmonyAgodaRevenuesController extends Controller
     public function select_agoda_outstanding($id) 
     {
         $agoda_outstanding = Harmony_revenue_credit::where('id', $id)->where('revenue_credit.status', 5)
-        ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-            'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-            'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')->first();
+        ->select(
+            'revenue_credit.id', 
+            'revenue_credit.batch', 
+            'revenue_credit.agoda_check_in', 
+            'revenue_credit.agoda_check_out',
+            'revenue_credit.revenue_type', 
+            'revenue_credit.agoda_charge', 
+            'revenue_credit.receive_payment',
+            'revenue_credit.agoda_outstanding', 
+            'revenue_credit.sms_revenue'
+        )->first();
 
             return response()->json([
                 'data' => $agoda_outstanding,
@@ -287,9 +357,17 @@ class HarmonyAgodaRevenuesController extends Controller
     {
         if (!empty($request->receive_select_id)) {
             $agoda_outstanding = Harmony_revenue_credit::whereIn('id', $request->receive_select_id)->where('revenue_credit.status', 5)
-                ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-                    'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-                    'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')->get();
+                ->select(
+                    'revenue_credit.id', 
+                    'revenue_credit.batch', 
+                    'revenue_credit.agoda_check_in', 
+                    'revenue_credit.agoda_check_out',
+                    'revenue_credit.revenue_type', 
+                    'revenue_credit.agoda_charge', 
+                    'revenue_credit.receive_payment',
+                    'revenue_credit.agoda_outstanding', 
+                    'revenue_credit.sms_revenue'
+                )->get();
 
             
             return response()->json([
@@ -302,74 +380,6 @@ class HarmonyAgodaRevenuesController extends Controller
             ]);
         }
     }
-
-    // public function status_agoda_receive($status, $startDate, $endDate) 
-    // {
-    //     if ($status == 'all' && $startDate == 'startAll') {
-    //         $agoda_received = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-    //             ->where('revenue_credit.status', 5)
-    //             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-    //                 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-    //                 'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
-    //             ->get();
-
-    //     } elseif ($status != 'all' && $startDate == 'startAll') {
-    //         $agoda_received = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-    //             ->where('revenue_credit.status', 5)->where('receive_payment', $status)
-    //             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-    //                 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-    //                 'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
-    //             ->get();
-
-    //     } elseif ($status != 'all' && $startDate != 'startAll') {
-    //         $agoda_received = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-    //             ->where('revenue_credit.status', 5)->where('receive_payment', $status)
-    //             ->whereBetween('revenue.date', [$startDate, $endDate])
-    //             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-    //                 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-    //                 'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
-    //             ->get();
-
-    //     }  elseif ($status == 'all' && $startDate != 'startAll') {
-    //         $agoda_received = Harmony_revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-    //             ->where('revenue_credit.status', 5)
-    //             ->whereBetween('revenue.date', [$startDate, $endDate])
-    //             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-    //                 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-    //                 'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
-    //             ->get();
-    //     }
-
-    //     $data = [];
-    //     $total_amount = 0;
-
-    //     foreach ($agoda_received as $key => $value) {
-
-    //         if ($value->receive_payment == 1) {
-    //             $status_name = '<span class="badge bg-success">Paid</span>';
-    //         } else {
-    //             $status_name = '<span class="badge bg-danger">Unpaid</span>';
-    //         }
-
-    //         $total_amount += $value->agoda_outstanding;
-
-    //         $data[] = [
-    //             'id' => $value->id,
-    //             'date' => Carbon::parse($value->date)->format('d/m/Y'),
-    //             'batch' => $value->batch,
-    //             'check_in' => Carbon::parse($value->agoda_check_in)->format('d/m/Y'),
-    //             'check_out' => Carbon::parse($value->agoda_check_out)->format('d/m/Y'),
-    //             'agoda_outstanding' => number_format($value->agoda_outstanding, 2),
-    //             'status' => $status_name
-    //         ];
-    //     }
-
-    //     return response()->json([
-    //         'data' => $data,
-    //         'total_amount' => $total_amount,
-    //         'status' => 200,
-    //     ]);
-    // }
 
     public function export()
     {
@@ -865,101 +875,6 @@ class HarmonyAgodaRevenuesController extends Controller
             'status' => 200,
         ]);
     }
-
-    // Graph Monthly Agoda Charge
-    // public function graph_month_charge()
-    // {
-    //     // ยอด SMS ทั้งหมด
-    //     $sms_query = Harmony_SMS_alerts::where('status', 5)
-    //         ->select('amount', DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
-    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
-    //         ->get();
-
-    //     // ยอด SMS ที่กดรับชำระแล้ว สถานะเป็น paid
-    //     $sms_paid_query = Harmony_SMS_alerts::where('status', 5)
-    //         ->where('status_receive_agoda', 1)
-    //         ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
-    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
-    //         ->get();
-
-    //     // ยอด SMS ที่ยังไม่ได้กดรับชำระแล้ว สถานะเป็น pending
-    //     $sms_pending_query = Harmony_SMS_alerts::where('status', 5)
-    //         ->where('status_receive_agoda', 0)
-    //         ->select('amount',  DB::raw('YEAR(date) as year'), DB::raw('MONTH(date) as month'), DB::raw("SUM(amount) as total_sum"))
-    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
-    //         ->get();
-
-    //     $agoda_outstanding = Harmony_revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
-    //         ->where('revenue_credit.status', 5)
-    //         ->select(DB::raw('YEAR(revenue.date) as year'), DB::raw('MONTH(revenue.date) as month'),  DB::raw('SUM(revenue_credit.agoda_outstanding) as total_agoda_outstanding'))
-    //         ->groupBy('year', 'month')->orderBy('year', 'asc')->orderBy('month', 'asc')
-    //         ->get();
-
-    //     $agoda_outstanding_sum = Harmony_revenue_credit::leftJoin('revenue', 'revenue_credit.revenue_id', '=', 'revenue.id')
-    //         ->where('revenue_credit.status', 5)->select('revenue_credit.agoda_outstanding')
-    //         ->sum('revenue_credit.agoda_outstanding');
-
-    //         // SMS
-    //         $sms = $sms_query->keyBy('month');
-    //         $sms_year = $sms_query->keyBy('year');
-    //         $sms_paid = $sms_paid_query->keyBy('month');
-    //         $sms_paid_year = $sms_paid_query->keyBy('year');
-    //         $sms_pending = $sms_pending_query->keyBy('month');
-    //         $sms_pending_year = $sms_pending_query->keyBy('year');
-
-    //         // Revenue
-    //         $agoda = $agoda_outstanding->keyBy('month');
-    //         $agoda_year = $agoda_outstanding->keyBy('year');
-
-    //         // เก็บค่าเป็น Array
-    //         $data_sms = [];
-    //         $data_sms_pending = [];
-    //         $data_outstanding = [];
-
-    //         $sum = 0;
-            
-    //         for ($y = 2024; $y <= 2026; $y += 1) { 
-    //             for ($i = 1; $i <= 12; $i++) { 
-    //                 if ($sms_year->has($y)) {
-    //                     $data_sms[$y][] = $sms->has($i) ? $sms[$i]->total_sum : 0;
-    //                 } else {
-    //                     $data_sms[$y][] = 0;
-    //                 }
-
-    //                 if ($sms_paid_year->has($y)) {
-    //                     $data_sms_paid[$y][] = $sms_paid->has($i) ? $sms_paid[$i]->total_sum : 0;
-    //                 } else {
-    //                     $data_sms_paid[$y][] = 0;
-    //                 }
-
-    //                 if ($sms_pending_year->has($y)) {
-    //                     $data_sms_pending[$y][] = $sms_pending->has($i) ? $sms_pending[$i]->total_sum : 0;
-    //                 } else {
-    //                     $data_sms_pending[$y][] = 0;
-    //                 }
-
-    //                 if ($sms_year->has($y)) {
-    //                     // $sum = ($agoda->has($i) ? (double)$agoda[$i]->total_agoda_outstanding : 0) - ($sms_paid->has($i) && $sms_paid_year->has($y) ? (double)$sms_paid[$i]->total_sum : 0);
-    //                     $agoda_outstanding_sum -= ($sms->has($i) ? (double)$sms[$i]->total_sum : 0);
-    //                     if ($agoda_outstanding_sum > 0 && $i == date('m')) {
-    //                         $data_outstanding[$y][] = $agoda_outstanding_sum;
-    //                     } else {
-    //                         $data_outstanding[$y][] = 0;
-    //                     }
-    //                 } else {
-    //                     $data_outstanding[$y][] = 0;
-    //                 }
-    //             }
-    //         }
-
-    //     return response()->json([
-    //         'data_sms_paid' => $data_sms_paid,
-    //         'data_sms' => $data_sms,
-    //         'data_sms_pending' => $data_sms_pending,
-    //         'data_outstanding' => $data_outstanding,
-    //         'status' => 200,
-    //     ]);
-    // }
 
     public function graph_month_charge()
     {
