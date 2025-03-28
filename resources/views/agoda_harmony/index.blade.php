@@ -424,7 +424,7 @@
 
     <!-- Custom Scripts -->
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
-    <script src="{{ asset('assets/js/revenueAgoda.js') }}"></script>
+    <script src="{{ asset('assets/js/harmony/revenueAgoda.js') }}"></script>
 
 <script>
     function currencyFormat(num) {
