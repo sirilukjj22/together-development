@@ -166,7 +166,7 @@
                                                         </td>
                                                         <td>{{ $item->Receipt_ID}}</td>
                                                         <td>{{ $item->Quotation_ID}}</td>
-                                                        <td >{{$item->Deposit_ID ?? $item->Invoice_ID}}</td>
+                                                        <td >{{$item->Deposit_ID ?? $item->Invoice_ID ?? $item->Additional_ID}}</td>
                                                         <td style="text-align: left;">{{$item->fullname}}</td>
                                                         <td>{{ $item->paymentDate }}</td>
                                                         <td style="text-align: center;">
@@ -188,34 +188,10 @@
                                                             <div class="btn-group">
                                                                 <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
-                                                                    @if ($rolePermission > 0)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
-                                                                        @endif
-                                                                        @if ($item->created_at->toDateString() < now()->toDateString())
-                                                                        @else
-                                                                            @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                                @if ($canEditProposal == 1)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
-                                                                                @endif
-                                                                            @elseif ($rolePermission == 2)
-                                                                                @if ($item->Operated_by == $CreateBy)
-                                                                                    @if ($canEditProposal == 1)
-                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
-                                                                                    @endif
-                                                                                @endif
-                                                                            @elseif ($rolePermission == 3)
-                                                                                @if ($canEditProposal == 1)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
-                                                                                @endif
-                                                                            @endif
-                                                                        @endif
-                                                                    @else
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
-                                                                        @endif
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/export/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 </ul>
                                                             </div>

@@ -57,7 +57,7 @@ class Additional extends Controller
             DB::raw('COUNT(proposal_overbill.Quotation_ID) as ADD_count'),
             DB::raw('SUM(proposal_overbill.Nettotal) as ADD_amount')
         )
-        ->where('quotation.status_document', 6)
+        ->whereIn('quotation.status_document', [6,9])
 
         ->whereNull('proposal_overbill.Quotation_ID')
         ->groupBy('quotation.Quotation_ID') // จัดกลุ่มข้อมูลตาม Quotation_ID

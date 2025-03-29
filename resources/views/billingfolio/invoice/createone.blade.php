@@ -297,7 +297,7 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <form id="myForm" action="{{ route('BillingFolio.savedeposit') }}" method="POST" >
+        <form id="myForm" action="{{ route('BillingFolio.saveone') }}" method="POST" >
             @csrf
             <div class="container-xl">
                 <div class="row clearfix">
@@ -327,7 +327,7 @@
                                                 </li>
                                                 <li>
                                                     <span>Tax ID/Gst Pass</span>
-                                                    <span>{{$Identification}}</span>
+                                                    <span>{{$Identification ?? '-'}}</span>
                                                 </li>
                                                 <li>
                                                     <span>Address</span>
@@ -343,7 +343,7 @@
                                                 </li>
                                                 <li>
                                                     <span>Valid Date</span>
-                                                    <span>{{$dateFormatted ?? '-'}}</span>
+                                                    <span>{{$valid ?? '-'}}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -353,7 +353,7 @@
                                             <div class="outer-glow-circle"></div>
                                             <div class="circle-content">
                                                 <p class="circle-text">
-                                                    <p class="f-w-bold fs-3" id="Outstandingall">{{ number_format($Nettotal, 2, '.', ',') }}</p>
+                                                    <p class="f-w-bold fs-3" id="Outstandingall">{{ number_format($sumpayment, 2, '.', ',') }}</p>
                                                 <span class="subtext fs-6" >Total Amount</span>
                                                 </p>
                                             </div>
@@ -367,24 +367,39 @@
                                             <h5 class="card-title center" >Folio</h5>
                                             <ul class="card-list-between">
                                                 <li class="pb-1 px-2 justify-content-center gap-2 fs-5" >
-                                                    <span>DR N0. </span>
-                                                    <span class="hover-effect f-w-bold text-primary">({{$DepositID}}) </i>
+                                                    <span>PI N0. </span>
+                                                    <span class="hover-effect f-w-bold text-primary">({{$Invoice_ID}})
                                                     </span>
                                                 </li>
                                                 <li class="px-2">
+                                                    <span>Proposal ID : {{$Proposal->Quotation_ID}}</span>
+                                                    <span class="hover-effect f-w-bold text-primary"> {{ number_format($Proposal->Nettotal, 2, '.', ',') }}</span>
+                                                </li>
+                                                @foreach ($DepositID as $key => $item)
+                                                <li class="px-2">
+                                                    <span>Deposit Invoice ID : {{$item->Deposit_ID}}</span>
+                                                        <span class="hover-effect f-w-bold text-danger"> - {{ number_format($item->amount, 2) }} </i>
+                                                    </span>
+                                                </li>
+                                                @endforeach
+                                                <li class="px-2">
+                                                    <span>ToTal Amount</span>
+                                                    <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment, 2, '.', ',') }}</span>
+                                                </li>
+                                                <li class="px-2">
                                                     <span>Price Before Tax</span>
-                                                        <span class="hover-effect f-w-bold text-primary"> {{ number_format($Nettotal/1.07, 2, '.', ',') }} </i>
+                                                        <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment/1.07, 2, '.', ',') }}
                                                     </span>
                                                 </li>
                                                 <li class="px-2">
                                                     <span>Value Added Tax</span>
-                                                    <span class="hover-effect f-w-bold text-primary"> {{ number_format($Nettotal - ($Nettotal/1.07), 2, '.', ',') }} </i></span>
+                                                    <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment - ($sumpayment/1.07), 2, '.', ',') }} </span>
                                                 </li>
 
                                             </ul>
                                             <li class="outstanding-amount">
                                                 <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                                <span class="text-success f-w-bold" id="Outstanding"> {{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                                <span class="text-success f-w-bold" id="Outstanding"> {{ number_format($sumpayment, 2, '.', ',') }}</span>
                                             </li>
                                         </div>
                                     </section>
@@ -392,7 +407,7 @@
                                 <div class="modal-body mt-3 " style="display: grid;gap:0.5em;background-color: #d0f7ec;">
                                     <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
                                         <b >Receipt ID : {{$REID}}</b>
-                                        <b >Deposit Revenue ID : {{$DepositID}}</b>
+                                        <b >Proforma Invoice ID : {{$Invoice_ID}}</b>
                                     </div>
                                     <div class="box-form-issueBill">
                                         <h4 >
@@ -422,7 +437,7 @@
                                             <div>
                                                 <label for="arrival">Arrival</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$deposit->Issue_date}}" required>
+                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$IssueDate}}" required>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -434,7 +449,7 @@
                                             <div>
                                                 <label for="departure">Departure</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$deposit->ExpirationDate}}" required>
+                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Expiration}}" required>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -653,7 +668,7 @@
                                                             </li>
                                                             <li>
                                                                 <span>Tax invoice Date</span>
-                                                                <span  id="Invoicedate">{{$dateFormatted}}</span>
+                                                                <span  id="Invoicedate">{{$valid}}</span>
                                                             </li>
                                                             </ul>
                                                         </div>
@@ -745,12 +760,13 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" class="form-control" id="InvoiceID" name="invoice" value="{{$DepositID}}" />
+            <input type="hidden" class="form-control" id="InvoiceID" name="invoice" value="{{$Invoice_ID}}" />
+            <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
         </form>
     </div>
-    <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
+
     <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
-    <input type="hidden" id="invoiceamount" value="{{$Nettotal}}">
+    <input type="hidden" id="invoiceamount" value="{{$sumpayment}}">
     <input type="hidden" id="totalamount" name="totalamount">
     <input type="hidden" id="totalpayment" name="totalpayment">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

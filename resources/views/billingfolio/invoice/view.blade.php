@@ -40,7 +40,7 @@
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col sms-header">
-                <div class="span3">View Spilte Bill</div>
+                <div class="span3">View Billing Folio</div>
             </div>
             <div class="col-auto">
             </div>

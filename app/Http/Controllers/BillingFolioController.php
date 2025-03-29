@@ -153,7 +153,7 @@ class BillingFolioController extends Controller
         $proposalid = $invoices->Quotation_ID;
         $Payment = $invoices->payment;
         $companyid = $invoices->company;
-        $valid = $invoices->Expiration;
+        $valid = $invoices->created_at;
         $IssueDate = $invoices->IssueDate;
         $Expiration = $invoices->Expiration;
         $sumpayment = $invoices->sumpayment;
@@ -276,15 +276,13 @@ class BillingFolioController extends Controller
         $vat_type = $Proposal->vat_type;
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $data_cheque =receive_cheque::where('refer_proposal',$proposalid)->where('status',1)->get();
-        return view('billingfolio.createmulti',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
+        return view('billingfolio.invoice.createmulti',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
         ,'DepositID','REID','Invoice_ID','settingCompany','additional_type','additional_Nettotal','Cash','Complimentary','datasub','name_ID','name','type','vat_type','IssueDate','Expiration'
         ,'data_bank','data_cheque','ids'));
     }
     public function spiltebill(Request $request ,$id){
-
         $idss= $id;
         $payments = json_decode($request->input('paymentsData'), true);
-
         foreach ($payments as &$payment) { // ใช้ & เพื่อให้อัปเดตค่าได้
             if ($payment['type'] === 'cheque') {
                 $chequeNumber = $payment['cheque'] ?? null;
@@ -296,8 +294,6 @@ class BillingFolioController extends Controller
             }
         }
         unset($payment);
-
-
         if ($payments == null) {
             return redirect()->route('BillingFolio.createmulti', ['id' => $id])->with('error', 'Please fill the amount on the list.');
         }
@@ -313,7 +309,6 @@ class BillingFolioController extends Controller
             }
         }
         unset($payment);
-
         $cashAmount = array_reduce($paymentsDataArray, function ($carry, $item) {
             return ($item['type'] === 'cash' || $item['type'] === 'Complimentary') ? $carry + $item['amount'] : $carry;
         }, 0);
@@ -485,7 +480,7 @@ class BillingFolioController extends Controller
             'departure'=>$departure
         ];
 
-        return view('billingfolio.spiltebill',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','data_select','paymentsDataArray','cashAmount','idss','paymentdate'
+        return view('billingfolio.invoice.spiltebill',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','data_select','paymentsDataArray','cashAmount','idss','paymentdate'
         ,'REID','additional_type','datasub','name_ID','name','data_bank','data_cheque','payments','reservationNo','room','numberOfGuests','arrival','departure','fax','ids','type','datadetailbill','invoice'));
     }
     public function savemulti(Request $request) {
@@ -740,7 +735,7 @@ class BillingFolioController extends Controller
             $date = Carbon::now();
             $formattedDateprint = $date->format('d/m/Y');
             $formattedTime = $date->format('H:i');
-            return view('billingfolio.previewspiltebill',compact('groupedData','datadetailbill','settingCompany','REID','formattedDateprint','formattedTime','bill','paymentdate'));
+            return view('billingfolio.invoice.previewspiltebill',compact('groupedData','datadetailbill','settingCompany','REID','formattedDateprint','formattedTime','bill','paymentdate'));
         }else{
             try {
                 {
@@ -2086,6 +2081,7 @@ class BillingFolioController extends Controller
         if ($Receipt) {
             $totalReceipt = $Receipt->document_amount;
         }
+
         $Receiptover = null;
         $Receiptover = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
         foreach ($Receiptover as $item) {
@@ -2200,6 +2196,175 @@ class BillingFolioController extends Controller
                     ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt','Additionaltotal','Receiptover','statusover','Additional_ID',
                     'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','additional_type','totalinvoices','Cash','Com','deposit_revenue_amount','deposit_revenue'));
     }
+
+    public function create_one($id){
+        $invoices = document_invoices::where('id', $id)->first();
+        $Invoice_ID = $invoices->Invoice_ID;
+        $proposalid = $invoices->Quotation_ID;
+        $Payment = $invoices->payment;
+        $companyid = $invoices->company;
+        $valid = Carbon::parse($invoices->created_at)->format('d/m/Y');
+        $IssueDate = $invoices->IssueDate;
+        $Expiration = $invoices->Expiration;
+        $sumpayment = $invoices->sumpayment;
+        $Payment = $invoices->payment;
+        $amountproposal = $invoices->sumpayment;
+        $parts = explode('-', $companyid);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $Selectdata =  'Company';
+            $company =  companys::where('Profile_ID',$companyid)->first();
+            if ($company) {
+                $Address=$company->Address;
+                $CityID=$company->City;
+                $amphuresID = $company->Amphures;
+                $TambonID = $company->Tambon;
+                $Identification = $company->Taxpayer_Identification;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                $phone = company_phone::where('Profile_ID',$company->Profile_ID)->where('Sequence','main')->first();
+                $Email = $company->Company_Email;
+                $Company_typeID=$company->Company_type;
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $fullName = "บริษัท ". $company->Company_Name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                }else{
+                    $fullName = $comtype->name_th . $company->Company_Name;
+                }
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $name = "บริษัท ". $company->Company_Name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $name = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $name = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                }else{
+                    $name = $comtype->name_th . $company->Company_Name;
+                }
+                $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+                $name_ID = $company->Profile_ID;
+                $datasub = company_tax::where('Company_ID',$name_ID)->get();
+            }
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$companyid)->first();
+            if ($guestdata) {
+                $Selectdata =  'Guest';
+                $Company_typeID=$guestdata->Company_type;
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="นาย") {
+                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                }elseif ($comtype->name_th =="นาง") {
+                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                }elseif ($comtype->name_th =="นางสาว") {
+                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                }else{
+                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                }
+                $name =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+                $Address=$guestdata->Address;
+                $CityID=$guestdata->City;
+                $amphuresID = $guestdata->Amphures;
+                $TambonID = $guestdata->Tambon;
+                $Identification = $guestdata->Identification_Number;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                $phone = phone_guest::where('Profile_ID',$guestdata->Profile_ID)->where('Sequence','main')->first();
+                $Email = $guestdata->Company_Email;
+                $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+                $name_ID = $guestdata->Profile_ID;
+                $datasub = guest_tax::where('Company_ID',$name_ID)->get();
+            }
+        }
+        $names = []; // สร้าง array เพื่อเก็บค่าชื่อ
+
+        if ($datasub) {
+            foreach ($datasub as $key => $item) {
+                $comtype = DB::table('master_documents')->where('id', $item->Company_type)->first();
+
+                if ($comtype) { // ตรวจสอบว่า $comtype ไม่เป็น null
+                    if ($firstPart == 'C') {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $name = "บริษัท " . $item->Companny_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
+                        } else {
+                            $name = $comtype->name_th . ($item->Companny_name ?? ($item->first_name . " " . $item->last_name));
+                        }
+                        $name_id = $item->ComTax_ID;
+                    } else {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $name = "บริษัท " . $item->Company_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
+                        } else {
+                            $name = $comtype->name_th . ($item->Company_name ?? ($item->first_name . " " . $item->last_name));
+                        }
+                        $name_id = $item->GuestTax_ID;
+                    }
+
+                    // เก็บค่า $name ลงใน array
+                    $names[$key + 1] = [
+                        'id' => $name_id ?? null,
+                        'name' => $name ?? null,
+                    ];
+                }
+            }
+        }
+        $datamain[0] = [
+            'id' => $name_ID ?? null,
+            'name' => $name ?? null,
+        ];
+        $data_select = array_merge($datamain, $names);
+        $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
+        $Deposit_ID = $invoices->Deposit_ID;
+        $array = array_map('trim', explode(',', $Deposit_ID));
+        $DepositID = depositrevenue::whereIn('Deposit_ID', $array)->get();
+        $currentDate = Carbon::now();
+        $ID = 'RE-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = receive_payment::latest()->first();
+        $nextNumber = 1;
+
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $REID = $ID.$year.$month.$newRunNumber;
+        $data_cheque =receive_cheque::where('refer_proposal',$proposalid)->where('status',1)->get();
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
+        $chequeRe =receive_cheque::where('refer_proposal',$proposalid)->first();
+        if ($chequeRe) {
+            if ($chequeRe->status == '1') {
+                // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
+                $chequeRestatus = 0;
+            } else {
+                $chequeRestatus = 1;
+            }
+        }else{
+            $chequeRestatus = 1;
+        }
+        $type = $Proposal->type_Proposal;
+        $vat_type = $Proposal->vat_type;
+        return view('billingfolio.invoice.createone',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
+                    ,'DepositID','REID','Invoice_ID','settingCompany','data_bank','chequeRe','chequeRestatus','data_cheque'
+                    ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration','data_select'));
+    }
     public function create($id){
         $invoices = document_invoices::where('id', $id)->first();
         $Invoice_ID = $invoices->Invoice_ID;
@@ -2283,6 +2448,50 @@ class BillingFolioController extends Controller
                 $datasub = guest_tax::where('Company_ID',$name_ID)->get();
             }
         }
+        $names = []; // สร้าง array เพื่อเก็บค่าชื่อ
+
+        if ($datasub) {
+            foreach ($datasub as $key => $item) {
+                $comtype = DB::table('master_documents')->where('id', $item->Company_type)->first();
+
+                if ($comtype) { // ตรวจสอบว่า $comtype ไม่เป็น null
+                    if ($firstPart == 'C') {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $name = "บริษัท " . $item->Companny_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
+                        } else {
+                            $name = $comtype->name_th . ($item->Companny_name ?? ($item->first_name . " " . $item->last_name));
+                        }
+                        $name_id = $item->ComTax_ID;
+                    } else {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $name = "บริษัท " . $item->Company_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
+                        } else {
+                            $name = $comtype->name_th . ($item->Company_name ?? ($item->first_name . " " . $item->last_name));
+                        }
+                        $name_id = $item->GuestTax_ID;
+                    }
+
+                    // เก็บค่า $name ลงใน array
+                    $names[$key + 1] = [
+                        'id' => $name_id ?? null,
+                        'name' => $name ?? null,
+                    ];
+                }
+            }
+        }
+        $datamain[0] = [
+            'id' => $name_ID ?? null,
+            'name' => $name ?? null,
+        ];
+        $data_select = array_merge($datamain, $names);
         $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
         $Deposit_ID = $invoices->Deposit_ID;
         $array = array_map('trim', explode(',', $Deposit_ID));
@@ -2340,9 +2549,9 @@ class BillingFolioController extends Controller
         $type = $Proposal->type_Proposal;
         $vat_type = $Proposal->vat_type;
 
-        return view('billingfolio.create',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
+        return view('billingfolio.invoice.create',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
                     ,'DepositID','REID','Invoice_ID','settingCompany','additional_type','additional_Nettotal','Cash','Complimentary','data_bank','chequeRe','chequeRestatus','data_cheque'
-                    ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration'));
+                    ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration','data_select'));
     }
     public function EditPaidInvoice($id){
         $re = receive_payment::where('id',$id)->first();
@@ -3034,6 +3243,7 @@ class BillingFolioController extends Controller
         $idinvoices = $invoices->id;
         $sumpayment = $invoices->sumpayment;
         $Quotation_ID = $invoices->Quotation_ID;
+        $valid = Carbon::parse($invoices->created_at)->format('d/m/Y');
         $proposaldata = Quotation::where('Quotation_ID',$Quotation_ID)->first();
         $type_Proposal =$proposaldata->type_Proposal;
         $created_at = Carbon::parse($invoices->created_at)->format('d/m/Y');
@@ -3277,28 +3487,39 @@ class BillingFolioController extends Controller
             $user = User::where('id',$userid)->first();
 
             $product = [];
-            foreach ($groupedData as $value) {
-                $totalAmount =
-                                ($value['cashAmount'] ?? 0) +
-                                ($value['Complimentary'] ?? 0) +
-                                ($value['bankTransferAmount'] ?? 0) +
-                                ($value['creditCardAmount'] ?? 0) +
-                                ($value['chequeamount'] ?? 0) +
-                                ($value['NoShowAmount'] ?? 0);
-                $product[] = [
-                    'detail' => $value['detail'],
-                    'amount' => $totalAmount,
-                ];
-            }
-            $additionaldetail = [];
             if ($additional_type == 'Cash' || $additional_type == 'Cash Manual') {
-                $additionaldetail[] = [
-                    'detail' => 'Cash',
-                    'amount' => $additional,
-                ];
+                foreach ($groupedData as $value) {
+                    $totalAmount =
+                                    ($value['cashAmount'] ?? 0) +
+                                    ($value['Complimentary'] ?? 0) +
+                                    ($value['bankTransferAmount'] ?? 0) +
+                                    ($value['creditCardAmount'] ?? 0) +
+                                    ($value['chequeamount'] ?? 0) +
+                                    ($value['NoShowAmount'] ?? 0);
+                    if ($value['detail'] === 'Cash') {
+                        $totalAmount += $additional;
+                    }
+                    $product[] = [
+                        'detail' => $value['detail'],
+                        'amount' => $totalAmount,
+                    ];
+                }
+            }else{
+                foreach ($groupedData as $value) {
+                    $totalAmount =
+                                    ($value['cashAmount'] ?? 0) +
+                                    ($value['Complimentary'] ?? 0) +
+                                    ($value['bankTransferAmount'] ?? 0) +
+                                    ($value['creditCardAmount'] ?? 0) +
+                                    ($value['chequeamount'] ?? 0) +
+                                    ($value['NoShowAmount'] ?? 0);
+                    $product[] = [
+                        'detail' => $value['detail'],
+                        'amount' => $totalAmount,
+                    ];
+                }
             }
-            $productItems = array_merge($product, $additionaldetail);
-
+            $productItems = array_merge($product);
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -3369,6 +3590,7 @@ class BillingFolioController extends Controller
             $save->paymentDate = $paymentDate;
             $save->Operated_by = $user;
             $save->note = $note;
+            $save->valid =$valid;
             $save->save();
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
@@ -3911,8 +4133,11 @@ class BillingFolioController extends Controller
         $receive = receive_payment::where('id',$id)->first();
         $Quotation_ID = $receive->Quotation_ID;
         $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+        $additional = $receive->additional;
         $ids = $Quotation->id;
-        $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
+        if ($receive->additional_type == null) {
+
+            $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
             ->get()
             ->map(function ($value) {
                 return [
@@ -3921,6 +4146,35 @@ class BillingFolioController extends Controller
                 ];
             })
             ->toArray();
+        }else{
+
+            $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
+            ->get()
+            ->map(function ($value) {
+                return [
+                    'detail' => $value->detail,
+                    'amount' => $value->amount,
+                ];
+            })
+            ->groupBy('detail')
+            ->map(function ($group, $detail) use ($receive) {
+                $totalAmount = $group->sum('amount');
+
+                // ถ้าเป็น 'Cash' ให้บวก $receive->additional
+                if ($detail === 'Cash') {
+                    $totalAmount += $receive->additional;
+                }
+
+                return [
+                    'detail' => $detail,
+                    'amount' => $totalAmount
+                ];
+            })
+            ->values() // รีเซ็ต key index ให้เป็น array ปกติ
+            ->toArray();
+        }
+
+
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $guest = $receive->company;
         $paymentDate = $receive->paymentDate;
@@ -4113,10 +4367,255 @@ class BillingFolioController extends Controller
             'Amount'=>$Amount,
 
         ];
-        return view('billingfolio.view',compact('data','settingCompany','productItems','ids','Date'));
+        return view('billingfolio.invoice.view',compact('data','settingCompany','productItems','ids','Date'));
 
     }
 
+    public function export($id){
+        $receive = receive_payment::where('id',$id)->first();
+        $Quotation_ID = $receive->Quotation_ID;
+        $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+        $additional = $receive->additional;
+        $ids = $Quotation->id;
+        if ($receive->additional_type == null) {
+
+            $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
+            ->get()
+            ->map(function ($value) {
+                return [
+                    'detail' => $value->detail,
+                    'amount' => $value->amount,
+                ];
+            })
+            ->toArray();
+        }else{
+
+            $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
+            ->get()
+            ->map(function ($value) {
+                return [
+                    'detail' => $value->detail,
+                    'amount' => $value->amount,
+                ];
+            })
+            ->groupBy('detail')
+            ->map(function ($group, $detail) use ($receive) {
+                $totalAmount = $group->sum('amount');
+
+                // ถ้าเป็น 'Cash' ให้บวก $receive->additional
+                if ($detail === 'Cash') {
+                    $totalAmount += $receive->additional;
+                }
+
+                return [
+                    'detail' => $detail,
+                    'amount' => $totalAmount
+                ];
+            })
+            ->values() // รีเซ็ต key index ให้เป็น array ปกติ
+            ->toArray();
+        }
+
+
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $guest = $receive->company;
+        $paymentDate = $receive->paymentDate;
+        $sumpayment= $receive->document_amount;
+        $Invoice_ID = $receive->Invoice_ID;
+        $Deposit_ID = $receive->Deposit_ID;
+        $reservationNo = $receive->reservationNo;
+        $room = $receive->roomNo;
+        $numberOfGuests = $receive->numberOfGuests;
+        $arrival = $receive->arrival;
+        $departure = $receive->departure;
+        $note= $receive->note;
+        $REID = $receive->Receipt_ID;
+        $parts = explode('-', $guest);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $company =  companys::where('Profile_ID',$guest)->first();
+            if ($company) {
+                $fullname = "";
+                $Company_typeID=$company->Company_type;
+                if ($company->Company_Name) {
+                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $fullnameCom = " "." บริษัท ". $company->Company_Name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $fullnameCom = " "." บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $fullnameCom = " "." ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                    }else {
+                        $fullnameCom = $comtype->name_th . $company->Company_Name;
+                    }
+                }else{
+                    $fullnameCom = "";
+                }
+                $Address=$company->Address;
+                $CityID=$company->City;
+                $amphuresID = $company->Amphures;
+                $TambonID = $company->Tambon;
+                $Identification = $company->Taxpayer_Identification;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                if ($provinceNames) {
+                    $province = ' จังหวัด '.$provinceNames->name_th;
+                    $amphures = ' อำเภอ '.$amphuresID->name_th;
+                    $tambon = ' ตำบล '.$TambonID->name_th;
+                    $zip_code = $TambonID->Zip_Code;
+                }else{
+                    $province ="";
+                    $amphures="";
+                    $tambon="";
+                    $zip_code="";
+                }
+            }else{
+                $company =  company_tax::where('ComTax_ID',$guest)->first();
+                $fullname = $company && $company->Companny_name
+                            ? ""
+                            : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
+                $Company_typeID=$company->Company_type;
+                if ($company->Companny_name) {
+                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $fullnameCom = " "." บริษัท ". $company->Companny_name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $fullnameCom = " "." บริษัท ". $company->Companny_name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $fullnameCom = " "." ห้างหุ้นส่วนจำกัด ". $company->Companny_name ;
+                    }else {
+                        $fullnameCom = $comtype->name_th . $company->Companny_name;
+                    }
+                }else{
+                    $fullnameCom = "";
+                }
+                $Address=$company->Address;
+                $CityID=$company->City;
+                $amphuresID = $company->Amphures;
+                $TambonID = $company->Tambon;
+                $Identification = $company->Taxpayer_Identification;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                if ($provinceNames) {
+                    $province = ' จังหวัด '.$provinceNames->name_th;
+                    $amphures = ' อำเภอ '.$amphuresID->name_th;
+                    $tambon = ' ตำบล '.$TambonID->name_th;
+                    $zip_code = $TambonID->Zip_Code;
+                }else{
+                    $province ="";
+                    $amphures="";
+                    $tambon="";
+                    $zip_code="";
+                }
+            }
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$guest)->first();
+            if ($guestdata) {
+                $fullname =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+                $fullnameCom = "";
+                $Address=$guestdata->Address;
+                $CityID=$guestdata->City;
+                $amphuresID = $guestdata->Amphures;
+                $TambonID = $guestdata->Tambon;
+                $Identification = $guestdata->Identification_Number;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                if ($provinceNames) {
+                    $province = ' จังหวัด '.$provinceNames->name_th;
+                    $amphures = ' อำเภอ '.$amphuresID->name_th;
+                    $tambon = ' ตำบล '.$TambonID->name_th;
+                    $zip_code = $TambonID->Zip_Code;
+                }else{
+                    $province ="";
+                    $amphures="";
+                    $tambon="";
+                    $zip_code="";
+                }
+            }else{
+                $guestdata =  guest_tax::where('GuestTax_ID',$guest)->first();
+                $fullname = $guestdata && $guestdata->Company_name
+                            ? ""
+                            : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
+                $Company_typeID=$guestdata->Company_type;
+                if ($guestdata->Company_name) {
+                    $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $fullnameCom = " "." บริษัท ". $guestdata->Company_name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $fullnameCom = " "." บริษัท ". $guestdata->Company_name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $fullnameCom = " "." ห้างหุ้นส่วนจำกัด ". $guestdata->Company_name ;
+                    }else {
+                        $fullnameCom = $comtype->name_th . $guestdata->Company_name;
+                    }
+                }else{
+                    $fullnameCom = "";
+                }
+                $Address=$guestdata->Address;
+                $CityID=$guestdata->City;
+                $amphuresID = $guestdata->Amphures;
+                $TambonID = $guestdata->Tambon;
+                $Identification = $guestdata->Identification_Number;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                if ($provinceNames) {
+                    $province = ' จังหวัด '.$provinceNames->name_th;
+                    $amphures = ' อำเภอ '.$amphuresID->name_th;
+                    $tambon = ' ตำบล '.$TambonID->name_th;
+                    $zip_code = $TambonID->Zip_Code;
+                }else{
+                    $province ="";
+                    $amphures="";
+                    $tambon="";
+                    $zip_code="";
+                }
+
+            }
+        }
+        $date = Carbon::now();
+        $Date = $paymentDate;
+        $dateFormatted = $date->format('d/m/Y');
+        $dateTime = $date->format('H:i');
+        $Amount = $sumpayment;
+        $userid = Auth::user()->id;
+        $user = User::where('id',$userid)->first();
+        $invoices = document_invoices::where('Invoice_ID', $Invoice_ID)->first();
+        $created_at =$receive->valid;
+        $template = master_template::query()->latest()->first();
+        $data = [
+            'fullname'=>$fullname,
+            'fullnameCom'=>$fullnameCom,
+            'Identification'=>$Identification,
+            'Address'=>$Address,
+            'province'=>$province,
+            'amphures'=>$amphures,
+            'tambon'=>$tambon,
+            'zip_code'=>$zip_code,
+            'reservationNo'=>$reservationNo,
+            'room'=>$room,
+            'user'=>$user,
+            'arrival'=>$arrival,
+            'departure'=>$departure,
+            'numberOfGuests'=>$numberOfGuests,
+            'dateFormatted'=>$dateFormatted,
+            'settingCompany'=>$settingCompany,
+            'dateTime'=>$dateTime,
+            'created_at'=>$created_at,
+            'note'=>$note,
+            'invoice'=>$REID,
+            'Amount'=>$Amount,
+            'productItems'=>$productItems,
+            'Date'=>$Date,
+        ];
+        $view= $template->name;
+        $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
+        $path = 'PDF/billingfolio/';
+        return $pdf->stream();
+    }
     public function log($id){
         $receive_payment = receive_payment::where('id', $id)->first();
         $correct = $receive_payment->correct;

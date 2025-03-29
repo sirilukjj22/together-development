@@ -283,10 +283,17 @@
             <div class="row align-items-center mb-2" >
                 @if (session("success"))
                 <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                    <h4 class="alert-heading">Save successful.</h4>
                     <hr>
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
+                @endif
+                @if (session("error"))
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Save failed!</h4>
+                        <hr>
+                        <p class="mb-0">{{ session('error') }}</p>
+                    </div>
                 @endif
                 <div class="col">
                     <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
@@ -297,7 +304,7 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <form id="myForm" action="{{ route('BillingFolio.savedeposit') }}" method="POST" >
+        <form id="myForm" action="{{url('/Document/BillingFolio/Proposal/invoice/Generate/createmulti/bill/'.$ids)}}" method="POST" >
             @csrf
             <div class="container-xl">
                 <div class="row clearfix">
@@ -327,7 +334,7 @@
                                                 </li>
                                                 <li>
                                                     <span>Tax ID/Gst Pass</span>
-                                                    <span>{{$Identification}}</span>
+                                                    <span>{{$Identification ?? '-'}}</span>
                                                 </li>
                                                 <li>
                                                     <span>Address</span>
@@ -343,7 +350,7 @@
                                                 </li>
                                                 <li>
                                                     <span>Valid Date</span>
-                                                    <span>{{$dateFormatted ?? '-'}}</span>
+                                                    <span>{{$valid ?? '-'}}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -353,7 +360,7 @@
                                             <div class="outer-glow-circle"></div>
                                             <div class="circle-content">
                                                 <p class="circle-text">
-                                                    <p class="f-w-bold fs-3" id="Outstandingall">{{ number_format($Nettotal, 2, '.', ',') }}</p>
+                                                    <p class="f-w-bold fs-3" id="Outstandingall">{{ number_format($sumpayment+$Cash+$Complimentary, 2, '.', ',') }}</p>
                                                 <span class="subtext fs-6" >Total Amount</span>
                                                 </p>
                                             </div>
@@ -367,24 +374,47 @@
                                             <h5 class="card-title center" >Folio</h5>
                                             <ul class="card-list-between">
                                                 <li class="pb-1 px-2 justify-content-center gap-2 fs-5" >
-                                                    <span>DR N0. </span>
-                                                    <span class="hover-effect f-w-bold text-primary">({{$DepositID}}) </i>
+                                                    <span>PI N0. </span>
+                                                    <span class="hover-effect f-w-bold text-primary">({{$Invoice_ID}}) </i>
                                                     </span>
                                                 </li>
                                                 <li class="px-2">
+                                                    <span>PI Payment</span>
+                                                        <span class="hover-effect f-w-bold text-primary"> {{ number_format($Payment, 2, '.', ',') }} </i>
+                                                    </span>
+                                                </li>
+
+                                                @foreach ($DepositID as $key => $item)
+                                                <li class="px-2">
+                                                    <span>Deposit ID : {{$item->Deposit_ID}}</span>
+                                                        <span class="hover-effect f-w-bold text-primary"> - {{ number_format($item->amount, 2) }} </i>
+                                                    </span>
+                                                </li>
+                                                @endforeach
+                                                <li class="px-2">
+                                                    <span>Additional Charge</span>
+                                                        <span class="hover-effect f-w-bold text-primary" id="Additional_Charge"> {{ number_format($Cash+$Complimentary, 2, '.', ',') }} </i>
+                                                    </span>
+                                                </li>
+                                                <li class="px-2">
+                                                    <span>Total</span>
+                                                        <span class="hover-effect f-w-bold text-primary" id="Total_invoice"> {{ number_format($sumpayment+$Cash+$Complimentary, 2, '.', ',') }} </i>
+                                                    </span>
+                                                </li>
+
+                                                <li class="px-2">
                                                     <span>Price Before Tax</span>
-                                                        <span class="hover-effect f-w-bold text-primary"> {{ number_format($Nettotal/1.07, 2, '.', ',') }} </i>
+                                                        <span class="hover-effect f-w-bold text-primary" id="Price_Before_Tax"> {{ number_format($sumpayment+$Cash+$Complimentary/1.07, 2, '.', ',') }} </i>
                                                     </span>
                                                 </li>
                                                 <li class="px-2">
                                                     <span>Value Added Tax</span>
-                                                    <span class="hover-effect f-w-bold text-primary"> {{ number_format($Nettotal - ($Nettotal/1.07), 2, '.', ',') }} </i></span>
+                                                    <span class="hover-effect f-w-bold text-primary" id="Value_Added_Tax"> {{ number_format($sumpayment+$Cash+$Complimentary - ($sumpayment+$Cash+$Complimentary/1.07), 2, '.', ',') }} </i></span>
                                                 </li>
-
                                             </ul>
                                             <li class="outstanding-amount">
                                                 <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                                <span class="text-success f-w-bold" id="Outstanding"> {{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                                <span class="text-success f-w-bold" id="Outstanding"> {{ number_format($sumpayment+$Cash+$Complimentary, 2, '.', ',') }}</span>
                                             </li>
                                         </div>
                                     </section>
@@ -392,8 +422,9 @@
                                 <div class="modal-body mt-3 " style="display: grid;gap:0.5em;background-color: #d0f7ec;">
                                     <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
                                         <b >Receipt ID : {{$REID}}</b>
-                                        <b >Deposit Revenue ID : {{$DepositID}}</b>
+                                        <b >Proforma Invoice ID : {{$Invoice_ID}}</b>
                                     </div>
+
                                     <div class="box-form-issueBill">
                                         <h4 >
                                             <span>Customer Details</span>
@@ -422,7 +453,7 @@
                                             <div>
                                                 <label for="arrival">Arrival</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$deposit->Issue_date}}" required>
+                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$IssueDate}}" required>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -434,7 +465,7 @@
                                             <div>
                                                 <label for="departure">Departure</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$deposit->ExpirationDate}}" required>
+                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Expiration}}" required>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -451,6 +482,37 @@
                                             <div class="center sm mb-0 add" style="max-width: 35px;font-size:20px;background-color:rgb(253, 255, 255);border-radius:5px;color:black" >+</div>
                                         </h4>
                                         <section>
+                                            @if ($additional_type == 'Cash'||$additional_type == 'Cash Manual')
+                                                <div class="form-check form-switch mt-2 "  style="padding-left:35px">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked>
+                                                    <label class="form-check-label" for="flexSwitchCheckChecked">Add Complimentary</label>
+                                                </div>
+                                            @elseif ($additional_type == 'H/G')
+                                                <div class="form-check form-switch mt-2 "  style="padding-left:35px">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked disabled>
+                                                    <label class="form-check-label" for="flexSwitchCheckChecked">Add H/G Online</label>
+                                                </div>
+                                            @endif
+
+                                            <div id="complimentaryDiv" class="d-none  mt-2">
+                                                @if ($Complimentary > 0)
+                                                    <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
+                                                        <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
+                                                        <input type="text"  class="cashcomp form-control" placeholder="Enter cash amount"  value="{{ number_format($Cash, 2, '.', ',') }}" readonly>
+                                                        <input type="hidden" id="comp" name="cashcomp" class="cashcomp form-control" placeholder="Enter cash amount"  value="{{ $Cash }}">
+                                                    </div>
+
+                                                    <div class="mt-2" style="gap:1em;vertical-align: middle;">
+                                                        <div class="bg-paymentType d-flex align-items-center">
+                                                            <label for="creditCardAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Complimentary</label>
+                                                            <input type="text" id="Complimentary" name="Complimentary" class="form-control" placeholder="Enter Complimentary" value="{{ number_format($Complimentary, 2, '.', ',') }}" readonly>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                <input type="hidden" id="additionalcash" name="additional" class="form-control" value="{{$Cash+$Complimentary}}" readonly>
+                                                <input type="hidden" id="typeadditional" class="form-control" value="{{$additional_type}}" readonly>
+                                                <div class="styled-hr mt-3"></div>
+                                            </div>
                                             <div class="mt-2">
                                                 <div>
                                                     <label class="star-red" for="paymentDate">Date</label>
@@ -464,16 +526,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="mt-2">
-                                                    <label for="note">Note</label>
-                                                    <textarea id="note" name="note" style="height: 1px" placeholder="Enter details" class="form-control"></textarea>
-                                                </div>
                                             </div>
                                             <div class="container_new">
                                                 <div class="payment-container mt-2">
                                                     <div class="d-grid-120px-230px my-2" style="">
                                                         <label for="paymentType " class="star-red " >Payment Type </label>
-                                                        <select name="paymentType" id="paymentType" class="paymentType select2">
+                                                        <select name="paymentType" id="paymentType" class="paymentType form-select">
                                                             <option value="" disabled selected>Select Payment Type</option>
                                                             <option value="cash">Cash</option>
                                                             <option value="bankTransfer">Bank Transfer</option>
@@ -485,7 +543,7 @@
                                                     <div class="cashInput" style="display: none;">
                                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                            <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                            <input type="text" id="Amount" name="cashAmount" class="cashAmount form-control" placeholder="Enter cash amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
                                                         </div>
                                                     </div>
 
@@ -498,7 +556,7 @@
                                                             </div>
                                                             <div>
                                                                 <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                                <input type="text" id="Amount" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                <input type="text" id="Amount" name="bankTransferAmount" class="bankTransferAmount form-control" placeholder="Enter transfer amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -515,13 +573,13 @@
                                                             </div>
                                                             <div>
                                                                 <label for="creditCardAmount" class="star-red">Amount</label>
-                                                                <input type="text" id="Amount" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                                <input type="text" id="Amount" name="creditCardAmount" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <!-- Cheque Input -->
                                                     <div id="chequeInput" class="chequeInput" style="display: none;">
-                                                        <div class="d-grid-2column bg-paymentType">
+                                                        <div class="bg-paymentType" >
                                                             <div>
                                                                 <label for="chequeNumber">Cheque Number</label>
                                                                 <select  id="cheque" name="cheque" class="select2 cheque" >
@@ -531,33 +589,36 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                            <div>
-                                                                <label for="chequeNumber">Cheque Date</label>
-                                                                <input type="text" class="form-control chequedate" id="chequedate" readonly />
-                                                            </div>
-                                                            <div>
-                                                                <label for="chequeNumber">Cheque Bank</label>
-                                                                <input type="text" class="form-control chequebank" id="chequebank" name="chequebank_name" readonly />
-                                                            </div>
-                                                            <div>
-                                                                <label for="chequeAmount">Amount</label>
-                                                                <input type="text" class="form-control chequeamountAmount" id="Amount" name="chequeamount" readonly />
-                                                            </div>
-                                                            <div>
-                                                                <label for="chequeBank">To Account</label>
-                                                                <select  id="chequebank" name="chequebank" class="ToAccount select2">
-                                                                    <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                                </select>
-                                                            </div>
-                                                            <div>
-                                                                <label for="chequeNumber">Date</label>
-                                                                <div class="input-group">
-                                                                    <input type="text" name="deposit_date" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                            <i class="fas fa-calendar-alt"></i>
-                                                                            <!-- ไอคอนปฏิทิน -->
-                                                                        </span>
+                                                            <div class="d-grid-2column mt-2">
+
+                                                                <div>
+                                                                    <label for="chequeNumber">Cheque Date</label>
+                                                                    <input type="text" class="form-control chequedate" id="chequedate" readonly />
+                                                                </div>
+                                                                <div>
+                                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                                    <input type="text" class="form-control chequebank" id="chequebank" name="chequebank_name" readonly />
+                                                                </div>
+                                                                <div>
+                                                                    <label for="chequeAmount">Amount</label>
+                                                                    <input type="text" class="form-control chequeamountAmount" id="Amount" name="chequeamount" readonly />
+                                                                </div>
+                                                                <div>
+                                                                    <label for="chequeBank">To Account</label>
+                                                                    <select  id="chequebank" name="chequebank" class="ToAccount select2">
+                                                                        <option value="SCB 708-226791-3">SCB 708-226791-3</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div>
+                                                                    <label for="chequeNumber">Date</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" name="deposit_date" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                                                <i class="fas fa-calendar-alt"></i>
+                                                                                <!-- ไอคอนปฏิทิน -->
+                                                                            </span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -566,191 +627,33 @@
                                                 </div>
                                             </div>
                                         </section>
-                                        <div class="col-lg-12 d-flex align-items-center gap-2 justify-content-end">
-                                            <div class="form-switch mt-2 custom-switch-container">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
-                                                <label class="form-check-label" for="flexSwitchCheckChecked">Preview</label>
-                                            </div>
-                                            <button type="button" class="bt-tg-secondary md" onclick="BACKtoEdit()">Back</button>
-                                            <button type="button" id="nextSteptoSave" class="bt-tg-normal md" onclick="submittoEdit()">Save</button>
-
-                                        </div>
-                                        <div id="previewdetail" style="display: none;">
-                                            <section id="billDetailsEditBill" style="border: 1px solid rgba(23, 27, 36, 0.633); padding: 2rem; margin: 2rem 0;" class="wrap-bill">
-                                                <div class="wrap-all-company-detail">
-                                                    <header>
-                                                        <section class="wrap-company-detail">
-                                                        <div class="company-detail">
-                                                            <ul>
-                                                            <h1>{{$settingCompany->name_th}}</h1>
-                                                            <li class="font-w-600">{{$settingCompany->name}}</li>
-                                                            <li class="left-4px font-w-600"> *** Head Office / Headquarters </li>
-                                                            <li>{{$settingCompany->address}}</li>
-                                                            <li> Tel : {{$settingCompany->tel}} | @if ($settingCompany->fax) Fax : {{$settingCompany->fax}} @endif </li>
-                                                            <li>HOTEL TAX ID {{$settingCompany->Hotal_ID}}</li>
-                                                            <li class="w-spaceWrap-less860px"> <span> website: {{$settingCompany->web}} |</span><span> Email: {{$settingCompany->email}} </span> </li>
-                                                            </ul>
-                                                        </div>
-
-                                                        <div class="img">
-                                                            <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
-                                                        </div>
-                                                        </section>
-                                                        <section>
-                                                        <h3 class="center font-upper">Receipt / tax invoice</h3>
-                                                        <div class="receipt-cutomer-detail">
-                                                            <ul>
-                                                            <h5 class="font-upper"> Tax invoice {{$REID}}</h5>
-                                                            <li>
-                                                                <span>Guest name</span>
-                                                                <span id="displayGuestNameEditBill"></span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Reservation No</span>
-                                                                <span id="displayReservationNoEditBill"></span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Company</span>
-                                                                <span id="displayCompanyEditBill"></span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Tax ID/Gst Pass</span>
-                                                                <span id="displayTaxIDEditBill"></span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Address</span>
-                                                                <span id="displayAddressEditBill" ></span>
-                                                            </li>
-                                                            </ul>
-                                                            <ul>
-                                                            <li>
-                                                                <span>Page #</span>
-                                                                <span>1 /1 </span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Room No.</span>
-                                                                <span id="displayRoomNoEditBill"></span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Arrival</span>
-                                                                <span id="displayArrivalEditBill">../../....</span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Departure</span>
-                                                                <span id="displayDepartureEditBill">../../....</span>
-                                                            </li>
-                                                            <li>
-                                                                <span>No of Guest</span>
-                                                                <span id="displayNumberOfGuestsEditBill"></span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Printed Date</span>
-                                                                <span  id="date">../../....</span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Printed time</span>
-                                                                <span  id="dateM">13:26:24 PM</span>
-                                                            </li>
-                                                            <li>
-                                                                <span>Tax invoice Date</span>
-                                                                <span  id="Invoicedate">{{$dateFormatted}}</span>
-                                                            </li>
-                                                            </ul>
-                                                        </div>
-                                                        </section>
-                                                    </header>
-                                                    <section class="receipt-cutomer-detail-body">
-                                                        <div>
-                                                        <div style="overflow: auto;">
-                                                            <table id="table-revenueEditBill" >
-                                                                <thead>
-                                                                    <tr>
-                                                                    <th>Date</th>
-                                                                    <th >Description </th>
-                                                                    <th>Reference</th>
-                                                                    <th>amount</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody >
-                                                                    <tr style="border: none">
-                                                                        <td id="displayPaymentDateEditBill"></td>
-                                                                        <td >
-                                                                            <span id="displayDescriptionEditBill" ></span>
-                                                                        </td>
-                                                                        <td id="displayReferenceEditBill"></td>
-                                                                        <td id="displayAmountEditBill"></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        </div>
-                                                    </section>
-                                                    <section class="receipt-subtotal">
-
-                                                    <div class="d-flex  gap-2 flex-wrap justify-content-between w-100" >
-                                                        <div class="flex-grow-1" style="padding-left: 11%">**<span id="displayNoteEditBill"></span></div>
-
-                                                        <div class="right">
-                                                            <ul class="font-w-500">
-                                                                <li>
-                                                                <span>Total Balance(Baht) </span>
-                                                                <span class="border-total-top" id="Balance"></span>
-                                                                </li>
-                                                                <li>
-                                                                <span>Vatable</span>
-                                                                <span id="Vatable"></span>
-                                                                </li>
-                                                                <li>
-                                                                <span>VAT 7 %</span>
-                                                                <span id="VAT"></span>
-                                                                </li>
-                                                                <li>
-                                                                <span>Non - Vatable</span>
-                                                                <span>0</span>
-                                                                </li>
-                                                                <li>
-                                                                <span>Total Amount (Baht)</span>
-                                                                <span id="AmountBaht"></span>
-                                                                </li>
-                                                                <li class="font-w-600">
-                                                                <span>Net Total</span>
-                                                                <span class="border-total" id="Nettotal"></span>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-
-                                                    </section>
-                                                    <section class="body-bottom">
-                                                        <div>
-                                                        <p> I agree that my liability for this invoice is not waived and agree to be held personally liable in the event that the indicated person, company, or association fails to pay for any part or the full amount of these charges. </p>
-                                                        </div>
-                                                    </section>
-                                                    <section class="signature">
-                                                        <div class="left">
-                                                        <p>Guest's Signature</p>
-                                                        </div>
-                                                        <div class="right">
-                                                        <p>Guest's Signature</p>
-                                                        </div>
-                                                    </section>
-                                                </div>
-                                            </section>
-                                        </div>
-
                                     </div>
                                 </div>
                             </section>
                         </div>
+                        <div>
+                            <div class="bottom">
+                                <div class="flex-end pr-3">
+                                    <button type="button" class="bt-tg-secondary  md float-right" onclick="BACKtoEdit()">
+                                        Back
+                                    </button>
+                                    <button id="nextSteptoSave" class="bt-tg-normal md float-right" onclick="submit(event)"> Next </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <input type="hidden" class="form-control" id="InvoiceID" name="invoice" value="{{$DepositID}}" />
+            <input type="hidden" class="form-control" id="additional_type" name="additional_type" value="{{$additional_type}}" />
+            <input type="hidden" class="form-control" id="InvoiceID" name="invoice" value="{{$Invoice_ID}}" />
+            <input type="hidden" id="paymentsDataInput" name="paymentsData">
+            <input type="hidden" id="paymentsDataInputarray" name="paymentsDataArray">
         </form>
     </div>
     <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
     <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
-    <input type="hidden" id="invoiceamount" value="{{$Nettotal}}">
+    <input type="hidden" id="invoiceamount" value="{{$sumpayment}}">
+    <input type="hidden" id="overbillamount" value="{{$Cash+$Complimentary}}">
     <input type="hidden" id="totalamount" name="totalamount">
     <input type="hidden" id="totalpayment" name="totalpayment">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -761,124 +664,83 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script>
         $(document).ready(function() {
-            document.querySelector('#nextSteptoSave').disabled = true;
             const checkbox = document.getElementById('flexSwitchCheckChecked');
-            var previewdetail = document.querySelector("#previewdetail");
+            const div = document.getElementById('complimentaryDiv');
+            const inputs = div.querySelectorAll('input');
+            var overbillamount = parseFloat($('#overbillamount').val()) || 0;
+            var invoiceamount = parseFloat($('#invoiceamount').val()) || 0;
+            let over = overbillamount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+            let invoice = invoiceamount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+            let total_amount = 0;
+            if (checkbox.checked) {
+                total_amount = overbillamount + invoiceamount;
+                let Price_Before_Tax = total_amount / 1.07;
+                let Value_Added_Tax = total_amount - Price_Before_Tax;
+                // จัดรูปแบบตัวเลขก่อนแสดงผล
 
-            // ตรวจสอบสถานะเมื่อโหลดหน้าเว็บ
-            togglePreview(checkbox.checked);
+                let total_amountshow = total_amount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                let Price_Before_Tax_show = Price_Before_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                let Value_Added_Tax_show = Value_Added_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
 
-            // ตรวจสอบสถานะเมื่อมีการเปลี่ยนแปลง
-            checkbox.addEventListener("change", function() {
-                togglePreview(this.checked);
-            });
+                $('#Additional_Charge').text(over);
+                $('#Total_invoice').text(total_amountshow);
+                $('#Price_Before_Tax').text(Price_Before_Tax_show);
+                $('#Value_Added_Tax').text(Value_Added_Tax_show);
+                div.classList.remove('d-none');
+                inputs.forEach(input => input.disabled = false);
+            } else {
+                total_amount = invoiceamount;
+                let Price_Before_Tax = total_amount / 1.07;
+                let Value_Added_Tax = total_amount - Price_Before_Tax;
 
-            function togglePreview(isChecked) {
-                if (isChecked) {
-                    console.log(1);
-
-                    var totalpayment = $('#totalpayment').val();
-                    var vattype = $('#vat_type').val();
-
-                    var typeadditional = $('#additional_type').val();
-                    $('#table-revenueEditBill tbody').html('');
-                    var paymentDate = $('#paymentDate').val();
-                    let payments = getAllPayments();
-                    updateTable(payments);
-                    console.log(payments);
-
-
-                    var id = $('#Guest').val();
-                    var reservationNo = $('#reservationNo').val();
-                    var numberOfGuests = $('#numberOfGuests').val();
-                    var arrival = $('#arrival').val();
-                    var roomNo = $('#roomNo').val();
-                    var departure = $('#departure').val();
-                    var note = $('#note').val();
-                    $Subtotal =0;
-                    $total =0;
-                    $addtax = 0;
-                    $before = 0;
-                    $balance =0;
-
-                    $.ajax({
-                        type: "GET",
-                        url: `/Document/BillingFolio/Proposal/invoice/preview/${id}`,
-                        datatype: "JSON",
-                        success: function(response) {
-                            console.log(response);
-
-                            var fullname = response.fullname;
-                            var Address = response.Address + ' ตำบล' + response.Tambon.name_th + ' อำเภอ' + response.amphures.name_th + ' จังหวัด' + response.province.name_th + ' ' + response.Tambon.Zip_Code;
-                            var TaxpayerIdentification = response.Identification;
-                            var date = response.date;
-                            var Time = response.Time;
-                            var fullCom = response.fullCom;
-                            // อัปเดตค่าต่างๆ ลงใน HTML
-                            function formatAmount(amount) {
-                                const formatter = new Intl.NumberFormat('en-TH', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                });
-                                return formatter.format(amount);
-                            }
-                            if (vattype == 51) { // ใช้ vattype แทน $vattype
-                                Subtotal = totalpayment;
-                                total = totalpayment;
-                                addtax = 0;
-                                before = totalpayment;
-                                balance = totalpayment;
-                            } else {
-                                Subtotal = totalpayment;
-                                total = Subtotal / 1.07;
-                                addtax = Subtotal - total;
-                                before = Subtotal - addtax;
-                                balance = Subtotal;
-                            }
-                            // ใช้ฟังก์ชัน formatAmount กับแต่ละค่า
-                            $('#Balance').text(formatAmount(Subtotal) + ' THB');
-                            $('#Vatable').text(formatAmount(total) + ' THB');
-                            $('#VAT').text(formatAmount(addtax) + ' THB');
-                            $('#AmountBaht').text(formatAmount(balance) + ' THB');
-                            $('#Nettotal').text(formatAmount(balance) + ' THB');
-
-                            $('#displayGuestNameEditBill').text(fullname);
-                            $('#displayTaxIDEditBill').text(TaxpayerIdentification);
-                            $('#displayAddressEditBill').text(Address);
-                            $('#displayReservationNoEditBill').text(reservationNo);
-                            $('#displayCompanyEditBill').text(fullCom);
-                            $('#displayRoomNoEditBill').text(roomNo); // ต้องตรวจสอบว่าคุณมีข้อมูล roomNo ที่ไหนหรือไม่
-                            $('#displayArrivalEditBill').text(arrival);
-                            $('#displayDepartureEditBill').text(departure);
-                            $('#displayNumberOfGuestsEditBill').text(numberOfGuests);
-                            $('#date').text(date);
-                            $('#dateM').text(Time);
-                            $('#displayNoteEditBill').text(note);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("AJAX Error: ", status, error);
-                        }
-                    });
-                    previewdetail.style.display = "block"; // ✅ ตัวพิมพ์เล็ก "block"
-                } else {
-                    previewdetail.style.display = "none";
-                }
+                let total_amountshow = total_amount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                let Price_Before_Tax_show = Price_Before_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                let Value_Added_Tax_show = Value_Added_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                $('#Additional_Charge').text('0.00');
+                $('#Total_invoice').text(total_amountshow);
+                $('#Price_Before_Tax').text(Price_Before_Tax_show);
+                $('#Value_Added_Tax').text(Value_Added_Tax_show);
+                div.classList.add('d-none');
+                inputs.forEach(input => input.disabled = true);
             }
-        });
-        $(".toggle-button").on("click", function () {
-            const $button = $(this);
-            const group = $button.data("group");
-            const $parentRow = $button.closest("tr");
-            const $childRows = $(`.child-row[data-group="${group}"]`);
-            const isExpanded = $button.text() === "⯆";
+            checkbox.addEventListener('change', function() {
+                if (checkbox.checked) {
+                    total_amount = overbillamount + invoiceamount;
 
-            $childRows.toggle(!isExpanded);
-            $button.text(isExpanded ? "⯈" : "⯆").css({
-                backgroundColor: isExpanded ? "" : "rgb(68, 192, 171)",
-                color: isExpanded ? "" : "white",
+                    let Price_Before_Tax = total_amount / 1.07;
+                    let Value_Added_Tax = total_amount - Price_Before_Tax;
+
+                    // จัดรูปแบบตัวเลขก่อนแสดงผล
+                    let total_amountshow = total_amount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                    let Price_Before_Tax_show = Price_Before_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                    let Value_Added_Tax_show = Value_Added_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                    $('#Additional_Charge').text(over);
+                    $('#Total_invoice').text(total_amountshow);
+                    $('#Price_Before_Tax').text(Price_Before_Tax_show);
+                    $('#Value_Added_Tax').text(Value_Added_Tax_show);
+                    div.classList.remove('d-none');
+                    inputs.forEach(input => input.disabled = false);
+                    Total();
+                } else {
+                    total_amount = invoiceamount;
+                    let Price_Before_Tax = total_amount / 1.07;
+                    let Value_Added_Tax = total_amount - Price_Before_Tax;
+
+                    let total_amountshow = total_amount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                    let Price_Before_Tax_show = Price_Before_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                    let Value_Added_Tax_show = Value_Added_Tax.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                    $('#Additional_Charge').text('0.00');
+                    $('#Total_invoice').text(total_amountshow);
+                    $('#Price_Before_Tax').text(Price_Before_Tax_show);
+                    $('#Value_Added_Tax').text(Value_Added_Tax_show);
+                    div.classList.add('d-none');
+                    inputs.forEach(input => input.disabled = true);
+                    Total();
+                }
             });
-            $parentRow.find("td").css("background-color", isExpanded ? "" : "rgb(196, 202, 201)");
+            Total();
         });
+
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
             $('#paymentDate').daterangepicker({
@@ -895,6 +757,9 @@
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
             });
+        });
+        $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
             $(document).on('focus', '.deposit_date', function() {
                 var inputElement = $(this); // ดึง element ที่ถูก focus
                 inputElement.daterangepicker({
@@ -923,23 +788,43 @@
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $(document).on('focus', '.deposit_date', function() {
-                var inputElement = $(this); // ดึง element ที่ถูก focus
-                inputElement.daterangepicker({
-                    singleDatePicker: true, // เลือกวันที่เดียว
-                    showDropdowns: true, // แสดง dropdowns สำหรับเลือกปีและเดือน
-                    autoUpdateInput: false, // ไม่อัปเดต input โดยอัตโนมัติ
-                    autoApply: true, // เมื่อเลือกวันที่แล้วจะอัปเดต
-                    drops: 'up', // ให้ปฏิทินแสดงขึ้นบน
-                    locale: {
-                        format: 'DD/MM/YYYY' // ฟอร์แมตวันที่
-                    }
-                });
+            $('#arrival').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#arrival').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
-                // เมื่อเลือกวันที่แล้ว อัปเดตค่าลงใน input
-                inputElement.on('apply.daterangepicker', function(ev, picker) {
-                    $(this).val(picker.startDate.format('DD/MM/YYYY'));
-                });
+            });
+            $(document).on('wheel', function(e) {
+                // Check if the date picker is open
+                if ($('.daterangepicker').is(':visible')) {
+                    // Close the date picker
+                    $('.daterangepicker').hide();
+                }
+            });
+        });
+        $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            $('#departure').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#departure').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+
             });
             $(document).on('wheel', function(e) {
                 // Check if the date picker is open
@@ -962,6 +847,7 @@
                 Total();
             });
             $('#cheque').on('change', function() {
+                console.log(1);
                 var id = $('#cheque').val();
                 jQuery.ajax({
                     type: "GET",
@@ -1005,8 +891,6 @@
                 var chequeamount = document.querySelector("#chequeamountAmount");
                 var chequedate = document.querySelector("#chequedate");
                 var cheque = document.getElementById('cheque');
-
-
                 if (selectedType === 'cash') {
                     cashInputDiv.style.display = "Block";
                     cashAmountInput.disabled = false;
@@ -1023,7 +907,6 @@
                     ToAccount.value = null;
                     cheque.value = "";
                     chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
-
                     $('.chequeamountAmount').val('');
                 } else if (selectedType === 'bankTransfer') {
                     cashInputDiv.style.display = "none";
@@ -1040,7 +923,6 @@
                     deposit_date.disabled = true;
                     ToAccount.value = null;
                     cheque.value = "";
-
                     $('.chequeamountAmount').val('');
                 } else if (selectedType === 'creditCard') {
                     cashInputDiv.style.display = "none";
@@ -1074,8 +956,6 @@
                     chequeDiv.style.display = "block";
                     ToAccount.disabled = false;
                     deposit_date.disabled = false;
-
-                    $('.chequeamountAmount').val('');
                 }else{
                     cashInputDiv.style.display = "none";
                     cashAmountInput.disabled = true;
@@ -1090,7 +970,6 @@
                     ToAccount.value = null;
                     cheque.value = "";
                     chequebank.value = "";  // รีเซ็ตค่า chequebank เป็นค่าว่าง
-
                     $('.chequeamountAmount').val('');
                     Total();
                 }
@@ -1166,7 +1045,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1183,12 +1066,16 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
+                                   <div id="chequeInput" class="chequeInput" style="display: none;">
+                                        <div class="bg-paymentType">
                                             <div>
                                                 <label for="chequeNumber">Cheque Number</label>
                                                 <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1198,37 +1085,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Date</label>
-                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Bank</label>
-                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeAmount">Amount</label>
-                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeBank">To Account</label>
-                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                   <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 `;
@@ -1254,7 +1134,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1271,12 +1155,16 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
+                                   <div id="chequeInput" class="chequeInput" style="display: none;">
+                                        <div class="bg-paymentType">
                                             <div>
                                                 <label for="chequeNumber">Cheque Number</label>
                                                 <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1286,37 +1174,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Date</label>
-                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Bank</label>
-                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeAmount">Amount</label>
-                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeBank">To Account</label>
-                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                   <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 `;
@@ -1341,7 +1222,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1358,12 +1243,16 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
+                                   <div id="chequeInput" class="chequeInput" style="display: none;">
+                                        <div class="bg-paymentType">
                                             <div>
                                                 <label for="chequeNumber">Cheque Number</label>
                                                 <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1373,37 +1262,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Date</label>
-                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Bank</label>
-                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeAmount">Amount</label>
-                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeBank">To Account</label>
-                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                   <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 `;
@@ -1429,7 +1311,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1446,7 +1332,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1462,7 +1352,11 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1503,7 +1397,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1520,12 +1418,16 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
+                                   <div id="chequeInput" class="chequeInput" style="display: none;">
+                                        <div class="bg-paymentType">
                                             <div>
                                                 <label for="chequeNumber">Cheque Number</label>
                                                 <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1535,37 +1437,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Date</label>
-                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Bank</label>
-                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeAmount">Amount</label>
-                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeBank">To Account</label>
-                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                   <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 `;
@@ -1591,7 +1486,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                            if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                            let parts = this.value.split('.');
+                                            if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1608,12 +1507,16 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
+                                   <div id="chequeInput" class="chequeInput" style="display: none;">
+                                        <div class="bg-paymentType">
                                             <div>
                                                 <label for="chequeNumber">Cheque Number</label>
                                                 <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1623,37 +1526,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Date</label>
-                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Bank</label>
-                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeAmount">Amount</label>
-                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeBank">To Account</label>
-                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                   <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 `;
@@ -1678,7 +1574,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1695,12 +1595,16 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="chequeInput" class="chequeInput" style="display: none;">
-                                        <div class="d-grid-2column bg-paymentType">
+                                   <div id="chequeInput" class="chequeInput" style="display: none;">
+                                        <div class="bg-paymentType">
                                             <div>
                                                 <label for="chequeNumber">Cheque Number</label>
                                                 <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
@@ -1710,37 +1614,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Date</label>
-                                                <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Cheque Bank</label>
-                                                <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeAmount">Amount</label>
-                                                <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                            </div>
-                                            <div>
-                                                <label for="chequeBank">To Account</label>
-                                                <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                   <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label for="chequeNumber">Date</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 `;
@@ -1766,7 +1663,11 @@
                                     <div class="cashInput" style="display: none;">
                                         <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                             <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount">
+                                            <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                         </div>
                                     </div>
                                     <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -1783,7 +1684,11 @@
                                             </div>
                                             <div>
                                                 <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount">
+                                                <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1799,7 +1704,11 @@
                                             </div>
                                             <div>
                                                 <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value="">
+                                                <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                     </div>
@@ -1845,21 +1754,27 @@
                                                 </div>
                                                 <div>
                                                     <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="chequeInput" class="chequeInput" style="display: none;">
-                                            <div class="d-grid-2column bg-paymentType">
-                                                <div>
-                                                    <label for="chequeNumber">Cheque Number</label>
-                                                    <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                        <option value="" disabled selected>Select</option>
-                                                        @foreach ($data_cheque as $item)
-                                                            <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                        <div class="bg-paymentType">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Number</label>
+                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                    <option value="" disabled selected>Select</option>
+                                                    @foreach ($data_cheque as $item)
+                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
                                                 <div>
                                                     <label for="chequeNumber">Cheque Date</label>
                                                     <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
@@ -1875,23 +1790,14 @@
                                                 <div>
                                                     <label for="chequeBank">To Account</label>
                                                     <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                       <option value="SCB 708-226791-3">SCB 708-226791-3</option>
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
-                                                <div>
-                                                    <label for="chequeNumber">Date</label>
-                                                    <div class="input-group">
-                                                        <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                <i class="fas fa-calendar-alt"></i>
-                                                                <!-- ไอคอนปฏิทิน -->
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
-                                        </div>
+                                    </div>
                                     </div>
                                 `;
                                 $('.payment-container:last').after(newPaymentForm);
@@ -1928,23 +1834,29 @@
                                                 </div>
                                                 <div>
                                                     <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Credit Card Input -->
 
                                         <div id="chequeInput" class="chequeInput" style="display: none;">
-                                            <div class="d-grid-2column bg-paymentType">
-                                                <div>
-                                                    <label for="chequeNumber">Cheque Number</label>
-                                                    <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                        <option value="" disabled selected>Select</option>
-                                                        @foreach ($data_cheque as $item)
-                                                            <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                        <div class="bg-paymentType">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Number</label>
+                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                    <option value="" disabled selected>Select</option>
+                                                    @foreach ($data_cheque as $item)
+                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
                                                 <div>
                                                     <label for="chequeNumber">Cheque Date</label>
                                                     <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
@@ -1960,23 +1872,14 @@
                                                 <div>
                                                     <label for="chequeBank">To Account</label>
                                                     <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                       <option value="SCB 708-226791-3">SCB 708-226791-3</option>
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
-                                                <div>
-                                                    <label for="chequeNumber">Date</label>
-                                                    <div class="input-group">
-                                                        <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                <i class="fas fa-calendar-alt"></i>
-                                                                <!-- ไอคอนปฏิทิน -->
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
-                                        </div>
+                                    </div>
                                     </div>
                                 `;
                                 $('.payment-container:last').after(newPaymentForm);
@@ -2015,7 +1918,11 @@
                                                 </div>
                                                 <div>
                                                     <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
@@ -2032,7 +1939,11 @@
                                                 </div>
                                                 <div>
                                                     <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
@@ -2063,23 +1974,29 @@
                                         <div class="cashInput" style="display: none;">
                                             <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                 <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                         <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
                                         <!-- Credit Card Input -->
 
                                         <div id="chequeInput" class="chequeInput" style="display: none;">
-                                            <div class="d-grid-2column bg-paymentType">
-                                                <div>
-                                                    <label for="chequeNumber">Cheque Number</label>
-                                                    <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                        <option value="" disabled selected>Select</option>
-                                                        @foreach ($data_cheque as $item)
-                                                            <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                        <div class="bg-paymentType">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Number</label>
+                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                    <option value="" disabled selected>Select</option>
+                                                    @foreach ($data_cheque as $item)
+                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
                                                 <div>
                                                     <label for="chequeNumber">Cheque Date</label>
                                                     <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
@@ -2095,23 +2012,14 @@
                                                 <div>
                                                     <label for="chequeBank">To Account</label>
                                                     <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                       <option value="SCB 708-226791-3">SCB 708-226791-3</option>
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
-                                                <div>
-                                                    <label for="chequeNumber">Date</label>
-                                                    <div class="input-group">
-                                                        <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                <i class="fas fa-calendar-alt"></i>
-                                                                <!-- ไอคอนปฏิทิน -->
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
-                                        </div>
+                                    </div>
                                     </div>
                                 `;
                                 $('.payment-container:last').after(newPaymentForm);
@@ -2136,7 +2044,11 @@
                                         <div class="cashInput" style="display: none;">
                                             <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                 <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                         <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -2153,7 +2065,11 @@
                                                 </div>
                                                 <div>
                                                     <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
@@ -2182,7 +2098,11 @@
                                         <div class="cashInput" style="display: none;">
                                             <div class="bg-paymentType d-flex align-items-center" style="gap:1em;vertical-align: middle;">
                                                 <label for="cashAmount" class="star-red" style="white-space: nowrap;transform: translateY(3px);">Cash Amount</label>
-                                                <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                <input type="text" id="cash_${counter}" name="cashAmount_${counter}" class="cashAmount form-control" placeholder="Enter cash amount"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                             </div>
                                         </div>
                                         <input type="hidden" class="form-control cheque-amount" id="chequenumber" readonly value="${counter}" />
@@ -2199,7 +2119,11 @@
                                                 </div>
                                                 <div>
                                                     <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                    <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                 </div>
                                             </div>
                                         </div>
@@ -2233,48 +2157,41 @@
                                             <!-- Credit Card Input -->
 
                                             <div id="chequeInput" class="chequeInput" style="display: none;">
-                                                <div class="d-grid-2column bg-paymentType">
-                                                    <div>
-                                                        <label for="chequeNumber">Cheque Number</label>
-                                                        <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
-                                                            <option value="" disabled selected>Select</option>
-                                                            @foreach ($data_cheque as $item)
-                                                                <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <label for="chequeNumber">Cheque Date</label>
-                                                        <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
-                                                    </div>
-                                                    <div>
-                                                        <label for="chequeNumber">Cheque Bank</label>
-                                                        <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
-                                                    </div>
-                                                    <div>
-                                                        <label for="chequeAmount">Amount</label>
-                                                        <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
-                                                    </div>
-                                                    <div>
-                                                        <label for="chequeBank">To Account</label>
-                                                        <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
-                                                            <option value="SCB 708-226791-3">SCB 708-226791-3</option>
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <label for="chequeNumber">Date</label>
-                                                        <div class="input-group">
-                                                            <input type="text" name="deposit_date_${counter}" id="deposit_date" placeholder="DD/MM/YYYY" class="deposit_date form-control" required>
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                    <i class="fas fa-calendar-alt"></i>
-                                                                    <!-- ไอคอนปฏิทิน -->
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                        <div class="bg-paymentType">
+                                            <div>
+                                                <label for="chequeNumber">Cheque Number</label>
+                                                <select  id="cheque_${counter}" name="cheque_${counter}" class="select2 cheque" >
+                                                    <option value="" disabled selected>Select</option>
+                                                    @foreach ($data_cheque as $item)
+                                                        <option value="{{ $item->cheque_number }}">{{ $item->cheque_number }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class ="d-grid-2column ">
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Date</label>
+                                                    <input type="text" class="form-control chequedate" id="chequedate_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeNumber">Cheque Bank</label>
+                                                    <input type="text" class="form-control chequebank" id="chequebank_${counter}" name="chequebank_name_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeAmount">Amount</label>
+                                                    <input type="text" class="form-control chequeamount" id="chequeamount_${counter}" name="chequeamount_${counter}" readonly />
+                                                </div>
+                                                <div>
+                                                    <label for="chequeBank">To Account</label>
+                                                    <select  id="chequebank_${counter}" name="chequebank_${counter}" class="select2">
+                                                        <option value="" disabled selected></option>
+                                                        @foreach ($data_bank as $item)
+                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
+                                    </div>
                                         </div>
                                     `;
                                     $('.payment-container:last').after(newPaymentForm);
@@ -2318,7 +2235,11 @@
                                                     </div>
                                                     <div>
                                                         <label for="creditCardAmount_${counter}" class="star-red">Amount</label>
-                                                        <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                        <input type="text" id="creditCardAmount_${counter}" name="creditCardAmount_${counter}" class="creditCardAmount form-control" placeholder="Enter Amount" value=""
+                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2367,7 +2288,11 @@
                                                     </div>
                                                     <div>
                                                         <label for="bankTransferAmount_${counter}" class="star-red">Amount</label>
-                                                        <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                        <input type="text" id="bankTransferAmount_${counter}" name="bankTransferAmount_${counter}" class="bankTransferAmount form-control" placeholder="Enter transfer amount"
+                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (this.value.startsWith('.')) this.value = '0' + this.value;
+                                                    let parts = this.value.split('.');
+                                                    if (parts.length > 2) this.value = parts[0] + '.' + parts.slice(1).join('');">
                                                     </div>
                                                 </div>
                                             </div>
@@ -2496,69 +2421,30 @@
                 $(this).val(input);
             });
         });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#arrival').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#arrival').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-
-            });
-            $(document).on('wheel', function(e) {
-                // Check if the date picker is open
-                if ($('.daterangepicker').is(':visible')) {
-                    // Close the date picker
-                    $('.daterangepicker').hide();
-                }
-            });
-        });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#departure').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#departure').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-
-            });
-            $(document).on('wheel', function(e) {
-                // Check if the date picker is open
-                if ($('.daterangepicker').is(':visible')) {
-                    // Close the date picker
-                    $('.daterangepicker').hide();
-                }
-            });
-        });
         function Total() {
             const checkbox = document.getElementById('flexSwitchCheckChecked');
             var cashamount = parseFloat($('#totalamount').val()) || 0;
             var overbillamount = parseFloat($('#overbillamount').val()) || 0;
+            var invoiceamount = parseFloat($('#invoiceamount').val()) || 0;
             var compamount = parseFloat($('#comp').val()) || 0;
             var additionalamount = parseFloat($('#additionalcash').val()) || 0;
-            var invoiceamount = parseFloat($('#invoiceamount').val()) || 0;
+
+
             var typeadditional = $('#additional_type').val();
+
             var amountsArray = [];
             var cashArray = [];  // สร้างอาเรย์เพื่อเก็บค่าทั้งหมด
             var creditCardArray = [];
             var bankTransferArray = [];
             var sumpayment = 0;
             var additional = 0;
-            sumpayment = invoiceamount;
+            if (checkbox.checked) {
+                sumpayment = overbillamount + invoiceamount;
+            }else{
+                sumpayment = invoiceamount;
+            }
+            additional=additionalamount;
+
 
             $("[id^='chequeamount_']").each(function () {
                 var value = $(this).val(); // ดึงค่าจาก input
@@ -2590,6 +2476,8 @@
             $("[id^='cash_']").each(function () {
                 var value = $(this).val(); // ดึงค่าจาก input
                 $('.cashAmount').val($(this).val());
+                console.log(1);
+
                 if (value) {
                     value = parseFloat(value.replace(/,/g, '')); // แปลงเป็นตัวเลข
                     if (!isNaN(value)) {
@@ -2603,18 +2491,33 @@
             var cash = cashArray.reduce((sum, current) => sum + current, 0);
             var credit = creditCardArray.reduce((sum, current) => sum + current, 0);
             var bank = bankTransferArray.reduce((sum, current) => sum + current, 0);
-            var sum = cash+amounts+bank+credit+cashamount;
+
+
+
+            if (checkbox !== null) {
+                if (checkbox.checked) {
+                    if (typeadditional =='H/G') {
+                        var sum = cash+amounts+bank+credit+cashamount;
+                    }else{
+                        var sum = cash+amounts+bank+credit+cashamount+additional;
+                    }
+                }else{
+                    var sum = cash+amounts+bank+credit+cashamount;
+                }
+            }else {
+                var sum = cash+amounts+bank+credit+cashamount;
+            }
+
 
             var Outstanding = sumpayment-sum;
             var all = sum;
             let formattedOutstanding = Outstanding.toLocaleString('th-TH', { minimumFractionDigits: 2 });
-            // console.log(Outstanding);
+
 
             $('#total').text(formattedOutstanding);
             $('#totalcomp').text(formattedOutstanding);
             $('#Outstanding').text(formattedOutstanding);
             $('#Outstandingall').text(formattedOutstanding);
-            $('#Payment').text('-' + all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
             $('#totalamountall').text(all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB');
             $('#totalpayment').val(all);
 
@@ -2622,6 +2525,7 @@
                 document.querySelector('#nextSteptoSave').disabled = true; // ปิดการใช้งานปุ่ม
             } else {
                 document.querySelector('#nextSteptoSave').disabled = false; // เปิดการใช้งานปุ่ม
+                getAllPayments();
             }
         }
         function data() {
@@ -2657,76 +2561,167 @@
         function getAllPayments() {
             const checkbox = document.getElementById('flexSwitchCheckChecked');
             var additionalamount = parseFloat($('#additionalcash').val()) || 0;
-            var NoShowAmount = document.querySelector(".NoShowAmount");
+
             var invoiceamount = parseFloat($('#invoiceamount').val()) || 0;
-            let cashAmount = parseFloat($('.cashAmount').val()) || 0;
 
 
-            var typeadditional = $('#additional_type').val();
+
             let payments = [];
+            let cashAmount = parseFloat($('.cashAmount').val()) || 0;
+            var typeadditional = $('#additional_type').val();
+            if (checkbox !== null) {
+                if (checkbox.checked) {
+                    if (typeadditional == 'H/G') {
+                        payments.push({
+                            type: 'cash',
+                            amount: cashAmount,
+                            datanamebank: 'Cash'
+                        });
+                    }else{
+                        payments.push({
+                            type: 'cash',
+                            amount: cashAmount,
+                            datanamebank: 'Cash'
+                        });
+                    }
+                }else{
+                    $('.payment-container').each(function () {
+                        let paymentType = $(this).find('.paymentType').val();
+                        if (paymentType == 'cash') {
+                            payments.push({
+                                type: 'cash',
+                                amount: cashAmount,
+                                datanamebank: 'Cash'
+                            });
+                        }
 
+                    });
+                }
+            }
+            $('.payment-container').each(function () {
+                let paymentType = $(this).find('.paymentType').val();
+                let paymentData = { type: paymentType };
+                // ตรวจสอบว่าถูกติ๊กหรือไม่
+                if (paymentType === 'bankTransfer') {
+                    paymentData.bank = $(this).find('.bankName').val();
+                    paymentData.amount = $(this).find('.bankTransferAmount').val();
+                    paymentData.datanamebank = paymentData.bank + ' Bank Transfer - Together Resort Ltd';
+
+                } else if (paymentType === 'creditCard') {
+
+                    paymentData.cardNumber = $(this).find('.creditCardNumber').val();
+                    paymentData.expiry = $(this).find('.expiryDate').val();
+                    paymentData.amount = $(this).find('.creditCardAmount').val();
+                    paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
+
+                } else if (paymentType === 'cheque'){
+
+                    paymentData.cheque = $(this).find('.cheque').val();
+                    paymentData.chequedate = $(this).find('.chequedate').val();
+                    paymentData.chequebank = $(this).find('.chequebank').val();
+                    let chequeAmount = $(this).find('.chequeamountAmount').val() || "0";
+                    paymentData.amount = chequeAmount.replace(/,/g, '');
+                    paymentData.datanamebank = `Cheque Bank ${paymentData.chequebank} Cheque Number ${paymentData.cheque}`;
+                }
+
+                if (paymentData.amount) {
+                    payments.push(paymentData);
+                }
+            });
+            console.log(payments);
+
+            $('#paymentsDataInput').val(JSON.stringify(payments));
+            getAllPaymentsTpye();
+        }
+        function getAllPaymentsTpye() {
+            const checkbox = document.getElementById('flexSwitchCheckChecked');
+            var additionalamount = parseFloat($('#additionalcash').val()) || 0;
+
+            var invoiceamount = parseFloat($('#invoiceamount').val()) || 0;
+
+
+
+            let payments = [];
+            let cashAmount = parseFloat($('.cashAmount').val()) || 0;
+            var typeadditional = $('#additional_type').val();
+            if (checkbox !== null) {
+                if (checkbox.checked) {
+                    if (typeadditional == 'H/G') {
+                        payments.push({
+                            type: 'cash',
+                            amount: cashAmount,
+                            datanamebank: 'Cash'
+                        });
+                    }else{
+                        payments.push({
+                            type: 'Complimentary',
+                            amount: additionalamount,
+                            datanamebank: 'Cash'
+                        });
+                    }
+                }else{
+                    $('.payment-container').each(function () {
+                        let paymentType = $(this).find('.paymentType').val();
+                        if (paymentType == 'cash') {
+                            payments.push({
+                                type: 'cash',
+                                amount: cashAmount,
+                                datanamebank: 'Cash'
+                            });
+                        }
+
+                    });
+                }
+            }else {
                 $('.payment-container').each(function () {
                     let paymentType = $(this).find('.paymentType').val();
-                    let paymentData = { type: paymentType };
-                    // ตรวจสอบว่าถูกติ๊กหรือไม่
-                    if (paymentType === 'cash') {
+                    if (paymentType == 'cash') {
+                        payments.push({
+                            type: 'cash',
+                            amount: cashAmount,
+                            datanamebank: 'Cash'
+                        });
+                    }
+
+                });
+            }
+
+            $('.payment-container').each(function () {
+                let paymentType = $(this).find('.paymentType').val();
+                let paymentData = { type: paymentType };
+                // ตรวจสอบว่าถูกติ๊กหรือไม่
+                if (paymentType === 'cash') {
                         console.log('cash');
                         paymentData.amount = $(this).find('.cashAmount').val();
                         paymentData.datanamebank = 'Cash';
                     }
-                    else if (paymentType === 'bankTransfer') {
-                        console.log('bankTransfer');
+                else if (paymentType === 'bankTransfer') {
+                    paymentData.bank = $(this).find('.bankName').val();
+                    paymentData.amount = $(this).find('.bankTransferAmount').val();
+                    paymentData.datanamebank = paymentData.bank + ' Bank Transfer - Together Resort Ltd';
 
-                        paymentData.bank = $(this).find('.bankName').val();
-                        paymentData.amount = $(this).find('.bankTransferAmount').val();
-                        paymentData.datanamebank = paymentData.bank + ' Bank Transfer - Together Resort Ltd';
+                } else if (paymentType === 'creditCard') {
 
-                    } else if (paymentType === 'creditCard') {
+                    paymentData.cardNumber = $(this).find('.creditCardNumber').val();
+                    paymentData.expiry = $(this).find('.expiryDate').val();
+                    paymentData.amount = $(this).find('.creditCardAmount').val();
+                    paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
 
-                        paymentData.cardNumber = $(this).find('.creditCardNumber').val();
-                        paymentData.expiry = $(this).find('.expiryDate').val();
-                        paymentData.amount = $(this).find('.creditCardAmount').val();
-                        paymentData.datanamebank = `Credit Card No. ${paymentData.cardNumber} Exp. Date: ${paymentData.expiry}`;
+                } else if (paymentType === 'cheque'){
 
-                    } else if (paymentType === 'cheque'){
-
-                        paymentData.cheque = $(this).find('.cheque').val();
-                        paymentData.chequedate = $(this).find('.chequedate').val();
-                        paymentData.chequebank = $(this).find('.chequebank').val();
-                        paymentData.amount = $(this).find('.chequeamountAmount').val().replace(/,/g, '').split('.')[0];
-                        paymentData.datanamebank = `Cheque Bank ${paymentData.chequebank} Cheque Number ${paymentData.cheque}`;
-                    }
-
-                    if (paymentData.amount) {
-                        payments.push(paymentData);
-                    }
-                });
-                if (typeadditional !== 'H/G' && additionalamount > 0) {
-                    payments.push({
-                        type: 'cash',
-                        amount: additionalamount,
-                        datanamebank: 'Cash'
-                    });
+                    paymentData.cheque = $(this).find('.cheque').val();
+                    paymentData.chequedate = $(this).find('.chequedate').val();
+                    paymentData.chequebank = $(this).find('.chequebank').val();
+                    let chequeAmount = $(this).find('.chequeamountAmount').val() || "0";
+                    paymentData.amount = chequeAmount.replace(/,/g, '');
+                    paymentData.datanamebank = `Cheque Bank ${paymentData.chequebank} Cheque Number ${paymentData.cheque}`;
                 }
-            return payments;
-        }
 
-        function updateTable(allPayments) {
-            var paymentDate = $('#paymentDate').val();
-            $('#table-revenueEditBill tbody').html('');
-            allPayments.forEach((payment, index) => {
-                let newRow = `
-                    <tr >
-                        <td>${paymentDate}</td>
-                        <td>
-                            ${payment.datanamebank}
-                        </td>
-                        <td></td>
-                        <td>${Number(payment.amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB</td>
-                    </tr>
-                `;
-                $('#table-revenueEditBill tbody').append(newRow);
+                if (paymentData.amount) {
+                    payments.push(paymentData);
+                }
             });
+            $('#paymentsDataInputarray').val(JSON.stringify(payments));
         }
 
         function BACKtoEdit(){
@@ -2742,13 +2737,12 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     console.log(1);
-                    // If user confirms, redirect to the correct route
                     window.location.href = "{!! route('BillingFolio.CheckPI', $Proposal->id) !!}";
                 }
             });
         }
-
-        function submittoEdit(){
+        function submit(event) {
+            event.preventDefault();
             Swal.fire({
                 title: "You want to save information, right?",
                 icon: "question",

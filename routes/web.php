@@ -1029,6 +1029,7 @@ Route::controller(BillingFolioController::class)->middleware(['role:document', '
     Route::post('/Document/BillingFolio/Proposal/invoice/Generate/update/{id}', 'update')->name('BillingFolio.update');
     // //-------------------------------------view------------------------------------
     Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}', 'view')->name('receipt.view');
+    Route::get('/Document/BillingFolio/Proposal/invoice/export/{id}', 'export')->name('receipt.export');
     Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}', 'log')->name('receipt.log');
     Route::get('/Receipt/Quotation/view/quotation/view/{id}', 'QuotationView')->name('receipt.QuotationView');
     //---------------------deposit one paid---------------------------
@@ -1043,6 +1044,8 @@ Route::controller(BillingFolioController::class)->middleware(['role:document', '
     Route::post('/Document/BillingFolio/Additional/Charge/update/{id}', 'additional_update')->name('BillingFolio.additional_update');
     Route::get('/Document/BillingFolio/Additional/generate/Receive/{id}', 'additional_re')->name('BillingFolio.additional_re');
     Route::post('/Document/BillingFolio/Additional/generate/save', 'additional_save')->name('BillingFolio.additional_save');
+    Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/{id}', 'create_one')->name('BillingFolio.create_one');
+
 });
 Route::controller(Additional::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/Additional/Charge/index', 'index')->name('Additional.index');

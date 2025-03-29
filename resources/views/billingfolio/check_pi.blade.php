@@ -242,12 +242,10 @@
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 @if ($item->document_status == 1)
-                                                                    @if (!($Nettotal - $totalReceipt <= 0))
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/deposit/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create Receive</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/edit/'.$item->id) }}">Edit</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                    @endif
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/deposit/view/'.$item->id) }}">View</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create Receive</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/edit/'.$item->id) }}">Edit</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                 @endif
                                                             </ul>
                                                         </div>
@@ -332,7 +330,10 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Paid</a></li>
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/'.$invoices->id) }}">Paid</a></li>
+                                                                @if ($Additional->status_guest == 0)
+                                                                    <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Create Combined Receipt</a></li>
+                                                                @endif
                                                                 <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/multi/'.$invoices->id) }}">Bill Splitting</a></li>
                                                             </ul>
                                                         </div>
@@ -342,8 +343,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
-
                             </div>
                         @endif
                         @if (!empty($Additional))
