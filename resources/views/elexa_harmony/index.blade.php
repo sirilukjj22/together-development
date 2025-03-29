@@ -417,7 +417,7 @@
 
     <!-- Custom Scripts -->
     <script src="{{ asset('assets/js/table-together.js') }}"></script>
-    <script src="{{ asset('assets/js/revenueElexa.js') }}"></script>
+    <script src="{{ asset('assets/js/harmony/revenueElexa.js') }}"></script>
 
 <script>
     function currencyFormat(num) {
