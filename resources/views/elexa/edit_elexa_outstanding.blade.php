@@ -310,8 +310,18 @@
             </div>
             <div class="modal-body">
                 <div class="col-12 mt-2">
-                    <div class="col-md-6">
-                        <label for="">Debit Amount</label>
+                    <div class="col-md-6 d-flex">
+                        <div class="form-check me-3">
+                            <input class="form-check-input select-status-debit" type="radio" name="flexRadioDefault" id="credit" value="1" checked>
+                            <label class="form-check-label" for="credit">Credit</label> <!-- บวก -->
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input select-status-debit" type="radio" name="flexRadioDefault" id="debit" value="1">
+                            <label class="form-check-label" for="debit">Debit</label> <!-- ลบ -->
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <label for="">Amount</label>
                         <input type="text" class="form-control" name="" id="input-debit-amount" placeholder="0.00">
                     </div>
                     <div class="col-md-12 mt-2">
@@ -348,6 +358,7 @@
     <input type="hidden" name="issue_date" value="{{ date('Y-m-d') }}">
     <input type="hidden" id="revenue_id" name="sms_id" value="{{ isset($elexa_revenue) ? $elexa_revenue->id : 0 }}"> <!-- ID รายได้ที่มาจาก SMS -->
     <input type="hidden" id="debit-out-amount" name="debit_out_amount" value="{{ (isset($document_query) && !empty($document_query) ? $document_query->debit_amount : 0) }}">
+    <input type="hidden" id="input-total-debit-status" name="status_type" value="0"> <!-- 0 = Credit, 1 = Debit -->
 
     @foreach ($elexa_all as $key => $item)
         @if ($item->receive_payment == 1 && $item->sms_revenue == $elexa_revenue->id)
@@ -445,17 +456,78 @@
             }
     });
 
+    function clearDebit() {
+        $('#txt-total-debit-revenue').val(0);
+        $('#txt-total-debit-amount').val(0);
+        $('#input-total-debit-revenue').val(0);
+        $('#input-total-debit-amount').val(0);
+
+        $('input[name="debit_revenue[]"]').remove();
+        $('input[name="remark_debit_revenue[]"]').remove();
+
+        $('#myDataTableOutstandingSelect').DataTable().rows('.row-debit-revenue').remove().draw(false); // อัปเดตตาราง
+    }
+
     function btnConfirmDebitRevenue() 
     {
+        // Clear 
+        if ($('#debit').is(':checked') && $('#input-total-debit-status').val() != '1') {
+            $('#input-total-debit-status').val(1);
+            clearDebit();
+
+        } if ($('#credit').is(':checked') && $('#input-total-debit-status').val() != '0') {
+            $('#input-total-debit-status').val(0);
+            clearDebit();
+        }
+
+        var radio_credit = $('#credit').val();
+        var radio_debit = $('#debit').val();
         var debit_amount = Number($('#input-debit-amount').val());
         var debit_amount_old = Number($('#debit-out-amount').val());
         var number_debit = Number($('#input-total-debit-revenue').val());
         var total_debit_amount = Number($('#input-total-debit-amount').val());
         var outstanding = Number($('#input-outstanding-amount').val());
-        var selected_amount = Number($('#input-selected-amount').val()) - debit_amount;
         var sms_amount = Number($('#total_revenue_amount').val());
 
-        if (debit_amount != '' && debit_amount != 0) {
+        if ($('#debit').is(':checked') && debit_amount != '' && debit_amount != 0) {
+            var selected_amount = Math.floor((Number($('#input-selected-amount').val()) - debit_amount) * 100) / 100;
+            
+            // Update
+            // Text
+            $('#txt-total-debit-revenue').text(number_debit + 1);
+            $('#txt-total-debit-amount').text(total_debit_amount + debit_amount);
+            $('#txt-total-selected-amount').text(currencyFormat(selected_amount));
+            $('#txt-total-selected-outstanding').text(currencyFormat(sms_amount - selected_amount));
+
+            // Input
+            $('#input-total-debit-revenue').val(number_debit + 1);
+            $('#input-total-debit-amount').val(total_debit_amount + debit_amount);
+            $('#input-selected-amount').val(selected_amount);
+            $('#input-outstanding-amount').val(sms_amount - selected_amount);
+            $('#debit-out-amount').val(debit_amount - debit_amount_old); 
+
+            $('#tfoot-total-outstanding-select').text(currencyFormat(selected_amount));
+            $('#form-elexa-select').append('<input type="hidden" name="debit_revenue[]" value="' + debit_amount + '">');
+            $('#form-elexa-select').append('<input type="hidden" name="remark_debit_revenue[]" value="' + debit_amount + '">');
+
+            var table = $('#myDataTableOutstandingSelect').DataTable();
+
+            var newRow = table.row.add([
+                moment().format('DD/MM/YYYY'),
+                'Debit Revenue',
+                '-' + currencyFormat(debit_amount),
+                '<button type="button" class="btn" value="1"' +
+                ' onclick="select_delete_debit(this, ' + (debit_amount) + ')">' +
+                '<i class="fa fa-trash-o"></i></button>'
+            ]).draw(false).node();  
+
+            $(newRow).addClass('row-debit-revenue');
+
+        }
+
+        if ($('#credit').is(':checked') && debit_amount != '' && debit_amount != 0) {
+            var selected_amount = Math.floor((Number($('#input-selected-amount').val()) + debit_amount) * 100) / 100;
+            
             // Update
             // Text
             $('#txt-total-debit-revenue').text(number_debit + 1);
@@ -474,17 +546,19 @@
             $('#form-elexa-select').append('<input type="hidden" name="debit_revenue[]" value="' + debit_amount + '">');
             $('#form-elexa-select').append('<input type="hidden" name="remark_debit_revenue[]" value="' + debit_amount + '">');
 
-            $('#myDataTableOutstandingSelect').DataTable().rows.add(
-                [
-                    [
-                        moment().format('DD/MM/YYYY'),
-                        'Debit Revenue',
-                        '-' + currencyFormat(debit_amount),
-                        '<button type="button" class="btn" value="1"' +
-                        'onclick="select_delete_debit(this, ' + (debit_amount) + ')"><i class="fa fa-trash-o"></i></button>'
-                    ]
-                ]
-            ).draw();
+            var table = $('#myDataTableOutstandingSelect').DataTable();
+
+            var newRow = table.row.add([
+                moment().format('DD/MM/YYYY'),
+                'Credit Revenue',
+                "+" + currencyFormat(debit_amount),
+                '<button type="button" class="btn" value="1"' +
+                ' onclick="select_delete_debit(this, ' + (debit_amount) + ')">' +
+                '<i class="fa fa-trash-o"></i></button>'
+            ]).draw(false).node();  // ดึง node ของแถวที่เพิ่ม
+
+            $(newRow).addClass('row-debit-revenue');
+
         }
 
         $('#ElexaDebitRevenue').modal('hide'); // ปิด Modal
@@ -1060,6 +1134,7 @@
     function btnConfirm() 
     {
         var total_debit = 0;
+        var debit_status = Number($('#input-total-debit-status').val()); // 0 = Credit, 1 = Debit
         var debit_out = Number($('#debit-out-amount').val());
         var sms_amount = Number($('#total_revenue_amount').val());
         var total_receive_payment = Number($('#total_receive_payment').val());
@@ -1073,7 +1148,7 @@
         }).get();
 
         var tableSelect = $('#myDataTableOutstandingSelect').DataTable();
-
+        
         if (total_selected_amount == sms_amount) {
             tableSelect.clear().draw();
 
@@ -1184,11 +1259,18 @@
                         $('#ElexaRevenueList').modal('hide');
                         $('#input-selected-item').val(0);
                         $('#input-selected-amount').val(0);
-                        $('#total_receive_payment').val(total_debit - debit_out);
+
+                        if (debit_status == 0) {
+                            $('#total_receive_payment').val(total_debit + debit_out);
+                            $('#tfoot-total-debit').text(currencyFormat(total_debit + debit_out));
+                        } else {
+                            $('#total_receive_payment').val(total_debit - debit_out);
+                            $('#tfoot-total-debit').text(currencyFormat(total_debit - debit_out));
+                        }
     
                         $('#txt-total-selected').text(0);
                         $('#txt-total-selected-amount').text(currencyFormat(0)); 
-                        $('#tfoot-total-debit').text(currencyFormat(total_debit - debit_out));
+                        
                     } else {
                         Swal.fire({
                             title: 'กรุณาเลือกข้อมูลก่อนยืนยัน',

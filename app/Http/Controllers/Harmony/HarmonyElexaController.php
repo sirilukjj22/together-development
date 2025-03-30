@@ -431,6 +431,7 @@ class HarmonyElexaController extends Controller
                         Harmony_elexa_debit_revenue::create([
                             'document_elexa' => $check_document_old->id,
                             'date' => $request->issue_date,
+                            'status_type' => $request->status_type ?? 0,
                             'amount' => $value,
                             'remark' => $request->debit_revenue_remark[$key] ?? null,
                             'created_by' => Auth::user()->id
@@ -469,6 +470,7 @@ class HarmonyElexaController extends Controller
                         Harmony_elexa_debit_revenue::create([
                             'document_elexa' => $data,
                             'date' => date('Y-m-d'),
+                            'status_type' => $request->status_type ?? 0,
                             'amount' => $value,
                             'remark' => $request->debit_revenue_remark[$key] ?? null,
                             'created_by' => Auth::user()->id
