@@ -166,7 +166,7 @@
             <div class="modal-body">
             <div class="flex-end">
                 {{-- <input type="text" id="input-debit-amount" class="form-control mt-2" style="width: 100px; height: 35px;"> --}}
-                <button type="button" id="btn-debit-amount" class="bt-tg-normal sm">Debit</button>
+                <button type="button" id="btn-debit-amount" class="bt-tg-normal sm">Debit / Credit</button>
             </div>
             <div class="mt-2 top-3-card">
                 <div>
@@ -1236,6 +1236,14 @@
                             total_debit += item.ev_revenue;
                         });
 
+                        if (debit_status == 0) {
+                            var detail_name = "Credit Revenue";
+                            var symbol = "+";
+                        } else {
+                            var detail_name = "Debit Revenue";
+                            var symbol = "-";
+                        }
+
                         debit_revenue.forEach(element => {
                             $('#form-elexa').append('<input type="hidden" name="debit_revenue_amount[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
 
@@ -1243,8 +1251,8 @@
                                 [
                                     [
                                         moment().format('DD/MM/YYYY'),
-                                        'Debit Revenue',
-                                        '-' + element,
+                                        detail_name,
+                                        symbol + element,
                                         '<button type="button" class="btn" value="1"' +
                                         'onclick="select_delete_debit(this, ' + (element) + ')"><i class="fa fa-trash-o"></i></button>'
                                     ]

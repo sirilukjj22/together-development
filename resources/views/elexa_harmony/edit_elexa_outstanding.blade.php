@@ -166,7 +166,7 @@
             <div class="modal-body">
             <div class="flex-end">
                 {{-- <input type="text" id="input-debit-amount" class="form-control mt-2" style="width: 100px; height: 35px;"> --}}
-                <button type="button" id="btn-debit-amount" class="bt-tg-normal sm">Debit</button>
+                <button type="button" id="btn-debit-amount" class="bt-tg-normal sm">Debit / Credit</button>
             </div>
             <div class="mt-2 top-3-card">
                 <div>
