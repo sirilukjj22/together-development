@@ -14,6 +14,7 @@ class Elexa_debit_revenue extends Model
     protected $fillable = [
         'document_elexa',
         'date',
+        'status_type',
         'amount',
         'remark',
         'created_by',
