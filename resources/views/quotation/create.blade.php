@@ -1008,8 +1008,29 @@
             $('#checkmonth').val(monthDiff);
 
             // Weekday or weekend logic
+            // if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
+            //     if (dayName === 'Thursday' && enddayName === 'Saturday') {
+            //         $('#calendartext').text("Weekday-Weekend");
+            //         $('#Date_type').val("Weekday-Weekend");
+            //     } else {
+            //         $('#calendartext').text("Weekday");
+            //         $('#Date_type').val("Weekday");
+            //     }
+            // } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
+            //     if (dayName === 'Saturday' && enddayName === 'Monday') {
+            //         $('#calendartext').text("Weekday-Weekend");
+            //         $('#Date_type').val("Weekday-Weekend");
+            //     } else {
+            //         $('#calendartext').text("Weekend");
+            //         $('#Date_type').val("Weekend");
+
+            //     }
+            // }
             if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
                 if (dayName === 'Thursday' && enddayName === 'Saturday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
+                } else if (enddayName === 'Monday') {  // ตรวจสอบว่าข้ามสัปดาห์หรือไม่
                     $('#calendartext').text("Weekday-Weekend");
                     $('#Date_type').val("Weekday-Weekend");
                 } else {
@@ -1020,10 +1041,12 @@
                 if (dayName === 'Saturday' && enddayName === 'Monday') {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#Date_type').val("Weekday-Weekend");
+                } else if (enddayName === 'Sunday') {  // ตรวจสอบว่าข้ามสัปดาห์หรือไม่
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
                 } else {
                     $('#calendartext').text("Weekend");
                     $('#Date_type').val("Weekend");
-
                 }
             }
 

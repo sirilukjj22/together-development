@@ -53,7 +53,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\ReportDocumentController;
-
+use App\Http\Controllers\Banquet_Event_OrderController;
 
 ## Harmony
 use App\Http\Controllers\Harmony\HarmonyAgodaRevenuesController;
@@ -637,8 +637,6 @@ Route::controller(Masterpromotion::class)->group(function () {
     Route::post('Mpromotion-paginate-table', 'paginate_table')->name('Mpromotion-paginate-table');
     Route::get('/Mpromotion/log/detail', 'log')->name('Mpromotion.Log');
 
-    Route::post('promotion-Log-search-table', 'search_table_paginate_log');
-    Route::post('promotion-Log-paginate-table', 'paginate_log_table');
 });
 
 #master company type
@@ -653,11 +651,6 @@ Route::controller(Master_Company_type::class)->middleware(['role:company_type', 
 
     Route::get('/Mcomt/log/detail', 'log')->name('Mcomt.Log');
 
-    Route::post('Mcomt-search-table', 'mcomt_search_table')->name('mcomt-search-table');
-    Route::post('Mcomt-paginate-table', 'mcomt_paginate_table')->name('mcomt-paginate-table');
-
-    Route::post('Mcomt-Log-search-table', 'mcomt_search_table_paginate_log');
-    Route::post('Mcomt-Log-paginate-table', 'mcomt_paginate_log_table');
 });
 #master market
 Route::controller(Master_market::class)->middleware(['role:company_market', 'together:1'])->group(function () {
@@ -671,11 +664,6 @@ Route::controller(Master_market::class)->middleware(['role:company_market', 'tog
 
     Route::get('/Mmarket/log/detail', 'log')->name('Mmarket.Log');
 
-    Route::post('Mmarket-search-table', 'Mmarket_search_table')->name('Mmarket-search-table');
-    Route::post('Mmarket-paginate-table', 'Mmarket_paginate_table')->name('Mmarket-paginate-table');
-
-    Route::post('Mmarket-Log-search-table', 'Mmarket_search_table_paginate_log');
-    Route::post('Mmarket-Log-paginate-table', 'Mmarket_paginate_log_table');
 });
 
 #Freelancer Check
@@ -731,11 +719,6 @@ Route::controller(MasterEventFormatController::class)->middleware(['role:company
 
     Route::get('/MEvent/log/detail', 'log')->name('MEvent.Log');
 
-    Route::post('MEvent-search-table', 'mevent_search_table')->name('mevent-search-table');
-    Route::post('MEvent-paginate-table', 'mevent_paginate_table')->name('mevent-paginate-table');
-
-    Route::post('MEvent-Log-search-table', 'mevent_search_table_paginate_log');
-    Route::post('MEvent-Log-paginate-table', 'mevent_paginate_log_table');
 });
 
 Route::controller(Master_Vat::class)->group(function () {
@@ -749,11 +732,6 @@ Route::controller(Master_Vat::class)->group(function () {
 
     Route::get('/Mvat/log/detail', 'log')->name('Mvat.Log');
 
-    Route::post('Mvat-search-table', 'mvat_search_table')->name('mvat-search-table');
-    Route::post('Mvat-paginate-table', 'mvat_paginate_table')->name('mvat-paginate-table');
-
-    Route::post('Mvat-Log-search-table', 'mvat_search_table_paginate_log');
-    Route::post('Mvat-Log-paginate-table', 'mvat_paginate_log_table');
 });
 
 #Quotation
@@ -803,33 +781,6 @@ Route::controller(QuotationController::class)->middleware(['role:document', 'tog
 
     Route::get('/Proposal/Request/document/noshow/{id}', 'noshow')->name('Proposal.noshow');
     //----------------------------
-    Route::post('Proposal-search-table', 'search_table_proposal');
-    Route::post('Proposal-paginate-table', 'paginate_table_proposal');
-    //--------------------------pending---------
-    Route::post('Proposal-Pending-search-table', 'search_table_paginate_pending');
-    Route::post('Proposal-Pending-paginate-table', 'paginate_pending_table_proposal');
-    //--------------------------Awaiting---------
-    Route::post('Proposal-Awaiting-search-table', 'search_table_paginate_awaiting');
-    Route::post('Proposal-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
-    //--------------------------Approved---------
-    Route::post('Proposal-Approved-search-table', 'search_table_paginate_approved');
-    Route::post('Proposal-Approved-paginate-table', 'paginate_approved_table_proposal');
-    //--------------------------Reject-----------
-    Route::post('Proposal-Reject-search-table', 'search_table_paginate_reject');
-    Route::post('Proposal-Reject-paginate-table', 'paginate_reject_table_proposal');
-    //--------------------------Cancel-----------
-    Route::post('Proposal-Cancel-search-table', 'search_table_paginate_cancel');
-    Route::post('Proposal-Cancel-paginate-table', 'paginate_cancel_table_proposal');
-    //--------------------------LogPdf-----------
-    Route::post('Proposal-Log-search-table', 'search_table_paginate_log_pdf');
-    Route::post('Proposal-Log-paginate-table', 'paginate_log_pdf_table_proposal');
-    //--------------------------LogDoc-----------
-    Route::post('Proposal-LogDoc-search-table', 'search_table_paginate_log_doc');
-    Route::post('Proposal-LogDoc-paginate-table', 'paginate_log_doc_table_proposal');
-
-    Route::post('Proposal-Complete-search-table', 'search_table_paginate_complete');
-    Route::post('Proposal-Complete-paginate-table', 'paginate_complete_table_proposal');
-
     Route::get('/Proposal/get/proposalTable', 'getproposalTable');
     Route::get('/Proposal/get/PendingTable', 'PendingTable');
     // Route::get('/invoice/get/PendingTable','PendingTable');
@@ -895,32 +846,6 @@ Route::controller(DummyQuotationController::class)->middleware(['role:document',
     Route::get('/Dummy/Proposal/Revice/{id}', 'Revice')->name('Quotation.Revice');
 
     Route::get('/Dummy/Proposal/Search/All', 'SearchAll')->name('DummyProposal.Search');
-
-    //----------------------------
-    Route::post('DummyProposal-search-table', 'search_table_dummyproposal');
-    Route::post('DummyProposal-paginate-table', 'paginate_table_dummyproposal');
-
-    //--------------------------LogDoc-----------
-    Route::post('DummyProposal-LogDoc-search-table', 'search_table_paginate_log_doc_dummyproposal');
-    Route::post('DummyProposal-LogDoc-paginate-table', 'paginate_log_doc_table_dummyproposal');
-    //--------------------------pending---------
-    Route::post('DummyProposal-Pending-search-table', 'search_table_paginate_pending');
-    Route::post('DummyProposal-Pending-paginate-table', 'paginate_pending_table_proposal');
-    //--------------------------Awaiting---------
-    Route::post('DummyProposal-Awaiting-search-table', 'search_table_paginate_awaiting');
-    Route::post('DummyProposal-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
-    //--------------------------Approved---------
-    Route::post('DummyProposal-Approved-search-table', 'search_table_paginate_approved');
-    Route::post('DummyProposal-Approved-paginate-table', 'paginate_approved_table_proposal');
-    //--------------------------Generate---------
-    Route::post('DummyProposal-Generate-search-table', 'search_table_paginate_generate');
-    Route::post('DummyProposal-Generate-paginate-table', 'paginate_generate_table_proposal');
-    //--------------------------Reject-----------
-    Route::post('DummyProposal-Reject-search-table', 'search_table_paginate_reject');
-    Route::post('DummyProposal-Reject-paginate-table', 'paginate_reject_table_proposal');
-    //--------------------------Cancel-----------
-    Route::post('DummyProposal-Cancel-search-table', 'search_table_paginate_cancel');
-    Route::post('DummyProposal-Cancel-paginate-table', 'paginate_cancel_table_proposal');
 });
 
 #Proposal Request
@@ -938,21 +863,7 @@ Route::controller(proposal_request::class)->middleware(['role:document', 'togeth
     Route::post('/Proposal/request/Request/document/view/Reject/', 'Additional_Reject')->name('ProposalReq.Reject');
     Route::get('/Proposal/request/Additional/log', 'Additional_LOG')->name('ProposalReq.LogAdditional');
 
-    //----------------------------
-    Route::post('Proposal-request-search-table', 'search_table_proposal');
-    Route::post('Proposal-request-paginate-table', 'paginate_table_proposal');
 
-    Route::post('Proposal-LogDoc-request-search-table', 'search_table_paginate_log_doc');
-    Route::post('Proposal-LogDoc-request-paginate-table', 'paginate_log_doc_table_proposal');
-
-    Route::post('request-Pending-search-table', 'search_table_paginate_pending');
-    Route::post('request-Pending-paginate-table', 'paginate_pending_table_request');
-
-    Route::post('Proposal-request-Additional-search-table', 'search_table_Additional');
-    Route::post('Proposal-request-Additional-paginate-table', 'paginate_table_Additional');
-
-    Route::post('Additional-LogDoc-request-search-table', 'search_table_paginate_log_doc_Additional');
-    Route::post('Additional-LogDoc-request-paginate-table', 'paginate_log_doc_table_Additional');
 });
 
 ##-------------------------------TemplateController-----------------
@@ -1112,7 +1023,11 @@ Route::controller(Additional::class)->middleware(['role:document', 'together:1']
     Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
 });
 
-
+Route::controller(Banquet_Event_OrderController::class)->middleware(['role:document', 'together:1'])->group(function () {
+    Route::get('/Banquet/Event/Order/index', 'index')->name('Banquet.index');
+    Route::get('/Banquet/Event/Order/create/{id}', 'create')->name('Banquet.create');
+    Route::post('/Banquet/Event/Order/save/detail/{id}', 'save')->name('Banquet.save');
+});
 Route::controller(ReceiveChequeController::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
     Route::get('/Document/ReceiveCheque/save', 'save')->name('ReceiveCheque.save');

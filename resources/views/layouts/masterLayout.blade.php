@@ -201,7 +201,7 @@
                                         @endif
 
                                         @if (Auth::user()->roleMenu->banquet_event_order == 1)
-                                            <li><a class="ms-link" href="#">Banquet Event Order</a></li>
+                                            <li><a class="ms-link" href="{{ route('Banquet.index') }}">Banquet Event Order</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->hotel_contact_rate == 1)
                                             <li><a class="ms-link" href="#">Hotel Contract Rate Agreement</a>

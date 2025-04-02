@@ -330,9 +330,11 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/'.$invoices->id) }}">Paid</a></li>
-                                                                @if ($Additional->status_guest == 0)
-                                                                    <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Create Combined Receipt</a></li>
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/'.$invoices->id) }}">Create Receive</a></li>
+                                                                @if (!empty($Additional))
+                                                                    @if ($Additional->status_guest == 0)
+                                                                        <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Create Combined Receipt</a></li>
+                                                                    @endif
                                                                 @endif
                                                                 <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/multi/'.$invoices->id) }}">Bill Splitting</a></li>
                                                             </ul>
