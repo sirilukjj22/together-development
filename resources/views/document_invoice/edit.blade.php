@@ -341,7 +341,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row my-3">
-                                    <label for=""><b>Deposit Revenue</b></label>
+                                    <label for=""><b>Deposit Invoice</b></label>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <select id="deposit" name="deposit[]" multiple class="select2">
                                             @foreach ($Depositlist as $item)
@@ -900,7 +900,7 @@
                                 <tr>
                                     <td style="text-align: center;">${index + 2}</td> <!-- ลำดับแถว -->
                                     <td>
-                                        Deposit Revenue ID : ${depost.Deposit_ID}
+                                        Deposit Invoice ID : ${depost.Deposit_ID}
                                     </td>
                                     <td style="text-align: right;">
                                         - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB

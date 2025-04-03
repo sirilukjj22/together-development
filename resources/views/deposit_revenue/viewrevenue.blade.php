@@ -434,7 +434,7 @@
     <div class="container-xl">
         <div class="row align-items-center">
             <div class="col sms-header">
-                <div class="span3">View Deposit Revenue</div>
+                <div class="span3">View Deposit Invoice</div>
             </div>
             <div class="col-auto">
                 <button class="bt-tg-normal mr-2" style="position: relative" data-toggle="modal" data-target="#modalAddBill">
@@ -450,7 +450,7 @@
 
                             <div class="modal-body " style="display: grid;gap:0.5em;background-color: #d0f7ec;">
                                 <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
-                                    <b >Invoice / Deposit ID : {{$DepositID}}</b>
+                                    <b >Deposit Invoice ID : {{$DepositID}}</b>
                                 </div>
                                 <section class="detail-modal-issueBill">
                                     <div class="p-2" >
@@ -466,7 +466,7 @@
                                     </div>
                                     <div class="payment-details-3g">
                                         <li class="parent-row" data-group="group1">
-                                            <span>Invoice / Deposit</span>: <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                            <span>Deposit Invoice</span>: <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
                                         </li>
                                         <li class="parent-row">
                                             <span style="text-align: center;font-weight: bold;">Outstanding Amount </span>: <span id="total">{{ number_format($payment - $Nettotal, 2, '.', ',') }}</span>
@@ -724,7 +724,7 @@
                                     <div class="col-lg-4"></div>
                                     <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
                                         <div class="row">
-                                            <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Deposit Revenue</b>
+                                            <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Deposit Invoice</b>
                                             <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$DepositID}}</b>
                                         </div>
                                     </div>
@@ -760,7 +760,7 @@
 
                                 <div class="proposal-cutomer-detail" id="companyTable" >
                                     <ul>
-                                    <b class="font-upper com">Deposit Revenue</b>
+                                    <b class="font-upper com">Deposit Invoice</b>
                                     <li class="mt-3">
                                         <b>Guest Name</b>
                                         <span id="name">{{$fullName}}</span>
@@ -826,7 +826,7 @@
                                     <tr>
                                         <td style="text-align:center">1</td>
                                         <td style="text-align:left">
-                                            อ้างอิงเอกสาร : {{$QuotationID}} เอกสาร Invoice / Deposit : {{$DepositID}}</span> ครั้งที่ {{$Deposit}}
+                                            อ้างอิงเอกสาร : {{$QuotationID}} เอกสาร Deposit Invoice : {{$DepositID}}</span> ครั้งที่ {{$Deposit}}
                                         </td>
                                         <td style="text-align:right"><span id="Subtotal"></span>{{ number_format($Subtotal, 2) }} THB </td>
                                     </tr>

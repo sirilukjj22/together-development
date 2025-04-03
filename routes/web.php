@@ -780,8 +780,10 @@ Route::controller(QuotationController::class)->middleware(['role:document', 'tog
     Route::get('/Proposal/viewproposal/{id}', 'viewproposal')->name('Proposal.viewproposal');
 
     Route::get('/Proposal/Request/document/noshow/{id}', 'noshow')->name('Proposal.noshow');
-    //----------------------------
+
     Route::get('/Proposal/get/proposalTable', 'getproposalTable');
+    //----------------------------
+    Route::get('/Proposal/check/invoice/{id}', 'check_invoice');
     Route::get('/Proposal/get/PendingTable', 'PendingTable');
     // Route::get('/invoice/get/PendingTable','PendingTable');
     // Route::get('/invoice/get/ApprovedTable','ApprovedTable');
@@ -950,11 +952,13 @@ Route::controller(BillingFolioController::class)->middleware(['role:document', '
 
     Route::get('/Document/BillingFolio/Deposit/edit/{id}', 'deposit_edit')->name('BillingFolio.deposit_edit');
     Route::post('/Document/BillingFolio/Deposit/update/{id}', 'deposit_update')->name('BillingFolio.deposit_update');
+    Route::post('/Document/BillingFolio/Deposit/cancel/{id}', 'depositcancel')->name('Deposit.depositcancel');
  //---------------------Additional one paid---------------------------
     Route::get('/Document/BillingFolio/Additional/Charge/edit/{id}', 'additional_edit')->name('BillingFolio.additional_edit');
     Route::post('/Document/BillingFolio/Additional/Charge/update/{id}', 'additional_update')->name('BillingFolio.additional_update');
     Route::get('/Document/BillingFolio/Additional/generate/Receive/{id}', 'additional_re')->name('BillingFolio.additional_re');
     Route::post('/Document/BillingFolio/Additional/generate/save', 'additional_save')->name('BillingFolio.additional_save');
+
     Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/{id}', 'create_one')->name('BillingFolio.create_one');
 
 });
@@ -976,31 +980,6 @@ Route::controller(Additional::class)->middleware(['role:document', 'together:1']
     Route::get('/Document/BillingFolio/{Quotation_ID}/addProductselect', 'addProductselect')->name('BillingFolioOver.addProductselect');
     Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');
 
-    Route::post('billingover-search-table', 'search_table_billingover');
-    Route::post('billingover-paginate-table', 'paginate_table_billingover');
-
-    //--------------------------Awaiting---------
-    Route::post('billingover-Awaiting-search-table', 'search_table_paginate_awaiting');
-    Route::post('billingover-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
-
-    //--------------------------Approved---------
-    Route::post('billingover-Approved-search-table', 'search_table_paginate_approved');
-    Route::post('billingover-Approved-paginate-table', 'paginate_approved_table_proposal');
-
-    //--------------------------Reject-----------
-    Route::post('billingover-Reject-search-table', 'search_table_paginate_reject');
-    Route::post('billingover-Reject-paginate-table', 'paginate_reject_table_proposal');
-
-    //--------------------------Cancel-----------
-    Route::post('billingover-Cancel-search-table', 'search_table_paginate_cancel');
-    Route::post('billingover-Cancel-paginate-table', 'paginate_cancel_table_proposal');
-    //--------------------------LogPdf-----------
-    Route::post('billing-Log-search-table', 'search_table_paginate_log_pdf');
-    Route::post('billing-Log-paginate-table', 'paginate_log_pdf_table_billing');
-    //--------------------------LogDoc-----------
-    Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
-    Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
-
 
 
 
@@ -1011,16 +990,13 @@ Route::controller(Additional::class)->middleware(['role:document', 'together:1']
 
     Route::get('/Document/BillingFolio/Proposal/Additional/prewive/{id}', 'PaidDataprewive')->name('BillingFolioOver.PaidDataprewive');
 
-    Route::post('/Document/BillingFolio/Proposal/Additional/Generate/save', 'savere')->name('BillingFolioOver.savere');
-    Route::get('/Document/BillingFolio/Proposal/Additional/receipt/Edit/{id}', 'EditPaid')->name('BillingFolioOver.EditPaid');
-    Route::get('/Document/BillingFolioOverbill/Proposal/invoice/export/{id}', 'export')->name('BillingFolioOver.export');
+    // Route::post('/Document/BillingFolio/Proposal/Additional/Generate/save', 'savere')->name('BillingFolioOver.savere');
+    // Route::get('/Document/BillingFolio/Proposal/Additional/receipt/Edit/{id}', 'EditPaid')->name('BillingFolioOver.EditPaid');
+    // Route::get('/Document/BillingFolioOverbill/Proposal/invoice/export/{id}', 'export')->name('BillingFolioOver.export');
 
-    Route::get('/Document/BillingFolio/Over/log/re/{id}', 'logre')->name('BillingFolioOver.logre');
-    Route::post('/Document/BillingFolio/Over/Generate/update/{id}', 'update_re')->name('BillingFolioOver.update_re');
+    // Route::get('/Document/BillingFolio/Over/log/re/{id}', 'logre')->name('BillingFolioOver.logre');
+    // Route::post('/Document/BillingFolio/Over/Generate/update/{id}', 'update_re')->name('BillingFolioOver.update_re');
 
-
-    Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
-    Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
 });
 
 Route::controller(Banquet_Event_OrderController::class)->middleware(['role:document', 'together:1'])->group(function () {

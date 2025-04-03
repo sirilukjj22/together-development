@@ -191,7 +191,7 @@
 
                 <div  style="text-align: center">
 
-                    <b style="font-size:18px;color:#ffffff;font-weight: bold;">INVOICE / DEPOSIT</b>
+                    <b style="font-size:18px;color:#ffffff;font-weight: bold;">DEPOSIT INVOICE</b>
 
                 </div>
 

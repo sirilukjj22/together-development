@@ -7,7 +7,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Deposit Revenue</div>
+                    <div class="span3">Deposit Invoice</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Deposit.create_new') }}'">
@@ -75,7 +75,7 @@
         <div class="row clearfix mb-3">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Receipt / Deposit Revenue</a></li>
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-all" onclick="nav($id='nav2')" role="tab"><i class="fa fa-circle fa-xs"style="color: green;" ></i> Receipt / Deposit Invoice</a></li>
                     <li class="nav-item" id="nav3"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending"  onclick="nav($id='nav3')"role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;"></i> Pending</a></li>
                     <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #0ea5e9;"></i> Await Deduct</a></li>
                     <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-com" onclick="nav($id='nav6')" role="tab"><i class="fa fa-circle fa-xs"style="color: #2C7F7A;"></i> Deducted</a></li>
@@ -89,7 +89,7 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
-                                            <th data-priority="1">Deposit Revenue ID</th>
+                                            <th data-priority="1">Deposit Invoice ID</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Amount</th>
@@ -203,7 +203,7 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
-                                            <th data-priority="1">Deposit Revenue ID</th>
+                                            <th data-priority="1">Deposit Invoice ID</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Amount</th>
@@ -303,7 +303,7 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
-                                            <th data-priority="1">Deposit Revenue ID</th>
+                                            <th data-priority="1">Deposit Invoice ID</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Amount</th>
@@ -404,7 +404,7 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
-                                            <th data-priority="1">Deposit Revenue ID</th>
+                                            <th data-priority="1">Deposit Invoice ID</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Amount</th>
@@ -505,7 +505,7 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
-                                            <th data-priority="1">Deposit Revenue ID</th>
+                                            <th data-priority="1">Deposit Invoice ID</th>
                                             <th data-priority="1">Proposal ID</th>
                                             <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Amount</th>

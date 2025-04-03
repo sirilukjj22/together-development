@@ -44,11 +44,11 @@
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
                                         @if ($document_status == 1)
-                                            <input type="text" class="form-control" value="Invoice / Deposit เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
-                                            <input type="hidden" name="tital" value="Invoice / Deposit เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
+                                            <input type="text" class="form-control" value="Deposit Invoice เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
+                                            <input type="hidden" name="tital" value="Deposit Invoice เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
                                         @else
-                                            <input type="text" class="form-control" value="Deposit Revenue เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
-                                            <input type="hidden" name="tital" value="Deposit Revenue เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
+                                            <input type="text" class="form-control" value="Deposit Invoice เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})" disabled>
+                                            <input type="hidden" name="tital" value="Deposit Invoice เลขที่: {{$Deposit_ID}} -(คุณ{{$name}})">
                                         @endif
                                     </div>
                                 </div>
@@ -102,9 +102,9 @@
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
                                         @if ($document_status == 1)
-                                            Invoice / Deposit เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
+                                            Deposit Invoice เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
                                         @else
-                                            Deposit Revenue เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
+                                            Deposit Invoice เลขที่ {{$Deposit_ID}} <a href="{{ url('/Document/deposit/cover/document/PDF/'.$deposit->id) }}" target="_blank" ><span style="color: black">[เอกสาร]</span></a>
                                         @endif
                                         <input type="file" name="files[]" class="form-control" multiple>
                                     </div>

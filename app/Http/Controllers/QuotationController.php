@@ -88,6 +88,13 @@ class QuotationController extends Controller
         'Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear','Completecount','Complete'
         ,'Approved','Approvedcount','noshow','noshowcount','Generate','Generatecount'));
     }
+
+    public function check_invoice($id){
+        $Quotation = Quotation::where('id', $id)->first();
+        $Proposal_ID = $Quotation->Quotation_ID;
+        $invoice = document_invoices::where('Quotation_ID',$Proposal_ID)->count();
+        return response()->json([ 'data' => $invoice]);
+    }
     public function SearchAll(Request $request){
 
         $checkinDate  = $request->checkin;

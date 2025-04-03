@@ -418,6 +418,18 @@ class Document_invoice extends Controller
                 $save->Category = 'Generate :: Proforma Invoice';
                 $save->content =$datacompany;
                 $save->save();
+                if (!empty($deposit)) {
+                    foreach ($deposit as $item) {
+                        $userids = Auth::user()->id;
+                        $savedi = new log_company();
+                        $savedi->Created_by = $userids;
+                        $savedi->Company_ID = $item['Deposit_ID'];
+                        $savedi->type = 'Deducted';
+                        $savedi->Category = 'Deducted :: Deposit Invoice';
+                        $savedi->content =$datacompany;
+                        $savedi->save();
+                    }
+                }
             }
             {
                 //pdf

@@ -205,7 +205,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($item->type == 'Link' )
                                                                 <li><a href="{{ asset($item->name) }}" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top">View</a></li>

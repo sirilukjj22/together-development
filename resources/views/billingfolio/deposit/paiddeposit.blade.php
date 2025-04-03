@@ -392,7 +392,7 @@
                                 <div class="modal-body mt-3 " style="display: grid;gap:0.5em;background-color: #d0f7ec;">
                                     <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
                                         <b >Receipt ID : {{$REID}}</b>
-                                        <b >Deposit Revenue ID : {{$DepositID}}</b>
+                                        <b >Deposit Invoice ID : {{$DepositID}}</b>
                                     </div>
                                     <div class="box-form-issueBill">
                                         <h4 >

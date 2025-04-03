@@ -343,7 +343,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row my-3">
-                                    <label for=""><b>Deposit Revenue</b></label>
+                                    <label for=""><b>Deposit Invoice</b></label>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
                                         <select id="deposit" name="deposit[]" multiple class="select2" >
                                             @foreach ($Deposit_ID as $key => $item)
@@ -710,47 +710,7 @@
             $('.select2Com').select2({
                 placeholder: "Please select an option"
             });
-            // $('#deposit').on('change', function() {
-            //     $('#display-deposit').empty();
-            //     let id = $(this).val();
-            //     jQuery.ajax({
-            //         type: "GET",
-            //         url: "{!! url('/Document/invoice/data/" + id + "') !!}",
-            //         datatype: "JSON",
-            //         async: false,
-            //         success: function(response) {
-            //             var depost = response.deposit;
-            //             var totalAmount = depost.reduce((sum, item) => sum + parseFloat(item.Amount), 0);
-            //             $('#Deposit_all').val(totalAmount);
-            //             $('#display-deposit tbody').html('');
-            //             depost.forEach((depost, index) => {
-            //                 let newRow = `
-            //                     <tr>
-            //                         <td style="text-align: center;">${index + 2}</td> <!-- ลำดับแถว -->
-            //                         <td>
-            //                             Deposit Revenue ID : ${depost.Deposit_ID}
-            //                         </td>
-            //                         <td style="text-align: right;">
-            //                             - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
-            //                         </td>
-            //                     </tr>
-            //                 `;
-            //                 $('#display-deposit').append(newRow);  // เพิ่มแถวใน tbody
-            //                 let newListItem = `
-            //                     <li class="pr-3">
-            //                         <span>Deposit Revenue ID (${depost.Deposit_ID})</span>
-            //                         <span class="text-danger f-w-bold"> - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })}</span>
-            //                     </li>
-            //                 `;
-            //                 $('#detail_deposit').append(newListItem);
-            //             });
-            //             total();
-            //         },
-            //         error: function(xhr, status, error) {
-            //             console.error("AJAX request failed: ", status, error);
-            //         }
-            //     });
-            // });
+
             $('#deposit').on('change', function() {
     $('#display-deposit').empty();  // ล้างค่าเก่า
     $('#detail_deposit').empty();
@@ -784,7 +744,7 @@
                     let newRow = `
                         <tr data-id="${depositID}">
                             <td style="text-align: center;">${index + 1}</td>
-                            <td>Deposit Revenue ID : ${depositID}</td>
+                            <td>Deposit Invoice ID : ${depositID}</td>
                             <td style="text-align: right;">
                                 - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
                             </td>
@@ -798,7 +758,7 @@
 
                 let newListItem = `
                     <li class="pr-3" data-id="${depositID}">
-                        <span>Deposit Revenue ID (${depositID})</span>
+                        <span>Deposit Invoice ID (${depositID})</span>
                         <span class="text-danger f-w-bold"> - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })}</span>
                     </li>
                 `;

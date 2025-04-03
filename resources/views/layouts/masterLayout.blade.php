@@ -194,7 +194,7 @@
                                             <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->deposit_revenue == 1)
-                                        <li><a class="ms-link" href="{{ route('Deposit.index') }}">Deposit Revenue</a></li>
+                                        <li><a class="ms-link" href="{{ route('Deposit.index') }}">Deposit Invoice</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->additional == 1)
                                             <li><a class="ms-link" href="{{ route('Additional.index') }}">Additional Charge</a></li>

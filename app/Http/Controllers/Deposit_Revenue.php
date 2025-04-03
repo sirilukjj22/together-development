@@ -2364,11 +2364,87 @@ class Deposit_Revenue extends Controller
         $data = $request->all();
 
         if (isset($data['value']) && $data['value'] == 'all') {
-            $Quotation = Quotation::with('guest','company')->where('status_document',6)->get();
+            $Quotation = Quotation::with('guest', 'company')
+            ->leftJoinSub(
+                DB::table('document_invoice')
+                    ->select(
+                        'Quotation_ID',
+                        DB::raw('COUNT(CASE WHEN document_status = 1 THEN 1 END) as invoice_count')
+                    )
+                    ->groupBy('Quotation_ID'),
+                'document_invoice',
+                'quotation.Quotation_ID',
+                '=',
+                'document_invoice.Quotation_ID'
+            )
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('document_invoice')
+                    ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID'); // ✅ ปิดบรรทัดถูกต้อง
+            }) // ✅ ปิด `whereNotExists` ถูกต้อง
+            ->where('quotation.status_document', 6)
+            ->select(
+                'quotation.*',
+                'document_invoice.invoice_count'
+            )
+            ->groupBy('quotation.Quotation_ID', 'document_invoice.invoice_count')
+            ->get();
+
+
         } elseif (isset($data['value']) && $data['value'] == 'company') {
-            $Quotation = Quotation::with('company')->where('status_document',6)->where('type_Proposal','Company')->get();
+            $Quotation = Quotation::with('company')
+            ->leftJoinSub(
+                DB::table('document_invoice')
+                    ->select(
+                        'Quotation_ID',
+                        DB::raw('COUNT(CASE WHEN document_status = 1 THEN 1 END) as invoice_count')
+                    )
+                    ->groupBy('Quotation_ID'),
+                'document_invoice',
+                'quotation.Quotation_ID',
+                '=',
+                'document_invoice.Quotation_ID'
+            )
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('document_invoice')
+                    ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID'); // ✅ ปิดบรรทัดถูกต้อง
+            }) // ✅ ปิด `whereNotExists` ถูกต้อง
+            ->where('quotation.status_document', 6)
+            ->where('type_Proposal','Company')
+            ->select(
+                'quotation.*',
+                'document_invoice.invoice_count'
+            )
+            ->groupBy('quotation.Quotation_ID', 'document_invoice.invoice_count')
+            ->get();
         } elseif (isset($data['value']) && $data['value'] == 'guest') {
-            $Quotation = Quotation::with('guest')->where('status_document', 6)->where('type_Proposal', 'Guest')->get();
+            $Quotation = Quotation::with('guest')
+            ->leftJoinSub(
+                DB::table('document_invoice')
+                    ->select(
+                        'Quotation_ID',
+                        DB::raw('COUNT(CASE WHEN document_status = 1 THEN 1 END) as invoice_count')
+                    )
+                    ->groupBy('Quotation_ID'),
+                'document_invoice',
+                'quotation.Quotation_ID',
+                '=',
+                'document_invoice.Quotation_ID'
+            )
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('document_invoice')
+                    ->whereColumn('document_invoice.Quotation_ID', 'quotation.Quotation_ID'); // ✅ ปิดบรรทัดถูกต้อง
+            }) // ✅ ปิด `whereNotExists` ถูกต้อง
+            ->where('quotation.status_document', 6)
+            ->where('type_Proposal','Guest')
+            ->select(
+                'quotation.*',
+                'document_invoice.invoice_count'
+            )
+            ->groupBy('quotation.Quotation_ID', 'document_invoice.invoice_count')
+            ->get();
         }
         return response()->json([
             'products' => $Quotation,

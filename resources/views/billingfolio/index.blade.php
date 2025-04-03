@@ -186,7 +186,7 @@
                                                         @endphp
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/export/'.$item->id) }}">Export</a></li>

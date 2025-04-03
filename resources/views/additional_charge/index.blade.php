@@ -76,7 +76,7 @@
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-sm-12 col-12">
-                    <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
+                    <ul class="nav nav-tabs px-3 border-bottom-0" role="tabSelect">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><i class="fa fa-circle fa-xs"style="color: #64748b;"></i> Proposal</a></li>{{--ประวัติการแก้ไข--}}
                         <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><i class="fa fa-circle fa-xs" style="color: yellow" ></i>  Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
                         <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;"></i> Pending</a></li>{{--Doc. number--}}
@@ -199,7 +199,7 @@
                                                         @endphp
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item->id) }}">View</a></li>
@@ -263,7 +263,7 @@
                                                         @endphp
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item->id) }}">View</a></li>
@@ -352,7 +352,7 @@
                                                         @endphp
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item->id) }}">View</a></li>
@@ -440,7 +440,7 @@
                                                             @endphp
                                                             <td style="text-align: center;">
                                                                 <div class="btn-group">
-                                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item->id) }}">View</a></li>
@@ -531,7 +531,7 @@
                                                         @endphp
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item->id) }}">View</a></li>

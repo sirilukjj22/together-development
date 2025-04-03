@@ -324,7 +324,7 @@
                                             @if ($DepositID)
                                                 @foreach ($DepositID as $key => $item)
                                                 <li class="pr-3">
-                                                    <span >Deposit Revenue ID ({{$item->Deposit_ID}})</span>
+                                                    <span >Deposit Invoice ID ({{$item->Deposit_ID}})</span>
                                                     <span class=" text-danger i f-w-bold"> - {{ number_format($item->amount, 2, '.', ',') }}</span>
                                                 </li>
                                                 @endforeach

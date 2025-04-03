@@ -139,7 +139,7 @@
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
@@ -238,7 +238,7 @@
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($canViewProposal == 1)
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
@@ -369,7 +369,7 @@
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($canViewProposal == 1)
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
@@ -473,7 +473,7 @@
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
@@ -542,7 +542,7 @@
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)

@@ -136,8 +136,11 @@
 
                                         <li class="pr-3">
                                             <span >Additional</span>
-                                            <span class=" hover-effect i  f-w-bold " style="color: #438985;" > {{ number_format($Additionaltotal, 2, '.', ',') }}</span>
+                                            <span class=" hover-effect i  f-w-bold " style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalAdditionalSummary"> {{ number_format($item->Additionaltotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
                                         </li>
+
+
+
                                         <li class="pr-3">
                                             <span >Total</span>
                                             <span class="text-danger f-w-bold">{{ number_format($Nettotal+$Additionaltotal, 2, '.', ',') }}</span>
@@ -243,7 +246,7 @@
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 @if ($item->document_status == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/deposit/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/generate/Revenue/'.$item->id) }}">Create Receive</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Deposit/edit/'.$item->id) }}">Edit</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                 @endif
@@ -286,14 +289,10 @@
                                                     <span class="badge rounded-pill bg-success">Successful</span>
                                                 </td>
                                                 <td style="text-align:center;">{{ number_format($item4->document_amount , 2, '.', ',') }}</td>
-                                                <td style="text-align:center;">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
-                                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                                            <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item4->id) }}">View</a></li>
-                                                            <li><a class="dropdown-item " target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/export/'.$item4->id) }}">Export</a></li>
-                                                        </ul>
-                                                    </div>
+                                                <td style="text-align:left;">
+                                                    <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item4->id) }}">
+                                                        View
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -334,13 +333,13 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/'.$invoices->id) }}">Create</a></li>
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/No/AD/'.$invoices->id) }}">Create Receive</a></li>
                                                                 @if (!empty($Additional))
                                                                     @if ($Additional->status_guest == 0)
                                                                         <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$invoices->id) }}">Create Combined Receipt</a></li>
                                                                     @endif
                                                                 @endif
-                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/multi/'.$invoices->id) }}">Split Folio</a></li>
+                                                                <li><a class="dropdown-item" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/multi/'.$invoices->id) }}">Bill Splitting</a></li>
                                                             </ul>
                                                         </div>
                                                     </td>

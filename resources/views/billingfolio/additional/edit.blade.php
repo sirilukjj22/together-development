@@ -1932,7 +1932,7 @@
                 if (result.isConfirmed) {
                     console.log(1);
                     // If user confirms, submit the form
-                    window.location.href = "{{ route('Additional.index') }}";
+                    window.location.href = "{!! route('BillingFolio.CheckPI', $Proposal->id) !!}";
                 }
             });
         }

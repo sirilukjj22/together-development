@@ -69,6 +69,7 @@ class proposal_request extends Controller
         confirmation_request::where('expiration_time', '<', $currentDateTime)->delete();
         $request =confirmation_request::query()->where('status',1)->get();
         $Additional =proposal_overbill::query()->where('status_document',2)->get();
+
         $Additionalcount =proposal_overbill::query()->where('status_document',2)->count();
         return view('proposal_req.index',compact('proposal','proposalcount','requestcount','request','Additional','Additionalcount'));
     }
@@ -765,6 +766,7 @@ class proposal_request extends Controller
 
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $Quotation = proposal_overbill::where('id', $id)->first();
+
         $Additional_ID = $Quotation->Additional_ID;
         $Quotation_ID = $Quotation->Quotation_ID;
         $Quotation_IDoverbill = $Quotation->Additional_ID;
@@ -936,7 +938,7 @@ class proposal_request extends Controller
         $Additional_ID = null;
         if ($Additional) {
             $AdditionaltotalReceipt =  $Additional->Nettotal;
-            $Additional_ID = $Additional->Additional_ID;
+            $Additional_ID = $Quotation->Additional_ID;
             $document = document_proposal_overbill::where('Additional_ID',$Additional_ID)->get();
 
             $master = Master_additional::query()->get();
@@ -997,10 +999,12 @@ class proposal_request extends Controller
     }
     public function Additional_Approve(Request $request){
         try {
+
             $Additional = proposal_overbill::where('Additional_ID', $request->approved_id)->first();
-            $id = $Additional->id;
+            $ids = $Additional->id;
+
             $Additional_ID = $Additional->Additional_ID;
-            $save = proposal_overbill::find($id);
+            $save = proposal_overbill::find($ids);
             $save->status_document = 3;
             $save->save();
             $userid = Auth::user()->id;

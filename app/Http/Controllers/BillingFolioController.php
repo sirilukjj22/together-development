@@ -96,6 +96,7 @@ class BillingFolioController extends Controller
             DB::table('proposal_overbill')
                 ->select('Quotation_ID', 'Nettotal')
                 ->where('status_document', 3)
+                ->where('status_guest', 0)
                 ->groupBy('Quotation_ID', 'Nettotal'),
             'proposal_overbill',
             'quotation.Quotation_ID',
@@ -110,7 +111,12 @@ class BillingFolioController extends Controller
                 ->orWhereNotNull('deposit_revenue.receiveinvoice_count')
                 ->orWhereNotNull('proposal_overbill.Quotation_ID');
         })
-
+        ->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('proposal_overbill')
+                ->whereColumn('proposal_overbill.Quotation_ID', 'quotation.Quotation_ID')
+                ->where('proposal_overbill.status_document', 2); // ไม่แสดง status_document = 2
+        })
         ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
@@ -2085,7 +2091,7 @@ class BillingFolioController extends Controller
         $Receiptover = null;
         $Receiptover = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
         foreach ($Receiptover as $item) {
-            $AdditionaltotalReceipt +=  $item->Amount;
+            $AdditionaltotalReceipt +=  $item->document_amount;
         }
 
         //-----------------------------------------------
@@ -2111,6 +2117,9 @@ class BillingFolioController extends Controller
         foreach ($entertainment as $item) {
             $totalentertainment +=  $item->netpriceproduct;
         }
+
+
+
         $Rm = []; // กำหนดตัวแปร $Rm เป็น array ว่าง
         $FB = [];
         $BQ = [];
@@ -2121,9 +2130,16 @@ class BillingFolioController extends Controller
         $BQCount = 0;
         $EMCount = 0;
         $ATCount = 0;
-        $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->where('status_document',3)->first();
-        $additional_type= "";
         $Additionaltotal= 0;
+        $AdditionalHead = proposal_overbill::where('Quotation_ID',$Proposal_ID)->where('status_document',3)->get();
+        if ($AdditionalHead) {
+            foreach ($AdditionalHead as $item) {
+                $Additionaltotal += $item->Nettotal;
+            }
+        }
+        $Additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->where('status_document',3)->where('status_guest',0)->first();
+        $additional_type= "";
+
         $Cash= 0;
         $Com= 0;
 
@@ -2132,7 +2148,7 @@ class BillingFolioController extends Controller
         $Additional_ID = null;
         if ($Additional) {
             $additional_type = $Additional->additional_type;
-            $Additionaltotal = $Additional->Nettotal;
+
             $Cash = $Additional->Cash;
             $Com = $Additional->Complimentary;
 
@@ -2194,7 +2210,7 @@ class BillingFolioController extends Controller
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','Proposal','ProposalID',
                     'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
                     ,'firstPart','Identification','address','totalReceipt','vat','Additional','AdditionaltotalReceipt','Additionaltotal','Receiptover','statusover','Additional_ID',
-                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','additional_type','totalinvoices','Cash','Com','deposit_revenue_amount','deposit_revenue'));
+                    'Rm','FB','BQ','AT','EM','RmCount','FBCount','BQCount','EMCount','ATCount','additional_type','totalinvoices','Cash','Com','deposit_revenue_amount','deposit_revenue','AdditionalHead'));
     }
 
     public function create_one($id){
@@ -6053,6 +6069,43 @@ class BillingFolioController extends Controller
         ,'Email','address','Identification','phone','Quotation','QuotationID','Deposit','Payment','Subtotal','total','addtax','before','balance','user','vat_type','deposit','Mvat','vat_type_num',
         'Nettotal','amdeposit','Company_ID','ids'));
     }
+    public function depositcancel(Request $request ,$id){
+        $data = depositrevenue::where('id',$id)->first();
+        $Quotation_ID = $data->Deposit_ID;
+        $userid = Auth::user()->id;
+        $Proposal_ID = $data->Quotation_ID;
+        $Proposal = Quotation::where('Quotation_ID',$Proposal_ID)->first();
+        try {
+
+            if ($data->document_status == 1) {
+
+                $Quotation = depositrevenue::find($id);
+                $Quotation->document_status = 0;
+                $Quotation->remark = $request->note;
+                $Quotation->save();
+            }elseif ($data->document_status == 2) {
+                $Quotation = depositrevenue::find($id);
+                $Quotation->document_status = 1;
+                $Quotation->remark = $request->note;
+                $Quotation->save();
+            }
+
+        } catch (\Throwable $e) {
+            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
+        }
+        try {
+            $savelog = new log_company();
+            $savelog->Created_by = $userid;
+            $savelog->Company_ID = $Quotation_ID;
+            $savelog->type = 'Cancel';
+            $savelog->Category = 'Cancel :: Deposit Invoice';
+            $savelog->content = 'Cancel Document Deposit Invoice ID : '.$Quotation_ID.'+'.$request->note;
+            $savelog->save();
+            return redirect()->route('BillingFolio.CheckPI', ['id' => $Proposal->id])->with('success', 'Data has been successfully saved.');
+        } catch (\Throwable $e) {
+            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
+        }
+    }
     //Additional
 
     public function additional_re($id){
@@ -6922,14 +6975,22 @@ class BillingFolioController extends Controller
             }
 
             $Quotationid = $Quotation->id;
-            $savequ = Quotation::find($Quotationid);
-            $savequ->status_receive = 1;
-            $savequ->save();
+            if ($Quotation->status_guest == 1) {
+                $savequ = Quotation::find($Quotationid);
+                $savequ->status_document = 9;
+                $savequ->status_receive = 1;
+                $savequ->status_guest = 0;
+                $savequ->save();
+            }else{
+                $savequ = Quotation::find($Quotationid);
+                $savequ->status_receive = 1;
+                $savequ->save();
+            }
             return redirect()->route('BillingFolio.index')->with('success', 'Data has been successfully saved.');
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
-        dd($data,$groupedData,$additional,$Amount,$complimentary);
+
     }
 
     //check
@@ -7468,6 +7529,7 @@ class BillingFolioController extends Controller
     public function additional_edit($id){
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $Quotation = proposal_overbill::where('id', $id)->first();
+        $Proposal = Quotation::where('Quotation_ID',$Quotation->Quotation_ID)->first();
         $Additional_ID = $Quotation->Additional_ID;
         $Quotation_ID = $Quotation->Quotation_ID;
         $Quotation_IDoverbill = $Quotation->Additional_ID;
@@ -7543,7 +7605,7 @@ class BillingFolioController extends Controller
             $Contact_phone = representative_phone::where('Company_ID',$Quotation->Company_ID)->where('Sequence','main')->first();
         }
         return view('billingfolio.additional.edit',compact('Address','fullName','settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill',
-                    'provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone','Selectdata' ));
+                    'provinceNames','amphuresID','TambonID','Fax_number','phone','Email','Taxpayer_Identification','Contact_Name','Contact_phone','Selectdata','Proposal' ));
     }
     public function additional_update(Request $request ,$id){
         $data = $request->all();

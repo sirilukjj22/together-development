@@ -334,7 +334,7 @@
                             <tr>
                                 <td style="text-align:center"></td>
                                 <td style="text-align:center">{{$key + 2}}</td>
-                                <td style="text-align:left">Deposit Revenue ID : {{$item['Deposit_ID']}}</td>
+                                <td style="text-align:left">Deposit Invoice ID : {{$item['Deposit_ID']}}</td>
                                 <td style="text-align:right"><span id="Subtotal"> - {{ number_format($item['Amount'], 2) }}</span> THB</td>
                             </tr>
                             @endforeach
@@ -555,7 +555,7 @@
                             <tr>
                                 <td style="text-align:center"></td>
                                 <td style="text-align:center">{{$key + 2}}</td>
-                                <td style="text-align:left">Deposit Revenue ID : {{$item['Deposit_ID']}}</td>
+                                <td style="text-align:left">Deposit Invoice ID : {{$item['Deposit_ID']}}</td>
                                 <td style="text-align:right"><span id="Subtotal"> - {{ number_format($item['Amount'], 2) }}</span> THB</td>
                             </tr>
                             @endforeach

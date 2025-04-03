@@ -426,7 +426,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">View Invoice / Deposit</div>
+                    <div class="span3">View Deposit Invoice</div>
                 </div>
                 <div class="col-auto">
                 </div>
@@ -529,7 +529,7 @@
                             <li>
                                 <label for="customerName" class="form-label text-nowrap m-0">Description</label>
                                 <select class="form-select bg-disable-grey" id="customerName" disabled>
-                                <option value="y" style="font-size: 0.9em">Deposit Revenue</option>
+                                <option value="y" style="font-size: 0.9em">Deposit Invoice</option>
                                 </select>
                             </li>
                             <li>
@@ -641,7 +641,7 @@
                                     <div class="col-lg-4"></div>
                                     <div class="PROPOSAL col-lg-7" style="transform: translateX(6px)" >
                                         <div class="row">
-                                            <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Invoice / Deposit</b>
+                                            <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">Deposit Invoice</b>
                                             <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$DepositID}}</b>
                                         </div>
                                     </div>
