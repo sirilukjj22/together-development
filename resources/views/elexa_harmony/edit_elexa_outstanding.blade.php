@@ -1236,6 +1236,14 @@
                             total_debit += item.ev_revenue;
                         });
 
+                        if (debit_status == 0) {
+                            var detail_name = "Credit Revenue";
+                            var symbol = "";
+                        } else {
+                            var detail_name = "Debit Revenue";
+                            var symbol = "-";
+                        }
+
                         debit_revenue.forEach(element => {
                             $('#form-elexa').append('<input type="hidden" name="debit_revenue_amount[]" value="' + element + '">'); // เพิ่มค่าใน form-elexa รายการที่ยืนยันแล้ว
 
@@ -1244,7 +1252,7 @@
                                     [
                                         moment().format('DD/MM/YYYY'),
                                         'Debit Revenue',
-                                        '-' + element,
+                                        symbol + element,
                                         '<button type="button" class="btn" value="1"' +
                                         'onclick="select_delete_debit(this, ' + (element) + ')"><i class="fa fa-trash-o"></i></button>'
                                     ]
