@@ -794,6 +794,7 @@
     <input type="hidden" id="invoiceamount" value="{{$Nettotal}}">
     <input type="hidden" id="totalamount" name="totalamount">
     <input type="hidden" id="totalpayment" name="totalpayment">
+    <input type="hidden" id="checkpayment" name="checkpayment">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
@@ -803,11 +804,7 @@
     <script>
         $(document).ready(function() {
             var typeadditional = $('#additional_type').val();
-            if (typeadditional == 'H/G') {
-                document.querySelector('#nextSteptoSave').disabled = true;
-            } else {
-                document.querySelector('#nextSteptoSave').disabled = false;
-            }
+
 
             const checkbox = document.getElementById('flexSwitchCheckChecked');
             var previewdetail = document.querySelector("#previewdetail");
@@ -2651,8 +2648,6 @@
             var cash = cashArray.reduce((sum, current) => sum + current, 0);
             var credit = creditCardArray.reduce((sum, current) => sum + current, 0);
             var bank = bankTransferArray.reduce((sum, current) => sum + current, 0);
-            console.log(typeadditional);
-
             if (typeadditional =='H/G') {
                 var sum = cash+amounts+bank+credit+cashamount;
                 console.log(sum);
@@ -2665,6 +2660,7 @@
             let formattedOutstanding = Outstanding.toLocaleString('th-TH', { minimumFractionDigits: 2 });
             // console.log(Outstanding);
 
+            $('#checkpayment').val(Outstanding);
             $('#total').text(formattedOutstanding);
             $('#totalcomp').text(formattedOutstanding);
             $('#Outstanding').text(formattedOutstanding);
@@ -2674,11 +2670,7 @@
             $('#totalamountall').text(all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB');
             $('#totalpayment').val(all);
 
-            if (Outstanding !== 0) {
-                document.querySelector('#nextSteptoSave').disabled = true; // ปิดการใช้งานปุ่ม
-            } else {
-                document.querySelector('#nextSteptoSave').disabled = false; // เปิดการใช้งานปุ่ม
-            }
+
         }
         function data() {
             var idcheck = $('#Guest').val();
@@ -2805,19 +2797,30 @@
         }
 
         function submittoEdit(){
-            Swal.fire({
-                title: "You want to save information, right?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "Cancel",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById("myForm").submit();
-                }
-            });
+
+
+            var checkpayment = $('#checkpayment').val() || 1;
+            if (checkpayment != 0) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Please pay the amount correctly.",
+                });
+            }else{
+                Swal.fire({
+                    title: "You want to save information, right?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "Cancel",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
+
         }
 
     </script>

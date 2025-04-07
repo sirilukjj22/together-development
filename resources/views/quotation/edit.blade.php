@@ -1016,28 +1016,87 @@
             var flexCheckChecked = document.getElementById('flexCheckChecked');
             var dayName = checkinDate.format('dddd'); // Format to get the day name
             var enddayName = checkoutDate.format('dddd'); // Format to get the day name
+            var momentCheckinNew = checkinDate;
+            var momentCheckoutNew = checkoutDate;
+            const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const weekendList = ['Thursday', 'Friday', 'Saturday'];
+            const startWeek = getWeekNumber(momentCheckinNew.toDate());
+            const endWeek = getWeekNumber(momentCheckoutNew.toDate());
+            const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
+            const weekDifference = Math.abs(startWeek - endWeek);
+            if (['Thursday'].includes(dayName)) {
 
 
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#inputcalendartext').val("Weekday-Weekend");
-                    flexCheckChecked.disabled = true;
-                }else{
+                // ถ้าต่างกัน 2 สัปดาห์ขึ้นไปให้เป็น Weekday-Weekend
+
+                if (enddayName === 'Friday'&& isSameWeek) {
                     $('#calendartext').text("Weekday");
                     $('#inputcalendartext').val("Weekday");
-                    flexCheckChecked.disabled = true;
-                }
-            } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                }else if (enddayName === 'Saturday'||enddayName === 'Sunday' && isSameWeek) {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#inputcalendartext').val("Weekday-Weekend");
                     flexCheckChecked.disabled = true;
+                }else if (weekdayList.includes(enddayName) && !isSameWeek) {
+                    if (weekDifference == 1 && enddayName === 'Sunday') {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }else if (weekDifference > 1) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }else{
+                        $('#calendartext').text("Weekend");
+                        $('#inputcalendartext').val("Weekend");
+                        flexCheckChecked.disabled = true;
+                    }
                 }else{
-                    $('#calendartext').text("Weekend");
-                    $('#inputcalendartext').val("Weekend");
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#inputcalendartext').val("Weekday-Weekend");
                     flexCheckChecked.disabled = true;
                 }
+            }
+            else if (weekdayList.includes(dayName)) {
+                if (dayName == 'Sunday') {
+                    if (enddayName === 'Saturday'&& isSameWeek) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }else if(weekdayList.includes(dayName)&& !isSameWeek){
+                        if (weekDifference == 1 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#inputcalendartext').val("Weekday-Weekend");
+                            flexCheckChecked.disabled = true;
+                        }else if (weekDifference > 1) {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#inputcalendartext').val("Weekday-Weekend");
+                            flexCheckChecked.disabled = true;
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#inputcalendartext').val("Weekday");
+                            flexCheckChecked.disabled = true;
+                        }
+                    }
+                }else{
+                    if (weekdayList.includes(dayName)&& isSameWeek) {
+                        if (weekDifference == 0 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#inputcalendartext').val("Weekday-Weekend");
+                            flexCheckChecked.disabled = true;
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#inputcalendartext').val("Weekday");
+                            flexCheckChecked.disabled = true;
+                        }
+                    }else{
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }
+                }
+            }else if (weekendList.includes(dayName)) {
+                console.log('Weekend');
+                flexCheckChecked.disabled = true;
             }
         });
 
@@ -1482,25 +1541,73 @@
             // Calculate the difference in months
             var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
             $('#checkmonth').val(monthDiff);
+            const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const weekendList = ['Thursday', 'Friday', 'Saturday'];
+            const startWeek = getWeekNumber(momentCheckinNew.toDate());
+            const endWeek = getWeekNumber(momentCheckoutNew.toDate());
+            const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
+            const weekDifference = Math.abs(startWeek - endWeek);
+            console.log(weekDifference);
+            if (['Thursday'].includes(dayName)) {
 
-            // Weekday or weekend logic
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else {
+
+                // ถ้าต่างกัน 2 สัปดาห์ขึ้นไปให้เป็น Weekday-Weekend
+
+                if (enddayName === 'Friday'&& isSameWeek) {
                     $('#calendartext').text("Weekday");
                     $('#Date_type').val("Weekday");
-                }
-            } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                }else if (enddayName === 'Saturday'||enddayName === 'Sunday' && isSameWeek) {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#Date_type').val("Weekday-Weekend");
-                } else {
-                    $('#calendartext').text("Weekend");
-                    $('#Date_type').val("Weekend");
-
+                }else if (weekdayList.includes(enddayName) && !isSameWeek) {
+                    if (weekDifference == 1 && enddayName === 'Sunday') {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else if (weekDifference > 1) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else{
+                        $('#calendartext').text("Weekend");
+                        $('#Date_type').val("Weekend");
+                    }
+                }else{
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
                 }
+            }
+            else if (weekdayList.includes(dayName)) {
+                if (dayName == 'Sunday') {
+                    if (enddayName === 'Saturday'&& isSameWeek) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else if(weekdayList.includes(dayName)&& !isSameWeek){
+                        if (weekDifference == 1 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else if (weekDifference > 1) {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#Date_type').val("Weekday");
+                        }
+                    }
+                }else{
+                    if (weekdayList.includes(dayName)&& isSameWeek) {
+                        if (weekDifference == 0 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#Date_type').val("Weekday");
+                        }
+                    }else{
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }
+                }
+            }else if (weekendList.includes(dayName)) {
+                console.log('Weekend');
             }
 
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');

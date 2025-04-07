@@ -753,6 +753,7 @@
     <input type="hidden" id="invoiceamount" value="{{$Nettotal}}">
     <input type="hidden" id="totalamount" name="totalamount">
     <input type="hidden" id="totalpayment" name="totalpayment">
+    <input type="hidden" id="checkpayment" name="checkpayment">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
@@ -761,7 +762,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script>
         $(document).ready(function() {
-            document.querySelector('#nextSteptoSave').disabled = true;
+
             const checkbox = document.getElementById('flexSwitchCheckChecked');
             var previewdetail = document.querySelector("#previewdetail");
 
@@ -2617,12 +2618,7 @@
             $('#Payment').text('-' + all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
             $('#totalamountall').text(all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB');
             $('#totalpayment').val(all);
-
-            if (Outstanding !== 0) {
-                document.querySelector('#nextSteptoSave').disabled = true; // ปิดการใช้งานปุ่ม
-            } else {
-                document.querySelector('#nextSteptoSave').disabled = false; // เปิดการใช้งานปุ่ม
-            }
+            $('#checkpayment').val(Outstanding);
         }
         function data() {
             var idcheck = $('#Guest').val();
@@ -2749,19 +2745,27 @@
         }
 
         function submittoEdit(){
-            Swal.fire({
-                title: "You want to save information, right?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "Cancel",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById("myForm").submit();
-                }
-            });
+            var checkpayment = $('#checkpayment').val() || 1;
+            if (checkpayment != 0) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Please pay the amount correctly.",
+                });
+            }else{
+                Swal.fire({
+                    title: "You want to save information, right?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "Cancel",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
         }
 
     </script>

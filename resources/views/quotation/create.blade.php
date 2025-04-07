@@ -1006,54 +1006,85 @@
             // Calculate the difference in months
             var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
             $('#checkmonth').val(monthDiff);
+            function getWeekNumber(d) {
+                const date = new Date(d.getTime());
+                date.setHours(0, 0, 0, 0);
+                // ย้ายไปวันพฤหัสในสัปดาห์นี้ เพื่อความแม่นยำของ ISO week
+                date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+                const week1 = new Date(date.getFullYear(), 0, 4);
+                return 1 + Math.round(((date - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+            }
+            const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const weekendList = ['Thursday', 'Friday', 'Saturday'];
+            const startWeek = getWeekNumber(momentCheckinNew.toDate());
+            const endWeek = getWeekNumber(momentCheckoutNew.toDate());
+            const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
+            const weekDifference = Math.abs(startWeek - endWeek);
+            if (['Thursday'].includes(dayName)) {
 
-            // Weekday or weekend logic
-            // if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-            //     if (dayName === 'Thursday' && enddayName === 'Saturday') {
-            //         $('#calendartext').text("Weekday-Weekend");
-            //         $('#Date_type').val("Weekday-Weekend");
-            //     } else {
-            //         $('#calendartext').text("Weekday");
-            //         $('#Date_type').val("Weekday");
-            //     }
-            // } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
-            //     if (dayName === 'Saturday' && enddayName === 'Monday') {
-            //         $('#calendartext').text("Weekday-Weekend");
-            //         $('#Date_type').val("Weekday-Weekend");
-            //     } else {
-            //         $('#calendartext').text("Weekend");
-            //         $('#Date_type').val("Weekend");
 
-            //     }
-            // }
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else if (enddayName === 'Monday') {  // ตรวจสอบว่าข้ามสัปดาห์หรือไม่
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#Date_type').val("Weekday-Weekend");
-                } else {
+                // ถ้าต่างกัน 2 สัปดาห์ขึ้นไปให้เป็น Weekday-Weekend
+
+                if (enddayName === 'Friday'&& isSameWeek) {
                     $('#calendartext').text("Weekday");
                     $('#Date_type').val("Weekday");
-                }
-            } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                }else if (enddayName === 'Saturday'||enddayName === 'Sunday' && isSameWeek) {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#Date_type').val("Weekday-Weekend");
-                } else if (enddayName === 'Sunday') {  // ตรวจสอบว่าข้ามสัปดาห์หรือไม่
+                }else if (weekdayList.includes(enddayName) && !isSameWeek) {
+                    if (weekDifference == 1 && enddayName === 'Sunday') {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else if (weekDifference > 1) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else{
+                        $('#calendartext').text("Weekend");
+                        $('#Date_type').val("Weekend");
+                    }
+                }else{
                     $('#calendartext').text("Weekday-Weekend");
                     $('#Date_type').val("Weekday-Weekend");
-                } else {
-                    $('#calendartext').text("Weekend");
-                    $('#Date_type').val("Weekend");
                 }
             }
+            else if (weekdayList.includes(dayName)) {
+                if (dayName == 'Sunday') {
+                    if (enddayName === 'Saturday'&& isSameWeek) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else if(weekdayList.includes(dayName)&& !isSameWeek){
+                        if (weekDifference == 1 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else if (weekDifference > 1) {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#Date_type').val("Weekday");
+                        }
+                    }
+                }else{
+                    if (weekdayList.includes(dayName)&& isSameWeek) {
+                        if (weekDifference == 0 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#Date_type').val("Weekday");
+                        }
+                    }else{
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }
+                }
+            }else if (weekendList.includes(dayName)) {
+                console.log('Weekend');
+            }
+
 
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
             const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
-
-
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
             if (checkoutDate > checkinDate) {
@@ -1097,7 +1128,6 @@
                     $('#Checkout').val('');
                 }
             }
-
             month();
         }
 
@@ -1128,8 +1158,6 @@
                 if (monthDiff < 0) {
                     monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
                 }
-                console.log(monthDiff);
-
                 if (monthDiff <= 1) {
                     start = moment(); // เริ่มที่วันนี้
                     end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน

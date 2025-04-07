@@ -432,7 +432,7 @@
                                         <section class="d-grid-2column p-2" >
                                             <div>
                                                 <label for="" class="star-red">Guest Name</label>
-                                                <select name="Guest" id="Guest" class="select2" onchange="data()" required>
+                                                <select name="Guest" id="Guest" class="select2" onchange="data()" disabled>
                                                     @foreach($data_select as $key => $item)
                                                         <option value="{{$item['id']}}">{{$item['name']}}</option>
                                                     @endforeach
@@ -631,25 +631,28 @@
                                 </div>
                             </section>
                         </div>
-                        <div>
-                            <div class="bottom">
-                                <div class="flex-end pr-3">
-                                    <button type="button" class="bt-tg-secondary  md float-right" onclick="BACKtoEdit()">
-                                        Back
-                                    </button>
-                                    <button id="nextSteptoSave" class="bt-tg-normal md float-right" onclick="submit(event)"> Next </button>
-                                </div>
+                        <input type="hidden" class="form-control" id="additional_type" name="additional_type" value="{{$additional_type}}" />
+                        <input type="hidden" class="form-control" id="InvoiceID" name="invoice" value="{{$Invoice_ID}}" />
+                        <input type="hidden" id="paymentsDataInput" name="paymentsData">
+                        <input type="hidden" id="paymentsDataInputarray" name="paymentsDataArray">
+                    </form>
+                    <div>
+                        <div class="bottom">
+                            <div class="flex-end pr-3">
+                                <button type="button" class="bt-tg-secondary  md float-right" onclick="BACKtoEdit()">
+                                    Back
+                                </button>
+                                <button type="button" id="nextSteptoSave" class="bt-tg-normal md" onclick="submittoEdit()">Next</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <input type="hidden" class="form-control" id="additional_type" name="additional_type" value="{{$additional_type}}" />
-            <input type="hidden" class="form-control" id="InvoiceID" name="invoice" value="{{$Invoice_ID}}" />
-            <input type="hidden" id="paymentsDataInput" name="paymentsData">
-            <input type="hidden" id="paymentsDataInputarray" name="paymentsDataArray">
-        </form>
+        </div>
+
+
     </div>
+    <input type="hidden" id="checkpayment" name="checkpayment">
     <input type="hidden" id="vat_type" name="vat_type" value="{{$vat_type}}">
     <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
     <input type="hidden" id="invoiceamount" value="{{$sumpayment}}">
@@ -2520,11 +2523,8 @@
             $('#Outstandingall').text(formattedOutstanding);
             $('#totalamountall').text(all.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' THB');
             $('#totalpayment').val(all);
-
-            if (Outstanding !== 0) {
-                document.querySelector('#nextSteptoSave').disabled = true; // ปิดการใช้งานปุ่ม
-            } else {
-                document.querySelector('#nextSteptoSave').disabled = false; // เปิดการใช้งานปุ่ม
+            $('#checkpayment').val(Outstanding);
+            if (Outstanding == 0) {
                 getAllPayments();
             }
         }
@@ -2741,21 +2741,32 @@
                 }
             });
         }
-        function submit(event) {
-            event.preventDefault();
-            Swal.fire({
-                title: "You want to save information, right?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "Cancel",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById("myForm").submit();
-                }
-            });
+
+        function submittoEdit() {
+
+            var checkpayment = $('#checkpayment').val() || 1;
+            console.log(checkpayment);
+
+            if (checkpayment != 0) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Please pay the amount correctly.",
+                });
+            }else{
+                Swal.fire({
+                    title: "You want to save information, right?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "Cancel",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
         }
 
     </script>

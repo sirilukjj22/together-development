@@ -480,7 +480,7 @@
                         <button type="button" class="bt-tg-view  md float-right modal_but_view" onclick="submitPreview()">
                             View
                         </button>
-                        <button id="nextSteptoSave" class="bt-tg-normal md float-right modal_but" onclick="submit(event)"> Next </button>
+                        <button id="nextSteptoSave" class="bt-tg-normal md float-right modal_but" onclick="submit()"> Next </button>
                     </div>
                 </div>
             </div>
@@ -488,6 +488,7 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="checkpayment" name="checkpayment">
 <input type="hidden" class="form-control" id="cashcom" value="{{$cashAmount}}" />
 <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
 <input type="hidden" name="preview" value="1" id="preview">
@@ -659,13 +660,14 @@
         let totalReceived = parseFloat($("#totalReceived").text().replace(/[^0-9.]/g, '')) || "0";
         let remaining = total - totalReceived;
         $("#totalRemaining").text(remaining.toFixed(2));
-        if (remaining !== 0) {
-            document.querySelector('.modal_but').disabled = true; // ปิดการใช้งานปุ่ม
-            document.querySelector('.modal_but_view').disabled = true; // ปิดการใช้งานปุ่ม
-        } else {
-            document.querySelector('.modal_but').disabled = false; // เปิดการใช้งานปุ่ม
-            document.querySelector('.modal_but_view').disabled = false; // ปิดการใช้งานปุ่ม
-        }
+        $('#checkpayment').val(remaining);
+        // if (remaining !== 0) {
+        //     document.querySelector('.modal_but').disabled = true; // ปิดการใช้งานปุ่ม
+        //     document.querySelector('.modal_but_view').disabled = true; // ปิดการใช้งานปุ่ม
+        // } else {
+        //     document.querySelector('.modal_but').disabled = false; // เปิดการใช้งานปุ่ม
+        //     document.querySelector('.modal_but_view').disabled = false; // ปิดการใช้งานปุ่ม
+        // }
     });
 }
 
@@ -916,44 +918,59 @@
                 }
             });
         }
-        function submit(event) {
-            event.preventDefault();
-            Swal.fire({
-                title: "You want to save information, right?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "Cancel",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "preview";
-                    input.value = 0;
+        function submit() {
+            var checkpayment = $('#checkpayment').val() || 1;
+            if (checkpayment != 0) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Please pay the amount correctly.",
+                });
+            }else{
+                Swal.fire({
+                    title: "You want to save information, right?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "Cancel",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = "preview";
+                        input.value = 0;
 
-                    // เพิ่ม input ลงในฟอร์ม
-                    document.getElementById("myForm").appendChild(input);
-                    document.getElementById("myForm").removeAttribute('target');
-                    document.getElementById("myForm").submit();
-                }
-            });
+                        // เพิ่ม input ลงในฟอร์ม
+                        document.getElementById("myForm").appendChild(input);
+                        document.getElementById("myForm").removeAttribute('target');
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
         }
         function submitPreview() {
-            var previewValue = document.getElementById("preview").value;
-            console.log(previewValue);
+            var checkpayment = $('#checkpayment').val() || 1;
+            if (checkpayment != 0) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Please pay the amount correctly.",
+                });
+            }else{
+                var previewValue = document.getElementById("preview").value;
+                console.log(previewValue);
 
-            // สร้าง input แบบ hidden ใหม่
-            var input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "preview";
-            input.value = 1;
+                // สร้าง input แบบ hidden ใหม่
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "preview";
+                input.value = 1;
 
-            // เพิ่ม input ลงในฟอร์ม
-            document.getElementById("myForm").appendChild(input);
-            document.getElementById("myForm").setAttribute("target","_blank");
-            document.getElementById("myForm").submit();
+                // เพิ่ม input ลงในฟอร์ม
+                document.getElementById("myForm").appendChild(input);
+                document.getElementById("myForm").setAttribute("target","_blank");
+                document.getElementById("myForm").submit();
+            }
         }
 </script>
 @endsection

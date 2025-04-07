@@ -236,6 +236,51 @@ class BillingFolioController extends Controller
                 $datasub = guest_tax::where('Company_ID',$name_ID)->get();
             }
         }
+        $datamain[0] = [
+            'id' => $name_ID ?? null,
+            'name' => $name ?? null,
+        ];
+
+        $names = []; // สร้าง array เพื่อเก็บค่าชื่อ
+
+        if ($datasub) {
+            foreach ($datasub as $key => $item) {
+                $comtype = DB::table('master_documents')->where('id', $item->Company_type)->first();
+
+                if ($comtype) { // ตรวจสอบว่า $comtype ไม่เป็น null
+                    if ($firstPart == 'C') {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $name = "บริษัท " . $item->Companny_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $name = "บริษัท " . $item->Companny_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $name = "ห้างหุ้นส่วนจำกัด " . $item->Companny_name;
+                        } else {
+                            $name = $comtype->name_th . ($item->Companny_name ?? ($item->first_name . " " . $item->last_name));
+                        }
+                        $name_id = $item->ComTax_ID;
+                    } else {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $name = "บริษัท " . $item->Company_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $name = "บริษัท " . $item->Company_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $name = "ห้างหุ้นส่วนจำกัด " . $item->Company_name;
+                        } else {
+                            $name = $comtype->name_th . ($item->Company_name ?? ($item->first_name . " " . $item->last_name));
+                        }
+                        $name_id = $item->GuestTax_ID;
+                    }
+
+                    // เก็บค่า $name ลงใน array
+                    $names[$key + 1] = [
+                        'id' => $name_id ?? null,
+                        'name' => $name ?? null,
+                    ];
+                }
+            }
+        }
+        $data_select = array_merge($datamain, $names);
         $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
         $Deposit_ID = $invoices->Deposit_ID;
         $array = array_map('trim', explode(',', $Deposit_ID));
@@ -284,7 +329,7 @@ class BillingFolioController extends Controller
         $data_cheque =receive_cheque::where('refer_proposal',$proposalid)->where('status',1)->get();
         return view('billingfolio.invoice.createmulti',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
         ,'DepositID','REID','Invoice_ID','settingCompany','additional_type','additional_Nettotal','Cash','Complimentary','datasub','name_ID','name','type','vat_type','IssueDate','Expiration'
-        ,'data_bank','data_cheque','ids'));
+        ,'data_bank','data_cheque','ids','data_select'));
     }
     public function spiltebill(Request $request ,$id){
         $idss= $id;
