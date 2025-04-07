@@ -1238,7 +1238,7 @@
 
                         if (debit_status == 0) {
                             var detail_name = "Credit Revenue";
-                            var symbol = "+";
+                            var symbol = "";
                         } else {
                             var detail_name = "Debit Revenue";
                             var symbol = "-";
