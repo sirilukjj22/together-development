@@ -885,8 +885,8 @@ Route::controller(Document_invoice::class)->middleware(['role:document', 'togeth
     Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
     Route::get('/Document/invoice/Delete/{id}', 'Delete')->name('invoice.Delete');
     Route::get('/Document/invoice/view/{id}', 'view')->name('invoice.view');
-    Route::get('/Document/invoice/revised/{id}', 'edit')->name('invoice.edit');
-    Route::post('/Document/invoice/update/revised/{id}', 'update')->name('invoice.revised');
+    // Route::get('/Document/invoice/revised/{id}', 'edit')->name('invoice.edit');s
+    // Route::post('/Document/invoice/update/revised/{id}', 'update')->name('invoice.revised');
     Route::get('/Document/invoice/receive/{id}', 'receive')->name('invoice.receive');
     Route::post('/Document/invoice/receive/check/payment/{id}', 'payment')->name('invoice.payment');
     Route::get('/Document/invoice/view/LOG/{id}', 'LOG')->name('invoice.LOG');
@@ -980,8 +980,8 @@ Route::controller(Additional::class)->middleware(['role:document', 'together:1']
     Route::get('/Document/BillingFolio/{Quotation_ID}/addProductselect', 'addProductselect')->name('BillingFolioOver.addProductselect');
     Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');
 
-
-
+    Route::post(' /Document/Additional/Charge/select/save', 'select_save')->name('Additional.select_save');
+    Route::get('/Document/Additional/Charge/select/create', 'select_create')->name('Additional.select_create');
 
     Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
     Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
@@ -989,20 +989,22 @@ Route::controller(Additional::class)->middleware(['role:document', 'together:1']
     Route::get('/Document/BillingFolio/Proposal/Over/Generate/{id}', 'Generate')->name('BillingFolioOver.Generate');
 
     Route::get('/Document/BillingFolio/Proposal/Additional/prewive/{id}', 'PaidDataprewive')->name('BillingFolioOver.PaidDataprewive');
-
+    Route::post('/Document/BillingFolio/Proposal/Additional/select', 'Quotation')->name('Additional.Quotation');
+    Route::get('/Document/BillingFolio/Proposal/Additional/createnew/{id}', 'deposit_pd');
     // Route::post('/Document/BillingFolio/Proposal/Additional/Generate/save', 'savere')->name('BillingFolioOver.savere');
     // Route::get('/Document/BillingFolio/Proposal/Additional/receipt/Edit/{id}', 'EditPaid')->name('BillingFolioOver.EditPaid');
     // Route::get('/Document/BillingFolioOverbill/Proposal/invoice/export/{id}', 'export')->name('BillingFolioOver.export');
 
     // Route::get('/Document/BillingFolio/Over/log/re/{id}', 'logre')->name('BillingFolioOver.logre');
     // Route::post('/Document/BillingFolio/Over/Generate/update/{id}', 'update_re')->name('BillingFolioOver.update_re');
-
 });
 
 Route::controller(Banquet_Event_OrderController::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Banquet/Event/Order/index', 'index')->name('Banquet.index');
     Route::get('/Banquet/Event/Order/create/{id}', 'create')->name('Banquet.create');
     Route::post('/Banquet/Event/Order/save/detail/{id}', 'save')->name('Banquet.save');
+    Route::get('/Banquet/Event/Order/create/room/{id}', 'create_room')->name('Banquet.create_room');
+    Route::post('/Banquet/Event/Order/save/detail/room/{id}', 'save_room')->name('Banquet.save_room');
 });
 Route::controller(ReceiveChequeController::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
@@ -1017,7 +1019,6 @@ Route::controller(Master_Address_System::class)->middleware(['role:document', 't
     Route::get('/Master/System/index', 'index')->name('System.index');
     Route::post('/Master/System/edit/{id}', 'edit')->name('System.edit');
     Route::get('/Master/System/log/detail', 'log')->name('System.Log');
-
     Route::post('Msys-Log-search-table', 'Msys_search_table_paginate_log');
     Route::post('Msys-Log-paginate-table', 'Msys_paginate_log_table');
 });
@@ -1027,7 +1028,6 @@ Route::controller(confirmationrequest::class)->group(function () {
     Route::get('/Cancel-request/{id}', 'cancelRequest')->name('cancelRequest');
     Route::post('/request-confirmation', 'sendRequest')->name('sendRequest');
     Route::get('/check-confirmation-status/{id}', 'checkConfirmationStatus')->name('checkConfirmationStatus');
-
     Route::post('/confirm-request/{id}', 'confirmRequest')->name('confirmRequest');
 });
 

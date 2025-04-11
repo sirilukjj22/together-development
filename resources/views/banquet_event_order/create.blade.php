@@ -1320,6 +1320,8 @@
         if (rowNumber > 0) {
             datenumber =table;
             $('#tr-setup' + datenumber).html(
+                '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
+                '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
                 '<input type="hidden" id="table_setuup" value="">' +
                 '<td style="text-align:center;"id="StartEnd-' + datenumber + '">' + formattedStart + ' - ' + formattedEnd + '</td>' +
                 '<td style="text-align:center;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
@@ -1336,6 +1338,8 @@
                 '</td>'
             );
             $('#tr-select' + datenumber).html(
+                '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
+                '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
                 '<input type="hidden" id="table_setuup" value="">' +
                 '<td style="text-align:left;" id="StartEnd-' + datenumber + '">'+ setupEventDate +' , '+formattedStart + ' - ' + formattedEnd + '</td>' +
                 '<td style="text-align:left;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
@@ -1380,6 +1384,7 @@
                         '</tr>' +
                         '<tr id="tr-setup' + datenumber + '">' +
                             '<input type="hidden" id="table_setuup" value="">' +
+                            '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
                             '<td style="text-align:center;"id="StartEnd-' + datenumber + '">' + formattedStart + ' - ' + formattedEnd + '</td>' +
                             '<td style="text-align:center;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
                             '<td style="text-align:center;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
@@ -1401,6 +1406,8 @@
                     var datenumber = duplicateNumber + '_' + number;
                     $('#setupdetailtable').append(
                         '<tr id="tr-setup' + datenumber + '">' +
+                            '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
+                            '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
                             '<input type="hidden" id="table_setuup" value="">' +
                             '<td style="text-align:center;" id="StartEnd-' + datenumber + '">' + formattedStart + ' - ' + formattedEnd + '</td>' +
                             '<td style="text-align:center;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
@@ -1421,6 +1428,8 @@
                 $('#selectsetup').append(
                     '<tr id="tr-select' + datenumber + '">' +
                         '<input type="hidden" id="table_setuup" value="">' +
+                        '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
+                        '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
                         '<td style="text-align:left;" id="StartEnd-' + datenumber + '">'+ setupEventDate +' , '+formattedStart + ' - ' + formattedEnd + '</td>' +
                         '<td style="text-align:left;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
                         '<td style="text-align:left;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
@@ -1491,13 +1500,15 @@
         var end = $(`#endsetupTime-${rowNumber}`).val() || '';
         var room = $(`#setupRoom-${rowNumber}`).val() || '';
         var Detail = $(`#setupDetails-${rowNumber}`).val() || '';
+        var setup = $(`#setup-id-${rowNumber}`).val() || '';
 
         let selectdetail = {
             date: date,
             startdate: start,
             enddate: end,
             room: room,
-            Detail: Detail
+            Detail: Detail,
+            setup:setup
         };
         var input = document.createElement("input");
         input.type = "hidden";

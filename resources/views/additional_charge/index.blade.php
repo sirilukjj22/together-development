@@ -10,6 +10,10 @@
                     <div class="span3">Additional Charge</div>
                 </div>
                 <div class="col-auto">
+                    @if (@Auth::user()->roleMenuAdd('Additional',Auth::user()->id) == 1)
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Additional.select_create') }}'">
+                        <i class="fa fa-plus"></i> Create Additional Charge</button>
+                    @endif
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -77,8 +81,8 @@
             <div class="row clearfix">
                 <div class="col-sm-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tabSelect">
-                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><i class="fa fa-circle fa-xs"style="color: #64748b;"></i> Proposal</a></li>{{--ประวัติการแก้ไข--}}
-                        <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><i class="fa fa-circle fa-xs" style="color: yellow" ></i>  Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
+
+                        <li class="nav-item" id="nav3"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><i class="fa fa-circle fa-xs" style="color: yellow" ></i>  Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
                         <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><i class="fa fa-circle fa-xs"style="color: #FF6633;"></i> Pending</a></li>{{--Doc. number--}}
                         <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav5')" role="tab"><i class="fa fa-circle fa-xs"style="color: #1d4ed8;"></i> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
                         <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav6')" role="tab"><i class="fa fa-circle fa-xs"style="color: red;"></i> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
@@ -87,74 +91,8 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane fade  show active" id="nav-Dummy" role="tabpanel" rel="0">
+                                <div class="tab-pane fade show active"id="nav-Awaiting" role="tabpanel" rel="0">
                                     <div style="min-height: 70vh;" class="mt-2">
-
-                                        <table id="AdditionalTable" class="table-together table-style">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center"data-priority="1">No</th>
-                                                    <th class="text-center" data-priority="1">Proposal ID</th>
-                                                    <th data-priority="1">Company / Individual</th>
-                                                    <th class="text-center">AD Doc.</th>
-                                                    <th class="text-center">PD Amount.</th>
-                                                    <th class="text-center">AD Amount.</th>
-                                                    <th class="text-center">Total Amount</th>
-                                                    <th class="text-center">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if(!empty($Proposal))
-                                                    @foreach ($Proposal as $key => $item)
-                                                    <tr>
-                                                        <td style="text-align: center;">
-                                                            {{$key +1}}
-                                                        </td>
-                                                        <td>{{ $item->Quotation_ID }}</td>
-                                                        @if ($item->type_Proposal == 'Company')
-                                                            <td>{{ @$item->company->Company_Name}}</td>
-                                                        @else
-                                                            <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                                        @endif
-                                                        <td>{{ $item->ADD_count }}</td>
-                                                        <td style="text-align: center;">{{ number_format($item->Nettotal) }}</td>
-
-                                                        <td style="text-align: center;">{{ number_format($item->ADD_amount) }}</td>
-                                                        <td >{{ number_format($item->Nettotal + $item->ADD_amount) }}</td>
-
-                                                        @php
-                                                            $CreateBy = Auth::user()->id;
-                                                            $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-
-                                                        @endphp
-                                                        <td style="text-align: center;">
-                                                            @if ($rolePermission == 1 ||$rolePermission == 2)
-                                                                @if ($item->Operated_by == $CreateBy)
-                                                                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/Additional/Charge/create/'.$item->id) }}'">
-                                                                        Select
-                                                                    </button>
-                                                                @else
-                                                                    <button type="button" class="btn btn-color-green lift btn_modal" disabled>
-                                                                        Select
-                                                                    </button>
-                                                                @endif
-                                                            @elseif ($rolePermission == 3)
-                                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/Additional/Charge/create/'.$item->id) }}'">
-                                                                    Select
-                                                                </button>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                @endif
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade "id="nav-Awaiting" role="tabpanel" rel="0">
-                                    <div style="min-height: 70vh;" class="mt-2">
-
                                         <table id="proposalAwaitingTable" class="table-together table-style">
                                             <thead>
                                                 <tr>
@@ -199,7 +137,7 @@
                                                         @endphp
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> &nbsp;</button>
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/view/'.$item->id) }}">View</a></li>

@@ -127,10 +127,15 @@
             width: 100%;
         }
     }
+    .pagination-containermain {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .paginate-btn {
         border: 1px solid #2D7F7B;
@@ -140,6 +145,7 @@
         margin: 0 2px;
         border-radius: 4px;
         cursor: pointer;
+
     }
     .paginate-btn.active, .paginate-btn:hover {
         background-color: #2D7F7B;
@@ -204,7 +210,7 @@
             </div> <!-- .row end -->
         </div>
     </div>
-    <form id="myForm" action="{{url('/Document/Additional/Charge/save/'.$Quotation->id)}}" method="POST">
+    <form id="myForm" action="{{url('/Document/Additional/Charge/select/save')}}" method="POST">
         @csrf
         <div id="content-index" class="body d-flex py-lg-4 py-3">
             <div class="container-xl">
@@ -261,10 +267,8 @@
                                             <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
                                                 <div class="row">
                                                     <b class="titleQuotation" style="font-size: 20px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
-                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
+                                                    <b class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$additional}}</b>
                                                 </div>
-                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                                <input type="hidden" id="Additional_ID" name="Additional_ID" value="{{$Quotation_IDoverbill}}">
                                             </div>
                                         </div>
                                         <div class="row mt-2">
@@ -273,73 +277,126 @@
                                                 <div class="col-12 col-md-12 col-sm-12">
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Issue Date:</span>
+                                                            <span>Issue Date : </span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}"disabled>
+                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-12 col-sm-12 mt-2">
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Expiration Date:</span>
+                                                            <span>Expiration Date : </span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"value="{{$Quotation->Expirationdate}}"disabled>
+                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"readonly>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="info-list neww flex-column col-lg-5 col-md-12 col-sm-12">
+                                        <li>
+                                            <label for="customerNameInput" class="form-label text-nowrap m-0 rrr" style="font-size: 16px">Customer Name</label>
+                                            <div class="d-flex align-items-center">
+                                                <input type="text" class="form-control readonly-input" id="customerNameInput"  placeholder="Select Customer" readonly  style="flex-grow: 1;" onclick="comtomer()" />
+                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" >
+                                                <!-- Search button -->
+
+                                                <div class="modal fade" id="customerSearchModal" tabindex="-1" aria-labelledby="customerSearchModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width: 70%;">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="customerSearchModalLabel">Select Customer</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="flex-end br" style="gap:0.3em;display: flex;justify-content: end;">
+                                                                    <select id="filterCustomerType" class="bt-together form-select m-0 " style="height: 2.7em;  margin-right: 10px;width: max-content;" onchange="filterCustomer()">
+                                                                        <option value="all">All</option>
+                                                                        <option value="company">Company / Agent</option>
+                                                                        <option value="guest">Guest</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="dataTables_wrapper mt-2">
+                                                                    <table id="QuotationTable"  class="table-together table-style" style="width: 100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th data-priority="1"class="text-center">No</th>
+                                                                                <th data-priority="1"class="text-center">Customer Name</th>
+                                                                                <th data-priority="2"class="text-center">Customer ID </th>
+                                                                                <th data-priority="3"class="text-center">Customer Type</th>
+                                                                                <th data-priority="1"class="text-center">Select</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody></tbody>
+                                                                    </table>
+                                                                    <div id="paginationContainer" class="pagination-container">
+                                                                        <button class="paginate-btn" data-page="prev">&laquo;</button>
+                                                                        <!-- ปุ่ม pagination จะถูกแทรกที่นี่ -->
+                                                                        <button class="paginate-btn" data-page="next">&raquo;</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="bt-tg bt-grey bt-md" style="height: 2.4em;" data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </div>
+
                                 </div>
-                                <input type="hidden" id="select" name="select" value="{{$Quotation->type_Proposal}}">
-                                <div class="row mt-2">
-                                    @if ($Selectdata == 'Company')
+                                <div class="row mt-4">
+                                    <div id="companydetail" style="display: block">
                                         <div class="proposal-cutomer-detail" >
                                             <ul>
                                             <b class="font-upper com">Company Information</b>
                                             <li class="mt-3">
                                                 <b>Company Name</b>
-                                                <span id="Company_name">{{$fullName}}</span>
+                                                <span id="Company_name"></span>
                                             </li>
                                             <li>
                                                 <b>Company Address</b>
-                                                <span id="Address">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
+                                                <span id="Address"></span>
                                                 <b></b>
                                             </li>
                                             <span class="wrap-full">
                                                 <li >
                                                     <b>Company Number</b>
-                                                    <span id="Company_Number">{{$phone->Phone_number}}</span>
+                                                    <span id="Company_Number"></span>
                                                 </li>
                                                 <li >
                                                     <b>Company Fax</b>
-                                                    <span id="Company_Fax">{{$Fax_number}}</span>
+                                                    <span id="Company_Fax"></span>
                                                 </li>
                                             </span>
                                             <li>
                                                 <b>Company Email</b>
-                                                <span id="Company_Email">{{$Email}}</span>
+                                                <span id="Company_Email"></span>
                                             </li>
                                             <li>
                                                 <b>Taxpayer Identification</b>
-                                                <span id="Taxpayer" >{{$Taxpayer_Identification}}</span>
+                                                <span id="Taxpayer" ></span>
                                             </li>
                                             <li> </li>
                                             <b class="font-upper com">Personal Information</b>
                                             <li class="mt-3">
                                                 <b>Contact Name</b>
-                                                <span id="Company_contact">{{$Contact_Name}}</span>
+                                                <span id="Company_contact"></span>
                                             </li>
                                             <li >
                                                 <b>Contact Number</b>
-                                                <span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span>
+                                                <span id="Contact_Phone"></span>
                                             </li>
                                             <li>
                                                 <b>Contact Email</b>
-                                                <span id="Contact_Email" >{{$Quotation->checkin}}</span>
+                                                <span id="Contact_Email" ></span>
                                             </li>
                                             <li></li>
                                             </ul>
@@ -352,11 +409,11 @@
                                             <li></li>
                                             <li>
                                                 <b>Check In</b>
-                                                <span id="checkinpo">{{$Quotation->checkin}}</span>
+                                                <span id="checkinpo"></span>
                                             </li>
                                             <li>
                                                 <b>Check Out</b>
-                                                <span id="checkoutpo">{{$Quotation->checkout}}</span>
+                                                <span id="checkoutpo"></span>
                                             </li>
                                             <li>
                                                 <b>Length of Stay</b>
@@ -368,32 +425,33 @@
                                             </li>
                                             </ul>
                                         </div>
-                                    @else
+                                    </div>
+                                    <div id="guestdetail" style="display: none">
                                         <div class="proposal-cutomer-detail" >
                                             <ul>
                                             <b class="font-upper com">Guest Information</b>
                                             <li class="mt-3">
                                                 <b>Guest  Name</b>
-                                                <span id="guest_name">{{$fullName}}</span>
+                                                <span id="guest_name"></span>
                                             </li>
                                             <li>
                                                 <b>Guest  Address</b>
-                                                <span id="guestAddress">{{$Address}}   {{'ตำบล '.$TambonID->name_th}} {{'อำเภอ '.$amphuresID->name_th}} {{'จังหวัด '.$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span>
+                                                <span id="guestAddress"></span>
                                                 <b></b>
                                             </li>
 
                                             <li >
                                                 <b>Guest  Number</b>
-                                                <span id="guest_Number">{{$phone->Phone_number}}</span>
+                                                <span id="guest_Number"></span>
                                             </li>
 
                                             <li>
                                                 <b>Guest  Email</b>
-                                                <span id="guest_Email">{{$Email}}</span>
+                                                <span id="guest_Email"></span>
                                             </li>
                                             <li>
                                                 <b>Identification Number</b>
-                                                <span id="guestTaxpayer" >{{$Taxpayer_Identification}}</span>
+                                                <span id="guestTaxpayer" ></span>
                                             </li>
                                             <li> </li>
                                             <li></li>
@@ -426,7 +484,7 @@
                                             </ul>
 
                                         </div>
-                                    @endif
+                                    </div>
                                     <div class="styled-hr"></div>
                                 </div>
                                 <div class="payment-container row mt-2">
@@ -486,7 +544,7 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-12 col-sm-12">
-                                        <button  id="addproduct" type="button" class="btn btn-color-green lift btn_modal my-3" data-bs-toggle="modal" data-bs-target="#exampleModalproduct"onclick="fetchProducts('all')">
+                                        <button  id="addproduct" type="button" class="btn btn-color-green lift btn_modal my-3" data-bs-toggle="modal" data-bs-target="#exampleModalproduct" onclick="fetchProducts('all')">
                                             <i class="fa fa-plus"></i> Add Product</button>
                                     </div>
                                     <div class="modal fade " id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -542,10 +600,10 @@
                                                         <tbody id="product-list">
                                                         </tbody>
                                                     </table>
-                                                    <div id="paginationContainer" class="pagination-container">
-                                                        <button class="paginate-btn" data-page="prev">&laquo;</button>
+                                                    <div id="paginationContainermain" class="pagination-containermain">
+                                                        <button type="button" class="paginate-btn" data-page="prev">&laquo;</button>
                                                         <!-- ปุ่ม pagination จะถูกแทรกที่นี่ -->
-                                                        <button class="paginate-btn" data-page="next">&raquo;</button>
+                                                        <button type="button" class="paginate-btn" data-page="next">&raquo;</button>
                                                     </div>
 
                                                 </div>
@@ -578,7 +636,7 @@
                                     @else
                                         <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
                                     @endif
-                                    <input type="hidden" id="paxold" name="paxold" value="{{$Quotation->TotalPax}}">
+                                    <input type="hidden" id="paxold" name="paxold" value="">
                                     <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
                                     <div class="wrap-b">
                                         <div class="kw" >
@@ -727,8 +785,11 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" id="select" name="select" value="">
     </form>
     <input type="hidden" name="preview" value="1" id="preview">
+    <input type="hidden" id="vattype">
+    <input type="hidden" id="Quotation_ID">
     <input type="hidden" name="hiddenProductData" id="hiddenProductData">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -737,189 +798,21 @@
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript">
+        const table_name = ['QuotationTable'];
         $(document).ready(function() {
-            $('.select2').select2({
-                placeholder: "Please select an option"
-            });
-            var dayview = @json($Quotation->day);
-            var nightview = @json($Quotation->night);
-
-            var day = dayview ? dayview : '-';
-            var night = nightview ? nightview : '-';
-            var adult ={{$Quotation->adult}};
-            var children ={{$Quotation->children ? $Quotation->children : 0 }};
-            $('#Adultpo').text(adult +' Adult');
-            $('#Adultpoguest').text(adult +' Adult');
-
-            $('#Childrenpo').text(' , '+ children +' Children');
-            $('#Childrenpoguest').text(' , '+ children +' Children');
-            if (day == '-') {
-                $('#daypo').text('-');
-                $('#daypoguest').text('-');
-            }else{
-                $('#daypo').text(day + ' วัน');
-                $('#nightpo').text(night + ' คืน');
-
-                $('#daypoguest').text(day + ' วัน');
-                $('#nightpoguest').text(night + ' คืน');
-            }
-
-            var checkinDate = @json($Quotation->checkin);
-            var checkoutDate = @json($Quotation->checkout);
-            if (checkinDate == null) {
-                $('#checkinpo').text('No Check In Date');
-                $('#checkinpoguest').text('No Check In Date');
-                $('#checkoutpo').text('-');
-                $('#checkoutpoguest').text('-');
-            }else{
-                $('#checkinpo').text(checkinDate);
-                $('#checkoutpo').text(checkoutDate);
-
-                $('#checkinpoguest').text(checkinDate);
-                $('#checkoutpoguest').text(checkoutDate);
-            }
-            //----------------ส่วนบน---------------
-            var countrySelect = $('#select');
-            var select = countrySelect.val();
-
-
-            //------------------------บริษัท------------------
-            var Companyshow = document.getElementById("Companyshow");
-            var Company = document.getElementById("Company");
-            // -----------------------ลูกค้า--------------------
-
-            var Guest = document.getElementById("Guest");
-            var Guestshow = document.getElementById("Guestshow");
-            //-------------------ตาราง---------------------------
-            var companyTable = document.getElementById("companyTable");
-
-            var guestTable = document.getElementById("guestTable");
-            if (select === "Company") {
-                Companyshow.style.display = "Block";
-                Guestshow.style.display = "none";
-                guestTable.style.display = "none";
-                Company.disabled = false;
-                Company_Contact.disabled = false;
-                Company_Contactname.disabled = false;
-                Guest.disabled = true;
-                companyTable.style.display = "flex";
-            } else {
-                guestTable.style.display = "flex";
-                Guestshow.style.display = "Block";
-                Companyshow.style.display = "none";
-                companyTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = true;
-                Company_Contactname.disabled = true;
-                Guest.disabled = false;
-            }
-        });
-        $(document).ready(function() {
-            var Mvat ={{$Quotation->vat_type}};
-            if (Mvat == '50') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'block');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }else if (Mvat == '51') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'block');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            else if (Mvat == '52') {
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'block');
-            }else{
-                $('#PRICE_INCLUDE_VAT').css('display', 'none');
-                $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-                $('#PRICE_PLUS_VAT').css('display', 'none');
-            }
-            var Mevent ={{$Quotation->eventformat}};
-            if (Mevent == '43') {
-
-                $('#Payment50').css('display', 'block');
-                $('#Payment100').css('display', 'none');
-            } else if (Mevent == '53') {
-
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            } else if (Mevent == '54'){
-                $('#Payment50').css('display', 'none');
-                $('#Payment100').css('display', 'block');
-            }else{
-                $('#Payment50').css('display', 'block');
-                $('#Payment100').css('display', 'none');
-            }
-        });
-    </script>
-    <script>
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
-
-        if (performance.navigation.type === 2) {
-            // โหลดหน้าเว็บใหม่เมื่อกดย้อนกลับ
-            sessionStorage.setItem('reloadAfterBack', 'true');
-        }
-
-        window.addEventListener('pageshow', function(event) {
-            if (sessionStorage.getItem('reloadAfterBack')) {
-                sessionStorage.removeItem('reloadAfterBack');
-                window.location.reload();
-            }
-        });
-    </script>
-    <script>
-        function submitPreview() {
-            var previewValue = document.getElementById("preview").value;
-
-            // สร้าง input แบบ hidden ใหม่
-            var input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "preview";
-            input.value = previewValue;
-
-            // เพิ่ม input ลงในฟอร์ม
-            document.getElementById("myForm").appendChild(input);
-            document.getElementById("myForm").setAttribute("target","_blank");
-            document.getElementById("myForm").submit();
-        }
-        $(document).on('click', '.remove-button1', function() {
-                var productId = $(this).val();
-                var table2 = $('#main').DataTable();
-                var row = table2.row($(this).parents('tr'));
-                var irow = $(this).closest('tr.child').prev();
-                table2.row(irow).remove().draw();
-                row.remove();
-                table2.draw();
-
-                $('#trselectmain' + productId).remove();
-                $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first').text(index+1); // Change the text of the first cell to be the new sequence number
-                });
-
-                // Optionally, call a function to update totals after removing a row
-                if (typeof totalAmost === 'function') {
-                    totalAmost();
-                }
-            });
-    </script>
-    <script>
-        const table_name = ['mainselect1'];
-        $(document).ready(function() {
+            $('#QuotationTable').DataTable().destroy();
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
                     searching: false,
                     paging: false,
                     info: false,
+                    ordering:false,
                     columnDefs: [{
                         className: 'dtr-control',
-                        orderable: true,
+                        orderable: false,
                         target: null,
                     }],
-                    order: [0, 'asc'],
+                    // order: [0, 'asc'],
                     responsive: {
                         details: {
                             type: 'column',
@@ -928,8 +821,11 @@
                     }
                 });
             }
+            $('.select2').select2({
+                placeholder: "Please select an option"
+            });
         });
-        const table_name2 = ['main'];
+        const table_name2 = ['main','mainselect1'];
         $(document).ready(function() {
             for (let index = 0; index < table_name2.length; index++) {
                 new DataTable('#'+table_name2[index], {
@@ -955,90 +851,98 @@
                 });
                 $('#'+table_name2[index] + ' thead th').removeClass('sorting sorting_asc sorting_desc');
             }
+            filterCustomer();
         });
-        function fetchProducts(status) {
-            if (status == 'all' ) {
-                $('#ProductName').text('All Product');
-            }else if (status == 'Room_Type') {
-                $('#ProductName').text('Room');
-            }
-            else if (status == 'Banquet') {
-                $('#ProductName').text('Banquet');
-            }
-            else if (status == 'Meals') {
-                $('#ProductName').text('Meals');
-            }
-            else if (status == 'Entertainment') {
-                $('#ProductName').text('Entertainment');
-            }else if (status == 'Other'){
-                $('#ProductName').text('Other');
-            }
-            $('#ProductName').text();
-            var table = $('#mainselect1').DataTable();
-            var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
-            var clickCounter = 1;
 
-            let productDataArray = [];
 
-            // ดึงข้อมูลจากตาราง
-            document.querySelectorAll('tr[id^="tr-select-main"]').forEach(function(row) {
-                let productID = row.querySelector('input[name="CheckProduct[]"]').value;
+        $(function() {
+            var start = moment();
+            var end = moment().add(7, 'days');
+            function cb(start, end) {
+                $('#datestart').val(start.format('DD/MM/Y'));
+                $('#dateex').val(end.format('DD/MM/Y'));
+                $('#issue_date_document').text(start.format('DD/MM/Y'));
+                $('#issue_date_document1').text(start.format('DD/MM/Y'));
 
-                // เก็บข้อมูลในอาเรย์
-                productDataArray.push({
-                    productID: productID,
-                });
-            });
-            console.log(productDataArray);
+                var daysSelected = end.diff(start, 'days');
+                $('#Terms').text(daysSelected+' วัน');
 
-            document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
+                $('#datestarttext').text(start.format('DD/MM/Y'));
+                $('#dateextext').text(end.format('DD/MM/Y'));
+            }
+            console.log(1);
+            $('#reportrange1').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    '3 Days': [moment(), moment().add(3, 'days')],
+                    '7 Days': [moment(), moment().add(7, 'days')],
+                    '15 Days': [moment(), moment().add(15, 'days')],
+                    '30 Days': [moment(), moment().add(30, 'days')],
+                }
+            },
+            cb);
+            cb(start, end);
+        });
+        function comtomer() {
+            const modalElement = document.getElementById('customerSearchModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+        function filterCustomer(){
+            let status = $("#filterCustomerType").val();
+            var table = $('#QuotationTable').DataTable();
+            if (status == null) {
+                id = 'all';
+            }else{
+                id = status;
+            }
+            console.log(status);
+            console.log(id);
 
             $.ajax({
-                url: '{{ route("BillingFolioOver.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
-                method: 'GET',
+                url: '{{ route("Additional.Quotation") }}',
+                method: 'POST',
                 data: {
-                    value: status
+                    value: id
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    console.log(response);
                     if (response.products.length > 0) {
-                        // Clear the existing rows
-                        table.clear();
-                        var rowNumbemain = $('#display-selected-items tr').length - 1;
-                        console.log(rowNumbemain);
+                        let table = $('#QuotationTable').DataTable();
+                        table.clear().draw();
+
+                        var num = 0;
                         var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
                         var currentPage = 1;
                         var totalItems = response.products.length;
+                        console.log( response.products.length);
+
+
                         var totalPages = Math.ceil(totalItems / pageSize);
+
                         var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
-                        let hiddenProductData = document.getElementById('hiddenProductData').value;
-                        let productDataArrayRetrieved = JSON.parse(hiddenProductData);
-                        let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
                         function renderPage(page) {
                             table.clear();
-                            let num = rowNumbemain + (page - 1) * pageSize + 1;
+                            let num = (page - 1) * pageSize + 1;
                             for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
                                 const data = response.products[i];
                                 const productId = data.id;
-                                const productCode = data.code;
-                                var existingRowId = $('#tr-select-add' + productId).attr('id');
-                                if ($('#' + existingRowId).val() == undefined) {
-                                    if (!productIDsArray.includes(productCode)) {
-                                        table.row.add([
-                                            `<td style="text-align: center">${num++}</td>`,
-                                            `<td style="text-align: center">${data.code}</td>`,
-                                            `<td style="text-align: center">${data.description}</td>`,
-                                            `<td style="display: flex; justify-content: center; align-items: center">
-                                                <button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </td>`
-                                        ]).node().id = `row-${productId}`;
-                                    }
-                                }
+                                const guestName = data.guest ? (data.guest.First_name + ' ' + data.guest.Last_name) : '-';
+                                const companyName = data.company ? data.company.Company_Name : '-';
+                                const displayName = data.type_Proposal == 'Company' ? companyName : guestName;
+                                table.row.add([
+                                    num++,
+                                    displayName,
+                                    data.Quotation_ID,
+                                    data.type_Proposal,
+                                    `<button type="button" class="btn bg-warning px-2" style="padding-top:2px;padding-bottom:2px;" onclick="dataPD(${productId})" >Select</button>`
+                                ]).node().id = `roww-${productId}`;
                             }
                             table.draw(false);
-                            $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
+                            $('#QuotationTable').DataTable().columns.adjust().responsive.recalc();
                             // Update active class for pagination buttons
                             $('.paginate-btn').removeClass('active');
                             $(`[data-page="${page}"]`).addClass('active');
@@ -1049,14 +953,9 @@
                                 <button class="paginate-btn" data-page="prev">&laquo;</button>
                             `);
 
-                            console.log("maxVisibleButtons: ", maxVisibleButtons);
-                        console.log("totalPages: ", totalPages);
 
-                        var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
-                        var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
-
-                        console.log("startPage: ", startPage);
-                        console.log("endPage: ", endPage);
+                            var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                            var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
 
                             if (startPage > 1) {
                                 $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
@@ -1102,6 +1001,290 @@
 
                             createPagination(totalPages, currentPage);
                             renderPage(currentPage);
+                        });
+                    }else{
+                        table.clear();
+                        table.draw();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+        function dataPD(productId) {
+            var companydetail = document.getElementById("companydetail");
+            var guestdetail = document.getElementById("guestdetail");
+            var id = productId;
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/Document/BillingFolio/Proposal/Additional/createnew/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    console.log("AJAX Response:", response);
+                    var Selectdata = response.Selectdata;
+                    var phone = response.phone.Phone_number;
+                    var fullname = response.fullname;
+                    var Address = response.Address + ' '+ 'ตำบล'+ response.Tambon.name_th + ' '+'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                    var TaxpayerIdentification = response.Identification;
+                    var nameID = response.nameID;
+                    var proposal_id = response.proposal_id;
+                    var vat_type = response.vat_type;
+                    var nettotal = response.nettotal;
+                    var amdeposit = response.amdeposit;
+                    var email = response.email;
+                    var vat = response.vat;
+                    var checkin = response.checkin;
+                    var checkout = response.checkout;
+                    var day = response.day;
+                    var night = response.night;
+                    var Adult = response.adult;
+                    var Children = response.children;
+                    $('#customerNameInput').val(fullname);
+                    $('#Quotation_ID').val(response.proposal_id);
+                    $('#select').val(Selectdata);
+                    if (Selectdata == 'Company') {
+                        companydetail.style.display = "Block";
+                        guestdetail.style.display = "none";
+                        $('#Company_name').text(fullname);
+                        $('#Address').text(Address);
+                        $('#Company_Fax').text(response.Fax_number);
+                        $('#Company_Number').text(phone);
+                        $('#Company_Email').text(email);
+                        $('#Taxpayer').text(TaxpayerIdentification);
+                        $('#Company_contact').text(response.Contact_Name);
+                        $('#Contact_Phone').text(response.Contact_phone.Phone_number);
+                        $('#Contact_Email').text(response.Contact_Email);
+                        $('#checkinpo').text(checkin);
+                        $('#checkoutpo').text(checkout);
+                        $('#daypo').text(day + ' วัน');
+                        $('#nightpo').text(night + ' คืน');
+                        $('#Adultpo').text(Adult + ' Adult');
+                        $('#Childrenpo').text(' , ' + Children + ' Children');
+
+
+                    }else{
+                        companydetail.style.display = "none";
+                        guestdetail.style.display = "Block";
+                        $('#checkinpoguest').text(checkin);
+                        $('#checkoutpoguest').text(checkout);
+                        $('#daypoguest').text(day + ' วัน');
+                        $('#nightpoguest').text(night + ' คืน');
+                        $('#Adultpoguest').text(Adult + ' Adult');
+                        $('#Childrenpoguest').text(' , ' + Children + ' Children');
+                        $('#guest_name').text(fullname);
+                        $('#guestAddress').text(Address);
+                        $('#guest_Number').text(phone);
+                        $('#guest_Email').text(email);
+                        $('#guestTaxpayer').text(TaxpayerIdentification);
+
+                    }
+                    $('#vattype').val(response.vat);
+                    $('#paxold').val(response.Quotation.TotalPax);
+                    if (response.vat == '50') {
+                        $('#PRICE_INCLUDE_VAT').css('display', 'block');
+                        $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+                        $('#PRICE_PLUS_VAT').css('display', 'none');
+                    }else if (response.vat == '51') {
+                        $('#PRICE_INCLUDE_VAT').css('display', 'none');
+                        $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+                        $('#PRICE_PLUS_VAT').css('display', 'none');
+                    }
+                    else if (response.vat == '52') {
+                        $('#PRICE_INCLUDE_VAT').css('display', 'none');
+                        $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+                        $('#PRICE_PLUS_VAT').css('display', 'block');
+                    }else{
+                        $('#PRICE_INCLUDE_VAT').css('display', 'none');
+                        $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+                        $('#PRICE_PLUS_VAT').css('display', 'none');
+                    }
+
+                    // ปิด Modal
+                    $('#customerSearchModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX request failed: ", status, error);
+                }
+            });
+        }
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        if (performance.navigation.type === 2) {
+            // โหลดหน้าเว็บใหม่เมื่อกดย้อนกลับ
+            sessionStorage.setItem('reloadAfterBack', 'true');
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            if (sessionStorage.getItem('reloadAfterBack')) {
+                sessionStorage.removeItem('reloadAfterBack');
+                window.location.reload();
+            }
+        });
+        function submitPreview() {
+            var previewValue = document.getElementById("preview").value;
+
+            // สร้าง input แบบ hidden ใหม่
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "preview";
+            input.value = previewValue;
+
+            // เพิ่ม input ลงในฟอร์ม
+            document.getElementById("myForm").appendChild(input);
+            document.getElementById("myForm").setAttribute("target","_blank");
+            document.getElementById("myForm").submit();
+        }
+        $(document).on('click', '.remove-button1', function() {
+            var productId = $(this).val();
+            var table2 = $('#main').DataTable();
+            var row = table2.row($(this).parents('tr'));
+            var irow = $(this).closest('tr.child').prev();
+            table2.row(irow).remove().draw();
+            row.remove();
+            table2.draw();
+
+            $('#trselectmain' + productId).remove();
+            $('#display-selected-items tr').each(function(index) {
+                $(this).find('td:first').text(index+1); // Change the text of the first cell to be the new sequence number
+            });
+
+            // Optionally, call a function to update totals after removing a row
+            if (typeof totalAmost === 'function') {
+                totalAmost();
+            }
+        });
+        function fetchProducts(status) {
+            if (status == 'all' ) {
+                $('#ProductName').text('All Product');
+            }else if (status == 'Room_Type') {
+                $('#ProductName').text('Room');
+            }
+            else if (status == 'Banquet') {
+                $('#ProductName').text('Banquet');
+            }
+            else if (status == 'Meals') {
+                $('#ProductName').text('Meals');
+            }
+            else if (status == 'Entertainment') {
+                $('#ProductName').text('Entertainment');
+            }else if (status == 'Other'){
+                $('#ProductName').text('Other');
+            }
+            $('#ProductName').text();
+            var table = $('#mainselect1').DataTable();
+            var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
+            var clickCounter = 1;
+
+            let productDataArray = [];
+
+            // ดึงข้อมูลจากตาราง
+            document.querySelectorAll('tr[id^="tr-select-main"]').forEach(function(row) {
+                let productID = row.querySelector('input[name="CheckProduct[]"]').value;
+
+                // เก็บข้อมูลในอาเรย์
+                productDataArray.push({
+                    productID: productID,
+                });
+            });
+            document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
+            $.ajax({
+                url: '{{ route("BillingFolioOver.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
+                method: 'GET',
+                data: {
+                    value: status
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.products.length > 0) {
+                        // Clear the existing rows
+                        table.clear();
+                        var rowNumbemain = $('#display-selected-items tr').length -1;
+                        var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
+                        var currentPage = 1;
+                        var totalItems = response.products.length;
+                        var totalPages = Math.ceil(totalItems / pageSize);
+                        var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
+                        let hiddenProductData = document.getElementById('hiddenProductData').value;
+                        let productDataArrayRetrieved = JSON.parse(hiddenProductData);
+                        let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
+                        function renderPage(page) {
+                            table.clear();
+                            let num = rowNumbemain + (page - 1) * pageSize + 1;
+                            for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
+                                const data = response.products[i];
+                                const productId = data.id;
+                                const productCode = data.code;
+                                var existingRowId = $('#tr-select-add' + productId).attr('id');
+                                if ($('#' + existingRowId).val() == undefined) {
+                                    if (!productIDsArray.includes(productCode)) {
+                                        table.row.add([
+                                            `<td style="text-align: center">${num++}</td>`,
+                                            `<td style="text-align: center">${data.code}</td>`,
+                                            `<td style="text-align: center">${data.description}</td>`,
+                                            `<td style="display: flex; justify-content: center; align-items: center">
+                                                <button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </td>`
+                                        ]).node().id = `row-${productId}`;
+                                    }
+                                }
+                            }
+                            table.draw(false);
+                            $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
+                            // Update active class for pagination buttons
+                            $('.paginate-btn').removeClass('active');
+                            $(`[data-page="${page}"]`).addClass('active');
+                        }
+
+                        function createPagination(totalPages, currentPage) {
+                            console.log("Creating pagination...");
+                            $('#paginationContainermain').html(`
+                                <button class="paginate-btn" data-page="prev">&laquo;</button>
+                            `);
+                            var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                            var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+                            if (startPage > 1) {
+                                $('#paginationContainermain').append(`<button class="paginate-btn" data-page="1">1</button>`);
+                                if (startPage > 2) {
+                                    $('#paginationContainermain').append(`<button class="paginate-btn" disabled>...</button>`);
+                                }
+                            }
+
+                            for (let i = startPage; i <= endPage; i++) {
+                                $('#paginationContainermain').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
+                            }
+
+                            if (endPage < totalPages) {
+                                if (endPage < totalPages - 1) {
+                                    $('#paginationContainermain').append(`<button class="paginate-btn" disabled>...</button>`);
+                                }
+                                $('#paginationContainermain').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
+                            }
+
+                            $('#paginationContainermain').append(`
+                                <button class="paginate-btn" data-page="next">&raquo;</button>
+                            `);
+                        }
+                        createPagination(totalPages, currentPage);
+                        renderPage(currentPage);
+                        $(document).on('click', '.paginate-btn', function() {
+                            const page = $(this).data('page');
+                            if (page === 'prev') {
+                                currentPage = Math.max(1, currentPage - 1);
+                            } else if (page === 'next') {
+                                currentPage = Math.min(totalPages, currentPage + 1);
+                            } else {
+                                currentPage = parseInt(page);
+                            }
+                            renderPage(currentPage);
+                            createPagination(totalPages, currentPage);
                         });
                     }
                 },
@@ -1236,6 +1419,8 @@
                 });
             });
         }
+
+
         //----------------------------------------รายการ---------------------------
         $(document).ready(function() {
             $(document).on('keyup', '.Amount', function() {
@@ -1251,7 +1436,7 @@
         });
         function totalAmost() {
             $(document).ready(function() {
-                var typevat  = {{$Quotation->vat_type}};
+                var typevat = $('#vattype').val();
                 let allprice = 0;
                 let lessDiscount = 0;
                 let beforetax =0;
@@ -1362,9 +1547,42 @@
             var NettotalCheck = $('#NettotalCheck').val();
             var totalComplimentary =parseFloat($('#totalComplimentary').val().replace(/,/g, ''));
             var additional_type = $('#additional_type').val();
-            if (additional_type == 'Cash Manual') {
-                if (NettotalCheck - totalComplimentary == 0) {
-                    var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
+            if (Quotation_ID) {
+                if (additional_type == 'Cash Manual') {
+                    if (NettotalCheck - totalComplimentary == 0) {
+                        var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotation_ID} ทำการยกเลิกใบข้อเสนอ`;
+                        var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+                        Swal.fire({
+                            title: title,
+                            text: message,
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonText: "บันทึกข้อมูล",
+                            cancelButtonText: "ยกเลิก",
+                            confirmButtonColor: "#2C7F7A",
+                            dangerMode: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var input = document.createElement("input");
+                                input.type = "hidden";
+                                input.name = "preview";
+                                input.value = 0;
+
+                                // เพิ่ม input ลงในฟอร์ม
+                                document.getElementById("myForm").appendChild(input);
+                                document.getElementById("myForm").removeAttribute('target');
+                                document.getElementById("myForm").submit();
+                            }
+                        });
+                    }else{
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "กรุณากรองค่าให้ตรง",
+                        });
+                    }
+                }else{
+                    var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotation_ID} ทำการยกเลิกใบข้อเสนอ`;
                     var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
                     Swal.fire({
                         title: title,
@@ -1388,39 +1606,15 @@
                             document.getElementById("myForm").submit();
                         }
                     });
-                }else{
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "กรุณากรองค่าให้ตรง",
-                    });
                 }
             }else{
-                var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
-                var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
                 Swal.fire({
-                    title: title,
-                    text: message,
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "บันทึกข้อมูล",
-                    cancelButtonText: "ยกเลิก",
-                    confirmButtonColor: "#2C7F7A",
-                    dangerMode: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        var input = document.createElement("input");
-                        input.type = "hidden";
-                        input.name = "preview";
-                        input.value = 0;
-
-                        // เพิ่ม input ลงในฟอร์ม
-                        document.getElementById("myForm").appendChild(input);
-                        document.getElementById("myForm").removeAttribute('target');
-                        document.getElementById("myForm").submit();
-                    }
+                    icon: "error",
+                    title: "Oops...",
+                    text: "กรุณาเลือกบริษัทที่ต้องการ",
                 });
             }
+
         }
     </script>
 @endsection

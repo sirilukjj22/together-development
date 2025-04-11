@@ -1254,13 +1254,19 @@ class QuotationController extends Controller
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-        return view('quotation.edit',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
+        $re = receive_payment::where('Quotation_ID',$Quotation_ID)->get();
+        $totalRe = 0;
+        foreach ($re as $item) {
+            $totalRe += $item->Amount;
+        }
+        return view('quotation.edit',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','totalRe'));
     }
     public function update(Request $request,$id)
     {
 
         $maxDiscount = max($request->discountmain);
         $preview = $request->preview;
+        $totaldraw = $request->totaldraw;
         $Quotationid =$id;
         $Quotation_ID=$request->Quotation_ID;
         $adult=$request->Adult;
@@ -1282,6 +1288,7 @@ class QuotationController extends Controller
         $userid = Auth::user()->id;
         $Quotationcheck = Quotation::where('id',$id)->first();
         $correct = $Quotationcheck->correct;
+        $status_receive = $Quotationcheck->status_receive;
         $statuscheck = $Quotationcheck->status_document;
         if ($correct >= 1) {
             $correctup = $correct + 1;
@@ -1765,12 +1772,18 @@ class QuotationController extends Controller
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
                 $save->additional_discount = $Add_discount;
                 $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
-                if ($count < 1 ) {
-                    $save->status_document = 1;
+                if ($status_receive == 1 ) {
+                    if ($totaldraw == 1) {
+                        $save->status_document = 9;
+                    }
                     $save->status_guest = 0;
                     $save->Confirm_by = 'Auto';
-                }else if ($statuscheck == 4) {
-                    $save->status_document = 1;
+                }else{
+                    if ($totaldraw == 1) {
+                        $save->status_document = 9;
+                    }else{
+                        $save->status_document = 1;
+                    }
                     $save->status_guest = 0;
                     $save->Confirm_by = 'Auto';
                 }
@@ -1780,13 +1793,18 @@ class QuotationController extends Controller
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
                 $save->additional_discount = $Add_discount;
-                $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
-                if ($count < 1 ) {
-                    $save->status_document = 2;
+                if ($status_receive == 1 ) {
+                    if ($totaldraw == 1) {
+                        $save->status_document = 9;
+                    }
                     $save->Confirm_by = '-';
                     $save->status_guest = 0;
-                }else if ($statuscheck == 4) {
-                    $save->status_document = 2;
+                }else{
+                    if ($totaldraw == 1) {
+                        $save->status_document = 9;
+                    }else{
+                        $save->status_document = 2;
+                    }
                     $save->status_guest = 0;
                     $save->Confirm_by = '-';
                 }

@@ -62,16 +62,6 @@
                                                     <th style="text-align: center;"data-priority="1">No</th>
                                                     <th data-priority="1">Proposal ID</th>
                                                     <th data-priority="1">Company / Individual</th>
-                                                    <th>RI Doc.</th>
-                                                    <th>PI Doc.</th>
-                                                    <th>RE Doc.</th>
-                                                    <th class="text-center">PD Amount</th>
-                                                    <th class="text-center">RI Amount</th>
-                                                    <th class="text-center">DR Amount</th>
-                                                    <th class="text-center">AD Amount</th>
-                                                    <th class="text-center">Total Amount</th>
-                                                    <th class="text-center">RE Amount</th>
-                                                    <th class="text-center">Balance</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -82,51 +72,12 @@
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
                                                         </td>
-                                                        @php
-                                                            $receive_count =  DB::table('document_receive')->where('Quotation_ID',$item->Quotation_ID)
-                                                                ->count();
-
-                                                            $Adtotal =  DB::table('proposal_overbill')->where('Quotation_ID', $item->Quotation_ID)
-                                                            ->sum('Nettotal');
-                                                            $addtotal = $item->Nettotal + $Adtotal;  // Perform the addition first
-                                                            $receive = $item->receive_amount;
-                                                            $revenue = $item->Nettotal - $item->sumpayment;
-                                                        @endphp
                                                         <td>{{ $item->Quotation_ID}}</td>
                                                         @if ($item->type_Proposal == 'Company')
                                                             <td style="text-align: left;">{{ @$item->companytwo->Company_Name}}</td>
                                                         @else
                                                             <td style="text-align: left;">{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                         @endif
-                                                        <td>{{ $item->receiveinvoice_count }}</td>
-                                                        <td>{{ $item->invoice_count }}</td>
-                                                        <td>{{ $receive_count }}</td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($item->Nettotal, 2) }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($item->receiveinvoice_amount, 2) }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($revenue, 2) }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($Adtotal , 2) }}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{number_format($addtotal - $revenue , 2)}}
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            @if ($item->receive_amount == 0 )
-                                                                0
-                                                            @else
-                                                                {{ number_format($item->receive_amount, 2) }}
-                                                            @endif
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            {{ number_format($addtotal - $revenue , 2) }}
-                                                        </td>
-
                                                         <td style="text-align: center;">
                                                             <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}'">
                                                                 Select

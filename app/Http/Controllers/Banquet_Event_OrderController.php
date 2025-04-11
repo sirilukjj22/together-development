@@ -50,6 +50,10 @@ use App\Models\receive_cheque;
 use App\Models\master_payment_and_complimentary;
 use App\Models\document_deposit_revenue;
 use App\Models\depositrevenue;
+use App\Models\banquet_asset;
+use App\Models\banquet_food;
+use App\Models\banquet_schedule;
+use App\Models\banquet_setup;
 class Banquet_Event_OrderController extends Controller
 {
     public function index()
@@ -171,15 +175,42 @@ class Banquet_Event_OrderController extends Controller
     }
     public function save(Request $request ,$id){
         $data = $request->all();
+
         $schedules = [];
         $assets = [];
         $Food = [];
+        $tempGroup = [];
+        $setup = [];
+        $tempSetupGroup = [];
+        $tempschedulesGroup = [];
+        $defaultschedulesKeys = [
+            "DateSchedule" => null,
+            "StartSchedule" => null,
+            "EndSchedule" => null,
+            "RoomSchedule" => null,
+            "functionSchedule" => null,
+            "setupSchedule" => null,
+            "agrSchedule" => null,
+            "gtdSchedule" => null,
+            "setSchedule" => null,
+        ];
+        $defaultFoodKeys = [
+            "date-food" => null,
+            "startfoodTime" => null,
+            "endfoodTime" => null,
+            "foodinputRoom" => null,
+            "foodinputSpecial" => null,
+            "foodinputGuest" => null,
+            "foodinputFood" => null,
+            "foodinputtype" => null,
+            "foodinputDrink" => null,
+        ];
         foreach ($data as $key => $value) {
             if (preg_match('/^(DateSchedule|RoomSchedule|functionSchedule|setupSchedule|agrSchedule|setSchedule|StartSchedule|EndSchedule)_(\d+)$/', $key, $matches)) {
                 $index = $matches[2]; // ดึงหมายเลข Schedule
                 $field = $matches[1];  // ชื่อฟิลด์ เช่น DateSchedule, RoomSchedule
 
-                $schedules[$index][$field] = $value;
+                $tempschedulesGroup[$index][$field] = $value;
             }
             if (preg_match('/^(assetItem|quantity|remarks|price)_(\d+)$/', $key, $matches)) {
                 $indexItem = $matches[2]; // ดึงหมายเลข Schedule
@@ -187,16 +218,321 @@ class Banquet_Event_OrderController extends Controller
 
                 $assets[$indexItem][$fieldItem] = $value;
             }
-            if (preg_match('/^(date-food|startfoodTime|endfoodTime|foodinputRoom|foodinputSpecial|foodinputGuest|foodinputFood|foodinputtype|foodinputDrink)_(\d+)$/', $key, $matches)) {
-                $indexFood = $matches[2]; // ดึงหมายเลข Schedule
-                $fieldFood = $matches[1];  // ชื่อฟิลด์ เช่น DateSchedule, RoomSchedule
+            if (preg_match('/^(date-food|startfoodTime|endfoodTime|foodinputRoom|foodinputSpecial|foodinputGuest|foodinputFood|foodinputtype|foodinputDrink)_(\d+(?:_\d+)?)$/', $key, $matches)) {
+                $field = $matches[1];
+                $index = $matches[2];
+                $tempGroup[$index][$field] = $value;
 
-                $Food[$indexFood][$fieldFood] = $value;
+            }
+
+
+            foreach ($data as $key => $value) {
+                if (preg_match('/^(date-setup|setupRoom|setupDetails|startsetupTime|endsetupTime|setup-id)_(\d+(?:_\d+)?)$/', $key, $matches)) {
+                    $field = $matches[1];
+                    $index = $matches[2];
+                    $tempSetupGroup[$index][$field] = $value;
+                }
             }
         }
+        $newschedulesIndex = 1;
+        foreach ($tempschedulesGroup as $group) {
+            $schedules[$newschedulesIndex++] = array_merge($defaultschedulesKeys, $group);
+        }
+        $newIndex = 1;
+        foreach ($tempGroup as $group) {
+            $Food[$newIndex++] = array_merge($defaultFoodKeys, $group);
+        }
+        $newSetupIndex = 1;
+        foreach ($tempSetupGroup as $group) {
+            $setup[$newSetupIndex++] = $group;
+        }
+        $eventInfo = [
+            "sales" => $request->input('sales'),
+            "eventDate" => $request->input('eventDate'),
+            "catering" => $request->input('catering'),
+            "number" => $request->input('team'),
+            "vehicle" => $request->input('vehicle')
+        ];
 
+        $Quotation = Quotation::where('id', $id)->first();
+        $currentDate = Carbon::now();
+        $ID = 'BEO-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = banquet_event_order::latest()->first();
+        $nextNumber = 1;
 
-        dd($id,$data,$schedules,$assets,$Food);
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $BEOID = $ID.$year.$month.$newRunNumber;
+        $companyid= $Quotation->Company_ID;
+        $parts = explode('-', $companyid);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $Selectdata =  'Company';
+            $company =  companys::where('Profile_ID',$companyid)->first();
+            if ($company) {
+                $Address=$company->Address;
+                $Company_typeID=$company->Company_type;
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $fullName = "บริษัท ". $company->Company_Name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                }else{
+                    $fullName = $comtype->name_th . $company->Company_Name;
+                }
+
+            }
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$companyid)->first();
+            if ($guestdata) {
+                $Selectdata =  'Guest';
+                $Company_typeID=$guestdata->Company_type;
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="นาย") {
+                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                }elseif ($comtype->name_th =="นาง") {
+                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                }elseif ($comtype->name_th =="นางสาว") {
+                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                }else{
+                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                }
+
+            }
+        }
+        try {
+            $userid = Auth::user()->id;
+            $save = new banquet_event_order();
+            $save->Banquet_ID = $BEOID;
+            $save->Quotation_ID = $Quotation->Quotation_ID;
+            $save->Company_ID = $Quotation->Company_ID;
+            $save->event_date = $eventInfo['eventDate'];
+            $save->sales = $eventInfo['sales'];
+            $save->catering = $eventInfo['catering'];
+            $save->number = $eventInfo['number'];
+            $save->Operated_by = $userid;
+            $save->vehicle = $eventInfo['vehicle'];
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+        try {
+            foreach ($schedules as $value) {
+                $schedulesave = new banquet_schedule();
+                $schedulesave->Banquet_ID = $BEOID;
+                $schedulesave->date = $value['DateSchedule'];
+                $schedulesave->first_time = $value['StartSchedule'];
+                $schedulesave->last_time = $value['EndSchedule'];
+                $schedulesave->room = $value['RoomSchedule'];
+                $schedulesave->function = $value['functionSchedule'];
+                $schedulesave->setup = $value['setupSchedule'];
+                $schedulesave->agr_schedule = $value['agrSchedule'];
+                $schedulesave->gtd_schedule = $value['gtdSchedule'];
+                $schedulesave->set_schedule = $value['setSchedule'];
+                $schedulesave->save();
+            }
+        } catch (\Throwable $e) {
+            banquet_event_order::where('Banquet_ID', $BEOID)->delete();
+            banquet_schedule::where('Banquet_ID', $BEOID)->delete();
+            banquet_asset::where('Banquet_ID', $BEOID)->delete();
+            banquet_food::where('Banquet_ID', $BEOID)->delete();
+            banquet_setup::where('Banquet_ID', $BEOID)->delete();
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+        try {
+            foreach ($assets as $value) {
+                $assetsave = new banquet_asset();
+                $assetsave->Banquet_ID = $BEOID;
+                $assetsave->item = $value['assetItem'];
+                $assetsave->quantity = $value['quantity'];
+                $assetsave->remarks = $value['remarks'];
+                $assetsave->price = $value['price'];
+                $assetsave->save();
+            }
+        } catch (\Throwable $e) {
+            banquet_event_order::where('Banquet_ID', $BEOID)->delete();
+            banquet_schedule::where('Banquet_ID', $BEOID)->delete();
+            banquet_asset::where('Banquet_ID', $BEOID)->delete();
+            banquet_food::where('Banquet_ID', $BEOID)->delete();
+            banquet_setup::where('Banquet_ID', $BEOID)->delete();
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+        try {
+            foreach ($Food as $value) {
+                $foodsave = new banquet_food();
+                $foodsave->Banquet_ID = $BEOID;
+                $foodsave->date = $value['date-food'];
+                $foodsave->first_time = $value['startfoodTime'];
+                $foodsave->last_time = $value['endfoodTime'];
+                $foodsave->room = $value['foodinputRoom'];
+                $foodsave->special = $value['foodinputSpecial'];
+                $foodsave->number_guest	 = $value['foodinputGuest'];
+                $foodsave->food = $value['foodinputFood'];
+                $foodsave->food_type = $value['foodinputtype'];
+                $foodsave->drink = $value['foodinputDrink'];
+                $foodsave->save();
+            }
+        } catch (\Throwable $e) {
+            banquet_event_order::where('Banquet_ID', $BEOID)->delete();
+            banquet_schedule::where('Banquet_ID', $BEOID)->delete();
+            banquet_asset::where('Banquet_ID', $BEOID)->delete();
+            banquet_food::where('Banquet_ID', $BEOID)->delete();
+            banquet_setup::where('Banquet_ID', $BEOID)->delete();
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+        try {
+            foreach ($setup as $value) {
+                $setupsave = new banquet_setup();
+                $setupsave->Banquet_ID = $BEOID;
+                $setupsave->setup_id = $value['setup-id'];
+                $setupsave->date = $value['date-setup'];
+                $setupsave->first_time = $value['startsetupTime'];
+                $setupsave->last_time = $value['endsetupTime'];
+                $setupsave->room = $value['setupRoom'];
+                $setupsave->details = $value['setupDetails'];
+                $setupsave->save();
+            }
+            //code...banquet_setup
+        } catch (\Throwable $e) {
+            banquet_event_order::where('Banquet_ID', $BEOID)->delete();
+            banquet_schedule::where('Banquet_ID', $BEOID)->delete();
+            banquet_asset::where('Banquet_ID', $BEOID)->delete();
+            banquet_food::where('Banquet_ID', $BEOID)->delete();
+            banquet_setup::where('Banquet_ID', $BEOID)->delete();
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+        try {
+            $name = 'ชื่อลูกค้า : '.$fullName;
+            $doc = 'รหัสใบคำสั่งจัดงานเลี้ยง : '.$BEOID;
+            $refresh = 'อ้างอิงจาก : '.$Quotation->Quotation_ID;
+            $formattedschedules = [];
+            foreach ($schedules as $data) {
+                $formattedschedules[] =
+                    'Date : ' . ($data['DateSchedule'] ?? ' ') . ' , ' .
+                    'Room : ' . ($data['RoomSchedule'] ?? ' ') . ' , ' .
+                    'Start : ' . ($data['StartSchedule'] ?? ' ') . ' , ' .
+                    'End : ' . ($data['EndSchedule'] ?? ' ') . ' , ' .
+                    'Function : ' . ($data['functionSchedule'] ?? ' ') . ' , ' .
+                    'Setup : ' . ($data['setupSchedule'] ?? ' ') . ' , ' .
+                    'Agr : ' . ($data['agrSchedule'] ?? ' ') . ' , ' .
+                    'GTD : ' . ($data['gtdSchedule'] ?? '-');
+            }
+            $formattedassets = [];
+            foreach ($assets as $data) {
+                $formattedassets[] =
+                    'Asset : ' . ($data['assetItem'] ?? ' ') . ' , ' .
+                    'Quantity : ' . ($data['quantity'] ?? ' ') . ' , ' .
+                    'Remarks : ' . ($data['remarks'] ?? ' ') . ' , ' .
+                    'Price : ' . ($data['price'] ?? '-');
+            }
+            $formattedFood = [];
+            foreach ($Food as $data) {
+                $formattedFood[] =
+                    'Date : ' . ($data['date-food'] ?? ' ') . ' , ' .
+                    'Room : ' . ($data['foodinputRoom'] ?? ' ') . ' , ' .
+                    'Start : ' . ($data['startfoodTime'] ?? ' ') . ' , ' .
+                    'End : ' . ($data['endfoodTime'] ?? ' ') . ' , ' .
+                    'Special : ' . ($data['foodinputSpecial'] ?? ' ') . ' , ' .
+                    'Guest : ' . ($data['foodinputGuest'] ?? '-') . ' , ' .
+                    'Food : ' . ($data['foodinputFood'] ?? '-') . ' , ' .
+                    'Type : ' . ($data['foodinputtype'] ?? '-') . ' , ' .
+                    'Drink :  '.($data['foodinputDrink'] ?? '-');
+            }
+            $formattedsetup = [];
+            foreach ($setup as $data) {
+                $formattedsetup[] =
+                    'Date : ' . ($data['date-setup'] ?? ' ') . ' , ' .
+                    'Room : ' . ($data['setupRoom'] ?? ' ') . ' , ' .
+                    'Start : ' . ($data['startsetupTime'] ?? ' ') . ' , ' .
+                    'End : ' . ($data['endsetupTime'] ?? '-') . ' , ' .
+                    'Details :  '.($data['setupDetails'] ?? '-');
+            }
+            $datacompany = '';
+
+            $variables = [$name, $refresh,$doc];
+            $formattedProductDataString = implode(' + ', array_merge(
+                $formattedschedules,
+                $formattedassets,
+                $formattedFood,
+                $formattedsetup
+            ));
+            $variables[] = $formattedProductDataString;
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $BEOID;
+            $save->type = 'Create';
+            $save->Category = 'Create :: Banquet event order';
+            $save->content =$datacompany;
+            $save->save();
+        } catch (\Throwable $e) {
+            banquet_event_order::where('Banquet_ID', $BEOID)->delete();
+            banquet_schedule::where('Banquet_ID', $BEOID)->delete();
+            banquet_asset::where('Banquet_ID', $BEOID)->delete();
+            banquet_food::where('Banquet_ID', $BEOID)->delete();
+            banquet_setup::where('Banquet_ID', $BEOID)->delete();
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+        $data = $request->all();
+        $selectsetupJson = $request->input('selectsteup'); // รับค่า JSON string
+        $selectsetupArray = json_decode($selectsetupJson, true); // แปลงเป็น array
+        $selectsetupArray['Banquet_ID'] = $BEOID; // เพิ่มค่าใหม่เข้า array
+
+        $Setup_ID = $selectsetupArray['setup'];
+        $Banquet_ID = $selectsetupArray['Banquet_ID'];
+        $setup_id =  $Setup_ID.','.$Banquet_ID;
+        return redirect()->route('Banquet.create_room', ['id' => $setup_id]);
     }
+    public function create_room($id)
+    {
+        $parts = explode(',', $id);
+        $Setup_ID = $parts[0];
+        $Banquet_ID = $parts[1];
+        $setup = banquet_setup::where('setup_id',$Setup_ID)->where('Banquet_ID',$Banquet_ID)->first();
+        return view('banquet_event_order.create_room',compact('setup','Setup_ID','Banquet_ID'));
+    }
+    public function save_room(Request $request ,$id)
+    {
 
+        $base64Image = $request->input('image_data');
+        $imageId = $request->input('image-id');
+        $BEO = $id;
+
+        $image_parts = explode(";base64,", $base64Image);
+        $image_base64 = base64_decode($image_parts[1]);
+        $filename = 'image_' . $BEO .'-'. $imageId . '.png';
+        $filePath = 'image_banquet/' . $filename; // ถูกต้อง
+        file_put_contents(public_path($filePath), $image_base64);
+        $setup = banquet_setup::where('Banquet_ID',$BEO)->where('setup_id',$imageId)->first();
+        $setup_id = $setup->id;
+        $image_id =  $BEO.'-'.$imageId;
+        try {
+            $save = banquet_setup::find($setup_id);
+            $save->image = $filePath;
+            $save->Image_ID = $image_id;
+            $save->save();
+            return redirect()->route('Banquet.index')->with('success', 'Data has been successfully saved.');
+        } catch (\Throwable $e) {
+            return redirect()->route('Banquet.index')->with('error', $e->getMessage());
+        }
+    }
 }

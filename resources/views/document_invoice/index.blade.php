@@ -251,11 +251,9 @@
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
                                                                         @endif
                                                                         @if ($item->document_status == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         @endif
                                                                         @if ($item->document_status == 2)
-                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         @endif
                                                                     @endif
@@ -266,11 +264,11 @@
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
                                                                             @endif
                                                                             @if ($item->document_status == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                             @endif
                                                                             @if ($item->document_status == 2)
-                                                                                <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                             @endif
                                                                         @endif
@@ -281,11 +279,11 @@
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revise({{ $item->id }})">Revise</a></li>
                                                                         @endif
                                                                         @if ($item->document_status == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         @endif
                                                                         @if ($item->document_status == 2)
-                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         @endif
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
@@ -378,21 +376,21 @@
                                                             @if ($rolePermission > 0)
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
+
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Cancel</a></li>
                                                                     @endif

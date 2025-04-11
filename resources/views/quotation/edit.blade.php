@@ -351,7 +351,7 @@
                                         <div class="input-group">
                                             <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" value="{{$Quotation->checkin}}"  readonly  required>
                                             <input type="hidden" id="inputmonth" name="inputmonth" value="">
-                                            <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="">
+                                            <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="{{$Quotation->Date_type}}">
                                             <input type="hidden" id="Date_type" name="Date_type" value="">
                                             <input type="hidden" id="CheckinNew" name="CheckinNew" value="{{$Quotation->checkin}}">
                                             <div class="input-group-prepend">
@@ -1003,6 +1003,9 @@
     <input type="hidden" id="allRowsDataInputSelect" name="allRowsDataSelect">
     <input type="hidden" name="preview" value="1" id="preview">
     <input type="hidden" name="hiddenProductData" id="hiddenProductData">
+    <input type="hidden" name="checktotal" id="checktotal">
+    <input type="hidden" name="totalRe" id="totalRe" value="{{$totalRe}}">
+    <input type="hidden" name="totaldraw" value="1" id="totaldraw">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
@@ -2369,124 +2372,6 @@
                     totalAmost();
                 }
             });
-            // $(document).on('keyup', '.quantity-input', function() {
-            //     for (let i = 0; i < 50; i++) {
-            //         var number_ID = $(this).attr('rel');
-            //         var quantitymain =  Number($(this).val());
-            //         var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
-            //         var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
-            //         var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-            //         var pricenew = quantitymain*unitmain*price
-            //         console.log(discountmain);
-            //         if (discountmain === " " || discountmain == 0) {
-            //             var allcount0 = price;
-            //             $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //             var pricediscount = pricenew;
-            //             $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //         }else{
-            //             var pricediscount = pricenew - (pricenew*discountmain /100);
-            //             $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //             var pricediscount =  (price*discountmain /100);
-            //             var allcount0 = price - pricediscount;
-            //             $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //         }
-            //         var paxmain = parseFloat($('#pax' + number_ID).val());
-            //         if (isNaN(paxmain)) {
-            //             paxmain = 0;
-            //         }
-            //         var pax = paxmain*quantitymain;
-            //         $('#paxtotal'+number_ID).text(pax);
-            //         totalAmost();
-            //     }
-            // });
-            // $(document).on('keyup', '.discount-input', function() {
-            //     for (let i = 0; i < 50; i++) {
-            //         var number_ID = $(this).attr('rel');
-            //         var discountmain =  Number($(this).val().trim());
-
-            //         // ถ้าค่าเป็นค่าว่างหรือไม่ใช่ตัวเลข จะตั้งค่าเป็น 0
-            //         if (isNaN(discountmain) || $(this).val().trim() === "") {
-            //             discountmain = 0; // ตั้งค่าเป็น 0 ถ้าค่าว่าง
-            //         }
-
-            //         var maxdiscount = parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
-            //         var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-            //         var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-            //         var SpecialDiscount = User_discount + Add_discount;
-            //         var quantitymain = parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-            //         var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-            //         var unitmain = parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
-            //         var pricenew = quantitymain * unitmain * price;
-
-            //         // ถ้าไม่มีการกรอกค่า (หรือค่าเป็น 0) ให้แสดงราคาเต็ม
-            //         if (discountmain === 0) {
-            //             var allcount0 = price;
-            //             $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //             var pricediscount = pricenew;
-            //             $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //         } else {
-            //             // ตรวจสอบว่าค่าส่วนลดเกิน maxdiscount หรือ SpecialDiscount หรือไม่
-            //             if (discountmain > SpecialDiscount) {
-            //                 if (SpecialDiscount > maxdiscount) {
-            //                     discountmain = maxdiscount;
-            //                     $(this).val(discountmain); // บังคับค่าเป็น maxdiscount
-            //                 }else{
-            //                     discountmain = SpecialDiscount;
-            //                     $(this).val(discountmain); // บังคับค่าเป็น maxdiscount
-            //                 }
-            //             }else{
-            //                 if (discountmain > maxdiscount) {
-            //                     discountmain = maxdiscount;
-            //                     $(this).val(discountmain); // บังคับค่าเป็น maxdiscount
-            //                 }
-            //             }
-            //             console.log(discountmain);
-
-            //             var pricediscount = pricenew - (pricenew * discountmain / 100);
-            //             $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //             var pricediscount = (price * discountmain / 100);
-            //             var allcount0 = price - pricediscount;
-            //             $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //         }
-
-            //         var paxmain = parseFloat($('#pax' + number_ID).val());
-            //         if (isNaN(paxmain)) {
-            //             paxmain = 0;
-            //         }
-            //         var pax = paxmain * quantitymain;
-            //         $('#paxtotal'+number_ID).text(pax);
-            //         totalAmost();
-            //     }
-            // });
-
-
-            // $(document).on('keyup', '.unit-input', function() {
-            //     for (let i = 0; i < 50; i++) {
-            //         var number_ID = $(this).attr('rel');
-            //         var unitmain =  Number($(this).val());
-            //         var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
-            //         var quantitymain  =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-            //         var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-            //         var pricenew = quantitymain*unitmain*price;
-
-            //         console.log(discountmain);
-
-            //         if (discountmain === " " || discountmain == 0 ||  discountmain == null) {
-            //             console.log(1);
-            //             var allcount0 = price;
-            //             $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //             var pricediscount = pricenew;
-            //             $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //         }else{
-            //             var pricediscount = pricenew - (pricenew*discountmain /100);
-            //             $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //             var pricediscount =  (price*discountmain /100);
-            //             var allcount0 = price - pricediscount;
-            //             $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            //         }
-            //         totalAmost();
-            //     }
-            // });
             $(document).on('keyup', '.DiscountAmount', function() {
                 var DiscountAmount =  Number($(this).val());
                 if (DiscountAmount) {
@@ -2553,6 +2438,7 @@
                         }else{
                             $('#Pax').css('display', 'block');
                         }
+                        $('#checktotal').val(isNaN(Nettotal) ? '0' : Nettotal);
                     }
                     else if(typevat == '51')
                     {
@@ -2582,6 +2468,7 @@
                         }else{
                             $('#Pax').css('display', 'block');
                         }
+                        $('#checktotal').val(isNaN(Nettotal) ? '0' : Nettotal);
                     } else if(typevat == '52'){
                         paxtotal +=pax;
                         PaxToTalall = paxtotal;
@@ -2609,6 +2496,7 @@
                         }else{
                             $('#Pax').css('display', 'block');
                         }
+                        $('#checktotal').val(isNaN(Nettotal) ? '0' : Nettotal);
                     }
                 });
                 var rowCount = $('#display-selected-items tr').not(':first').length;
@@ -2668,33 +2556,47 @@
             });
         }
         function confirmSubmit(event) {
-            event.preventDefault(); // Prevent the form from submitting
-            var Quotationold = $('#Quotationold').val();
-            var Quotation_ID = $('#Quotation_ID').val();
-            var message = `If the offer code data is saved as ${Quotationold}, the offer is cancelled`;
-            var title = `Do you want to save the ${Quotation_ID} data?`;
-            Swal.fire({
-                title: title,
-                text: message,
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "Cancel",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "preview";
-                    input.value = 0;
-
-                    // เพิ่ม input ลงในฟอร์ม
-                    document.getElementById("myForm").appendChild(input);
-                    document.getElementById("myForm").removeAttribute('target');
-                    document.getElementById("myForm").submit();
-                }
-            });
+            event.preventDefault();
+            var checktotal = $('#checktotal').val();
+            var totalRe = $('#totalRe').val();
+            if (checktotal < totalRe) {
+                Swal.fire({
+                    icon: "error",
+                    text: "Proposal is less than Receipt.",
+                });
+            }else{
+                // Prevent the form from submitting
+                var Quotationold = $('#Quotationold').val();
+                var Quotation_ID = $('#Quotation_ID').val();
+                var message = `If the offer code data is saved as ${Quotationold}, the offer is cancelled`;
+                var title = `Do you want to save the ${Quotation_ID} data?`;
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "Cancel",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = "preview";
+                        input.value = 0;
+                        if (checktotal == totalRe) {
+                            var input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = "totaldraw";
+                            input.value = 1;
+                        }
+                        document.getElementById("myForm").appendChild(input);
+                        document.getElementById("myForm").removeAttribute('target');
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
         }
     </script>
 @endsection

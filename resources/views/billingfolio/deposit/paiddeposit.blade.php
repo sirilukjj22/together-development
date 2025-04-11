@@ -422,7 +422,7 @@
                                             <div>
                                                 <label for="arrival">Arrival</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$deposit->Issue_date}}" required>
+                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$Proposal->checkin}}" required>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -434,7 +434,7 @@
                                             <div>
                                                 <label for="departure">Departure</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$deposit->ExpirationDate}}" required>
+                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Proposal->checkout}}" required>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>

@@ -345,7 +345,7 @@
                                 <div class="row my-3">
                                     <label for=""><b>Deposit Invoice</b></label>
                                     <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <select id="deposit" name="deposit[]" multiple class="select2" >
+                                        <select id="deposit" name="deposit[]" multiple class="select2" @readonly(true) >
                                             @foreach ($Deposit_ID as $key => $item)
                                                 <option value="{{ $item->id }}">Deposit ID : {{ $item->Deposit_ID }}  Amount : {{ $item->amount }}</option>
                                             @endforeach
@@ -702,7 +702,86 @@
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript">
+        $(document).ready(function() {
+            // รอให้ select2 ถูกสร้างเสร็จ
+            $('#deposit').select2();
 
+            // 2. ดึงค่าทุก option ใน select
+            var allValues = $('#deposit option').map(function() {
+                return $(this).val();
+            }).get();
+
+            // 3. ตั้งค่าให้เลือกทั้งหมด แล้ว trigger change เพื่อเข้า function
+            $('#deposit').on('change', function() {
+                $('#display-deposit').empty();  // ล้างค่าเก่า
+                $('#detail_deposit').empty();
+
+                let id = $(this).val();
+                console.log("Selected Deposit ID:", id); // ตรวจสอบค่า ID ที่ส่งไป
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "{!! url('/Document/invoice/data/" + id + "') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(response) {
+                        console.log("AJAX Response:", response); // ตรวจสอบค่า response
+
+                        if (!response.deposit || response.deposit.length === 0) {
+                            console.log("No deposit data found!");
+                            return;
+                        }
+
+                        var depost = response.deposit;
+                        var totalAmount = depost.reduce((sum, item) => sum + parseFloat(item.Amount), 0);
+                        $('#Deposit_all').val(totalAmount);
+
+                        depost.forEach((depost, index) => {
+                            let depositID = depost.Deposit_ID;
+                            console.log("Processing Deposit_ID:", depositID);
+
+                            // ตรวจสอบว่ามี Deposit_ID นี้อยู่แล้วหรือไม่
+                            if ($('#display-deposit tr[data-id="' + depositID + '"]').length === 0) {
+                                let newRow = `
+                                    <tr data-id="${depositID}">
+                                        <td style="text-align: center;">${index + 1}</td>
+                                        <td>Deposit Invoice ID : ${depositID}</td>
+                                        <td style="text-align: right;">
+                                            - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
+                                        </td>
+                                    </tr>
+                                `;
+                                $('#display-deposit').append(newRow); // ✅ ใช้ #display-deposit โดยตรง
+                                console.log("Added new row for Deposit_ID:", depositID);
+                            } else {
+                                console.log("Duplicate Deposit_ID found, skipping:", depositID);
+                            }
+
+                            let newListItem = `
+                                <li class="pr-3" data-id="${depositID}">
+                                    <span>Deposit Invoice ID (${depositID})</span>
+                                    <span class="text-danger f-w-bold"> - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })}</span>
+                                </li>
+                            `;
+                            $('#detail_deposit').append(newListItem);
+                        });
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed: ", status, error);
+                    }
+                });
+            });
+            var allValues = $('#deposit option').map(function() {
+                return $(this).val();
+            }).get();
+            $('#deposit').val(allValues).trigger('change');
+            $('#deposit').on('select2:unselecting', function(e) {
+                e.preventDefault(); // ป้องกันไม่ให้ unselect
+            });
+            total();
+        });
         $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
@@ -710,70 +789,6 @@
             $('.select2Com').select2({
                 placeholder: "Please select an option"
             });
-
-            $('#deposit').on('change', function() {
-    $('#display-deposit').empty();  // ล้างค่าเก่า
-    $('#detail_deposit').empty();
-
-    let id = $(this).val();
-    console.log("Selected Deposit ID:", id); // ตรวจสอบค่า ID ที่ส่งไป
-
-    jQuery.ajax({
-        type: "GET",
-        url: "{!! url('/Document/invoice/data/" + id + "') !!}",
-        datatype: "JSON",
-        async: false,
-        success: function(response) {
-            console.log("AJAX Response:", response); // ตรวจสอบค่า response
-
-            if (!response.deposit || response.deposit.length === 0) {
-                console.log("No deposit data found!");
-                return;
-            }
-
-            var depost = response.deposit;
-            var totalAmount = depost.reduce((sum, item) => sum + parseFloat(item.Amount), 0);
-            $('#Deposit_all').val(totalAmount);
-
-            depost.forEach((depost, index) => {
-                let depositID = depost.Deposit_ID;
-                console.log("Processing Deposit_ID:", depositID);
-
-                // ตรวจสอบว่ามี Deposit_ID นี้อยู่แล้วหรือไม่
-                if ($('#display-deposit tr[data-id="' + depositID + '"]').length === 0) {
-                    let newRow = `
-                        <tr data-id="${depositID}">
-                            <td style="text-align: center;">${index + 1}</td>
-                            <td>Deposit Invoice ID : ${depositID}</td>
-                            <td style="text-align: right;">
-                                - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB
-                            </td>
-                        </tr>
-                    `;
-                    $('#display-deposit').append(newRow); // ✅ ใช้ #display-deposit โดยตรง
-                    console.log("Added new row for Deposit_ID:", depositID);
-                } else {
-                    console.log("Duplicate Deposit_ID found, skipping:", depositID);
-                }
-
-                let newListItem = `
-                    <li class="pr-3" data-id="${depositID}">
-                        <span>Deposit Invoice ID (${depositID})</span>
-                        <span class="text-danger f-w-bold"> - ${Number(depost.Amount).toLocaleString('en-th', { minimumFractionDigits: 2 })}</span>
-                    </li>
-                `;
-                $('#detail_deposit').append(newListItem);
-            });
-
-            total();
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX request failed: ", status, error);
-        }
-    });
-});
-
-
         });
 
 
@@ -825,7 +840,7 @@
         function total() {
             var sum = parseFloat(document.getElementById('totalamout_total').value);
             var vat_type = parseFloat(document.getElementById('vat_type').value);
-            var Deposit_all = parseFloat(document.getElementById('Deposit_all').value);
+            var Deposit_all = parseFloat(document.getElementById('Deposit_all').value) || 0;
             var Nettotal = parseFloat(document.getElementById('amount').value.replace(/,/g, '')) || 0;
             let Subtotal =0;
             let total =0;
@@ -912,20 +927,7 @@
                 }
             });
         });
-        document.getElementById("switchButton").addEventListener("click", function () {
-            const defaultContent = document.getElementById("defaultContent");
-            const toggleContent = document.getElementById("toggleContent");
 
-            if (defaultContent.style.display === "none") {
-                defaultContent.style.display = "block";
-                toggleContent.style.display = "none";
-                this.innerHTML = "&#8644;";
-            } else {
-                defaultContent.style.display = "none";
-                toggleContent.style.display = "block";
-                this.innerHTML = "&#8646;";
-            }
-        });
 
         function togglePaymentFields() {
             var radio0 = document.getElementById('radio0');

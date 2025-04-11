@@ -442,13 +442,13 @@
                                                                                 @if ($item->status_document !== 9)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 @endif
-                                                                                @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
+                                                                                @if (!$item->status_receive)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="invoice({{ $item->id }})">Profoma Invoice</a></li>
-
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/create/'.$item->id) }}">Additional Charge</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -473,12 +473,13 @@
                                                                                     @if ($item->status_document !== 9)
                                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                     @endif
-                                                                                    @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
+                                                                                    @if (!$item->status_receive)
                                                                                         <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                     @endif
                                                                                     @if ($item->status_document == 6)
                                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="invoice({{ $item->id }})">Profoma Invoice</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/create/'.$item->id) }}">Additional Charge</a></li>
                                                                                     @endif
                                                                                     @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                         <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>
@@ -502,12 +503,13 @@
                                                                                 @if ($item->status_document !== 9)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 @endif
-                                                                                @if ($item->status_document == 1 || $item->status_document == 3 || $item->status_document == 5 || $item->status_document == 4)
+                                                                                @if (!$item->status_receive)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Deposit/create/'.$item->id) }}">Deposit Invoice</a></li>
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="invoice({{ $item->id }})">Profoma Invoice</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/Additional/Charge/create/'.$item->id) }}">Additional Charge</a></li>
                                                                                 @endif
                                                                                 @if ($item->status_document == 6 && $item->status_receive > 0 )
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="noshow({{ $item->id }})">No Show</a></li>

@@ -845,8 +845,6 @@
             });
             $(function() {
                 var start = moment();
-
-
                 var end = moment().add(7, 'days');
                 function cb(start, end) {
                     $('#datestart').val(start.format('DD/MM/Y'));
