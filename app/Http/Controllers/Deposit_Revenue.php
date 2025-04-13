@@ -273,7 +273,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -451,7 +451,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -574,6 +574,7 @@ class Deposit_Revenue extends Controller
     public function save(Request $request){
 
         $data = $request->all();
+
         $userid = Auth::user()->id;
         $datarequest = [
             'Proposal_ID' => $data['QuotationID'] ?? null,
@@ -715,12 +716,10 @@ class Deposit_Revenue extends Controller
                     $email = $company->Company_Email;
                 }
             }else{
-
                 $guestdata =  Guest::where('Profile_ID',$companyid)->first();
-
                 if ($guestdata) {
                     $Selectdata =  'Guest';
-                    $Company_typeID=$guestdata->Company_type;
+                    $Company_typeID=$guestdata->preface;
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="นาย") {
                         $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -998,7 +997,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -1232,7 +1231,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -1489,7 +1488,7 @@ class Deposit_Revenue extends Controller
 
                 if ($guestdata) {
                     $Selectdata =  'Guest';
-                    $Company_typeID=$guestdata->Company_type;
+                    $Company_typeID=$guestdata->preface;
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="นาย") {
                         $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -1744,7 +1743,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -1901,7 +1900,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $comtypefullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -2145,7 +2144,7 @@ class Deposit_Revenue extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -2559,7 +2558,7 @@ class Deposit_Revenue extends Controller
                 $name_ID = $guestdata->Profile_ID;
                 $datasub = guest_tax::where('Company_ID',$name_ID)->get();
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;

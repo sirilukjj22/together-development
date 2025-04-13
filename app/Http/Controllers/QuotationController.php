@@ -95,6 +95,13 @@ class QuotationController extends Controller
         $invoice = document_invoices::where('Quotation_ID',$Proposal_ID)->count();
         return response()->json([ 'data' => $invoice]);
     }
+    public function check_additional($id){
+        $Quotation = Quotation::where('id', $id)->first();
+        $Proposal_ID = $Quotation->Quotation_ID;
+        $additional = proposal_overbill::where('Quotation_ID',$Proposal_ID)->where('status_guest',0)->count();
+        return response()->json([ 'data' => $additional]);
+    }
+
     public function SearchAll(Request $request){
 
         $checkinDate  = $request->checkin;
@@ -1246,6 +1253,7 @@ class QuotationController extends Controller
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $Quotation = Quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation->Quotation_ID;
+        $Nettotal = $Quotation->Nettotal;
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();

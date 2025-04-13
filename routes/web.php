@@ -784,6 +784,7 @@ Route::controller(QuotationController::class)->middleware(['role:document', 'tog
     Route::get('/Proposal/get/proposalTable', 'getproposalTable');
     //----------------------------
     Route::get('/Proposal/check/invoice/{id}', 'check_invoice');
+    Route::get('/Proposal/check/additional/{id}', 'check_additional');
     Route::get('/Proposal/get/PendingTable', 'PendingTable');
     // Route::get('/invoice/get/PendingTable','PendingTable');
     // Route::get('/invoice/get/ApprovedTable','ApprovedTable');
@@ -1005,6 +1006,10 @@ Route::controller(Banquet_Event_OrderController::class)->middleware(['role:docum
     Route::post('/Banquet/Event/Order/save/detail/{id}', 'save')->name('Banquet.save');
     Route::get('/Banquet/Event/Order/create/room/{id}', 'create_room')->name('Banquet.create_room');
     Route::post('/Banquet/Event/Order/save/detail/room/{id}', 'save_room')->name('Banquet.save_room');
+
+    Route::get('/Banquet/Event/Order/edit/view/{id}', 'edit')->name('Banquet.edit');
+    Route::post('/Banquet/Event/Order/save/event/details', 'save_event')->name('Banquet.save_event');
+
 });
 Route::controller(ReceiveChequeController::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');

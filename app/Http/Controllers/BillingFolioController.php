@@ -332,6 +332,7 @@ class BillingFolioController extends Controller
         ,'data_bank','data_cheque','ids','data_select'));
     }
     public function spiltebill(Request $request ,$id){
+        dd($request->all());
         $idss= $id;
         $payments = json_decode($request->input('paymentsData'), true);
         foreach ($payments as &$payment) { // ใช้ & เพื่อให้อัปเดตค่าได้
@@ -521,6 +522,7 @@ class BillingFolioController extends Controller
         $arrival = $request->arrival ?? '-';
         $departure = $request->departure ?? '-';
         $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
+        //additional_type
         $type = $Proposal->type_Proposal;
         $datadetailbill = [
             'valid'=>$valid,
@@ -2422,8 +2424,11 @@ class BillingFolioController extends Controller
         }
         $type = $Proposal->type_Proposal;
         $vat_type = $Proposal->vat_type;
+
+        $receive = receive_payment::where('Deposit_ID', $array)
+        ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
         return view('billingfolio.invoice.createone',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
-                    ,'DepositID','REID','Invoice_ID','settingCompany','data_bank','chequeRe','chequeRestatus','data_cheque'
+                    ,'DepositID','REID','Invoice_ID','settingCompany','data_bank','chequeRe','chequeRestatus','data_cheque','receive'
                     ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration','data_select'));
     }
     public function create($id){
@@ -2609,10 +2614,11 @@ class BillingFolioController extends Controller
         }
         $type = $Proposal->type_Proposal;
         $vat_type = $Proposal->vat_type;
-
+        $receive = receive_payment::where('Deposit_ID', $array)
+        ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
         return view('billingfolio.invoice.create',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','Proposal','Payment','sumpayment','amountproposal'
                     ,'DepositID','REID','Invoice_ID','settingCompany','additional_type','additional_Nettotal','Cash','Complimentary','data_bank','chequeRe','chequeRestatus','data_cheque'
-                    ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration','data_select'));
+                    ,'datasub','name_ID','name','type','vat_type','IssueDate','Expiration','data_select','receive','Additional'));
     }
     public function EditPaidInvoice($id){
         $re = receive_payment::where('id',$id)->first();
@@ -3304,11 +3310,14 @@ class BillingFolioController extends Controller
         $idinvoices = $invoices->id;
         $sumpayment = $invoices->sumpayment;
         $Quotation_ID = $invoices->Quotation_ID;
+        $Deposit_ID = $invoices->Deposit_ID;
+        $array = array_map('trim', explode(',', $Deposit_ID));
         $valid = Carbon::parse($invoices->created_at)->format('d/m/Y');
         $proposaldata = Quotation::where('Quotation_ID',$Quotation_ID)->first();
         $type_Proposal =$proposaldata->type_Proposal;
         $created_at = Carbon::parse($invoices->created_at)->format('d/m/Y');
         $template = master_template::query()->latest()->first();
+
         try {
             $Reservation_No = null;
             if ($reservationNo) {
@@ -3386,7 +3395,7 @@ class BillingFolioController extends Controller
             $save->type = 'Create';
             $save->Category = 'Create :: Billing Folio';
             $save->content =$datacompany;
-            $save->save();
+            // $save->save();
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
@@ -3581,6 +3590,13 @@ class BillingFolioController extends Controller
                 }
             }
             $productItems = array_merge($product);
+            $receive = receive_payment::where('Deposit_ID', $array)
+            ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
+            $Proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+            $Additional = null;
+            if ($additional != 0) {
+                $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
+            }
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -3605,6 +3621,9 @@ class BillingFolioController extends Controller
                 'productItems'=>$productItems,
                 'invoice'=>$REID,
                 'Amount'=>$Amount,
+                'Proposal'=>$Proposal,
+                'receive'=>$receive ?? null,
+                'Additional'=>$Additional ?? null,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);

@@ -453,7 +453,7 @@
                                             <div>
                                                 <label for="arrival">Arrival</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$Proposal->checkin}}" required>
+                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$Proposal->checkin}}" readonly>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -465,7 +465,7 @@
                                             <div>
                                                 <label for="departure">Departure</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Proposal->checkout}}" required>
+                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Proposal->checkout}}" readonly>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -726,16 +726,48 @@
                                         <section class="receipt-cutomer-detail-body">
                                             <div>
                                             <div style="overflow: auto;">
-                                                <table id="table-revenueEditBill" >
+                                                <table  id="table-revenueEditBill"  >
                                                     <thead>
                                                         <tr>
-                                                        <th>Date</th>
-                                                        <th >Description </th>
-                                                        <th>Reference</th>
-                                                        <th>amount</th>
+                                                            <th>Date</th>
+                                                            <th>Description </th>
+                                                            <th></th>
+                                                            <th>amount</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody >
+                                                    <tbody>
+                                                        @if ($Proposal)
+                                                            <tr style="border: none">
+                                                                <td >{{$Proposal->issue_date}}</td>
+                                                                <td >
+                                                                    <span id="displayDescriptionEditBill">{{$Proposal->Quotation_ID}}</span>
+                                                                </td>
+                                                                <td id="displayReferenceEditBill"></td>
+                                                                <td id="displayAmountEditBill"> {{ number_format($Proposal->Nettotal, 2, '.', ',') }} THB</td>
+                                                            </tr>
+                                                        @endif
+                                                        @if ($Additional)
+                                                            <tr style="border: none">
+                                                                <td >{{$Additional->issue_date}}</td>
+                                                                <td >
+                                                                    <span id="displayDescriptionEditBill">{{$Additional->Additional_ID}}</span>
+                                                                </td>
+                                                                <td id="displayReferenceEditBill"></td>
+                                                                <td id="displayAmountEditBill"> {{ number_format($Additional->Nettotal, 2, '.', ',') }} THB</td>
+                                                            </tr>
+                                                        @endif
+                                                        @foreach ($receive as $key => $item)
+                                                        <tr style="border: none">
+                                                            <td >{{$item->valid}}</td>
+                                                            <td >
+                                                                <span id="displayDescriptionEditBill">{{$item->Receipt_ID}} ({{$item->detail}})</span>
+                                                            </td>
+                                                            <td id="displayReferenceEditBill"></td>
+                                                            <td id="displayAmountEditBill"> - {{ number_format($item->document_amount, 2, '.', ',') }} THB</td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                    <tbody id="revenueEditBillTbody">
                                                         <tr style="border: none">
                                                             <td id="displayPaymentDateEditBill"></td>
                                                             <td >
@@ -746,6 +778,8 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
+
+
                                             </div>
                                             </div>
                                         </section>
@@ -847,7 +881,7 @@
                     var vattype = $('#vat_type').val();
 
                     var typeadditional = $('#additional_type').val();
-                    $('#table-revenueEditBill tbody').html('');
+                    $('#revenueEditBillTbody').html('');
                     var paymentDate = $('#paymentDate').val();
                     let payments = getAllPayments();
                     updateTable(payments);
@@ -1045,54 +1079,6 @@
                 inputElement.on('apply.daterangepicker', function(ev, picker) {
                     $(this).val(picker.startDate.format('DD/MM/YYYY'));
                 });
-            });
-            $(document).on('wheel', function(e) {
-                // Check if the date picker is open
-                if ($('.daterangepicker').is(':visible')) {
-                    // Close the date picker
-                    $('.daterangepicker').hide();
-                }
-            });
-        });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#arrival').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#arrival').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-
-            });
-            $(document).on('wheel', function(e) {
-                // Check if the date picker is open
-                if ($('.daterangepicker').is(':visible')) {
-                    // Close the date picker
-                    $('.daterangepicker').hide();
-                }
-            });
-        });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#departure').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#departure').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-
             });
             $(document).on('wheel', function(e) {
                 // Check if the date picker is open
@@ -2890,19 +2876,18 @@
         }
         function updateTable(allPayments) {
             var paymentDate = $('#paymentDate').val();
-            $('#table-revenueEditBill tbody').html('');
+            var InvoiceID = $('#InvoiceID').val();
+            $('#revenueEditBillTbody').html(''); // เคลียร์ข้อมูลเก่าก่อน
             allPayments.forEach((payment, index) => {
                 let newRow = `
-                    <tr >
+                    <tr>
                         <td>${paymentDate}</td>
-                        <td>
-                            ${payment.datanamebank}
-                        </td>
+                        <td>${payment.datanamebank}</td>
                         <td></td>
                         <td>${Number(payment.amount).toLocaleString('en-th', { minimumFractionDigits: 2 })} THB</td>
                     </tr>
                 `;
-                $('#table-revenueEditBill tbody').append(newRow);
+                $('#revenueEditBillTbody').append(newRow);
             });
         }
         function BACKtoEdit(){

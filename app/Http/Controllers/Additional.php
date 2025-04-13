@@ -844,18 +844,27 @@ class Additional extends Controller
     public function Quotation(Request $request){
         $data = $request->all();
         if (isset($data['value']) && $data['value'] == 'all') {
-            $Quotation = Quotation::with('guest', 'company')
-            ->whereIn('status_document', [6,9])
+            $Quotation = Quotation::with('guest', 'company', 'documentoverbill')
+            ->whereIn('status_document', [6, 9])
+            ->whereDoesntHave('documentoverbill', function($query) {
+                $query->where('status_guest', 0);
+            })
             ->get();
         } elseif (isset($data['value']) && $data['value'] == 'company') {
-            $Quotation = Quotation::with('company')
+            $Quotation = Quotation::with('company', 'documentoverbill')
             ->where('type_Proposal','Company')
             ->whereIn('status_document', [6,9])
+            ->whereDoesntHave('documentoverbill', function($query) {
+                $query->where('status_guest', 0);
+            })
             ->get();
         } elseif (isset($data['value']) && $data['value'] == 'guest') {
-            $Quotation = Quotation::with('guest')
+            $Quotation = Quotation::with('guest', 'documentoverbill')
             ->where('type_Proposal','Guest')
             ->whereIn('status_document', [6,9])
+            ->whereDoesntHave('documentoverbill', function($query) {
+                $query->where('status_guest', 0);
+            })
             ->get();
         }
         return response()->json([

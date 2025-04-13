@@ -111,9 +111,15 @@
                                                         <td>{{ $item->BEO_count ?? 0}}</td>
                                                         <td>{{ $item->Banquet_ID ?? '-' }}</td>
                                                         <td style="text-align: center;">
-                                                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Banquet/Event/Order/create/'.$item->id) }}'">
-                                                                Select
-                                                            </button>
+                                                            @if ($item->BEO_count)
+                                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Banquet/Event/Order/edit/view/'.$item->id) }}'">
+                                                                    Select
+                                                                </button>
+                                                            @else
+                                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Banquet/Event/Order/create/'.$item->id) }}'">
+                                                                    Select
+                                                                </button>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach

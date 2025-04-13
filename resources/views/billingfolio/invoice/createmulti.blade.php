@@ -492,6 +492,11 @@
                                                     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked disabled>
                                                     <label class="form-check-label" for="flexSwitchCheckChecked">Add H/G Online</label>
                                                 </div>
+                                            @else
+                                                <div class="form-check form-switch mt-2 "  style="padding-left:35px;display: none;">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="transform:translateY(-20%)"  checked disabled>
+                                                </div>
+
                                             @endif
 
                                             <div id="complimentaryDiv" class="d-none  mt-2">
@@ -508,10 +513,10 @@
                                                             <input type="text" id="Complimentary" name="Complimentary" class="form-control" placeholder="Enter Complimentary" value="{{ number_format($Complimentary, 2, '.', ',') }}" readonly>
                                                         </div>
                                                     </div>
+                                                    <div class="styled-hr mt-3"></div>
                                                 @endif
                                                 <input type="hidden" id="additionalcash" name="additional" class="form-control" value="{{$Cash+$Complimentary}}" readonly>
                                                 <input type="hidden" id="typeadditional" class="form-control" value="{{$additional_type}}" readonly>
-                                                <div class="styled-hr mt-3"></div>
                                             </div>
                                             <div class="mt-2">
                                                 <div>
@@ -668,6 +673,7 @@
     <script>
         $(document).ready(function() {
             const checkbox = document.getElementById('flexSwitchCheckChecked');
+            console.log(checkbox);
             const div = document.getElementById('complimentaryDiv');
             const inputs = div.querySelectorAll('input');
             var overbillamount = parseFloat($('#overbillamount').val()) || 0;
@@ -2426,6 +2432,8 @@
         });
         function Total() {
             const checkbox = document.getElementById('flexSwitchCheckChecked');
+
+
             var cashamount = parseFloat($('#totalamount').val()) || 0;
             var overbillamount = parseFloat($('#overbillamount').val()) || 0;
             var invoiceamount = parseFloat($('#invoiceamount').val()) || 0;

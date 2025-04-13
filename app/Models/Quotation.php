@@ -74,4 +74,8 @@ class Quotation extends Model
         return $this->hasOne(representative::class, 'Company_ID', 'Company_ID')
                 ->where('status', 1);
     }
+    public function documentoverbill()
+{
+    return $this->hasOne(proposal_overbill::class, 'Quotation_ID', 'Quotation_ID');
+}
 }

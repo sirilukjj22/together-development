@@ -401,12 +401,42 @@
                     <thead >
                         <tr >
                             <th>Date</th>
-                            <th >Description </th>
-                            <th>Reference</th>
+                            <th style="text-align: left">Description </th>
+                            <th></th>
                             <th style="text-align: right">amount</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @if ($Proposal)
+                        <tr>
+                            <td >{{$Proposal->issue_date}}</td>
+                            <td >
+                                {{$Proposal->Quotation_ID}}
+                            </td>
+                            <td ></td>
+                            <td style="text-align: right">{{ number_format($Proposal->Nettotal, 2) }} </td>
+                        </tr>
+                        @endif
+                        @if ($Additional)
+                        <tr>
+                            <td >{{$Additional->issue_date}}</td>
+                            <td >
+                                {{$Additional->Additional_ID}}
+                            </td>
+                            <td ></td>
+                            <td style="text-align: right">{{ number_format($Additional->Nettotal, 2) }} </td>
+                        </tr>
+                        @endif
+                        @foreach ($receive as  $item)
+                        <tr>
+                            <td >{{$item->valid}}</td>
+                            <td >
+                                {{$item->Receipt_ID}} ({{$item->detail}})
+                            </td>
+                            <td ></td>
+                            <td style="text-align: right">- {{ number_format($item->document_amount, 2) }}</td>
+                        </tr>
+                        @endforeach
                         @foreach($productItems as $key => $item)
                         <tr>
                             <td >{{$Date}}</td>
@@ -414,7 +444,7 @@
                                 {{ $item['detail'] }}
                             </td>
                             <td ></td>
-                            <td style="text-align: right">{{ number_format($item['amount'], 2) }}</td>
+                            <td style="text-align: right">{{ number_format($item['amount'], 2) }} </td>
                         </tr>
                         @endforeach
                         <tr >

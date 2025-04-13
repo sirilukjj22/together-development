@@ -1028,23 +1028,24 @@
             const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
             const weekDifference = Math.abs(startWeek - endWeek);
             if (['Thursday'].includes(dayName)) {
-
-
-                // ถ้าต่างกัน 2 สัปดาห์ขึ้นไปให้เป็น Weekday-Weekend
-
-                if (enddayName === 'Friday'&& isSameWeek) {
+                if (enddayName === 'Friday'&& isSameWeek || dayName == enddayName && isSameWeek) {
                     $('#calendartext').text("Weekday");
                     $('#inputcalendartext').val("Weekday");
-                }else if (enddayName === 'Saturday'||enddayName === 'Sunday' && isSameWeek) {
+                    flexCheckChecked.disabled = true;
+                }else if (enddayName === 'Saturday' && isSameWeek) {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#inputcalendartext').val("Weekday-Weekend");
                     flexCheckChecked.disabled = true;
+                }else if (weekDifference == 0  && enddayName === 'Sunday' ) {
+                    $('#calendartext').text("Weekend");
+                    $('#inputcalendartext').val("Weekend");
+                    flexCheckChecked.disabled = true;
                 }else if (weekdayList.includes(enddayName) && !isSameWeek) {
-                    if (weekDifference == 1 && enddayName === 'Sunday') {
+                    if (weekDifference == 1 && enddayName === 'Sunday' || weekDifference == 1 &&  dayName == enddayName) {
                         $('#calendartext').text("Weekday-Weekend");
                         $('#inputcalendartext').val("Weekday-Weekend");
                         flexCheckChecked.disabled = true;
-                    }else if (weekDifference > 1) {
+                    }else if (weekDifference > 1  ) {
                         $('#calendartext').text("Weekday-Weekend");
                         $('#inputcalendartext').val("Weekday-Weekend");
                         flexCheckChecked.disabled = true;
@@ -1087,6 +1088,7 @@
                             $('#inputcalendartext').val("Weekday-Weekend");
                             flexCheckChecked.disabled = true;
                         }else{
+                            console.log(3);
                             $('#calendartext').text("Weekday");
                             $('#inputcalendartext').val("Weekday");
                             flexCheckChecked.disabled = true;
@@ -1098,8 +1100,23 @@
                     }
                 }
             }else if (weekendList.includes(dayName)) {
-                console.log('Weekend');
-                flexCheckChecked.disabled = true;
+                if (weekDifference == 0 && enddayName === 'Saturday' || weekDifference == 0 &&enddayName === 'Sunday' || weekDifference == 0 && dayName == enddayName) {
+                    $('#calendartext').text("Weekend");
+                    $('#inputcalendartext').val("Weekend");
+                    flexCheckChecked.disabled = true;
+                }else if (weekDifference == 1 && weekenddayList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#inputcalendartext').val("Weekend-Weekday");
+                    flexCheckChecked.disabled = true;
+                }else if (weekDifference == 1 && weekdayendList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#inputcalendartext').val("Weekend-Weekday");
+                    flexCheckChecked.disabled = true;
+                }else if(weekDifference > 1 ){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#inputcalendartext').val("Weekend-Weekday");
+                    flexCheckChecked.disabled = true;
+                }
             }
         });
 
@@ -1545,28 +1562,29 @@
             var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
             $('#checkmonth').val(monthDiff);
             const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const weekenddayList = ['Monday', 'Tuesday', 'Wednesday'];
             const weekendList = ['Thursday', 'Friday', 'Saturday'];
+            const weekdayendList = ['Thursday', 'Friday', 'Saturday', 'Sunday'];
             const startWeek = getWeekNumber(momentCheckinNew.toDate());
             const endWeek = getWeekNumber(momentCheckoutNew.toDate());
             const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
             const weekDifference = Math.abs(startWeek - endWeek);
             console.log(weekDifference);
             if (['Thursday'].includes(dayName)) {
-
-
-                // ถ้าต่างกัน 2 สัปดาห์ขึ้นไปให้เป็น Weekday-Weekend
-
-                if (enddayName === 'Friday'&& isSameWeek) {
+                if (enddayName === 'Friday'&& isSameWeek || dayName == enddayName && isSameWeek) {
                     $('#calendartext').text("Weekday");
                     $('#Date_type').val("Weekday");
-                }else if (enddayName === 'Saturday'||enddayName === 'Sunday' && isSameWeek) {
+                }else if (enddayName === 'Saturday' && isSameWeek) {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#Date_type').val("Weekday-Weekend");
+                }else if (weekDifference == 0  && enddayName === 'Sunday' ) {
+                    $('#calendartext').text("Weekend");
+                    $('#Date_type').val("Weekend");
                 }else if (weekdayList.includes(enddayName) && !isSameWeek) {
-                    if (weekDifference == 1 && enddayName === 'Sunday') {
+                    if (weekDifference == 1 && enddayName === 'Sunday' || weekDifference == 1 &&  dayName == enddayName) {
                         $('#calendartext').text("Weekday-Weekend");
                         $('#Date_type').val("Weekday-Weekend");
-                    }else if (weekDifference > 1) {
+                    }else if (weekDifference > 1  ) {
                         $('#calendartext').text("Weekday-Weekend");
                         $('#Date_type').val("Weekday-Weekend");
                     }else{
@@ -1591,6 +1609,8 @@
                             $('#calendartext').text("Weekday-Weekend");
                             $('#Date_type').val("Weekday-Weekend");
                         }else{
+                            console.log(2);
+
                             $('#calendartext').text("Weekday");
                             $('#Date_type').val("Weekday");
                         }
@@ -1601,6 +1621,7 @@
                             $('#calendartext').text("Weekday-Weekend");
                             $('#Date_type').val("Weekday-Weekend");
                         }else{
+                            console.log(3);
                             $('#calendartext').text("Weekday");
                             $('#Date_type').val("Weekday");
                         }
@@ -1610,7 +1631,19 @@
                     }
                 }
             }else if (weekendList.includes(dayName)) {
-                console.log('Weekend');
+                if (weekDifference == 0 && enddayName === 'Saturday' || weekDifference == 0 &&enddayName === 'Sunday' || weekDifference == 0 && dayName == enddayName) {
+                    $('#calendartext').text("Weekend");
+                    $('#Date_type').val("Weekend");
+                }else if (weekDifference == 1 && weekenddayList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#Date_type').val("Weekend-Weekday");
+                }else if (weekDifference == 1 && weekdayendList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#Date_type').val("Weekend-Weekday");
+                }else if(weekDifference > 1 ){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#Date_type').val("Weekend-Weekday");
+                }
             }
 
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
@@ -2242,6 +2275,7 @@
             console.log($('#allRowsDataInputSelect').val());
             $('#row-' + product).prop('hidden',false);
             renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+            totalAmost();
         });
         //----------------------------------------รายการ---------------------------
         $(document).ready(function() {
@@ -2557,8 +2591,10 @@
         }
         function confirmSubmit(event) {
             event.preventDefault();
-            var checktotal = $('#checktotal').val();
-            var totalRe = $('#totalRe').val();
+            var checktotal = parseFloat($('#checktotal').val()) || 0;
+            var totalRe = parseFloat($('#totalRe').val()) || 0;
+            console.log(totalRe);
+            console.log(checktotal);
             if (checktotal < totalRe) {
                 Swal.fire({
                     icon: "error",

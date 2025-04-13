@@ -441,7 +441,7 @@
                                             <div>
                                                 <label for="arrival">Arrival</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$Proposal->checkin}}" required>
+                                                    <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" value="{{$Proposal->checkin}}" readonly>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -453,7 +453,7 @@
                                             <div>
                                                 <label for="departure">Departure</label>
                                                 <div class="input-group">
-                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Proposal->checkout}}" required>
+                                                    <input type="text" name="departure" id="departure" placeholder="DD/MM/YYY" class="form-control" value="{{$Proposal->checkout}}" readonly>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                             <i class="fas fa-calendar-alt"></i>
@@ -2540,54 +2540,7 @@
                 $(this).val(input);
             });
         });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#arrival').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#arrival').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
 
-            });
-            $(document).on('wheel', function(e) {
-                // Check if the date picker is open
-                if ($('.daterangepicker').is(':visible')) {
-                    // Close the date picker
-                    $('.daterangepicker').hide();
-                }
-            });
-        });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#departure').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                minDate: moment().startOf('day'),
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#departure').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-
-            });
-            $(document).on('wheel', function(e) {
-                // Check if the date picker is open
-                if ($('.daterangepicker').is(':visible')) {
-                    // Close the date picker
-                    $('.daterangepicker').hide();
-                }
-            });
-        });
         function Total() {
             const checkbox = document.getElementById('flexSwitchCheckChecked');
             var cashamount = parseFloat($('#totalamount').val()) || 0;

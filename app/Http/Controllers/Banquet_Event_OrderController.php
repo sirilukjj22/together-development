@@ -66,7 +66,6 @@ class Banquet_Event_OrderController extends Controller
             DB::raw('COUNT(banquet_event_order.Quotation_ID) as BEO_count')
         )
         ->where('quotation.status_document', 6)
-        ->whereNull('banquet_event_order.Quotation_ID')
         ->groupBy('quotation.Quotation_ID')
         ->get();
         return view('banquet_event_order.index',compact('Proposal'));
@@ -534,5 +533,195 @@ class Banquet_Event_OrderController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('Banquet.index')->with('error', $e->getMessage());
         }
+    }
+    public function edit($id){
+        $Proposal = Quotation::where('id', $id)->first();
+        $companyid = $Proposal->Company_ID;
+        $Quotation_ID = $Proposal->Quotation_ID;
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $parts = explode('-', $companyid);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $Selectdata =  'Company';
+            $company =  companys::where('Profile_ID',$companyid)->first();
+            if ($company) {
+                $Address=$company->Address;
+                $Company_typeID=$company->Company_type;
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $fullName = "บริษัท ". $company->Company_Name . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท ". $company->Company_Name . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด ". $company->Company_Name ;
+                }else{
+                    $fullName = $comtype->name_th . $company->Company_Name;
+                }
+                $CityID=$company->City;
+                $amphuresID = $company->Amphures;
+                $TambonID = $company->Tambon;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+                $name_ID = $company->Profile_ID;
+                $representative = representative::where('Company_ID', 'like', "%{$company->Profile_ID}%")->where('status',1)->first();
+                if ($representative) {
+                    $comtype = master_document::where('id',$representative->prefix)->select('name_th', 'id')->first();
+                    if ($comtype->name_th =="นาย") {
+                        $contact = "นาย ". $representative->First_name . ' ' . $representative->Last_name;
+                    }elseif ($comtype->name_th =="นาง") {
+                        $contact = "นาง ". $representative->First_name . ' ' . $representative->Last_name;
+                    }elseif ($comtype->name_th =="นางสาว") {
+                        $contact = "นางสาว ". $representative->First_name . ' ' . $representative->Last_name ;
+                    }else{
+                        $contact = "คุณ ". $representative->First_name . ' ' . $representative->Last_name ;
+                    }
+                    $representative_ID = $representative->Profile_ID;
+                    $repCompany_ID = $representative->Company_ID;
+                    $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->where('Sequence','main')->first();
+                    $Email = $representative->Email;
+                }
+            }
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$companyid)->first();
+            if ($guestdata) {
+                $Selectdata =  'Guest';
+                $Company_typeID=$guestdata->Company_type;
+                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                if ($comtype->name_th =="นาย") {
+                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                }elseif ($comtype->name_th =="นาง") {
+                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                }elseif ($comtype->name_th =="นางสาว") {
+                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                }else{
+                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                }
+                $name =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+                $Address=$guestdata->Address;
+                $CityID=$guestdata->City;
+                $amphuresID = $guestdata->Amphures;
+                $TambonID = $guestdata->Tambon;
+                $Identification = $guestdata->Identification_Number;
+                $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                $phone = phone_guest::where('Profile_ID',$guestdata->Profile_ID)->where('Sequence','main')->first();
+                $Email = $guestdata->Company_Email;
+                $address = $Address.' '.'ตำบล '.$TambonID->name_th.' '.'อำเภอ '.$amphuresID->name_th.' '.'จังหวัด '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+                $name_ID = $guestdata->Profile_ID;
+                $datasub = guest_tax::where('Company_ID',$name_ID)->get();
+            }
+        }
+        $userid = Auth::user()->id;
+        $user = User::where('id',$userid)->first();
+        $schedule =null;
+        $banquet = banquet_event_order::where('Quotation_ID', $Quotation_ID)->first();
+        if ($banquet) {
+            $BEOID =  $banquet->Banquet_ID;
+            $schedule = banquet_schedule::where('Banquet_ID', $BEOID)->get();
+        }else{
+            $currentDate = Carbon::now();
+            $ID = 'BEO-';
+            $formattedDate = Carbon::parse($currentDate);       // วันที่
+            $month = $formattedDate->format('m'); // เดือน
+            $year = $formattedDate->format('y');
+            $lastRun = banquet_event_order::latest()->first();
+            $nextNumber = 1;
+
+            if ($lastRun == null) {
+                $nextNumber = $lastRun + 1;
+
+            }else{
+                $lastRunid = $lastRun->id;
+                $nextNumber = $lastRunid + 1;
+            }
+            $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            $BEOID = $ID.$year.$month.$newRunNumber;
+        }
+        return view('banquet_event_order.createmuti',compact('id','settingCompany','BEOID','Proposal','fullName','address','phone','Email','Selectdata','contact','user','banquet','schedule'));
+    }
+    public function save_event(Request $request){
+        $data = $request->all();
+        $BEOID = $request->BEOID;
+        $formattedDate = Carbon::createFromFormat('d/m/Y', $request->event_date)
+        ->translatedFormat('l, d M Y'); // ใช้ translatedFormat ถ้าอยากให้เป็นภาษาไทยด้วยก็ได้
+        $newData = [
+            'event_date' =>    $formattedDate,
+            'catering'    => $request->catering,
+            'number'      => $request->number,
+            'vehicle'     => $request->vehicle,
+        ];
+        $banquet = banquet_event_order::where('Banquet_ID', $BEOID)->first();
+        if ($banquet) {
+            $banquet_id = $banquet->id;
+            $changed = array_filter($newData, function ($value, $key) use ($banquet) {
+                return $banquet->$key != $value;
+            }, ARRAY_FILTER_USE_BOTH);
+
+            try {
+                $fullname = 'รหัส : '.$BEOID;
+                $edit = 'รายการแก้ไข';
+                $formattedschedules = [];
+                foreach ($changed as $key => $newValue) {
+                    $label = ucfirst($key); // ทำให้ตัวแรกเป็นตัวพิมพ์ใหญ่
+                    $formattedschedules[] = "$label : $newValue";
+                }
+                $formattedschedulesText = implode(' , ', $formattedschedules);
+                $datacompany = '';
+
+                $variables = [$fullname, $edit, $formattedschedulesText];
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+                $userid = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userid;
+                $save->Company_ID = $BEOID;
+                $save->type = 'Edit';
+                $save->Category = 'Edit :: Banquet event order';
+                $save->content =$datacompany;
+                // $save->save();
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error : ' . $e->getMessage()
+                ]);
+            }
+            try {
+                $save = banquet_event_order::find($banquet_id);
+                $save->event_date =$newData['event_date'];
+                $save->catering =$newData['catering'];
+                $save->number =$newData['number'];
+                $save->vehicle =$newData['vehicle'];
+                $save->save();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Data has been successfully saved.'
+                ]);
+            } catch (\Throwable $th) {
+                $latest = log_company::where('Company_ID', $BEOID)->where('type', 'Edit')->latest()->first();
+                if ($latest) {
+                    $latest->delete();
+                }
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error : ' . $e->getMessage()
+                ]);
+            }
+
+
+        }else{
+
+        }
+        // $name = 'ชื่อลูกค้า : '.$fullName;
+        // $doc = 'รหัสใบคำสั่งจัดงานเลี้ยง : '.$BEOID;
+        // $refresh = 'อ้างอิงจาก : '.$Quotation->Quotation_ID;
     }
 }
