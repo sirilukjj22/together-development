@@ -155,6 +155,50 @@
                                                         <th>amount</th>
                                                         </tr>
                                                     </thead>
+                                                    @if ($Proposal)
+                                                    <tr>
+                                                        <td >{{$Proposal->issue_date}}</td>
+                                                        <td >
+                                                            {{$Proposal->Quotation_ID}}
+                                                        </td>
+                                                        <td ></td>
+                                                        @if ($bill > 1)
+                                                            <td style="text-align: right">{{ number_format($Proposal->Nettotal/$bill, 2) }} </td>
+                                                        @else
+                                                            <td style="text-align: right">{{ number_format($Proposal->Nettotal, 2) }}</td>
+                                                        @endif
+                                                    </tr>
+                                                    @endif
+                                                    @if ($Additional)
+                                                    <tr>
+                                                        <td >{{$Additional->issue_date}}</td>
+                                                        <td >
+                                                            {{$Additional->Additional_ID}}
+                                                        </td>
+                                                        <td ></td>
+                                                        @if ($bill > 1)
+                                                            <td style="text-align: right">{{ number_format($Additional->Nettotal/$bill, 2) }} </td>
+                                                        @else
+                                                            <td style="text-align: right">{{ number_format($Additional->Nettotal, 2) }} </td>
+                                                        @endif
+
+                                                    </tr>
+                                                    @endif
+                                                    @foreach ($receivededuct as  $item)
+                                                    <tr>
+                                                        <td >{{$item->valid}}</td>
+                                                        <td >
+                                                            {{$item->Receipt_ID}} ({{$item->detail}})
+                                                        </td>
+                                                        <td ></td>
+
+                                                        @if ($bill > 1)
+                                                            <td style="text-align: right">- {{ number_format($item->document_amount/$bill, 2) }} </td>
+                                                        @else
+                                                            <td style="text-align: right">- {{ number_format($item->document_amount, 2) }}</td>
+                                                        @endif
+                                                    </tr>
+                                                    @endforeach
                                                     @foreach($productItems as $key => $item)
                                                     <tr>
                                                         <td >{{$Date}}</td>
@@ -165,8 +209,6 @@
                                                         <td style="text-align: right">{{ number_format($item['amount'], 2) }}</td>
                                                     </tr>
                                                     @endforeach
-
-
                                                 </table>
                                             </div>
                                             </div>

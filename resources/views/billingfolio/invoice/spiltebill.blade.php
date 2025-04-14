@@ -361,6 +361,7 @@
                 </div>
                 <form id="myForm" action="{{ route('BillingFolio.savemulti') }}" method="POST">
                     @csrf
+                    <input type="hidden" value="{{$additional_amount}}" name="additional">
                     <div class="card-body">
                         <div class="table-scroll">
                             <table class="table-Custom-Spilte-Bill">

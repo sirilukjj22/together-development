@@ -111,12 +111,12 @@ class BillingFolioController extends Controller
                 ->orWhereNotNull('deposit_revenue.receiveinvoice_count')
                 ->orWhereNotNull('proposal_overbill.Quotation_ID');
         })
-        ->whereNotExists(function ($query) {
-            $query->select(DB::raw(1))
-                ->from('proposal_overbill')
-                ->whereColumn('proposal_overbill.Quotation_ID', 'quotation.Quotation_ID')
-                ->where('proposal_overbill.status_document', 2); // ไม่แสดง status_document = 2
-        })
+        // ->whereNotExists(function ($query) {
+        //     $query->select(DB::raw(1))
+        //         ->from('proposal_overbill')
+        //         ->whereColumn('proposal_overbill.Quotation_ID', 'quotation.Quotation_ID')
+        //         ->where('proposal_overbill.status_document', 2); // ไม่แสดง status_document = 2
+        // })
         ->where('quotation.status_document', 6)
         ->select(
             'quotation.*',
@@ -209,7 +209,7 @@ class BillingFolioController extends Controller
             $guestdata =  Guest::where('Profile_ID',$companyid)->first();
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -332,7 +332,6 @@ class BillingFolioController extends Controller
         ,'data_bank','data_cheque','ids','data_select'));
     }
     public function spiltebill(Request $request ,$id){
-        dd($request->all());
         $idss= $id;
         $payments = json_decode($request->input('paymentsData'), true);
         foreach ($payments as &$payment) { // ใช้ & เพื่อให้อัปเดตค่าได้
@@ -367,7 +366,7 @@ class BillingFolioController extends Controller
 
         $additional_type = $request->additional_type;
         $invoice = $request->invoice;
-        $additional_amount = $request->additional;
+        $additional_amount = $request->additional ?? 0;
         $paymentdate = $request->paymentDate;
         $invoices = document_invoices::where('Invoice_ID', $invoice)->first();
         $companyid = $invoices->company;
@@ -422,7 +421,7 @@ class BillingFolioController extends Controller
             if ($guestdata) {
                 $ids = $guestdata->id;
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -534,7 +533,7 @@ class BillingFolioController extends Controller
         ];
 
         return view('billingfolio.invoice.spiltebill',compact('Invoice_ID','Selectdata','address','Identification','fullName','phone','Email','valid','data_select','paymentsDataArray','cashAmount','idss','paymentdate'
-        ,'REID','additional_type','datasub','name_ID','name','data_bank','data_cheque','payments','reservationNo','room','numberOfGuests','arrival','departure','fax','ids','type','datadetailbill','invoice'));
+        ,'REID','additional_type','datasub','name_ID','name','data_bank','data_cheque','payments','reservationNo','room','numberOfGuests','arrival','departure','fax','ids','type','datadetailbill','invoice','additional_amount'));
     }
     public function savemulti(Request $request) {
 
@@ -546,7 +545,6 @@ class BillingFolioController extends Controller
             $data = $request->all();
 
             $groupedData = [];
-
             foreach ($data as $key => $value) {
                 // ใช้ regex เพื่อแยกค่า เช่น company-1, payment-type-1-1, amount-1-1
                 preg_match('/(\D+)-(\d+)(-\d+)?/', $key, $matches);
@@ -653,17 +651,17 @@ class BillingFolioController extends Controller
                             if ($guestdata) {
                                 $name_ID = $guestdata->Profile_ID;
 
-                                $Company_typeID=$guestdata->Company_type;
-                                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                                $Company_typeID=$guestdata->preface;
+                                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id','Category')->first();
                                 $Selectdata =  $comtype->Category;
                                 if ($comtype->name_th =="นาย") {
-                                    $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                    $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                 }elseif ($comtype->name_th =="นาง") {
-                                    $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                    $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                 }elseif ($comtype->name_th =="นางสาว") {
-                                    $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                    $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                 }else{
-                                    $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                    $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                 }
                                 $Address=$guestdata->Address;
                                 $CityID=$guestdata->City;
@@ -674,13 +672,13 @@ class BillingFolioController extends Controller
                                 $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
                                 $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
                                 $phone = phone_guest::where('Profile_ID',$guestdata->Profile_ID)->where('Sequence','main')->first();
-                                $email = $guestdata->Company_Email;
+                                $email = $guestdata->Email;
                                 $phonenuber = $phone->Phone_number ?? '-';
                                 $faxnumber = '-';
                             }else{
                                 $guestdata =  guest_tax::where('GuestTax_ID',$id)->first();
                                 $Company_typeID=$guestdata->Company_type;
-                                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+                                $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id','Category')->first();
                                 $Selectdata =  $comtype->Category;
                                 if ($comtype->Category == 'Mcompany_type') {
                                     if ($comtype->name_th =="บริษัทจำกัด") {
@@ -788,7 +786,18 @@ class BillingFolioController extends Controller
             $date = Carbon::now();
             $formattedDateprint = $date->format('d/m/Y');
             $formattedTime = $date->format('H:i');
-            return view('billingfolio.invoice.previewspiltebill',compact('groupedData','datadetailbill','settingCompany','REID','formattedDateprint','formattedTime','bill','paymentdate'));
+            $invoices = document_invoices::where('Invoice_ID', $request->invoice)->first();
+            $Quotation_ID = $invoices->Quotation_ID;
+            $Deposit_ID = $invoices->Deposit_ID;
+            $array = array_map('trim', explode(',', $Deposit_ID));
+            $Proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+            $receive = receive_payment::where('Deposit_ID', $array)
+            ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
+            $Additional = null;
+            if ($request->additional != 0) {
+                $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
+            }
+            return view('billingfolio.invoice.previewspiltebill',compact('groupedData','datadetailbill','settingCompany','REID','formattedDateprint','formattedTime','bill','paymentdate','Additional','Proposal','receive'));
         }else{
             try {
                 {
@@ -905,17 +914,17 @@ class BillingFolioController extends Controller
                                     if ($guestdata) {
                                         $name_ID = $guestdata->Profile_ID;
 
-                                        $Company_typeID=$guestdata->Company_type;
+                                        $Company_typeID=$guestdata->preface;
                                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                                         $Selectdata =  $comtype->Category;
                                         if ($comtype->name_th =="นาย") {
-                                            $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                            $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                         }elseif ($comtype->name_th =="นาง") {
-                                            $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                            $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                         }elseif ($comtype->name_th =="นางสาว") {
-                                            $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                            $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                         }else{
-                                            $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                            $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                         }
                                         $Address=$guestdata->Address;
                                         $CityID=$guestdata->City;
@@ -1084,7 +1093,7 @@ class BillingFolioController extends Controller
                     $save->type = 'Create';
                     $save->Category = 'Create :: Billing Folio';
                     $save->content = $formattedProductData;  // บันทึกข้อความที่รวมในแต่ละรอบ
-                    $save->save();
+                    // $save->save();
                 }
             } catch (\Throwable $e) {
                 return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
@@ -1204,17 +1213,17 @@ class BillingFolioController extends Controller
                                     if ($guestdata) {
                                         $name_ID = $guestdata->Profile_ID;
 
-                                        $Company_typeID=$guestdata->Company_type;
+                                        $Company_typeID=$guestdata->preface;
                                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                                         $Selectdata =  $comtype->Category;
                                         if ($comtype->name_th =="นาย") {
-                                            $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                            $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                         }elseif ($comtype->name_th =="นาง") {
-                                            $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                            $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                         }elseif ($comtype->name_th =="นางสาว") {
-                                            $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                            $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                         }else{
-                                            $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                            $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                         }
                                         $Address=$guestdata->Address;
                                         $CityID=$guestdata->City;
@@ -1383,14 +1392,25 @@ class BillingFolioController extends Controller
                     $productDetails = [];  // ใช้ชื่ออื่นสำหรับเก็บข้อมูลเกี่ยวกับการชำระเงิน
 
                     // ลูปผ่าน payments เพื่อหาผลรวม amount
-                    foreach ($product['payments'] as $payment) {
+                    foreach ($product['payments'] as $key => $payment) {
                         $Amount += $payment['amount'];  // บวกค่าของ amount ในแต่ละ payment
                         $productDetails[] = [
                             'detail' => $payment['datanamebank'],
                             'amount' => $payment['amount'],
                         ];
+                        $key = $key;
                     }
-
+                    $invoices = document_invoices::where('Invoice_ID', $request->invoice)->first();
+                    $Quotation_ID = $invoices->Quotation_ID;
+                    $Deposit_ID = $invoices->Deposit_ID;
+                    $array = array_map('trim', explode(',', $Deposit_ID));
+                    $Proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+                    $receive = receive_payment::where('Deposit_ID', $array)
+                    ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
+                    $Additional = null;
+                    if ($request->additional != 0) {
+                        $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
+                    }
                     $pdfdata = [
                         'settingCompany'=>$settingCompany,
                         'fullname'=>$fullname,
@@ -1415,6 +1435,11 @@ class BillingFolioController extends Controller
                         'productItems'=>$productDetails,
                         'invoice'=>$product['bill'],
                         'Amount'=>$Amount,
+                        'bill'=>$bill ?? 1,
+                        'key'=>$key ?? 1,
+                        'Additional'=>$Additional,
+                        'Proposal'=>$Proposal,
+                        'receive'=>$receive,
                     ];
 
                     $template = master_template::query()->latest()->first();
@@ -1557,17 +1582,17 @@ class BillingFolioController extends Controller
                                     if ($guestdata) {
                                         $name_ID = $guestdata->Profile_ID;
 
-                                        $Company_typeID=$guestdata->Company_type;
+                                        $Company_typeID=$guestdata->preface;
                                         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                                         $Selectdata =  $comtype->Category;
                                         if ($comtype->name_th =="นาย") {
-                                            $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                            $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                         }elseif ($comtype->name_th =="นาง") {
-                                            $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                                            $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                                         }elseif ($comtype->name_th =="นางสาว") {
-                                            $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                            $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                         }else{
-                                            $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                                            $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                                         }
                                         $Address=$guestdata->Address;
                                         $CityID=$guestdata->City;
@@ -1731,11 +1756,15 @@ class BillingFolioController extends Controller
                 return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
             }
             try {
-                foreach ($groupedData as $product) {
+                if ($request->additional != 0) {
+                    $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
+                }
+                foreach ($groupedData as $key => $product) {
                     $user = Auth::user()->id;
                     $save = new receive_payment();
                     $save->Receipt_ID = $product['bill'];
                     $save->Invoice_ID = $request->invoice;
+                    $save->Additional_ID = $Additional->Additional_ID ?? null;
                     $save->Quotation_ID = $Quotation_ID;
                     $save->company = $product['company'];
                     $save->Amount = $product['Amount'];
@@ -1751,6 +1780,7 @@ class BillingFolioController extends Controller
                     $save->Operated_by = $user;
                     $save->note = $product['remark'];
                     $save->type_bill = 'spilte';
+                    $save->num_bill = $key;
                     $save->save();
                     foreach ($product['payments'] as &$payment) {
                         $item = new document_receive_item();
@@ -1962,7 +1992,7 @@ class BillingFolioController extends Controller
             if ($guestdata) {
                 $name_ID = $guestdata->Profile_ID;
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -2316,16 +2346,16 @@ class BillingFolioController extends Controller
             $guestdata =  Guest::where('Profile_ID',$companyid)->first();
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $name =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
                 $Address=$guestdata->Address;
@@ -2487,16 +2517,16 @@ class BillingFolioController extends Controller
             $guestdata =  Guest::where('Profile_ID',$companyid)->first();
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $name =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
                 $Address=$guestdata->Address;
@@ -2759,7 +2789,7 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -2902,16 +2932,16 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -3217,20 +3247,20 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $nameold = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $nameold = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    $name = 'ลูกค้า : '."นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $nameold = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $nameold = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    $name = 'ลูกค้า : '."นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $nameold = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $nameold = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $nameold = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $nameold = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                    $name = 'ลูกค้า : '."คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -3597,6 +3627,8 @@ class BillingFolioController extends Controller
             if ($additional != 0) {
                 $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
             }
+            $bill =null;
+            $key=null;
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -3622,8 +3654,10 @@ class BillingFolioController extends Controller
                 'invoice'=>$REID,
                 'Amount'=>$Amount,
                 'Proposal'=>$Proposal,
-                'receive'=>$receive ?? null,
+                'receive'=>$receive ?? [],
                 'Additional'=>$Additional ?? null,
+                'bill'=>$bill ?? 1,
+                'key'=>$key ?? 1,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
@@ -3648,11 +3682,15 @@ class BillingFolioController extends Controller
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
         try {
+            if ($additional != 0) {
+                $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
+            }
             $user = Auth::user()->id;
             $save = new receive_payment();
             $save->Receipt_ID = $REID;
             $save->Invoice_ID = $invoice;
             $save->Quotation_ID = $Quotation_ID;
+            $save->Additional_ID = $Additional->Additional_ID ?? null;
             $save->company = $companyid;
             $save->Amount = $RealAmount;
             $save->fullname = $nameold;
@@ -3724,13 +3762,11 @@ class BillingFolioController extends Controller
             $invoiceid = $request->invoice;
             $invoices = document_invoices::where('Invoice_ID', $invoiceid)->first();
             $Quotation_ID = $invoices->Quotation_ID;
-            $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
-            if ($Additional) {
+            if ($additional != 0) {
+                $Additional =  proposal_overbill::where('Quotation_ID',$Quotation_ID)->where('status_guest',0)->first();
                 $AdditionalID = $Additional->id;
                 $saveAD = proposal_overbill::find($AdditionalID);
-                if ($Complimentary) {
-                    $saveAD->status_guest = 1;
-                }
+                $saveAD->status_guest = 1;
                 $saveAD->save();
             }
         } catch (\Throwable $e) {
@@ -4212,8 +4248,26 @@ class BillingFolioController extends Controller
     public function view($id){
         $receive = receive_payment::where('id',$id)->first();
         $Quotation_ID = $receive->Quotation_ID;
+        $bill = receive_payment::where('Invoice_ID', $receive->Invoice_ID)
+        ->whereNotNull('num_bill')
+        ->where('num_bill', '!=', '')
+        ->count();
+        $Additional = null;
+        $Proposal = null;
+        $receivededuct = [];
+        if ($receive->Invoice_ID) {
+            $Additional_ID = $receive->Additional_ID;
+            $Additional =  proposal_overbill::where('Additional_ID',$Additional_ID)->first();
+            $Proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+            $invoices = document_invoices::where('Invoice_ID', $receive->Invoice_ID)->first();
+            $Deposit_ID = $invoices->Deposit_ID;
+            $array = array_map('trim', explode(',', $Deposit_ID));
+            $receivededuct = receive_payment::where('Deposit_ID', $array)
+            ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
+        }
         $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
         $additional = $receive->additional;
+        $num_bill = $receive->num_bill ?? 1;
         $ids = $Quotation->id;
         if ($receive->additional_type == null) {
 
@@ -4445,21 +4499,39 @@ class BillingFolioController extends Controller
             'note'=>$note,
             'invoice'=>$REID,
             'Amount'=>$Amount,
-
         ];
-        return view('billingfolio.invoice.view',compact('data','settingCompany','productItems','ids','Date'));
+        return view('billingfolio.invoice.view',compact('data','settingCompany','productItems','ids','Date','num_bill','Additional','Proposal','receivededuct','bill'));
 
     }
 
     public function export($id){
-        $receive = receive_payment::where('id',$id)->first();
-        $Quotation_ID = $receive->Quotation_ID;
+        $receivedetail = receive_payment::where('id',$id)->first();
+        $key = $receivedetail->num_bill;
+        $Quotation_ID = $receivedetail->Quotation_ID;
+        $bill = receive_payment::where('Invoice_ID', $receivedetail->Invoice_ID)
+        ->whereNotNull('num_bill')
+        ->where('num_bill', '!=', '')
+        ->count();
+        $bill = ($bill == 0) ? 1 : $bill;
+        $Additional = null;
+        $Proposal = null;
+        $receive = [];
+        if ($receivedetail->Invoice_ID) {
+            $Additional_ID = $receivedetail->Additional_ID;
+            $Additional =  proposal_overbill::where('Additional_ID',$Additional_ID)->first();
+            $Proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+            $invoices = document_invoices::where('Invoice_ID', $receivedetail->Invoice_ID)->first();
+            $Deposit_ID = $invoices->Deposit_ID;
+            $array = array_map('trim', explode(',', $Deposit_ID));
+            $receive = receive_payment::where('Deposit_ID', $array)
+            ->leftJoin('document_receive_item', 'document_receive.Receipt_ID', '=', 'document_receive_item.receive_id')->get();
+        }
         $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
-        $additional = $receive->additional;
+        $additional = $receivedetail->additional;
         $ids = $Quotation->id;
-        if ($receive->additional_type == null) {
+        if ($receivedetail->additional_type == null) {
 
-            $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
+            $productItems = document_receive_item::where('receive_id', $receivedetail->Receipt_ID)
             ->get()
             ->map(function ($value) {
                 return [
@@ -4470,7 +4542,7 @@ class BillingFolioController extends Controller
             ->toArray();
         }else{
 
-            $productItems = document_receive_item::where('receive_id', $receive->Receipt_ID)
+            $productItems = document_receive_item::where('receive_id', $receivedetail->Receipt_ID)
             ->get()
             ->map(function ($value) {
                 return [
@@ -4479,12 +4551,12 @@ class BillingFolioController extends Controller
                 ];
             })
             ->groupBy('detail')
-            ->map(function ($group, $detail) use ($receive) {
+            ->map(function ($group, $detail) use ($receivedetail) {
                 $totalAmount = $group->sum('amount');
 
                 // ถ้าเป็น 'Cash' ให้บวก $receive->additional
                 if ($detail === 'Cash') {
-                    $totalAmount += $receive->additional;
+                    $totalAmount += $receivedetail->additional;
                 }
 
                 return [
@@ -4498,18 +4570,18 @@ class BillingFolioController extends Controller
 
 
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
-        $guest = $receive->company;
-        $paymentDate = $receive->paymentDate;
-        $sumpayment= $receive->document_amount;
-        $Invoice_ID = $receive->Invoice_ID;
-        $Deposit_ID = $receive->Deposit_ID;
-        $reservationNo = $receive->reservationNo;
-        $room = $receive->roomNo;
-        $numberOfGuests = $receive->numberOfGuests;
-        $arrival = $receive->arrival;
-        $departure = $receive->departure;
-        $note= $receive->note;
-        $REID = $receive->Receipt_ID;
+        $guest = $receivedetail->company;
+        $paymentDate = $receivedetail->paymentDate;
+        $sumpayment= $receivedetail->document_amount;
+        $Invoice_ID = $receivedetail->Invoice_ID;
+        $Deposit_ID = $receivedetail->Deposit_ID;
+        $reservationNo = $receivedetail->reservationNo;
+        $room = $receivedetail->roomNo;
+        $numberOfGuests = $receivedetail->numberOfGuests;
+        $arrival = $receivedetail->arrival;
+        $departure = $receivedetail->departure;
+        $note= $receivedetail->note;
+        $REID = $receivedetail->Receipt_ID;
         $parts = explode('-', $guest);
         $firstPart = $parts[0];
         if ($firstPart == 'C') {
@@ -4664,8 +4736,10 @@ class BillingFolioController extends Controller
         $userid = Auth::user()->id;
         $user = User::where('id',$userid)->first();
         $invoices = document_invoices::where('Invoice_ID', $Invoice_ID)->first();
-        $created_at =$receive->valid;
+        $created_at =$receivedetail->valid;
+
         $template = master_template::query()->latest()->first();
+
         $data = [
             'fullname'=>$fullname,
             'fullnameCom'=>$fullnameCom,
@@ -4689,6 +4763,11 @@ class BillingFolioController extends Controller
             'invoice'=>$REID,
             'Amount'=>$Amount,
             'productItems'=>$productItems,
+            'bill'=>$bill ?? 1,
+            'key'=>$key,
+            'Additional'=>$Additional,
+            'receive'=>$receive,
+            'Proposal'=>$Proposal,
             'Date'=>$Date,
         ];
         $view= $template->name;
@@ -5117,16 +5196,16 @@ class BillingFolioController extends Controller
             if ($guestdata) {
                 $ids = $guestdata->id;
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $name =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
                 $Address=$guestdata->Address;
@@ -5437,20 +5516,20 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $nameold = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $nameold = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    $name = 'ลูกค้า : '."นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $nameold = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $nameold = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    $name = 'ลูกค้า : '."นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $nameold = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $nameold = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $nameold = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $nameold = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                    $name = 'ลูกค้า : '."คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -5786,9 +5865,12 @@ class BillingFolioController extends Controller
                     'amount' => $totalAmount,
                 ];
             }
-
+            $Proposal = null;
             $productItems = array_merge($product);
-
+            $Additional = null;
+            $receive = null;
+            $key = null;
+            $bill = null;
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -5813,6 +5895,11 @@ class BillingFolioController extends Controller
                 'productItems'=>$productItems,
                 'invoice'=>$REID,
                 'Amount'=>$Amount,
+                'Proposal'=>$Proposal,
+                'Additional'=>$Additional,
+                'receive'=>$receive ?? [],
+                'key'=>$key ?? 1,
+                'bill'=>$bill ?? 1,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
@@ -6029,7 +6116,7 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -6251,16 +6338,16 @@ class BillingFolioController extends Controller
             if ($guestdata) {
                 $ids = $guestdata->id;
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $name =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
                 $Address=$guestdata->Address;
@@ -6588,20 +6675,20 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $nameold = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $nameold = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    $name = 'ลูกค้า : '."นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $nameold = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
-                    $name = 'ลูกค้า : '."นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $nameold = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    $name = 'ลูกค้า : '."นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $nameold = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $nameold = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                    $name = 'ลูกค้า : '."นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $nameold = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
-                    $name = 'ลูกค้า : '."คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $nameold = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
+                    $name = 'ลูกค้า : '."คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -6925,6 +7012,12 @@ class BillingFolioController extends Controller
             $productItems = array_merge($product);
 
             $template = master_template::query()->latest()->first();
+            $Proposal = null;
+            $productItems = array_merge($product);
+            $Additional = null;
+            $receive = null;
+            $bill= null;
+            $key = null;
             $data = [
                 'settingCompany'=>$settingCompany,
                 'fullname'=>$fullname,
@@ -6949,6 +7042,11 @@ class BillingFolioController extends Controller
                 'productItems'=>$productItems,
                 'invoice'=>$REID,
                 'Amount'=>$Amount,
+                'receive'=>$receive ?? [],
+                'Additional'=>$Additional,
+                'Proposal'=>$Proposal,
+                'bill'=>$bill ?? 1,
+                'key'=>$key ?? 1,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
@@ -7167,7 +7265,7 @@ class BillingFolioController extends Controller
 
             if ($guestdata) {
                 $Selectdata =  'Guest';
-                $Company_typeID=$guestdata->Company_type;
+                $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
                     $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
@@ -7425,7 +7523,7 @@ class BillingFolioController extends Controller
 
                 if ($guestdata) {
                     $Selectdata =  'Guest';
-                    $Company_typeID=$guestdata->Company_type;
+                    $Company_typeID=$guestdata->preface;
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="นาย") {
                         $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;

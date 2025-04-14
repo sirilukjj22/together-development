@@ -161,9 +161,40 @@
                                                         $Vatable = 0;
                                                         $addtax = 0;  // กำหนดค่าเริ่มต้น
                                                     @endphp
+
                                                         @if (isset($paymentGroup['payments']) && is_array($paymentGroup['payments']))
                                                             @foreach ($paymentGroup['payments'] as $payment)
                                                             <tbody>
+                                                                @if ($Proposal)
+                                                                <tr>
+                                                                    <td >{{$Proposal->issue_date}}</td>
+                                                                    <td >
+                                                                        {{$Proposal->Quotation_ID}}
+                                                                    </td>
+                                                                    <td ></td>
+                                                                    <td style="text-align: right">{{ number_format($Proposal->Nettotal/$bill, 2) }} </td>
+                                                                </tr>
+                                                                @endif
+                                                                @if ($Additional)
+                                                                <tr>
+                                                                    <td >{{$Additional->issue_date}}</td>
+                                                                    <td >
+                                                                        {{$Additional->Additional_ID}}
+                                                                    </td>
+                                                                    <td ></td>
+                                                                    <td style="text-align: right">{{ number_format($Additional->Nettotal/$bill, 2) }} </td>
+                                                                </tr>
+                                                                @endif
+                                                                @foreach ($receive as  $item)
+                                                                <tr>
+                                                                    <td >{{$item->valid}}</td>
+                                                                    <td >
+                                                                        {{$item->Receipt_ID}} ({{$item->detail}})
+                                                                    </td>
+                                                                    <td ></td>
+                                                                    <td style="text-align: right">- {{ number_format($item->document_amount/$bill, 2) }}</td>
+                                                                </tr>
+                                                                @endforeach
                                                                 <tr style="border: none">
                                                                     <td id="displayPaymentDateEditBill">{{ $paymentdate }}</td>
                                                                     <td>

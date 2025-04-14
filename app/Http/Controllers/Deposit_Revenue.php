@@ -276,13 +276,13 @@ class Deposit_Revenue extends Controller
                 $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -454,13 +454,13 @@ class Deposit_Revenue extends Controller
                 $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -1234,13 +1234,13 @@ class Deposit_Revenue extends Controller
                 $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullName = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullName = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullName = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullName = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullName = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullName = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;
@@ -1491,13 +1491,13 @@ class Deposit_Revenue extends Controller
                     $Company_typeID=$guestdata->preface;
                     $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                     if ($comtype->name_th =="นาย") {
-                        $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                        $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                     }elseif ($comtype->name_th =="นาง") {
-                        $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                        $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                     }elseif ($comtype->name_th =="นางสาว") {
-                        $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                        $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                     }else{
-                        $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                        $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                     }
                     $Address=$guestdata->Address;
                     $CityID=$guestdata->City;
@@ -2561,13 +2561,13 @@ class Deposit_Revenue extends Controller
                 $Company_typeID=$guestdata->preface;
                 $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
                 if ($comtype->name_th =="นาย") {
-                    $fullname = "นาย ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullname = "นาย ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นาง") {
-                    $fullname = "นาง ". $guestdata->first_name . ' ' . $guestdata->last_name;
+                    $fullname = "นาง ". $guestdata->First_name . ' ' . $guestdata->Last_name;
                 }elseif ($comtype->name_th =="นางสาว") {
-                    $fullname = "นางสาว ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullname = "นางสาว ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }else{
-                    $fullname = "คุณ ". $guestdata->first_name . ' ' . $guestdata->last_name ;
+                    $fullname = "คุณ ". $guestdata->First_name . ' ' . $guestdata->Last_name ;
                 }
                 $Address=$guestdata->Address;
                 $CityID=$guestdata->City;

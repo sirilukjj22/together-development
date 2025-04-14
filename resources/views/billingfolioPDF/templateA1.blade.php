@@ -366,7 +366,7 @@
                 <table style="line-height:12px;">
                     <tr>
                         <td ><span >Page#<span style="color: #fff">asdsssssssssd</span></span></td>
-                        <td >: 1/1</td>
+                        <span>:{{$key ?? 1}}/{{$bill ?? 1}} </span>
                     </tr>
                     <tr>
                         <td><span >Room No.</span></td>
@@ -414,7 +414,11 @@
                                 {{$Proposal->Quotation_ID}}
                             </td>
                             <td ></td>
-                            <td style="text-align: right">{{ number_format($Proposal->Nettotal, 2) }} </td>
+                            @if ($bill > 1)
+                                <td style="text-align: right">{{ number_format($Proposal->Nettotal/$bill, 2) }} </td>
+                            @else
+                                <td style="text-align: right">{{ number_format($Proposal->Nettotal, 2) }}</td>
+                            @endif
                         </tr>
                         @endif
                         @if ($Additional)
@@ -424,7 +428,12 @@
                                 {{$Additional->Additional_ID}}
                             </td>
                             <td ></td>
-                            <td style="text-align: right">{{ number_format($Additional->Nettotal, 2) }} </td>
+                            @if ($bill > 1)
+                                <td style="text-align: right">{{ number_format($Additional->Nettotal/$bill, 2) }} </td>
+                            @else
+                                <td style="text-align: right">{{ number_format($Additional->Nettotal, 2) }} </td>
+                            @endif
+
                         </tr>
                         @endif
                         @foreach ($receive as  $item)
@@ -434,7 +443,12 @@
                                 {{$item->Receipt_ID}} ({{$item->detail}})
                             </td>
                             <td ></td>
-                            <td style="text-align: right">- {{ number_format($item->document_amount, 2) }}</td>
+
+                            @if ($bill > 1)
+                                <td style="text-align: right">- {{ number_format($item->document_amount/$bill, 2) }} </td>
+                            @else
+                                <td style="text-align: right">- {{ number_format($item->document_amount, 2) }}</td>
+                            @endif
                         </tr>
                         @endforeach
                         @foreach($productItems as $key => $item)
