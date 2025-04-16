@@ -621,6 +621,7 @@ class Banquet_Event_OrderController extends Controller
         if ($banquet) {
             $BEOID =  $banquet->Banquet_ID;
             $schedule = banquet_schedule::where('Banquet_ID', $BEOID)->get();
+            $asset = banquet_asset::where('Banquet_ID', $BEOID)->get();
         }else{
             $currentDate = Carbon::now();
             $ID = 'BEO-';
@@ -640,19 +641,20 @@ class Banquet_Event_OrderController extends Controller
             $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
             $BEOID = $ID.$year.$month.$newRunNumber;
         }
-        return view('banquet_event_order.createmuti',compact('id','settingCompany','BEOID','Proposal','fullName','address','phone','Email','Selectdata','contact','user','banquet','schedule'));
+        return view('banquet_event_order.createmuti',compact('id','settingCompany','BEOID','Proposal','fullName','address','phone','Email','Selectdata','contact','user','banquet','schedule','Quotation_ID','asset'));
     }
     public function save_event(Request $request){
         $data = $request->all();
         $BEOID = $request->BEOID;
-        $formattedDate = Carbon::createFromFormat('d/m/Y', $request->event_date)
-        ->translatedFormat('l, d M Y'); // ใช้ translatedFormat ถ้าอยากให้เป็นภาษาไทยด้วยก็ได้
+        $formattedDate = Carbon::createFromFormat('l, d M Y', $request->event_date)
+        ->format('d/m/Y'); // หรือ translatedFormat('d F Y') สำหรับภาษาไทย
         $newData = [
             'event_date' =>    $formattedDate,
             'catering'    => $request->catering,
             'number'      => $request->number,
             'vehicle'     => $request->vehicle,
         ];
+
         $banquet = banquet_event_order::where('Banquet_ID', $BEOID)->first();
         if ($banquet) {
             $banquet_id = $banquet->id;
@@ -661,6 +663,7 @@ class Banquet_Event_OrderController extends Controller
             }, ARRAY_FILTER_USE_BOTH);
 
             try {
+                DB::beginTransaction();
                 $fullname = 'รหัส : '.$BEOID;
                 $edit = 'รายการแก้ไข';
                 $formattedschedules = [];
@@ -687,41 +690,433 @@ class Banquet_Event_OrderController extends Controller
                 $save->type = 'Edit';
                 $save->Category = 'Edit :: Banquet event order';
                 $save->content =$datacompany;
-                // $save->save();
-            } catch (\Throwable $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Error : ' . $e->getMessage()
-                ]);
-            }
-            try {
+                $save->save();
                 $save = banquet_event_order::find($banquet_id);
                 $save->event_date =$newData['event_date'];
                 $save->catering =$newData['catering'];
                 $save->number =$newData['number'];
                 $save->vehicle =$newData['vehicle'];
                 $save->save();
+                DB::commit();
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Data has been successfully saved.'
+                    'message' => 'The data has been edited.'
                 ]);
             } catch (\Throwable $th) {
-                $latest = log_company::where('Company_ID', $BEOID)->where('type', 'Edit')->latest()->first();
-                if ($latest) {
-                    $latest->delete();
-                }
+                DB::rollBack();
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Error : ' . $e->getMessage()
                 ]);
             }
-
-
         }else{
+            $Proposal = $request->proposal;
+            $Quotation = Quotation::where('Quotation_ID',$Proposal)->first();
+            $banquet = banquet_event_order::where('Banquet_ID',$BEOID)->first();
+            if ($banquet) {
+                $currentDate = Carbon::now();
+                $ID = 'BEO-';
+                $formattedDate = Carbon::parse($currentDate);       // วันที่
+                $month = $formattedDate->format('m'); // เดือน
+                $year = $formattedDate->format('y');
+                $lastRun = banquet_event_order::latest()->first();
+                $nextNumber = 1;
 
+                if ($lastRun == null) {
+                    $nextNumber = $lastRun + 1;
+
+                }else{
+                    $lastRunid = $lastRun->id;
+                    $nextNumber = $lastRunid + 1;
+                }
+                $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+                $BEO_ID = $ID.$year.$month.$newRunNumber;
+            }else{
+                $BEO_ID = $BEOID;
+            }
+            try {
+                DB::beginTransaction();
+                $fullname = 'รหัส : '.$BEO_ID;
+                $edit = 'รายละเอียด';
+                $formattedschedules = [];
+                foreach ($newData as $key => $newValue) {
+                    $label = ucfirst($key); // ทำให้ตัวแรกเป็นตัวพิมพ์ใหญ่
+                    $formattedschedules[] = "$label : $newValue";
+                }
+                $formattedschedulesText = implode(' , ', $formattedschedules);
+                $datacompany = '';
+                $variables = [$fullname, $edit, $formattedschedulesText];
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+                $userid = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userid;
+                $save->Company_ID = $BEO_ID;
+                $save->type = 'Create';
+                $save->Category = 'Create :: Banquet event order';
+                $save->content =$datacompany;
+                $save->save();
+                $userid = Auth::user()->id;
+                $username = Auth::user()->firstname;
+                $save = new banquet_event_order();
+                $save->Banquet_ID =$BEO_ID;
+                $save->Quotation_ID =$Quotation->Quotation_ID;
+                $save->Company_ID =$Quotation->Company_ID;
+                $save->event_date =$newData['event_date'];
+                $save->catering =$newData['catering'];
+                $save->number =$newData['number'];
+                $save->vehicle =$newData['vehicle'];
+                $save->sales =$username;
+                $save->Operated_by =$userid;
+                $save->save();
+                DB::commit();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Data has been successfully saved.',
+                    'BEOID'=>$BEO_ID
+                ]);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error : ' . $e->getMessage()
+                ]);
+            }
         }
-        // $name = 'ชื่อลูกค้า : '.$fullName;
-        // $doc = 'รหัสใบคำสั่งจัดงานเลี้ยง : '.$BEOID;
-        // $refresh = 'อ้างอิงจาก : '.$Quotation->Quotation_ID;
+    }
+    public function save_schedule(Request $request){
+        $data = $request->all(); // รับข้อมูลจาก JS
+        $scheduleData = [
+            'row_id'        => $data['data']['row'] ?? null,
+            'Banquet_ID'    => $data['data']['BEOID'] ?? null,
+            'date'          => $data['data']['date'] ?? null,
+            'room'          => $data['data']['room'] ?? null,
+            'function'      => $data['data']['function'] ?? null,
+            'setup'         => $data['data']['setup'] ?? null,
+            'agr_schedule'  => $data['data']['agr'] ?? null,
+            'gtd_schedule'  => $data['data']['gtd'] ?? null,
+            'set_schedule'  => $data['data']['set'] ?? null,
+            'first_time'    => $data['data']['start'] ?? null,
+            'last_time'     => $data['data']['end'] ?? null, // คุณเขียนผิดว่า start ทั้งสองช่อง
+        ];
+
+        $banquet = banquet_event_order::where('Banquet_ID', $scheduleData['Banquet_ID'])->first();
+        if ( $banquet) {
+            $BEOID = $banquet->Banquet_ID;
+            $schedule = banquet_schedule::where('Banquet_ID', $scheduleData['Banquet_ID'])->where('row_id', $scheduleData['row_id'])->first();
+            if ($schedule) {
+                $schedule_id = $schedule->id;
+                $changed = array_filter($scheduleData, function ($value, $key) use ($schedule) {
+                    return $schedule->$key != $value;
+                }, ARRAY_FILTER_USE_BOTH);
+                try {
+                    DB::beginTransaction();
+                    $fullname = 'รหัส : '.$BEOID;
+                    $edit = 'รายการแก้ไข';
+                    $formattedschedules = [];
+                    foreach ($changed as $key => $newValue) {
+                        $label = ucfirst($key); // ทำให้ตัวแรกเป็นตัวพิมพ์ใหญ่
+                        $formattedschedules[] = "$label : $newValue";
+                    }
+                    $formattedschedulesText = implode(' , ', $formattedschedules);
+                    $datacompany = '';
+
+                    $variables = [$fullname, $edit, $formattedschedulesText];
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
+                            }
+                            $datacompany .= $variable;
+                        }
+                    }
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $BEOID;
+                    $save->type = 'Edit Schedule';
+                    $save->Category = 'Edit :: Banquet event order (schedule)';
+                    $save->content =$datacompany;
+                    $save->save();
+                    $save =banquet_schedule::find($schedule_id);
+                    $save->Banquet_ID = $BEOID;
+                    $save->date = $scheduleData['date'];
+                    $save->first_time = $scheduleData['first_time'];
+                    $save->last_time = $scheduleData['last_time'];
+                    $save->room = $scheduleData['room'];
+                    $save->function = $scheduleData['function'];
+                    $save->setup = $scheduleData['setup'];
+                    $save->agr_schedule = $scheduleData['agr_schedule'];
+                    $save->gtd_schedule = $scheduleData['gtd_schedule'];
+                    $save->set_schedule = $scheduleData['set_schedule'];
+                    $save->save();
+                    DB::commit();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'The data has been edited.',
+                    ]);
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Error : ' . $e->getMessage()
+                    ]);
+                }
+            }else{
+                try {
+                    DB::beginTransaction();
+                    $fullname = 'รหัส : '.$scheduleData['Banquet_ID'];
+                    $edit = 'รายละเอียด';
+                    $formattedschedules = [];
+                    foreach ($scheduleData as $key => $newValue) {
+                        $label = ucfirst($key); // ทำให้ตัวแรกเป็นตัวพิมพ์ใหญ่
+                        $formattedschedules[] = "$label : $newValue";
+                    }
+                    $formattedschedulesText = implode(' , ', $formattedschedules);
+                    $datacompany = '';
+                    $variables = [$fullname, $edit, $formattedschedulesText];
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
+                            }
+                            $datacompany .= $variable;
+                        }
+                    }
+
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $BEOID;
+                    $save->type = 'Create Schedule';
+                    $save->Category = 'Create :: Banquet event order (schedule)';
+                    $save->content =$datacompany;
+                    $save->save();
+                    $save = new banquet_schedule();
+                    $save->Banquet_ID = $BEOID;
+                    $save->row_id = $scheduleData['row_id'];
+                    $save->date = $scheduleData['date'];
+                    $save->first_time = $scheduleData['first_time'];
+                    $save->last_time = $scheduleData['last_time'];
+                    $save->room = $scheduleData['room'];
+                    $save->function = $scheduleData['function'];
+                    $save->setup = $scheduleData['setup'];
+                    $save->agr_schedule = $scheduleData['agr_schedule'];
+                    $save->gtd_schedule = $scheduleData['gtd_schedule'];
+                    $save->set_schedule = $scheduleData['set_schedule'];
+                    $save->save();
+                    DB::commit();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Data has been successfully saved.',
+                    ]);
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Error : ' . $e->getMessage()
+                    ]);
+                }
+            }
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error : Please enter the Event Details first.'
+            ]);
+        }
+
+    }
+    public function delete_schedule(Request $request){
+        $data = $request->all(); // รับข้อมูลจาก JS
+        $scheduleData = [
+            'row_id'        => $data['data']['row'] ?? null,
+            'Banquet_ID'    => $data['data']['BEOID'] ?? null,
+        ];
+        try {
+            DB::beginTransaction();
+            banquet_schedule::where('Banquet_ID', $scheduleData['Banquet_ID'])->where('row_id',$scheduleData['row_id'])->delete();
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $scheduleData['Banquet_ID'];
+            $save->type = 'Delete Schedule';
+            $save->Category = 'Delete :: Banquet event order (schedule)';
+            $save->content ='ลบข้อมูล Schedule +รหัส :'.$scheduleData['Banquet_ID'].'+'.'ลำดับที่ '.$scheduleData['row_id'];
+            $save->save();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'The data has been deleted.',
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error : ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function save_asset(Request $request){
+        $data = $request->all(); // รับข้อมูลจาก JS
+        $assetdata = [
+            'row_id'        => $data['data']['row'] ?? null,
+            'Banquet_ID'    => $data['data']['BEOID'] ?? null,
+            'item'          => $data['data']['assetItem'] ?? null,
+            'quantity'          => $data['data']['quantity'] ?? null,
+            'remarks'      => $data['data']['remarks'] ?? null,
+            'price'         => $data['data']['price'] ?? null,
+        ];
+        $banquet = banquet_event_order::where('Banquet_ID', $assetdata['Banquet_ID'])->first();
+        if ($banquet) {
+            $asset = banquet_asset::where('Banquet_ID', $assetdata['Banquet_ID'])->where('row_id', $assetdata['row_id'])->first();
+            if ( $asset) {
+                $asset_id = $asset->id;
+                $BEOID = $asset->Banquet_ID;
+                $changed = array_filter($assetdata, function ($value, $key) use ($asset) {
+                    return $asset->$key != $value;
+                }, ARRAY_FILTER_USE_BOTH);
+                try {
+                    DB::beginTransaction();
+                    $fullname = 'รหัส : '.$BEOID;
+                    $edit = 'รายการแก้ไข';
+                    $formattedschedules = [];
+                    foreach ($changed as $key => $newValue) {
+                        $label = ucfirst($key); // ทำให้ตัวแรกเป็นตัวพิมพ์ใหญ่
+                        $formattedschedules[] = "$label : $newValue";
+                    }
+                    $formattedschedulesText = implode(' , ', $formattedschedules);
+                    $datacompany = '';
+
+                    $variables = [$fullname, $edit, $formattedschedulesText];
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
+                            }
+                            $datacompany .= $variable;
+                        }
+                    }
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $BEOID;
+                    $save->type = 'Edit Assets';
+                    $save->Category = 'Edit :: Banquet event order (assets)';
+                    $save->content =$datacompany;
+                    $save->save();
+                    $save = banquet_asset::find($asset_id);
+                    $save->Banquet_ID = $BEOID;
+                    $save->row_id = $assetdata['row_id'];
+                    $save->item = $assetdata['item'];
+                    $save->quantity = $assetdata['quantity'];
+                    $save->remarks = $assetdata['remarks'];
+                    $save->price = $assetdata['price'];
+                    $save->save();
+                    DB::commit();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Data has been successfully saved.',
+                    ]);
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Error : ' . $e->getMessage()
+                    ]);
+                }
+            }else{
+                try {
+                    DB::beginTransaction();
+                    $fullname = 'รหัส : '.$assetdata['Banquet_ID'];
+                    $edit = 'รายละเอียด';
+                    $formattedasset = [];
+                    foreach ($assetdata as $key => $newValue) {
+                        $label = ucfirst($key); // ทำให้ตัวแรกเป็นตัวพิมพ์ใหญ่
+                        $formattedasset[] = "$label : $newValue";
+                    }
+                    $formattedassetText = implode(' , ', $formattedasset);
+                    $datacompany = '';
+                    $variables = [$fullname, $edit, $formattedassetText];
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
+                            }
+                            $datacompany .= $variable;
+                        }
+                    }
+
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $assetdata['Banquet_ID'];
+                    $save->type = 'Create Assets';
+                    $save->Category = 'Create :: Banquet event order (assets)';
+                    $save->content =$datacompany;
+                    $save->save();
+                    $save = new banquet_asset();
+                    $save->Banquet_ID = $assetdata['Banquet_ID'];
+                    $save->row_id = $assetdata['row_id'];
+                    $save->item = $assetdata['item'];
+                    $save->quantity = $assetdata['quantity'];
+                    $save->remarks = $assetdata['remarks'];
+                    $save->price = $assetdata['price'];
+                    $save->save();
+                    DB::commit();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Data has been successfully saved.',
+                    ]);
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Error : ' . $e->getMessage()
+                    ]);
+                }
+            }
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error : Please enter the Event Details first.'
+            ]);
+        }
+    }
+    public function delete_asset(Request $request){
+        $data = $request->all(); // รับข้อมูลจาก JS
+        $assetdata = [
+            'row_id'        => $data['data']['row'] ?? null,
+            'Banquet_ID'    => $data['data']['BEOID'] ?? null,
+        ];
+        try {
+            DB::beginTransaction();
+            banquet_asset::where('Banquet_ID', $assetdata['Banquet_ID'])->where('row_id',$assetdata['row_id'])->delete();
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $assetdata['Banquet_ID'];
+            $save->type = 'Delete Assets';
+            $save->Category = 'Delete :: Banquet event order (assets)';
+            $save->content ='ลบข้อมูล Assets +รหัส :'.$assetdata['Banquet_ID'].'+'.'ลำดับที่ '.$assetdata['row_id'];
+            $save->save();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'The data has been deleted.',
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error : ' . $e->getMessage()
+            ]);
+        }
     }
 }

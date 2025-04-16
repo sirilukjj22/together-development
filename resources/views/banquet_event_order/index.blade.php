@@ -116,7 +116,7 @@
                                                                     Select
                                                                 </button>
                                                             @else
-                                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Banquet/Event/Order/create/'.$item->id) }}'">
+                                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Banquet/Event/Order/edit/view/'.$item->id) }}'">
                                                                     Select
                                                                 </button>
                                                             @endif

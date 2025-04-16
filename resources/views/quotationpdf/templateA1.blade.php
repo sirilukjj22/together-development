@@ -193,8 +193,8 @@
                 <b class="com" style="margin-left: 20px; margin-top:10px; font-size:18px">Company Information</b>
                 <table style="line-height:12px;">
                     <tr>
-                        <td style="width: 30%"><b style="margin-left: 30px;">Company Name :</b></td>
-                        <td>{{$fullName}}</td>
+                        <td style="width: 30%; vertical-align: top;"><b style="margin-left: 30px;">Company Name :</b></td>
+                        <td style="word-break: break-word; white-space: normal; width: 200px;">{{$fullName}}</td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Address :</b></td>
@@ -796,8 +796,8 @@
                 <b class="com" style="margin-left: 20px; margin-top:10px; font-size:18px">Guest Information</b>
                 <table style="line-height:12px;">
                     <tr>
-                        <td style="width: 30%"><b style="margin-left: 30px;">Guest Name :</b></td>
-                        <td>{{$fullName}}</td>
+                        <td style="width: 30%; vertical-align: top;"><b style="margin-left: 30px;">Guest Name :</b></td>
+                        <td style="word-break: break-word; white-space: normal; width: 200px;">{{$fullName}}</td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Guest Address :</b></td>

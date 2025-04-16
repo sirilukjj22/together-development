@@ -183,7 +183,7 @@ class Deposit_Revenue extends Controller
         $formattedDate = Carbon::parse($currentDate);       // วันที่
         $month = $formattedDate->format('m'); // เดือน
         $year = $formattedDate->format('y');
-        $lastRun = depositrevenue::latest()->first();
+        $lastRun = depositrevenue::lockForUpdate()->orderBy('id', 'desc')->first();
         $nextNumber = 1;
 
         if ($lastRun == null) {
@@ -584,9 +584,24 @@ class Deposit_Revenue extends Controller
             'Sum' => $data['sum'] ?? null,
             'company' => $data['nameid'] ?? null,
             'fullname' => $data['fullname'] ?? null,
-            'DepositID' => $data['DepositID'] ?? null,
         ];
-        // dd( $data);
+        $currentDate = Carbon::now();
+        $ID = 'DI-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = depositrevenue::lockForUpdate()->orderBy('id', 'desc')->first();
+        $nextNumber = 1;
+
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $DepositID = $ID.$year.$month.$newRunNumber;
         try {
             $Proposal_ID = $datarequest['Proposal_ID'] ?? null;
             $IssueDate = $datarequest['IssueDate'] ?? null;
@@ -595,7 +610,6 @@ class Deposit_Revenue extends Controller
             $company = $datarequest['company'] ?? null;
             $Payment = $datarequest['Sum'] ?? null;
             $fullname = $datarequest['fullname'] ?? null;
-            $DepositID = $datarequest['DepositID'] ?? null;
 
             $Paymenttotal = null;
             if ($Payment) {
@@ -647,7 +661,6 @@ class Deposit_Revenue extends Controller
             $companyid = $datarequest['company'] ?? null;
             $Payment = $datarequest['Sum'] ?? null;
             $fullnamemain = $datarequest['fullname'] ?? null;
-            $DepositID = $datarequest['DepositID'] ?? null;
 
             $parts = explode('-', $companyid);
             $firstPart = $parts[0];
@@ -1897,7 +1910,6 @@ class Deposit_Revenue extends Controller
         }else{
 
             $guestdata =  Guest::where('Profile_ID',$companyid)->first();
-
             if ($guestdata) {
                 $Selectdata =  'Guest';
                 $Company_typeID=$guestdata->preface;
@@ -1992,18 +2004,13 @@ class Deposit_Revenue extends Controller
 
             $file = $request->all();
             $quotation = depositrevenue::where('id',$id)->first();
-
+            $Quotation_ID = $quotation->Quotation_ID;
             $QuotationID = $quotation->Deposit_ID;
             $correct = $quotation->correct;
             $type_Proposal = $quotation->type_Proposal;
             $path = 'PDF/Deposit_Revenue/';
-            if ($correct > 0) {
-                $pdf = $path.$QuotationID.'-'.$correct;
-                $pdfPath = $path.$QuotationID.'-'.$correct.'.pdf';
-            }else{
-                $pdf = $path.$QuotationID;
-                $pdfPath = $path.$QuotationID.'.pdf';
-            }
+            $pdf = $path.$QuotationID;
+            $pdfPath = $path.$QuotationID.'.pdf';
             $Title = $request->tital;
             $detail = $request->detail;
             $comment = $request->Comment;

@@ -92,7 +92,7 @@
                 top: 50px;
                 right: 6;
                 width: 180px;
-                height: 60px;
+                height: 70px;
                 border: 2px solid #2D7F7B;
                 border-radius: 10px;
             }

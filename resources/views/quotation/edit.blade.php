@@ -1021,6 +1021,14 @@
             var enddayName = checkoutDate.format('dddd'); // Format to get the day name
             var momentCheckinNew = checkinDate;
             var momentCheckoutNew = checkoutDate;
+            function getWeekNumber(d) {
+                const date = new Date(d.getTime());
+                date.setHours(0, 0, 0, 0);
+                // ย้ายไปวันพฤหัสในสัปดาห์นี้ เพื่อความแม่นยำของ ISO week
+                date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+                const week1 = new Date(date.getFullYear(), 0, 4);
+                return 1 + Math.round(((date - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+            }
             const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
             const weekendList = ['Thursday', 'Friday', 'Saturday'];
             const startWeek = getWeekNumber(momentCheckinNew.toDate());
@@ -1561,6 +1569,14 @@
             // Calculate the difference in months
             var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
             $('#checkmonth').val(monthDiff);
+            function getWeekNumber(d) {
+                const date = new Date(d.getTime());
+                date.setHours(0, 0, 0, 0);
+                // ย้ายไปวันพฤหัสในสัปดาห์นี้ เพื่อความแม่นยำของ ISO week
+                date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+                const week1 = new Date(date.getFullYear(), 0, 4);
+                return 1 + Math.round(((date - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+            }
             const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
             const weekenddayList = ['Monday', 'Tuesday', 'Wednesday'];
             const weekendList = ['Thursday', 'Friday', 'Saturday'];
@@ -2283,7 +2299,7 @@
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
                     var quantitymain =  Number($(this).val());
-                    var discountmain =  $('#discountmain'+number_ID).val();
+                    var discountmain =  $('#discountmain'+number_ID).val() ?? 0;
                     var unitmain =  $('#unitmain'+number_ID).val();
                     var paxmain = parseFloat($('#pax' + number_ID).val());
                     if (isNaN(paxmain)) {
@@ -2297,6 +2313,7 @@
                     console.log(discountmain);
 
                     if (discountmain === "" || discountmain == 0) {
+                        var discountmain = 0;
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                         var pricediscount =  (price*discountmain /100);
@@ -2357,9 +2374,12 @@
 
 
                    var pricenew = quantitymain*unitmain*price
-                    console.log(discountmain);
+                   console.log(quantitymain);
+                    console.log(unitmain);
+                    console.log(price);
 
-                    if (discountmain === "" || discountmain == 0) {
+                    if (discountmain == "" || discountmain == 0) {
+                        var discountmain = 0;
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                         var pricediscount =  (price*discountmain /100);
@@ -2384,25 +2404,26 @@
                     var discountmain =  $('#discountmain'+number_ID).val();
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-                    console.log(number_ID);
-
                     var pricenew = quantitymain*unitmain*price
-                    console.log(discountmain);
-
-                    if (discountmain === "" || discountmain == 0) {
+                    console.log(quantitymain);
+                    console.log(unitmain);
+                    console.log(price);
+                    console.log(pricenew);
+                    if (discountmain == null || discountmain == 0) {
+                        var discountmain = 0;
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                         var pricediscount =  (price*discountmain /100);
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        console.log(allcount0);
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                         var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        // console.log(pricediscount);
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
-
-
                     totalAmost();
                 }
             });

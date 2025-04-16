@@ -959,26 +959,110 @@
             var flexCheckChecked = document.getElementById('flexCheckChecked');
             var dayName = checkinDate.format('dddd'); // Format to get the day name
             var enddayName = checkoutDate.format('dddd'); // Format to get the day name
-
-
-            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
-                if (dayName === 'Thursday' && enddayName === 'Saturday') {
-                    $('#calendartext').text("Weekday-Weekend");
-                    $('#inputcalendartext').val("Weekday-Weekend");
-                    flexCheckChecked.disabled = true;
-                }else{
+            var momentCheckinNew = checkinDate;
+            var momentCheckoutNew = checkoutDate;
+            function getWeekNumber(d) {
+                const date = new Date(d.getTime());
+                date.setHours(0, 0, 0, 0);
+                // ย้ายไปวันพฤหัสในสัปดาห์นี้ เพื่อความแม่นยำของ ISO week
+                date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+                const week1 = new Date(date.getFullYear(), 0, 4);
+                return 1 + Math.round(((date - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+            }
+            const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const weekendList = ['Thursday', 'Friday', 'Saturday'];
+            const startWeek = getWeekNumber(momentCheckinNew.toDate());
+            const endWeek = getWeekNumber(momentCheckoutNew.toDate());
+            const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
+            const weekDifference = Math.abs(startWeek - endWeek);
+            if (['Thursday'].includes(dayName)) {
+                if (enddayName === 'Friday'&& isSameWeek || dayName == enddayName && isSameWeek) {
                     $('#calendartext').text("Weekday");
                     $('#inputcalendartext').val("Weekday");
                     flexCheckChecked.disabled = true;
-                }
-            } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
-                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                }else if (enddayName === 'Saturday' && isSameWeek) {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#inputcalendartext').val("Weekday-Weekend");
                     flexCheckChecked.disabled = true;
-                }else{
+                }else if (weekDifference == 0  && enddayName === 'Sunday' ) {
                     $('#calendartext').text("Weekend");
                     $('#inputcalendartext').val("Weekend");
+                    flexCheckChecked.disabled = true;
+                }else if (weekdayList.includes(enddayName) && !isSameWeek) {
+                    if (weekDifference == 1 && enddayName === 'Sunday' || weekDifference == 1 &&  dayName == enddayName) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }else if (weekDifference > 1  ) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }else{
+                        $('#calendartext').text("Weekend");
+                        $('#inputcalendartext').val("Weekend");
+                        flexCheckChecked.disabled = true;
+                    }
+                }else{
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#inputcalendartext').val("Weekday-Weekend");
+                    flexCheckChecked.disabled = true;
+                }
+            }
+            else if (weekdayList.includes(dayName)) {
+                if (dayName == 'Sunday') {
+                    if (enddayName === 'Saturday'&& isSameWeek) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }else if(weekdayList.includes(dayName)&& !isSameWeek){
+                        if (weekDifference == 1 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#inputcalendartext').val("Weekday-Weekend");
+                            flexCheckChecked.disabled = true;
+                        }else if (weekDifference > 1) {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#inputcalendartext').val("Weekday-Weekend");
+                            flexCheckChecked.disabled = true;
+                        }else{
+                            $('#calendartext').text("Weekday");
+                            $('#inputcalendartext').val("Weekday");
+                            flexCheckChecked.disabled = true;
+                        }
+                    }
+                }else{
+                    if (weekdayList.includes(dayName)&& isSameWeek) {
+                        if (weekDifference == 0 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#inputcalendartext').val("Weekday-Weekend");
+                            flexCheckChecked.disabled = true;
+                        }else{
+                            console.log(3);
+                            $('#calendartext').text("Weekday");
+                            $('#inputcalendartext').val("Weekday");
+                            flexCheckChecked.disabled = true;
+                        }
+                    }else{
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#inputcalendartext').val("Weekday-Weekend");
+                        flexCheckChecked.disabled = true;
+                    }
+                }
+            }else if (weekendList.includes(dayName)) {
+                if (weekDifference == 0 && enddayName === 'Saturday' || weekDifference == 0 &&enddayName === 'Sunday' || weekDifference == 0 && dayName == enddayName) {
+                    $('#calendartext').text("Weekend");
+                    $('#inputcalendartext').val("Weekend");
+                    flexCheckChecked.disabled = true;
+                }else if (weekDifference == 1 && weekenddayList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#inputcalendartext').val("Weekend-Weekday");
+                    flexCheckChecked.disabled = true;
+                }else if (weekDifference == 1 && weekdayendList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#inputcalendartext').val("Weekend-Weekday");
+                    flexCheckChecked.disabled = true;
+                }else if(weekDifference > 1 ){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#inputcalendartext').val("Weekend-Weekday");
                     flexCheckChecked.disabled = true;
                 }
             }
@@ -1344,13 +1428,7 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
         $(function() {
-            var checkinDate = document.getElementById('inputcalendartext').value;
-            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
-
-            var enddayName = checkoutDate.format('dddd');
-            var DiscountAmount = document.getElementById('DiscountAmount').value;
-            var Add_discount = document.getElementById('Add_discount').value;
-
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
             $('#Checkin').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
@@ -1358,30 +1436,13 @@
                 autoApply: true,
                 minDate: moment().startOf('day'),
                 locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น DD/MM/YYYY
-                },
-                isInvalidDate: function(date) {
-                    if (checkinDate == 'Weekday') {
-                        if (checkinDate === 'Weekday' && ['Friday','Saturday','Sunday'].includes(date.format('dddd'))) {
-                            return true; // ไม่ให้เลือกวันในช่วงนี้
-                        }
-                    }else if (checkinDate == 'Weekend') {
-                        if (checkinDate === 'Weekend' && ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(date.format('dddd'))) {
-                            return true; // ไม่ให้เลือกวันในช่วงนี้
-                        }
-                    }else if (checkinDate == 'Weekday-Weekend' && enddayName == 'Saturday'|| enddayName == 'Monday') {
-                        if (checkinDate === 'Weekday-Weekend' && ['Monday','Sunday', 'Tuesday', 'Wednesday', 'Friday'].includes(date.format('dddd'))) {
-                            return true; // ไม่ให้เลือกวัน
-                        }
-                    }
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
             });
             $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
-                var datefirst = picker.startDate.format('DD/MM/YYYY');
-                $(this).val(datefirst);
-                $('#CheckinNew').val(datefirst);
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
                 var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
-                $('#inputmonth').val(currentMonthIndex + 1);
+                $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
                 CheckDateAdditional();
             });
             $(document).on('wheel', function(e) {
@@ -1393,9 +1454,6 @@
             });
         });
         $(function() {
-            var checkinValue = document.getElementById('Checkin').value;
-            var DiscountAmount = document.getElementById('DiscountAmount').value;
-            var Add_discount = document.getElementById('Add_discount').value;
             $('#Checkout').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
@@ -1404,88 +1462,10 @@
                 minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                },
-                isInvalidDate: function(date) {
-                    var CheckinNew = document.getElementById('CheckinNew').value;
-                    var checkDate = document.getElementById('inputcalendartext').value;
-                    var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
-                    var indayName = momentCheckinNew.format('dddd'); // รับค่าเป็นชื่อวัน
-                    if (checkDate === 'Weekday') {
-                        if (indayName === 'Thursday') {
-                            if ([ 'Saturday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        }else{
-                            return false;
-                        }
-                    } else if (checkDate === 'Weekend') {
-                        if (indayName === 'Friday') {
-                            return false;
-                        }else{
-                            if ([ 'Monday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        }
-                    } else if (checkDate === 'Weekday-Weekend'){
-                        if (indayName === 'Thursday') {
-                            if (['Monday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        } else {
-                            if (['Saturday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
-                                return true;
-                            }
-                        }
-                    }else{
-                        if (['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
-                            return true;
-                        }
-                    }
                 }
             });
             $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
-                var dateend = picker.startDate.format('DD/MM/YYYY');
-                $(this).val(dateend);
-                $('#CheckoutNew').val(dateend);
-
-                var checkDate = document.getElementById('inputcalendartext').value;
-                var CheckinNew = document.getElementById('CheckinNew').value;
-
-                // แปลงวันที่ CheckinNew และ dateend เป็น moment object
-                var datefirst = moment(CheckinNew, 'DD/MM/YYYY');
-                var dateendMoment = moment(dateend, 'DD/MM/YYYY');
-
-                // ตรวจสอบว่า checkinDate คือ 'Weekday-Weekend'
-                if (checkDate === 'Weekday-Weekend') {
-                    // ตรวจสอบว่า datefirst และ dateend ถูกต้อง
-                    if (datefirst.isValid() && dateendMoment.isValid()) {
-                        // คำนวณความแตกต่างระหว่าง datefirst และ dateend เป็นจำนวนวัน
-                        var diffDays = dateendMoment.diff(datefirst, 'days');
-
-                        // เช็คว่าห่างกันไม่เกิน 3 วันหรือไม่
-                        if (diffDays <= 3) {
-                            console.log('วันห่างกันไม่เกิน 3 วัน');
-                            // คุณสามารถทำสิ่งที่ต้องการได้ที่นี่ เช่น อนุญาตให้เลือกวันที่
-                        } else {
-                            alert('วันสิ้นสุดไม่สามารถห่างจากวันเริ่มต้นเกิน 3 วันได้');
-                            // เพิ่มโค้ดสำหรับการแสดงข้อผิดพลาด หรือการแจ้งเตือน
-                        }
-                    } else {
-                        console.error('วันที่ไม่ถูกต้อง');
-                    }
-                }
-                var daymonthName = datefirst.format('MMMM'); // ชื่อเดือนเต็ม เช่น January, February
-                var endmonthName = dateendMoment.format('MMMM');   // ชื่อเดือนเต็ม เช่น January, February
-                var monthDiff = dateendMoment.diff(datefirst, 'months');
-                var month;
-
-                if (daymonthName === endmonthName) {
-                    month = monthDiff; // เดือนเดียวกัน
-                } else {
-                    month = monthDiff + 1; // ข้ามเดือน
-                }
-
-                $('#checkmonth').val(month);
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
                 CheckDateAdditional();
             });
             $(document).on('wheel', function(e) {
@@ -1497,12 +1477,120 @@
             });
         });
         function CheckDateAdditional() {
-            var CheckinNew = document.getElementById('CheckinNew').value;
-            var CheckoutNew = document.getElementById('CheckoutNew').value;
+            var CheckinNew = document.getElementById('Checkin').value;
+            var CheckoutNew = document.getElementById('Checkout').value;
+
             var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
             var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
+
+            // Retrieve the full month names
+            var daymonthName = momentCheckinNew.format('MMMM');  // Full month name like January
+            var endmonthName = momentCheckoutNew.format('MMMM'); // Full month name like January
+
+            // Retrieve the full day names
+            var dayName = momentCheckinNew.format('dddd'); // Full day name like Monday
+            var enddayName = momentCheckoutNew.format('dddd'); // Full day name like Monday
+
+            // Calculate the difference in months
+            var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
+            $('#checkmonth').val(monthDiff);
+            function getWeekNumber(d) {
+                const date = new Date(d.getTime());
+                date.setHours(0, 0, 0, 0);
+                // ย้ายไปวันพฤหัสในสัปดาห์นี้ เพื่อความแม่นยำของ ISO week
+                date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+                const week1 = new Date(date.getFullYear(), 0, 4);
+                return 1 + Math.round(((date - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+            }
+            const weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const weekenddayList = ['Monday', 'Tuesday', 'Wednesday'];
+            const weekendList = ['Thursday', 'Friday', 'Saturday'];
+            const weekdayendList = ['Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const startWeek = getWeekNumber(momentCheckinNew.toDate());
+            const endWeek = getWeekNumber(momentCheckoutNew.toDate());
+            const isSameWeek = startWeek === endWeek && momentCheckinNew.year() === momentCheckoutNew.year();
+            const weekDifference = Math.abs(startWeek - endWeek);
+            console.log(weekDifference);
+            if (['Thursday'].includes(dayName)) {
+                if (enddayName === 'Friday'&& isSameWeek || dayName == enddayName && isSameWeek) {
+                    $('#calendartext').text("Weekday");
+                    $('#Date_type').val("Weekday");
+                }else if (enddayName === 'Saturday' && isSameWeek) {
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
+                }else if (weekDifference == 0  && enddayName === 'Sunday' ) {
+                    $('#calendartext').text("Weekend");
+                    $('#Date_type').val("Weekend");
+                }else if (weekdayList.includes(enddayName) && !isSameWeek) {
+                    if (weekDifference == 1 && enddayName === 'Sunday' || weekDifference == 1 &&  dayName == enddayName) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else if (weekDifference > 1  ) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else{
+                        $('#calendartext').text("Weekend");
+                        $('#Date_type').val("Weekend");
+                    }
+                }else{
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
+                }
+            }
+            else if (weekdayList.includes(dayName)) {
+                if (dayName == 'Sunday') {
+                    if (enddayName === 'Saturday'&& isSameWeek) {
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }else if(weekdayList.includes(dayName)&& !isSameWeek){
+                        if (weekDifference == 1 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else if (weekDifference > 1) {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else{
+                            console.log(2);
+
+                            $('#calendartext').text("Weekday");
+                            $('#Date_type').val("Weekday");
+                        }
+                    }
+                }else{
+                    if (weekdayList.includes(dayName)&& isSameWeek) {
+                        if (weekDifference == 0 && enddayName === 'Saturday' || enddayName === 'Sunday') {
+                            $('#calendartext').text("Weekday-Weekend");
+                            $('#Date_type').val("Weekday-Weekend");
+                        }else{
+                            console.log(3);
+                            $('#calendartext').text("Weekday");
+                            $('#Date_type').val("Weekday");
+                        }
+                    }else{
+                        $('#calendartext').text("Weekday-Weekend");
+                        $('#Date_type').val("Weekday-Weekend");
+                    }
+                }
+            }else if (weekendList.includes(dayName)) {
+                if (weekDifference == 0 && enddayName === 'Saturday' || weekDifference == 0 &&enddayName === 'Sunday' || weekDifference == 0 && dayName == enddayName) {
+                    $('#calendartext').text("Weekend");
+                    $('#Date_type').val("Weekend");
+                }else if (weekDifference == 1 && weekenddayList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#Date_type').val("Weekend-Weekday");
+                }else if (weekDifference == 1 && weekdayendList.includes(enddayName)){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#Date_type').val("Weekend-Weekday");
+                }else if(weekDifference > 1 ){
+                    $('#calendartext').text("Weekend-Weekday");
+                    $('#Date_type').val("Weekend-Weekday");
+                }
+            }
+
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
             const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
+
+
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
             if (checkoutDate > checkinDate) {
@@ -1516,6 +1604,8 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text(nights + ' คืน');
                 $('#daypoguest').text(totalDays + ' วัน');
@@ -1527,11 +1617,16 @@
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#checkinpoguest').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpoguest').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
                 $('#daypoguest').text(totalDays + ' วัน');
                 $('#nightpoguest').text('0 คืน');
             } else {
+
+
                 if (CheckoutNew) {
                     $('#Day').val('0');
                     $('#Night').val('0');

@@ -12,6 +12,7 @@ class banquet_schedule extends Model
     protected $table = 'banquet_schedule';
     protected $fillable = [
         'Banquet_ID',
+        'row_id',
         'date',
         'first_time',
         'last_time',

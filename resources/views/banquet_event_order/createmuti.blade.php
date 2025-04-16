@@ -235,7 +235,7 @@
                                     </div>
                                     <div>
                                         <li>
-                                        <strong>{{$BEOID}}</strong>
+                                        <strong id="BEO_ID">{{$BEOID}}</strong>
                                         <input type="hidden" name="BEOID" id="BEOID" value="{{$BEOID}}">
                                         </li>
                                         <li>Reference : {{$Proposal->Quotation_ID}}</li>
@@ -289,7 +289,7 @@
                                     <div>
                                         <p style="color: #1a5854">
                                             <strong>Event Date :</strong>
-                                            <span id="Event_Date">{{$banquet->event_date}}</span>
+                                            <span id="Event_Date">{{$banquet->event_date ?? '-'}}</span>
                                         </p>
                                         <hr style="border: 1px solid #000000;" />
                                         <p>
@@ -299,14 +299,14 @@
                                         </p>
                                         <p>
                                             <strong>Catering By :</strong>
-                                            <span id="Catering">{{$banquet->catering}}</span>
+                                            <span id="Catering">{{$banquet->catering ?? '-'}}</span>
                                         </p>
                                         <hr style="border: 1px solid #000000;" />
                                         <div>
-                                            จำนวนทีมงาน : <span id="Number_of_teams">{{$banquet->number}}</span> ท่าน
+                                            จำนวนทีมงาน : <span id="Number_of_teams">{{$banquet->number ?? '-'}}</span> ท่าน
                                         </div>
                                         <div>
-                                            รายละเอียดยานพาหนะ : <span id="Details_of_the_vehicle">{{$banquet->vehicle}}</span>
+                                            รายละเอียดยานพาหนะ : <span id="Details_of_the_vehicle">{{$banquet->vehicle ?? '-'}}</span>
                                         </div>
                                     </div>
                                     <div class="modal fade" id="addAccountEventDetailsModal" tabindex="-1" aria-labelledby="addAccountEventDetailsModalLabel"aria-hidden="true">
@@ -327,9 +327,12 @@
                                                                     <label for="eventDate" class="form-label">Event Date</label>
                                                                     <div class="input-group">
                                                                         @php
-                                                                            $formattedDate = date('d/m/Y', strtotime($banquet->event_date));
+                                                                            $formattedDate = isset($banquet) && $banquet->event_date ? date('d/m/Y', strtotime($banquet->event_date)) : '';
                                                                         @endphp
-                                                                        <input type="text" name="eventDate" id="eventDate" placeholder="DD/MM/YYYY" class="form-control readonly-input" value="{{$formattedDate}}" readonly>
+                                                                        <input type="text" name="eventDate" id="eventDate" placeholder="DD/MM/YYYY"
+                                                                        class="form-control readonly-input"
+                                                                        value="{{ isset($banquet) && $banquet->event_date ? date('d/m/Y', strtotime($banquet->event_date)) : '' }}"
+                                                                        readonly>
                                                                         <div class="input-group-prepend">
                                                                             <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                                                 <i class="fas fa-calendar-alt"></i>
@@ -340,16 +343,17 @@
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="cateringBy" class="form-label" >Catering By</label>
-                                                                    <input type="text" class="form-control" id="cateringBy" name="catering" placeholder="Enter catering contact" value="{{$banquet->catering}}"/>
+                                                                    <input type="text" class="form-control" id="cateringBy" name="catering" placeholder="Enter catering contact" value="{{$banquet->catering ?? null}}"/>
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="teamCount" class="form-label">จำนวนทีมงาน</label>
-                                                                    <input type="text" class="form-control" id="team" name="team" placeholder="Enter number of team members"  value="{{$banquet->number}}"/>
+                                                                    <input type="text" class="form-control" id="team" name="team" placeholder="Enter number of team members"  value="{{$banquet->number ?? null}}"/>
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="vehicleDetails" class="form-label" >รายละเอียดยานพาหนะ</label>
-                                                                    <textarea class="form-control" name="vehicle" id="vehicle" rows="2" placeholder="Enter vehicle details" >{{$banquet->vehicle}}</textarea>
+                                                                    <textarea class="form-control" name="vehicle" id="vehicle" rows="2" placeholder="Enter vehicle details" >{{$banquet->vehicle ?? null}}</textarea>
                                                                 </div>
+                                                                <input type="hidden" class="form-control" id="proposal" name="proposal" value="{{$Quotation_ID}}"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -388,27 +392,34 @@
                                     <tbody id="eventScheduleBody">
                                         @if (!empty($schedule))
                                             @foreach ( $schedule as $key => $item)
-                                                @php
-                                                    $var = $key + 1;
-                                                @endphp
-                                                <tr>
+
+                                                <tr id="tr-Schedule{{$item->row_id}}">
                                                     <td style="text-align:center;">{{$key + 1 }}</td>
-                                                    <td style="text-align:center;" id="td_DateSchedule_{{$var}}">{{$item->date}},{{$item->first_time}} - {{$item->last_time}} น.</td>
-                                                    <td style="text-align:center;" id="td_RoomSchedule_{{$var}}">{{$item->room}}</td>
-                                                    <td style="text-align:center;" id="td_functionSchedule_{{$var}}">{{$item->function}}</td>
-                                                    <td style="text-align:center;" id="td_setupSchedule_{{$var}}">{{$item->setup}}</td>
-                                                    <td style="text-align:center;" id="td_agrSchedule_{{$var}}">{{$item->agr_schedule}}</td>
-                                                    <td style="text-align:center;" id="td_gtdSchedule_{{$var}}">{{$item->gtd_schedule}}</td>
-                                                    <td style="text-align:center;" id="td_setSchedule_{{$var}}">{{$item->set_schedule}}</td>
+                                                    <td style="text-align:center;" id="td_DateSchedule_{{$item->row_id}}">{{$item->date}},{{$item->first_time}} - {{$item->last_time}} น.</td>
+                                                    <td style="text-align:center;" id="td_RoomSchedule_{{$item->row_id}}">{{$item->room}}</td>
+                                                    <td style="text-align:center;" id="td_functionSchedule_{{$item->row_id}}">{{$item->function}}</td>
+                                                    <td style="text-align:center;" id="td_setupSchedule_{{$item->row_id}}">{{$item->setup}}</td>
+                                                    <td style="text-align:center;" id="td_agrSchedule_{{$item->row_id}}">{{$item->agr_schedule}}</td>
+                                                    <td style="text-align:center;" id="td_gtdSchedule_{{$item->row_id}}">{{$item->gtd_schedule}}</td>
+                                                    <td style="text-align:center;" id="td_setSchedule_{{$item->row_id}}">{{$item->set_schedule}}</td>
                                                     <td style="text-align:center;" class="bt-ed-dl">
-                                                        <button type="button" class="ed" onclick="editRow(' + rowNumbemain + ')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addEventScheduleModal">
+                                                        <button type="button" class="ed" onclick="editScheduleRow({{$item->row_id}})" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addEventScheduleModal">
                                                             <img src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />
-                                                            <input type="hidden" id="edit_id_{{$var}}" value="{{$var}}">
+                                                            <input type="hidden" id="edit_id_{{$item->row_id}}" value="{{$item->row_id}}">
                                                         </button>
-                                                        <button type="button" class="dl" onclick="removeRow({{$var}})">
+                                                        <button type="button" class="dl" onclick="removeScheduleRow({{$item->row_id}})">
                                                             <img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />
                                                         </button>
                                                     </td>
+                                                    <input type="hidden" id="DateSchedule-{{$item->row_id}}" name="DateSchedule_{{$item->row_id}}" value="{{$item->date}}">
+                                                    <input type="hidden" id="RoomSchedule-{{$item->row_id}}" name="RoomSchedule_{{$item->row_id}}" value="{{$item->room}}">
+                                                    <input type="hidden" id="StartSchedule-{{$item->row_id}}" name="StartSchedule_{{$item->row_id}}" value="{{$item->first_time}}">
+                                                    <input type="hidden" id="EndSchedule-{{$item->row_id}}" name="EndSchedule_{{$item->row_id}}" value="{{$item->last_time}} ">
+                                                    <input type="hidden" id="functionSchedule-{{$item->row_id}}" name="functionSchedule_{{$item->row_id}}" value="{{$item->function}}">
+                                                    <input type="hidden" id="setupSchedule-{{$item->row_id}}" name="setupSchedule_{{$item->row_id}}" value="{{$item->setup}}">
+                                                    <input type="hidden" id="agrSchedule-{{$item->row_id}}" name="agrSchedule_{{$item->row_id}}" value="{{$item->agr_schedule}}">
+                                                    <input type="hidden" id="gtdSchedule-{{$item->row_id}}" name="gtdSchedule_{{$item->row_id}}" value="{{$item->gtd_schedule}}">
+                                                    <input type="hidden" id="setSchedule-{{$item->row_id}}" name="setSchedule_{{$item->row_id}}" value="{{$item->set_schedule}}">
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -449,11 +460,11 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Start Time</label>
-                                                    <input type="time" class="form-control" id="StartSchedule" name="StartSchedule" step="60" required />
+                                                    <input type="time" class="form-control" id="StartScheduleTime"  step="60" required />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="" class="form-label">End Time</label>
-                                                    <input type="time" class="form-control"id="EndSchedule" step="60" required />
+                                                    <input type="time" class="form-control" id="EndScheduleTime"  step="60" required />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="function" class="form-label">Function</label>
@@ -470,7 +481,7 @@
                                                     <label for="setupSelect" class="form-label">Setup</label>
                                                     <select class="form-select"id="setupSchedule">
                                                         <option value="Theatre">Theatre</option>
-                                                        <option value="Conference">Classroom</option>
+                                                        <option value="Classroom">Classroom</option>
                                                         <option value="U-Shape">U-Shape</option>
                                                         <option value="Conference">Conference</option>
                                                         <option value="Banquet">Banquet</option>
@@ -495,13 +506,15 @@
                                                         <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="SET จำนวนการแขกที่จัดเตรียม"></i>
                                                     </label>
                                                     <input type="number" class="form-control" id="setSchedule"  placeholder="Enter SET" />
+                                                    <input type="hidden" class="form-control" id="row"  value="0" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-                                        <button type="button" class="btn btn-primary"  onclick=" EventSchedule()"> Save </button>
+                                        <button type="button" class="btn btn-primary" id="EventScheduleSave" style="display: block" onclick=" CreateSchedule()"> Save </button>
+                                        <button type="button" class="btn btn-primary" id="EditeScheduleSave" style="display: none" onclick=" EditeSchedule()"> Save </button>
                                     </div>
                                 </div>
                                 </div>
@@ -526,10 +539,31 @@
                                         </tr>
                                     </thead>
                                     <tbody id="AssetsEquipment">
-
+                                        @if (!empty($asset))
+                                            @foreach ( $asset as $key => $item)
+                                                <tr id="tr-Assets{{$item->row_id}}">
+                                                    <td style="text-align:center;">{{$key + 1 }}</td>
+                                                    <td style="text-align:center;" id="td_assetItem_{{$item->row_id}}">{{$item->item}}</td>
+                                                    <td style="text-align:center;" id="td_quantity_{{$item->row_id}}">{{$item->quantity}}</td>
+                                                    <td style="text-align:center;" id="td_remarks_{{$item->row_id}}">{{$item->remarks}}</td>
+                                                    <td style="text-align:center;" id="td_price_{{$item->row_id}}"> {{ number_format($item->price, 2) }}</td>
+                                                    <td style="text-align:center;" class="bt-ed-dl">
+                                                        <button type="button" class="ed" onclick="editAssetRow({{$item->row_id}})" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addAssetsModal">
+                                                            <img src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />
+                                                        </button>
+                                                        <button type="button" class="dl" onclick="removeAssetRow({{$item->row_id}})">
+                                                            <img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />
+                                                        </button>
+                                                    </td>
+                                                    <input type="hidden" id="assetItem-{{$item->row_id}}" name="assetItem_{{$item->row_id}}" value="{{$item->item}}">
+                                                    <input type="hidden" id="quantity-{{$item->row_id}}" name="quantity_{{$item->row_id}}" value="{{$item->quantity}}">
+                                                    <input type="hidden" id="remarks-{{$item->row_id}}" name="remarks_{{$item->row_id}}" value="{{$item->remarks}}">
+                                                    <input type="hidden" id="price-{{$item->row_id}}" name="price_{{$item->row_id}}" value="{{$item->price}} ">
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
-                                <!-- </div> -->
                             </div>
                             <div class="modal fade" id="addAssetsModal" tabindex="-1" aria-labelledby="addAssetsModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
@@ -555,223 +589,17 @@
                                                 <div class="mb-3">
                                                     <label for="price" class="form-label">Price</label>
                                                     <input type="number" class="form-control" id="price" placeholder="Enter price" />
+                                                    <input type="hidden" class="form-control" id="rowAsset"  value="0" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-                                            <button type="button" class="btn btn-primary"  onclick="AssetButton()"> Save </button>
+                                            <button type="button" class="btn btn-primary" id="CreateAssetSave" style="display: block" onclick=" CreateAsset()"> Save </button>
+                                            <button type="button" class="btn btn-primary" id="EditeAssetSave" style="display: none" onclick=" EditeAsset()"> Save </button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div for="Food and Set Up" class="mt-5">
-                            <div class="d-grid-2column-banquet " style="font-size: 0.9em;">
-                                <!-- FOOD Section -->
-                                <div class="section">
-                                    <div class="section-title flex-between">
-                                        <div class="flex-grow-1">Food</div>
-                                        <button type="button"  class="center py-1 px-2" data-bs-toggle="modal" data-bs-target="#addFoodModal" style="background-color: transparent;border:1px solid rgb(244, 244, 244);border-radius: 5px;">
-                                        <i class="fa fa-plus text-white" style="font-size:20px"></i>
-                                        </button>
-                                    </div>
-                                    <table class="table table-bordered last-bdbt-none" id="foodTable">
-                                        <tbody id="fooddetail">
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- SET UP Section -->
-                                <div class="section">
-                                    <div class="section-title flex-between">
-                                        <div class="flex-grow-1">Set Up</div>
-                                        <div class="d-flex gap-1">
-                                            <button type="button" class="center px-2 py-1 " id="addSetupButton" data-bs-toggle="modal" data-bs-target="#addSetupModal" style="background-color: transparent;border:1px solid rgb(244, 244, 244);border-radius: 5px;">
-                                                <i class="fa fa-plus text-white" style="font-size:20px"></i>
-                                            </button>
-                                            <button type="button" class="center px-2 py-1" id="addSetupButton" data-bs-toggle="modal" data-bs-target="#selectSetupModal" style="background-color: transparent;border:1px solid rgb(244, 244, 244);border-radius: 5px;">
-                                                <i class="fa fa-home text-white" style="font-size:20px"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <table id="setupTable" class="table-grey-banquet">
-                                            <thead>
-                                                <tr>
-                                                <th>Event Time</th>
-                                                <th>Room</th>
-                                                <th>Details</th>
-                                                <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="setupdetailtable">
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Modal for Adding or Editing Set Up Details -->
-                            <div class="modal fade" id="addSetupModal" tabindex="-1" aria-labelledby="addSetupModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addSetupModalLabel"> Add or Edit Set Up Details </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="d-grid-2column">
-                                                <div class="mb-3">
-                                                    <label for="" class="form-label">Event Date</label>
-                                                    <div class="input-group">
-                                                        <input type="text"  id="setupDate" placeholder="DD/MM/YYYY" class="form-control readonly-input" readonly>
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                                <i class="fas fa-calendar-alt"></i>
-                                                                <!-- ไอคอนปฏิทิน -->
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="setupRoom" class="form-label">Room</label>
-                                                    <select class="form-control" id="setupRoom" required>
-                                                        <option value="" disabled selected> Select a room </option>
-                                                        <option value="Meeting Room 1">Meeting Room 1</option>
-                                                        <option value="Meeting Room 2">Meeting Room 2</option>
-                                                        <option value="Meeting Room 3">Meeting Room 3</option>
-                                                        <option value="Dining Hall">Dining Hall</option>
-                                                        <option value="Conference Hall">Conference Hall</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="startTime" class="form-label">Start Time</label>
-                                                    <input type="time" class="form-control" id="startsetupTime" placeholder="Select start time" required />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="endTime" class="form-label">End Time</label>
-                                                    <input type="time" class="form-control" id="endsetupTime" placeholder="Select end time" required />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="setupDetails" class="form-label">Details</label>
-                                                    <textarea class="form-control" id="setupDetails" placeholder="Enter setup details" rows="3" required></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-                                        <button type="button" class="btn btn-primary" onclick="SetupButton()"> Save </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Modal for Adding Food Setup -->
-                            <div class="modal fade" id="addFoodModal" tabindex="-1" aria-labelledby="addFoodModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title"> Add Food Details </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-grid-2column">
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Event Date</label>
-                                                <div class="input-group">
-                                                    <input type="text"  id="FoodEvent" name="FoodEvent" placeholder="DD/MM/YYYY" class="form-control readonly-input" readonly>
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                            <i class="fas fa-calendar-alt"></i>
-                                                            <!-- ไอคอนปฏิทิน -->
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Room</label>
-                                                <select class="form-control" id="RoomEvent" name="RoomEvent">
-                                                <option value="" disabled selected> Select a room </option>
-                                                <option value="Dining Hall">Dining Hall</option>
-                                                <option value="Meeting Room 1">Meeting Room 1</option>
-                                                <option value="Meeting Room 2">Meeting Room 2</option>
-                                                <option value="Meeting Room 3">Meeting Room 3</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Start Time</label>
-                                                <input type="time" id="StarttimeEvent" name="StarttimeEvent" class="form-control" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">End Time</label>
-                                                <input type="time" id="EndtimeEvent" name="EndtimeEvent" class="form-control" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label text-danger">Special Request</label>
-                                                <textarea class="form-control" id="SpecialEvent" name="SpecialEvent" rows="2" placeholder="e.g., Gluten allergy"></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Guests</label>
-                                                <input type="number" id="NumberEvent" class="form-control" name="NumberEvent" placeholder="Number of guests" />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Food Type</label>
-                                                <input type="text" class="form-control" id="FoodTypeEvent" name="FoodTypeEvent" placeholder="มื้ออาหาร Breakfast,lunch,..." />
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Food Details</label>
-                                                <textarea class="form-control" rows="3" id="ListFoodEvent" name="ListFoodEvent" placeholder="List food details here"></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="" class="form-label">Drink Details</label>
-                                                <textarea class="form-control" rows="2" id="ListdrinkEvent" name="ListdrinkEvent" placeholder="List drink details here"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-                                    <button type="button" class="btn btn-primary" onclick="FoodButton()"> Save </button>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                            <!-- Modal -->
-                            <div class="modal fade" id="selectSetupModal" tabindex="-1" aria-labelledby="selectSetupModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-fullscreen">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="selectSetupModalLabel">Select Setup</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                    <!-- Table to display setup options -->
-                                    <table class="table table-striped" id="setupSelectionTable">
-                                        <thead>
-                                        <tr>
-                                            <th>Event Time</th>
-                                            <th>Room</th>
-                                            <th>Details</th>
-                                            <th>Select</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="selectsetup">
-
-                                        </tbody>
-                                    </table>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-                                    <button type="button" class="btn btn-primary" id="confirmSetup"> Confirm </button>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex-end mt-5">
-                            <div class="">
-                                <div>Customer Signature</div>
-                                <p class="border-bottom" style="min-height: 40px"></p>
-                                <p>Date:</p>
                             </div>
                         </div>
                     </div>
@@ -872,6 +700,7 @@
         var cateringBy = $('#cateringBy').val();
         var teamCount = $('#team').val();
         var vehicleDetails = $('#vehicle').val();
+        var proposal = $('#proposal').val();
         if (!eventDate) {
             document.querySelector('#addEvent').style.display = "block";
         } else {
@@ -888,6 +717,7 @@
                 catering: $('#AccountEventDetails #cateringBy').val(),
                 number: $('#AccountEventDetails #team').val(),
                 vehicle: $('#AccountEventDetails #vehicle').val(),
+                proposal: $('#AccountEventDetails #proposal').val(),
                 _token: $('meta[name="csrf-token"]').attr('content') // สำหรับ Laravel CSRF
             };
             $.ajax({
@@ -895,6 +725,9 @@
                 type: 'POST',
                 data: eventData,
                 success: function (response) {
+                    var BEO_ID = response.BEOID;
+                    $('#BEO_ID').text(BEO_ID);
+                    $('#BEOID').val(BEO_ID);
                     if (response.status === 'success') {
                         Swal.fire({
                             title: "Good job!",
@@ -907,6 +740,10 @@
                             title: "Oops...",
                             text: response.message,
                         });
+                        $('#Event_Date').text('-');
+                        $('#Catering').text('-');
+                        $('#Number_of_teams').text('-');
+                        $('#Details_of_the_vehicle').text('-');
                     }
                 },
                 error: function (xhr) {
@@ -915,6 +752,10 @@
                         title: "Oops...",
                         text: "เกิดข้อผิดพลาดในการบันทึก",
                     });
+                    $('#Event_Date').text('-');
+                    $('#Catering').text('-');
+                    $('#Number_of_teams').text('-');
+                    $('#Details_of_the_vehicle').text('-');
                 }
             });
         }
@@ -927,11 +768,13 @@
         hour = hour % 12 || 12; // แปลง 24 ชั่วโมงเป็น 12 ชั่วโมง
         return hour + ':' + minute + ' ' + period;
     }
-    function EventSchedule() {
+
+    //Schedule
+    function CreateSchedule() {
         var DateSchedule = $('#DateSchedule').val();
         var RoomSchedule = $('#RoomSchedule').val();
-        var StartSchedule = $('#StartSchedule').val();
-        var EndSchedule = $('#EndSchedule').val();
+        var StartSchedule = $('#StartScheduleTime').val();
+        var EndSchedule = $('#EndScheduleTime').val();
         var functionSchedule = $('#functionSchedule').val();
         var setupSchedule = $('#setupSchedule').val();
         var agrSchedule = $('#agrSchedule').val();
@@ -942,150 +785,253 @@
         var formattedEnd = formatTimeTo12Hour(EndSchedule);
         var edit_id = $('#edit_id_'+ rowNumbemain).val() ?? 0;
         var table = $('#table_value').val();
-
-
-        if (table > 0) {
-            rowNumbemain = table;
-            console.log(setSchedule);
-            $('#tr-Schedule' + rowNumbemain).html(
-                '<input type="hidden" id="table_value" value="">'+
+        $('#eventScheduleBody').append(
+            '<tr id="tr-Schedule' + rowNumbemain + '">' +
+                '<input type="hidden" id="table_value" value=""><input type="hidden" id="row_id-' + rowNumbemain + '" value=""' + rowNumbemain + '"">'+
                 '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-                '<td style="text-align:center;" id="td_DateSchedule_' + rowNumbemain + '"><input type="hidden" id="DateSchedule-' + rowNumbemain + '" name="DateSchedule_' + rowNumbemain + '" value="' + DateSchedule + '">' + DateSchedule + ', ' + formattedStart + ' - ' + formattedEnd + '</td>' +
-                '<td style="text-align:center;" id="td_RoomSchedule_' + rowNumbemain + '"><input type="hidden" id="RoomSchedule-' + rowNumbemain + '" name="RoomSchedule_' + rowNumbemain + '" value="' + RoomSchedule + '">' + RoomSchedule + '</td>' +
-                '<td style="text-align:center;" id="td_functionSchedule_' + rowNumbemain + '"><input type="hidden" id="functionSchedule-' + rowNumbemain + '" name="functionSchedule_' + rowNumbemain + '" value="' + functionSchedule + '">' + functionSchedule + '</td>' +
-                '<td style="text-align:center;" id="td_setupSchedule_' + rowNumbemain + '"><input type="hidden" id="setupSchedule-' + rowNumbemain + '" name="setupSchedule_' + rowNumbemain + '" value="' + setupSchedule + '">' + setupSchedule + '</td>' +
-                '<td style="text-align:center;" id="td_agrSchedule_' + rowNumbemain + '"><input type="hidden" id="agrSchedule-' + rowNumbemain + '" name="agrSchedule_' + rowNumbemain + '" value="' + agrSchedule + '">' + agrSchedule + '</td>' +
-                '<td style="text-align:center;" id="td_gtdSchedule_' + rowNumbemain + '"><input type="hidden" id="gtdSchedule-' + rowNumbemain + '" name="gtdSchedule_' + rowNumbemain + '" value="' + gtdSchedule + '">' + gtdSchedule + '</td>' +
-                '<td style="text-align:center;" id="td_setSchedule_' + rowNumbemain + '"><input type="hidden" id="setSchedule-' + rowNumbemain + '" name="setSchedule_' + rowNumbemain + '" value="' + setSchedule + '">' + setSchedule + '</td>' +
+                '<td style="text-align:center;" id="td_DateSchedule_' + rowNumbemain + '"><input type="hidden" id="DateSchedule-' + rowNumbemain + '" name="DateSchedule_' + rowNumbemain + '" value="' + DateSchedule + '">' + DateSchedule +','+ StartSchedule +' - '+ EndSchedule +'</td>' +
+                '<td style="text-align:center;"id="td_RoomSchedule_' + rowNumbemain + '"><input type="hidden" id="RoomSchedule-' + rowNumbemain + '" name="RoomSchedule_' + rowNumbemain + '" value="' + RoomSchedule + '">' + RoomSchedule +'</td>' +
+                '<td style="text-align:center;"id="td_functionSchedule_' + rowNumbemain + '"><input type="hidden" id="functionSchedule-' + rowNumbemain + '" name="functionSchedule_' + rowNumbemain + '" value="' + functionSchedule + '">' + functionSchedule +'</td>' +
+                '<td style="text-align:center;"id="td_setupSchedule_' + rowNumbemain + '"><input type="hidden" id="setupSchedule-' + rowNumbemain + '" name="setupSchedule_' + rowNumbemain + '" value="' + setupSchedule + '">' + setupSchedule +'</td>' +
+                '<td style="text-align:center;"id="td_agrSchedule_' + rowNumbemain + '"><input type="hidden" id="agrSchedule-' + rowNumbemain + '" name="agrSchedule_' + rowNumbemain + '" value="' + agrSchedule + '">' + agrSchedule +'</td>' +
+                '<td style="text-align:center;"id="td_gtdSchedule_' + rowNumbemain + '"><input type="hidden" id="gtdSchedule-' + rowNumbemain + '" name="gtdSchedule_' + rowNumbemain + '" value="' + gtdSchedule + '">' + gtdSchedule +'</td>' +
+                '<td style="text-align:center;"id="td_setSchedule_' + rowNumbemain + '"><input type="hidden" id="setSchedule-' + rowNumbemain + '" name="setSchedule_' + rowNumbemain + '" value="' + setSchedule + '">' + setSchedule +'</td>' +
                 '<input type="hidden" id="StartSchedule-' + rowNumbemain + '" name="StartSchedule_' + rowNumbemain + '" value="' + StartSchedule + '">' +
                 '<input type="hidden" id="EndSchedule-' + rowNumbemain + '" name="EndSchedule_' + rowNumbemain + '" value="' + EndSchedule + '">' +
                 '<td style="text-align:center;" class="bt-ed-dl">' +
-                    '<button type="button" class="ed" onclick="editRow(' + rowNumbemain + ')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addEventScheduleModal">' +
-                        '<img src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
-                        '<input type="hidden" id="edit_id_'+ rowNumbemain +'" value="'+ rowNumbemain +'">' +
+                    '<button type="button" class="ed" onclick="editScheduleRow(' + rowNumbemain + ')" style="margin-right: 5px;"data-bs-toggle="modal" data-bs-target="#addEventScheduleModal">' +
+                        '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" /><input type="hidden" id="edit_id_'+ rowNumbemain +'" value="'+rowNumbemain+'">' +
                     '</button>' +
-                    '<button type="button" class="dl" onclick="removeRow(' + rowNumbemain + ')">' +
+                    '<button type="button" class="dl" onclick="removeScheduleRow(' + rowNumbemain + ')">' +
                         '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
                     '</button>' +
-                '</td>'
-            );
-        }else{
-            $('#eventScheduleBody').append(
-                '<tr id="tr-Schedule' + rowNumbemain + '">' +
-                    '<input type="hidden" id="table_value" value="">'+
-                    '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-                    '<td style="text-align:center;" id="td_DateSchedule_' + rowNumbemain + '"><input type="hidden" id="DateSchedule-' + rowNumbemain + '" name="DateSchedule_' + rowNumbemain + '" value="' + DateSchedule + '">' + DateSchedule +','+ StartSchedule +' - '+ EndSchedule +'</td>' +
-                    '<td style="text-align:center;"id="td_RoomSchedule_' + rowNumbemain + '"><input type="hidden" id="RoomSchedule-' + rowNumbemain + '" name="RoomSchedule_' + rowNumbemain + '" value="' + RoomSchedule + '">' + RoomSchedule +'</td>' +
-                    '<td style="text-align:center;"id="td_functionSchedule_' + rowNumbemain + '"><input type="hidden" id="functionSchedule-' + rowNumbemain + '" name="functionSchedule_' + rowNumbemain + '" value="' + functionSchedule + '">' + functionSchedule +'</td>' +
-                    '<td style="text-align:center;"id="td_setupSchedule_' + rowNumbemain + '"><input type="hidden" id="setupSchedule-' + rowNumbemain + '" name="setupSchedule_' + rowNumbemain + '" value="' + setupSchedule + '">' + setupSchedule +'</td>' +
-                    '<td style="text-align:center;"id="td_agrSchedule_' + rowNumbemain + '"><input type="hidden" id="agrSchedule-' + rowNumbemain + '" name="agrSchedule_' + rowNumbemain + '" value="' + agrSchedule + '">' + agrSchedule +'</td>' +
-                    '<td style="text-align:center;"id="td_gtdSchedule_' + rowNumbemain + '"><input type="hidden" id="gtdSchedule-' + rowNumbemain + '" name="gtdSchedule_' + rowNumbemain + '" value="' + gtdSchedule + '">' + gtdSchedule +'</td>' +
-                    '<td style="text-align:center;"id="td_setSchedule_' + rowNumbemain + '"><input type="hidden" id="setSchedule-' + rowNumbemain + '" name="setSchedule_' + rowNumbemain + '" value="' + setSchedule + '">' + setSchedule +'</td>' +
-                    '<input type="hidden" id="StartSchedule-' + rowNumbemain + '" name="StartSchedule_' + rowNumbemain + '" value="' + StartSchedule + '">' +
-                    '<input type="hidden" id="EndSchedule-' + rowNumbemain + '" name="EndSchedule_' + rowNumbemain + '" value="' + EndSchedule + '">' +
-                    '<td style="text-align:center;" class="bt-ed-dl">' +
-                        '<button type="button" class="ed" onclick="editRow(' + rowNumbemain + ')" style="margin-right: 5px;"data-bs-toggle="modal" data-bs-target="#addEventScheduleModal">' +
-                            '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" /><input type="hidden" id="edit_id_'+ rowNumbemain +'" value="'+rowNumbemain+'">' +
-                        '</button>' +
-                        '<button type="button" class="dl" onclick="removeRow(' + rowNumbemain + ')">' +
-                            '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
-                        '</button>' +
-                    '</td>' +
-                '</tr>'
-            );
-
-        }
-
+                '</td>' +
+            '</tr>'
+        );
+        let dataToSend = {
+            row: rowNumbemain,
+            BEOID: $('#BEOID').val(),
+            date: $('#DateSchedule-' + rowNumbemain).val(),
+            room: $('#RoomSchedule-' + rowNumbemain).val(),
+            function: $('#functionSchedule-' + rowNumbemain).val(),
+            setup: $('#setupSchedule-' + rowNumbemain).val(),
+            agr: $('#agrSchedule-' + rowNumbemain).val(),
+            gtd: $('#gtdSchedule-' + rowNumbemain).val(),
+            set: $('#setSchedule-' + rowNumbemain).val(),
+            start: $('#StartSchedule-' + rowNumbemain).val(),
+            end: $('#EndSchedule-' + rowNumbemain).val()
+        };
+        $.ajax({
+            url: '/Banquet/Event/Order/save/schedule/details',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { data: dataToSend }, // ส่งแบบเป็น object
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.message,
+                    });
+                    $('#tr-Schedule' + rowNumbemain).remove();
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "เกิดข้อผิดพลาดในการบันทึก",
+                });
+                $('#tr-Schedule' + rowNumbemain).remove();
+            }
+        });
         $('#DateSchedule, #RoomSchedule, #StartSchedule, #EndSchedule, #functionSchedule, #setupSchedule, #agrSchedule, #gtdSchedule, #setSchedule,#table_value').val('');
 
         // ปิด modal (ต้องใช้ id หรือ class ของ modal ที่ต้องการปิด)
         $('#addEventScheduleModal').modal('hide'); // ใช้กับ Bootstrap Modal
     }
-    function saveScheduleData() {
-        let dataToSend = [];
-
-        $('#eventScheduleBody tr').each(function () {
-            let rowId = $(this).attr('id').replace('tr-Schedule', '');
-
-            let rowData = {
-                date: $('#DateSchedule-' + rowId).val(),
-                room: $('#RoomSchedule-' + rowId).val(),
-                function: $('#functionSchedule-' + rowId).val(),
-                setup: $('#setupSchedule-' + rowId).val(),
-                agr: $('#agrSchedule-' + rowId).val(),
-                gtd: $('#gtdSchedule-' + rowId).val(),
-                set: $('#setSchedule-' + rowId).val(),
-                start: $('#StartSchedule-' + rowId).val(),
-                end: $('#EndSchedule-' + rowId).val()
-            };
-
-            dataToSend.push(rowData);
-        });
-
-        // ส่งข้อมูลผ่าน AJAX
-        $.ajax({
-            url: "{{ url('/Mvat/check-edit-name') }}/" + id,
-            type: 'GET',
-            data: {
-                _token: '{{ csrf_token() }}',
-                schedules: dataToSend
-            },
-            success: function(response) {
-                alert('บันทึกข้อมูลสำเร็จ');
-                console.log(response);
-            },
-            error: function(xhr) {
-                alert('เกิดข้อผิดพลาดในการบันทึก');
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    function editRow(rowNumber) {
+    function editScheduleRow(rowNumber) {
         // ดึงค่าจากแถวที่เลือก
+        var row = $('#row_id-' + rowNumber).val();
         var date = $('#DateSchedule-' + rowNumber).val();
         var room = $('#RoomSchedule-' + rowNumber).val();
         var start = $('#StartSchedule-' + rowNumber).val();
         var end = $('#EndSchedule-' + rowNumber).val();
         var functionSch = $('#functionSchedule-' + rowNumber).val();
         var setup = $('#setupSchedule-' + rowNumber).val();
+        console.log(setup);
+
         var agr = $('#agrSchedule-' + rowNumber).val();
         var gtd = $('#gtdSchedule-' + rowNumber).val();
         var set = $('#setSchedule-' + rowNumber).val();
         var table = $('#table_value').val();
-        console.log(table);
-
-        // แสดงค่าที่ดึงมาใน modal
-        // ใส่ค่ากลับเข้าไปในฟอร์ม
+        if (end) {
+            end = end.substring(0, 5); // เอาเฉพาะ HH:MM
+            $('#EndScheduleTime').val(end);
+        }
         $('#table_value').val(rowNumber);
         $('#DateSchedule').val(date);
         $('#RoomSchedule').val(room);
-        $('#StartSchedule').val(start);
-        $('#EndSchedule').val(end);
+        $('#StartScheduleTime').val(start);
         $('#functionSchedule').val(functionSch);
         $('#setupSchedule').val(setup);
         $('#agrSchedule').val(agr);
         $('#gtdSchedule').val(gtd);
         $('#setSchedule').val(set);
+        $('#row').val(rowNumber);
+        $('#addEventScheduleModal').modal('show');
+        document.querySelector('#EditeScheduleSave').style.display = "block";
+        document.querySelector('#EventScheduleSave').style.display = "none";
+    }
+    function EditeSchedule () {
+        console.log(1);
 
-        // เปิด Modal เพื่อแก้ไขข้อมูล (ถ้ามี)
-        console.log("Editing Row: " + rowNumber);
+        var row = $('#row').val();
+        var DateSchedule = $('#DateSchedule').val();
+        var RoomSchedule = $('#RoomSchedule').val();
+        var StartSchedule = $('#StartScheduleTime').val();
+        var EndSchedule = $('#EndScheduleTime').val();
+        var functionSchedule = $('#functionSchedule').val();
+        var setupSchedule = $('#setupSchedule').val();
+        var agrSchedule = $('#agrSchedule').val();
+        var gtdSchedule = $('#gtdSchedule').val();
+        var setSchedule = $('#setSchedule').val();
+
+        let dataToSend = {
+            row: row,
+            BEOID: $('#BEOID').val(),
+            date: DateSchedule,
+            room: RoomSchedule,
+            function: functionSchedule,
+            setup: setupSchedule,
+            agr: agrSchedule,
+            gtd: gtdSchedule,
+            set: setSchedule,
+            start: StartSchedule,
+            end: EndSchedule
+        };
+        console.log(dataToSend);
+
+        $.ajax({
+            url: '/Banquet/Event/Order/save/schedule/details',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { data: dataToSend }, // ส่งแบบเป็น object
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    rowNumbemain = row;
+                    $('#tr-Schedule' + rowNumbemain).html(
+                        '<input type="hidden" id="table_value" value="">'+
+                        '<td style="text-align:center;">' + rowNumbemain + '</td>' +
+                        '<td style="text-align:center;" id="td_DateSchedule_' + rowNumbemain + '"><input type="hidden" id="DateSchedule-' + rowNumbemain + '" name="DateSchedule_' + rowNumbemain + '" value="' + DateSchedule + '">' + DateSchedule + ', ' + StartSchedule + ' - ' + EndSchedule + '</td>' +
+                        '<td style="text-align:center;" id="td_RoomSchedule_' + rowNumbemain + '"><input type="hidden" id="RoomSchedule-' + rowNumbemain + '" name="RoomSchedule_' + rowNumbemain + '" value="' + RoomSchedule + '">' + RoomSchedule + '</td>' +
+                        '<td style="text-align:center;" id="td_functionSchedule_' + rowNumbemain + '"><input type="hidden" id="functionSchedule-' + rowNumbemain + '" name="functionSchedule_' + rowNumbemain + '" value="' + functionSchedule + '">' + functionSchedule + '</td>' +
+                        '<td style="text-align:center;" id="td_setupSchedule_' + rowNumbemain + '"><input type="hidden" id="setupSchedule-' + rowNumbemain + '" name="setupSchedule_' + rowNumbemain + '" value="' + setupSchedule + '">' + setupSchedule + '</td>' +
+                        '<td style="text-align:center;" id="td_agrSchedule_' + rowNumbemain + '"><input type="hidden" id="agrSchedule-' + rowNumbemain + '" name="agrSchedule_' + rowNumbemain + '" value="' + agrSchedule + '">' + agrSchedule + '</td>' +
+                        '<td style="text-align:center;" id="td_gtdSchedule_' + rowNumbemain + '"><input type="hidden" id="gtdSchedule-' + rowNumbemain + '" name="gtdSchedule_' + rowNumbemain + '" value="' + gtdSchedule + '">' + gtdSchedule + '</td>' +
+                        '<td style="text-align:center;" id="td_setSchedule_' + rowNumbemain + '"><input type="hidden" id="setSchedule-' + rowNumbemain + '" name="setSchedule_' + rowNumbemain + '" value="' + setSchedule + '">' + setSchedule + '</td>' +
+                        '<input type="hidden" id="StartSchedule-' + rowNumbemain + '" name="StartSchedule_' + rowNumbemain + '" value="' + StartSchedule + '">' +
+                        '<input type="hidden" id="EndSchedule-' + rowNumbemain + '" name="EndSchedule_' + rowNumbemain + '" value="' + EndSchedule + '">' +
+                        '<td style="text-align:center;" class="bt-ed-dl">' +
+                            '<button type="button" class="ed" onclick="editRow(' + rowNumbemain + ')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addEventScheduleModal">' +
+                                '<img src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
+                                '<input type="hidden" id="edit_id_'+ rowNumbemain +'" value="'+ rowNumbemain +'">' +
+                            '</button>' +
+                            '<button type="button" class="dl" onclick="removeRow(' + rowNumbemain + ')">' +
+                                '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
+                            '</button>' +
+                        '</td>'
+                    );
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.message,
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "เกิดข้อผิดพลาดในการบันทึก",
+                });
+            }
+        });
+        $('#DateSchedule, #RoomSchedule, #StartSchedule, #EndSchedule, #functionSchedule, #setupSchedule, #agrSchedule, #gtdSchedule, #setSchedule').val('');
+
+        // ปิด modal (ต้องใช้ id หรือ class ของ modal ที่ต้องการปิด)
+        $('#addEventScheduleModal').modal('hide');
+
     }
-    function removeRow(rowNumber) {
-        $('#tr-Schedule' + rowNumber).remove();
+    function removeScheduleRow(rowNumber) {
+        let dataToSend = {
+            row: rowNumber,
+            BEOID: $('#BEOID').val(),
+        };
+        $.ajax({
+            url: '/Banquet/Event/Order/delete/schedule/details',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { data: dataToSend  }, // ส่งแบบเป็น object
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    $('#tr-Schedule' + rowNumber).remove();
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.message,
+                    });
+
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "เกิดข้อผิดพลาดในการบันทึก",
+                });
+
+            }
+        });
+
     }
-    function AssetButton(){
+    //Asset
+    function CreateAsset() {
         var assetItem = $('#assetItem').val();
         var quantity = $('#quantity').val();
         var remarks = $('#remarks').val();
         var price = parseFloat($('#price').val()) || 0; // ตรวจสอบค่าก่อน
         var priceamount = price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         var table = $('#table_Asset').val();
+        var row = $('#rowAsset').val();
         var rowNumbemain = $('#AssetsEquipment tr').length + 1;
-        if (table > 0) {
-            rowNumbemain = table;
-            $('#tr-Assets' + rowNumbemain).html(
-                '<input type="hidden" id="table_Asset" value="">'+
+        $('#AssetsEquipment').append(
+            '<tr id="tr-Assets' + rowNumbemain + '">' +
+                '<input type="hidden" id="table_Asset" value=""><input type="hidden" id="row_id-' + rowNumbemain + '" value=""' + rowNumbemain + '"">'+
                 '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                 '<td style="text-align:center;" id="td_assetItem_' + rowNumbemain + '"><input type="hidden" id="assetItem-' + rowNumbemain + '" name="assetItem_' + rowNumbemain + '" value="' + assetItem + '">' + assetItem +'</td>' +
                 '<td style="text-align:center;"id="td_quantity_' + rowNumbemain + '"><input type="hidden" id="quantity-' + rowNumbemain + '" name="quantity_' + rowNumbemain + '" value="' + quantity + '">' + quantity +'</td>' +
@@ -1098,543 +1044,176 @@
                     '<button type="button" class="dl" onclick="removeAssetRow(' + rowNumbemain + ')">' +
                         '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
                     '</button>' +
-                '</td>'
-            );
-        }else{
-            $('#AssetsEquipment').append(
-                '<tr id="tr-Assets' + rowNumbemain + '">' +
-                    '<input type="hidden" id="table_Asset" value="">'+
-                    '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-                    '<td style="text-align:center;" id="td_assetItem_' + rowNumbemain + '"><input type="hidden" id="assetItem-' + rowNumbemain + '" name="assetItem_' + rowNumbemain + '" value="' + assetItem + '">' + assetItem +'</td>' +
-                    '<td style="text-align:center;"id="td_quantity_' + rowNumbemain + '"><input type="hidden" id="quantity-' + rowNumbemain + '" name="quantity_' + rowNumbemain + '" value="' + quantity + '">' + quantity +'</td>' +
-                    '<td style="text-align:center;"id="td_remarks_' + rowNumbemain + '"><input type="hidden" id="remarks-' + rowNumbemain + '" name="remarks_' + rowNumbemain + '" value="' + remarks + '">' + remarks +'</td>' +
-                    '<td style="text-align:center;"id="td_price_' + rowNumbemain + '"><input type="hidden" id="price-' + rowNumbemain + '" name="price_' + rowNumbemain + '" value="' + price + '">' + priceamount +'</td>' +
-                    '<td style="text-align:center;" class="bt-ed-dl">' +
-                        '<button type="button" class="ed" onclick="editAssetRow(' + rowNumbemain + ')" style="margin-right: 5px;"data-bs-toggle="modal" data-bs-target="#addAssetsModal">' +
-                            '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
-                        '</button>' +
-                        '<button type="button" class="dl" onclick="removeAssetRow(' + rowNumbemain + ')">' +
-                            '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
-                        '</button>' +
-                    '</td>' +
-                '</tr>'
-            );
-        }
-        $('#assetItem, #quantity, #remarks, #price').val('');
+                '</td>' +
+            '</tr>'
+        );
+        let dataToSend = {
+            row: rowNumbemain,
+            BEOID: $('#BEOID').val(),
+            assetItem: $('#assetItem-' + rowNumbemain).val(),
+            quantity: $('#quantity-' + rowNumbemain).val(),
+            remarks: $('#remarks-' + rowNumbemain).val(),
+            price: $('#price-' + rowNumbemain).val()
+        };
+        $.ajax({
+            url: '/Banquet/Event/Order/save/Asset/details',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { data: dataToSend }, // ส่งแบบเป็น object
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
 
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.message,
+                    });
+                    $('#tr-Assets' + rowNumbemain).remove();
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "เกิดข้อผิดพลาดในการบันทึก",
+                });
+                $('#tr-Assets' + rowNumbemain).remove();
+            }
+        });
+        $('#assetItem, #quantity, #remarks, #price').val('');
         // ปิด modal (ต้องใช้ id หรือ class ของ modal ที่ต้องการปิด)
         $('#addAssetsModal').modal('hide'); // ใช้กับ Bootstrap Modal
     }
     function editAssetRow(rowNumber) {
-        // ดึงค่าจากแถวที่เลือก
+        var row = $('#row_id-' + rowNumber).val();
         var assetItem = $('#assetItem-' + rowNumber).val();
         var quantity = $('#quantity-' + rowNumber).val();
         var remarks = $('#remarks-' + rowNumber).val();
-        var price = $('#price-' + rowNumber).val();
+        var price = parseFloat($('#price-' + rowNumber).val()) || 0; // ตรวจสอบค่าก่อน
         var table = $('#table_Asset').val();
         $('#table_Asset').val(rowNumber);
         $('#assetItem').val(assetItem);
         $('#quantity').val(quantity);
         $('#remarks').val(remarks);
+        $('#rowAsset').val(rowNumber);
         $('#price').val(price);
+
+        document.querySelector('#EditeAssetSave').style.display = "block";
+        document.querySelector('#CreateAssetSave').style.display = "none";
     }
-    function removeAssetRow(rowNumber) {
-        $('#tr-Assets' + rowNumber).remove();
-    }
-    function FoodButton() {
-        var FoodEvent = $('#FoodEvent').val().trim();
-        var RoomEvent = $('#RoomEvent').val();
-        var StarttimeEvent = $('#StarttimeEvent').val();
-        var EndtimeEvent = $('#EndtimeEvent').val();
-        var NumberEvent = $('#NumberEvent').val();
-        var ListdrinkEvent = $('#ListdrinkEvent').val();
-        var ListFoodEvent = $('#ListFoodEvent').val();
-        var SpecialEvent = $('#SpecialEvent').val();
-        var FoodTypeEvent = $('#FoodTypeEvent').val();
-        // เช็คค่าก่อนเรียกฟังก์ชัน
-        var formattedStart = StarttimeEvent ? formatTimeTo12Hour(StarttimeEvent) : '';
-        var formattedEnd = EndtimeEvent ? formatTimeTo12Hour(EndtimeEvent) : '';
-
-        var table = $('#table_food').val();
-        var rowNumbemain = ($('#fooddetail tr').length) + 1; // แบ่ง 2 เพื่อให้นับเป็นคู่
-        var datenumber = rowNumbemain; // ให้ทั้งสองค่าตรงกัน
-        rowNumber = 0;
-        if (table) {
-            rowNumber = table.replace('_', '.');
-        }
-
-        if (rowNumber > 0) {
-            datenumber =table;
-            var editIcon = @json(asset('image/meetingRoom/edit.png'));
-            var deleteIcon = @json(asset('image/meetingRoom/delete.png'));
-            $('#tr-food' + datenumber).html(
-                '<td>' +
-                    '<div>' +
-                        '<div class="flex-between">' +
-                            '<p>' +
-                                '<strong>Room : </strong> <span id="food-Room-' + datenumber + '">' + RoomEvent + '</span>' +
-                                '<input type="hidden" id="foodinputRoom-' + datenumber + '" name="foodinputRoom_' + datenumber + '" value="' + RoomEvent + '">' +
-                                '<input type="hidden" id="date-food-' + datenumber + '" name="date-food_' + datenumber + '" value="' + FoodEvent + '">' +
-                                '<input type="hidden" id="startfoodTime-' + datenumber + '" name="startfoodTime_' + datenumber + '" value="' + StarttimeEvent + '">' +
-                                '<input type="hidden" id="endfoodTime-' + datenumber + '" name="endfoodTime_' + datenumber + '" value="' + EndtimeEvent + '">' +
-                            '</p>' +
-                            '<div class="bt-ed-dl">' +
-                                '<button type="button" class="ed" onclick="editfoodRow(\'' + datenumber + '\')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addFoodModal">' +
-                                    '<img src="' + editIcon + '" alt="Edit" width="20" />' +
-                                '</button>' +
-                                '<button type="button" class="dl" onclick="removefoodRow(\'' + datenumber + '\')">' +
-                                    '<img src="' + deleteIcon + '" alt="Delete" width="20" />' +
-                                '</button>' +
-                            '</div>' +
-                        '</div>' +
-                        '<p>' +
-                            '<strong style="color: #c05624">Special Request :</strong><span id="food-Special-' + datenumber + '">' + SpecialEvent + '</span>' +
-                            '<input type="hidden" id="foodinputSpecial-' + datenumber + '" name="foodinputSpecial_' + datenumber + '" value="' + SpecialEvent + '">' +
-                        '</p>' +
-                        '<p>' +
-                            '<strong>Breakfast (Guests: <span id="food-Guest-' + datenumber + '">' + NumberEvent + '</span>):</strong>' +
-                            '<input type="hidden" id="foodinputGuest-' + datenumber + '" name="foodinputGuest_' + datenumber + '" value="' + NumberEvent + '">' +
-                        '</p>' +
-                        '<ul>' +
-                            '<li>' +
-                                '<b>Food:</b>' +
-                                '<span id="food-Food-' + datenumber + '">' + ListFoodEvent + '</span>' +
-                                '<input type="hidden" id="foodinputFood-' + datenumber + '" name="foodinputFood_' + datenumber + '" value="' + ListFoodEvent + '">' +
-                            '</li>' +
-                            '<li>' +
-                                '<b>Drink:</b>' +
-                                '<span id="food-Drink-' + datenumber + '">' + ListdrinkEvent + '</span>' +
-                                '<input type="hidden" id="foodinputDrink-' + datenumber + '" name="foodinputDrink_' + datenumber + '" value="' + ListdrinkEvent + '">' +
-                            '</li>' +
-                        '</ul>' +
-                    '</div>' +
-                '</td>'
-            );
-        }else{
-            if (FoodEvent) {
-                var dateFoodElements = $("[id^='date-food-']");
-                var isDuplicate = false; // ตัวแปรเช็คค่าซ้ำ
-                var number = ($('#fooddetail tr').length);
-                if (dateFoodElements.length > 0) {
-                    $("[id^='date-food-']").each(function () {
-                        var value = $(this).val().trim(); // ดึงค่าจาก input และตัดช่องว่างออก
-                        if (value == FoodEvent.trim()) {
-                            isDuplicate = true; // ถ้าค่าตรงกันให้ตั้งค่าเป็นซ้ำ
-                            var duplicateId = $(this).attr('id'); // ดึงค่า ID เช่น "date-setup-1"
-                            duplicateNumber = duplicateId.match(/\d+$/); // ดึงตัวเลขท้ายสุด
-                            if (duplicateNumber) {
-                                duplicateNumber = duplicateNumber[0]; // แปลงเป็นตัวเลข
-                            }
-                            return false; // ออกจากการวนลูปเมื่อเจอค่าซ้ำ
-                        }
-                    });
-                }
-                if (!isDuplicate) {
-                    $('#fooddetail').append(
-                        '<tr class="date-header" id="tr-fooddetail' + datenumber + '">' +
-                            '<td colspan="2" style="font-weight: bold; color: #1a5854">' +
-                                '<input type="hidden" id="date-food-' + datenumber + '" name="date-food_' + datenumber + '" value="' + FoodEvent + '">' +
-                                '<input type="hidden" id="startfoodTime-' + datenumber + '" name="startfoodTime_' + datenumber + '" value="' + StarttimeEvent + '">' +
-                                '<input type="hidden" id="endfoodTime-' + datenumber + '" name="endfoodTime_' + datenumber + '" value="' + EndtimeEvent + '">' +
-                                    FoodEvent +
-                            '</td>' +
-                        '</tr>' +
-                        '<tr id="tr-food' + datenumber + '">' +
-                            '<input type="hidden" id="table_food" value="">' +
-                            '<td>' +
-                                '<div>' +
-                                    '<div class="flex-between">' + // ✅ ต้องใส่ + ครอบ string ให้ถูกต้อง
-                                        '<p>' +
-                                            '<strong>Room : </strong> <span id="food-Room-' + datenumber + '">'+RoomEvent+'</span>' +
-                                            '<input type="hidden" id="foodinputRoom-' + datenumber + '" name="foodinputRoom_' + datenumber + '" value="' + RoomEvent + '">' +
-                                        '</p>' +
-                                        '<div class="bt-ed-dl">' +
-                                            '<button type="button" class="ed" onclick="editfoodRow(' + datenumber + ')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addFoodModal">' +
-                                                '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
-                                            '</button>' +
-                                            '<button type="button" class="dl" onclick="removefoodRow(' + datenumber + ')">' +
-                                                '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
-                                            '</button>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<p>'+
-                                        '<strong style="color: #c05624">Special Request :</strong><span id="food-Special-' + datenumber + '">'+SpecialEvent+'</span>'+
-                                        '<input type="hidden" id="foodinputSpecial-' + datenumber + '" name="foodinputSpecial_' + datenumber + '" value="' + SpecialEvent + '">' +
-                                    '</p>'+
-                                    '<p>'+
-                                        '<strong>Breakfast (Guests: <span id="food-Guest-' + datenumber + '">'+NumberEvent+'</span>):</strong>'+
-                                        '<input type="hidden" id="foodinputGuest-' + datenumber + '" name="foodinputGuest_' + datenumber + '"value="' + NumberEvent + '" >' +
-                                    '</p>'+
-                                    '<ul>'+
-                                        '<li>'+
-                                            '<b>Food:</b>'+
-                                            '<span id="food-Food-' + datenumber + '">'+ListFoodEvent+'</span>'+
-                                            '<input type="hidden" id="foodinputFood-' + datenumber + '" name="foodinputFood_' + datenumber + '" value="' + ListFoodEvent + '">' +
-                                            '<input type="hidden" id="foodinputtype-' + datenumber + '" name="foodinputtype_' + datenumber + '" value="' + FoodTypeEvent + '">' +
-                                        '</li>'+
-                                        '<li>'+
-                                            '<b>Drink:</b>'+
-                                            '<span id="food-Drink-' + datenumber + '">'+ListdrinkEvent+'</span>'+
-                                            '<input type="hidden" id="foodinputDrink-' + datenumber + '" name="foodinputDrink_' + datenumber + '" value="' + ListdrinkEvent + '">' +
-                                        '</li>'+
-                                    '</ul>'+
-                                '</div>' +
-                            '</td>' +
-                        '</tr>'
-                    );
-                    number++;
-                } else {
-                    var editIcon = @json(asset('image/meetingRoom/edit.png'));
-                    var deleteIcon = @json(asset('image/meetingRoom/delete.png'));
-                    var datenumber = duplicateNumber + '_' + number;
-                    $('#fooddetail').append(
-                        '<tr id="tr-food' + datenumber + '">' +
-                            '<input type="hidden" id="table_food" value="">' +
-                            '<td>' +
-                                '<div>' +
-                                    '<div class="flex-between">' +
-                                        '<p>' +
-                                            '<strong>Room : </strong> <span id="food-Room-' + datenumber + '">' + RoomEvent + '</span>' +
-                                            '<input type="hidden" id="foodinputRoom-' + datenumber + '" name="foodinputRoom_' + datenumber + '" value="' + RoomEvent + '">' +
-                                            '<input type="hidden" id="date-food-' + datenumber + '" name="date-food_' + datenumber + '" value="' + FoodEvent + '">' +
-                                            '<input type="hidden" id="startfoodTime-' + datenumber + '" name="startfoodTime_' + datenumber + '" value="' + StarttimeEvent + '">' +
-                                            '<input type="hidden" id="endfoodTime-' + datenumber + '" name="endfoodTime_' + datenumber + '" value="' + EndtimeEvent + '">' +
-                                        '</p>' +
-                                        '<div class="bt-ed-dl">' +
-                                            '<button type="button" class="ed" onclick="editfoodRow(\'' + datenumber + '\')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addFoodModal">' +
-                                                '<img src="' + editIcon + '" alt="Edit" width="20" />' +
-                                            '</button>' +
-                                            '<button type="button" class="dl" onclick="removefoodRow(\'' + datenumber + '\')">' +
-                                                '<img src="' + deleteIcon + '" alt="Delete" width="20" />' +
-                                            '</button>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<p>' +
-                                        '<strong style="color: #c05624">Special Request :</strong><span id="food-Special-' + datenumber + '">' + SpecialEvent + '</span>' +
-                                        '<input type="hidden" id="foodinputSpecial-' + datenumber + '" name="foodinputSpecial_' + datenumber + '" value="' + SpecialEvent + '">' +
-                                    '</p>' +
-                                    '<p>' +
-                                        '<strong>Breakfast (Guests: <span id="food-Guest-' + datenumber + '">' + NumberEvent + '</span>):</strong>' +
-                                        '<input type="hidden" id="foodinputGuest-' + datenumber + '" name="foodinputGuest_' + datenumber + '" value="' + NumberEvent + '">' +
-                                    '</p>' +
-                                    '<ul>' +
-                                        '<li>' +
-                                            '<b>Food:</b>' +
-                                            '<span id="food-Food-' + datenumber + '">' + ListFoodEvent + '</span>' +
-                                            '<input type="hidden" id="foodinputFood-' + datenumber + '" name="foodinputFood_' + datenumber + '" value="' + ListFoodEvent + '">' +
-                                        '</li>' +
-                                        '<li>' +
-                                            '<b>Drink:</b>' +
-                                            '<span id="food-Drink-' + datenumber + '">' + ListdrinkEvent + '</span>' +
-                                            '<input type="hidden" id="foodinputDrink-' + datenumber + '" name="foodinputDrink_' + datenumber + '" value="' + ListdrinkEvent + '">' +
-                                        '</li>' +
-                                    '</ul>' +
-                                '</div>' +
-                            '</td>' +
-                        '</tr>'
-                    );
-                }
-            }else{
-                console.log("ไม่มีวันที่ให้ตรวจสอบ");
-            }
-        }
-        $('#FoodEvent, #RoomEvent, #StarttimeEvent, #EndtimeEvent, #NumberEvent,#ListdrinkEvent, #ListFoodEvent, #SpecialEvent,#FoodTypeEvent,#table_food').val('');
-        $('#addFoodModal').modal('hide');
-    }
-    function editfoodRow(datenumber){
-        let rowNumber = Number(datenumber); // แปลงเป็นตัวเลขก่อน
-        if (Number.isInteger(rowNumber)) { // ตรวจสอบว่าเป็นจำนวนเต็มหรือไม่
-            var date = $('#date-food-' + rowNumber).val();
-        } else {  // แทนที่ _ เป็น - โดยไม่ประกาศตัวแปรใหม่
-            if (datenumber.includes('_')) { // ตรวจสอบว่าเป็นรูปแบบที่มี _
-                rowNumber = datenumber.split('_')[0];  // แยกค่าและเลือกค่าแรกสุด
-            }
-            var date = $('#date-food-' + rowNumber).val();
-        }
-        var start = $('[id="startfoodTime-' + datenumber + '"]').val();
-        var end = $('[id="endfoodTime-' + datenumber + '"]').val();
-        var room = $('[id="foodinputRoom-' + datenumber + '"]').val();
-        var special = $('[id="foodinputSpecial-' + datenumber + '"]').val();
-        var guest = $('[id="foodinputGuest-' + datenumber + '"]').val();
-        var food = $('[id="foodinputFood-' + datenumber + '"]').val();
-        var drink = $('[id="foodinputDrink-' + datenumber + '"]').val();
-        var type = $('[id="foodinputtype-' + datenumber + '"]').val();
-        console.log(date);
-
-
-        $('#FoodEvent').val(date).prop('disabled', true);
-        $('#table_food').val(datenumber);
-        $('#RoomEvent').val(room);
-        $('#StarttimeEvent').val(start);
-        $('#EndtimeEvent').val(end);
-        $('#NumberEvent').val(guest);
-        $('#ListdrinkEvent').val(drink);
-        $('#ListFoodEvent').val(food);
-        $('#SpecialEvent').val(special);
-        $('#FoodTypeEvent').val(type);
-
-    }
-    function removefoodRow(datenumber) {
-        datenumber = String(datenumber);
-        console.log(rowNumber);
-
-        if (datenumber.includes('_')) {
-            $('#tr-food' + datenumber).remove();
-        }else{
-            let rowNumber = parseInt(datenumber);
-            if ($('[id^="tr-food' + rowNumber + '_"]').length > 0) {
-                $('#tr-food' + rowNumber).remove();
-            }else {
-                $('#tr-food' + rowNumber).remove();
-                $('#tr-fooddetail' + rowNumber).remove();
-            }
-        }
-    }
-    function deleteFoodButton(){
-        // เคลียร์ค่าของ input ทั้งหมด
-        $('#FoodEvent').val('');
-        $('#RoomEvent').val('');
-        $('#StarttimeEvent').val('');
-        $('#EndtimeEvent').val('');
-        $('#NumberEvent').val('');
-        $('#ListdrinkEvent').val('');
-        $('#ListFoodEvent').val('');
-        $('#SpecialEvent').val('');
-        $('#FoodTypeEvent').val('');
-
-        $('#food-date').text('');
-        $('#food-Room').text('');
-        $('#food-Food').text('');
-        $('#food-Special').text('');
-        $('#food_guest').text('');
-        $('#food-Drink').text('');
-
-        // ซ่อนปุ่มแก้ไข ถ้ามี
-        $('#EditFood').hide();
-
-        $('#deleteFood').hide();
-    }
-    function SetupButton() {
-        var setupEventDate = $('#setupDate').val();
-        var setupRoom = $('#setupRoom').val();
-        var startsetupTime = $('#startsetupTime').val();
-        var endsetupTime = $('#endsetupTime').val();
-        var setupDetails = $('#setupDetails').val();
-        var formattedStart = formatTimeTo12Hour(startsetupTime);
-        var formattedEnd = formatTimeTo12Hour(endsetupTime);
-        var table = $('#table_setuup').val();
-        var rowNumbemain = ($('#setupdetailtable tr').length) + 1; // แบ่ง 2 เพื่อให้นับเป็นคู่
-        var datenumber = rowNumbemain; // ให้ทั้งสองค่าตรงกัน
-        rowNumber = 0;
-        if (table) {
-            rowNumber = table.replace('_', '.');
-        }
-        if (rowNumber > 0) {
-            datenumber =table;
-            $('#tr-setup' + datenumber).html(
-                '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
-                '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
-                '<input type="hidden" id="table_setuup" value="">' +
-                '<td style="text-align:center;"id="StartEnd-' + datenumber + '">' + formattedStart + ' - ' + formattedEnd + '</td>' +
-                '<td style="text-align:center;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
-                '<td style="text-align:center;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
-                '<input type="hidden" id="startsetupTime-' + datenumber + '" name="startsetupTime_' + datenumber + '" value="' + startsetupTime + '">' +
-                '<input type="hidden" id="endsetupTime-' + datenumber + '" name="endsetupTime_' + datenumber + '" value="' + endsetupTime + '">' +
-                '<td style="text-align:center;" class="bt-ed-dl">' +
-                    '<button type="button" class="ed" onclick="editsetupRow(\'' + datenumber + '\')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addSetupModal">' +
-                        '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
-                    '</button>' +
-                    '<button type="button" class="dl" onclick="removesetupRow(\'' + datenumber + '\')">' +
-                        '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
-                    '</button>' +
-                '</td>'
-            );
-            $('#tr-select' + datenumber).html(
-                '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
-                '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
-                '<input type="hidden" id="table_setuup" value="">' +
-                '<td style="text-align:left;" id="StartEnd-' + datenumber + '">'+ setupEventDate +' , '+formattedStart + ' - ' + formattedEnd + '</td>' +
-                '<td style="text-align:left;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
-                '<td style="text-align:left;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
-                '<input type="hidden" id="startsetupTime-' + datenumber + '" name="startsetupTime_' + datenumber + '" value="' + startsetupTime + '">' +
-                '<input type="hidden" id="endsetupTime-' + datenumber + '" name="endsetupTime_' + datenumber + '" value="' + endsetupTime + '">' +
-                '<td style="text-align:center;">' +
-                    '<button type="button" class="btn btn-primary" onclick="selectrow(' + datenumber + ')">' +
-                        'Select'+
-                    '</button>' +
-                '</td>'
-            );
-        }
-        else{
-            if (setupEventDate) {
-                var dateSetupElements = $("[id^='date-setup-']");
-                var isDuplicate = false; // ตัวแปรเช็คค่าซ้ำ
-                var number = ($('#setupdetailtable tr').length);
-                if (dateSetupElements.length > 0) {
-                    $("[id^='date-setup-']").each(function () {
-                        var value = $(this).val().trim(); // ดึงค่าจาก input และตัดช่องว่างออก
-                        if (value == setupEventDate.trim()) {
-                            isDuplicate = true; // ถ้าค่าตรงกันให้ตั้งค่าเป็นซ้ำ
-                            var duplicateId = $(this).attr('id'); // ดึงค่า ID เช่น "date-setup-1"
-                            duplicateNumber = duplicateId.match(/\d+$/); // ดึงตัวเลขท้ายสุด
-                            if (duplicateNumber) {
-                                duplicateNumber = duplicateNumber[0]; // แปลงเป็นตัวเลข
-                            }
-                            return false; // ออกจากการวนลูปเมื่อเจอค่าซ้ำ
-                        }
-                    });
-                }
-
-                if (!isDuplicate) {
-
-                    $('#setupdetailtable').append(
-                        '<tr id="tr-setupdetail' + datenumber + '">' +
-                            '<td colspan="4" class="date-setup text-start">' +
-                                '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
-                                setupEventDate +
-                            '</td>' +
-                        '</tr>' +
-                        '<tr id="tr-setup' + datenumber + '">' +
-                            '<input type="hidden" id="table_setuup" value="">' +
-                            '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
-                            '<td style="text-align:center;"id="StartEnd-' + datenumber + '">' + formattedStart + ' - ' + formattedEnd + '</td>' +
-                            '<td style="text-align:center;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
-                            '<td style="text-align:center;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
-                            '<input type="hidden" id="startsetupTime-' + datenumber + '" name="startsetupTime_' + datenumber + '" value="' + startsetupTime + '">' +
-                            '<input type="hidden" id="endsetupTime-' + datenumber + '" name="endsetupTime_' + datenumber + '" value="' + endsetupTime + '">' +
-                            '<td style="text-align:center;" class="bt-ed-dl">' +
-                                '<button type="button" class="ed" onclick="editsetupRow(' + datenumber + ')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addSetupModal">' +
-                                    '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
-                                '</button>' +
-                                '<button type="button" class="dl" onclick="removesetupRow(' + datenumber + ')">' +
-                                    '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
-                                '</button>' +
-                            '</td>' +
-                        '</tr>'
-                    );
-                    number++;
-                } else {
-
-                    var datenumber = duplicateNumber + '_' + number;
-                    $('#setupdetailtable').append(
-                        '<tr id="tr-setup' + datenumber + '">' +
-                            '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
-                            '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
-                            '<input type="hidden" id="table_setuup" value="">' +
-                            '<td style="text-align:center;" id="StartEnd-' + datenumber + '">' + formattedStart + ' - ' + formattedEnd + '</td>' +
-                            '<td style="text-align:center;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
-                            '<td style="text-align:center;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
-                            '<input type="hidden" id="startsetupTime-' + datenumber + '" name="startsetupTime_' + datenumber + '" value="' + startsetupTime + '">' +
-                            '<input type="hidden" id="endsetupTime-' + datenumber + '" name="endsetupTime_' + datenumber + '" value="' + endsetupTime + '">' +
-                            '<td style="text-align:center;" class="bt-ed-dl">' +
-                                '<button type="button" class="ed" onclick="editsetupRow(\'' + datenumber + '\')" style="margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#addSetupModal">' +
-                                    '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
-                                '</button>'+
-                                '<button type="button" class="dl" onclick="removesetupRow(\'' + datenumber + '\')">' +
-                                    '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
-                                '</button>' +
-                            '</td>' +
-                        '</tr>'
-                    );
-                }
-                $('#selectsetup').append(
-                    '<tr id="tr-select' + datenumber + '">' +
-                        '<input type="hidden" id="table_setuup" value="">' +
-                        '<input type="hidden" id="setup-id-' + datenumber + '" name="setup-id_' + datenumber + '" value="' + datenumber + '">' +
-                        '<input type="hidden" id="date-setup-' + datenumber + '" name="date-setup_' + datenumber + '" value="' + setupEventDate + '">' +
-                        '<td style="text-align:left;" id="StartEnd-' + datenumber + '">'+ setupEventDate +' , '+formattedStart + ' - ' + formattedEnd + '</td>' +
-                        '<td style="text-align:left;"><input type="hidden" id="setupRoom-' + datenumber + '" name="setupRoom_' + datenumber + '" value="' + setupRoom + '">' + setupRoom + '</td>' +
-                        '<td style="text-align:left;"><input type="hidden" id="setupDetails-' + datenumber + '" name="setupDetails_' + datenumber + '" value="' + setupDetails + '">' + setupDetails + '</td>' +
-                        '<input type="hidden" id="startsetupTime-' + datenumber + '" name="startsetupTime_' + datenumber + '" value="' + startsetupTime + '">' +
-                        '<input type="hidden" id="endsetupTime-' + datenumber + '" name="endsetupTime_' + datenumber + '" value="' + endsetupTime + '">' +
-                        '<td style="text-align:center;">' +
-                            '<button type="button" class="btn btn-primary" onclick="selectrow(\'' + datenumber + '\')">' +
-                                'Select'+
-                            '</button>' +
-                        '</td>' +
-                    '</tr>'
-                );
-            } else {
-                console.log("ไม่มีวันที่ให้ตรวจสอบ");
-            }
-        }
-        $('#setupDate, #setupRoom, #startsetupTime, #endsetupTime, #setupDetails,#table_setuup').val('');
-        $('#addSetupModal').modal('hide');
-    }
-
-    function editsetupRow(datenumber) {
-        // แปลงเป็นตัวเลขก่อน
-        console.log(datenumber);
-        let rowNumber = Number(datenumber);
-        if (Number.isInteger(rowNumber)) { // ตรวจสอบว่าเป็นจำนวนเต็มหรือไม่
-            var date = $('#date-setup-' + rowNumber).val();
-        } else {  // แทนที่ _ เป็น - โดยไม่ประกาศตัวแปรใหม่
-            if (datenumber.includes('_')) { // ตรวจสอบว่าเป็นรูปแบบที่มี _
-                rowNumber = datenumber.split('_')[0];  // แยกค่าและเลือกค่าแรกสุด
-            }
-            var date = $('#date-setup-' + rowNumber).val();
-        }
-
-        var room = $('[id="setupRoom-' + datenumber + '"]').val();
-        var start = $('[id="startsetupTime-' + datenumber + '"]').val();
-        var end = $('[id="endsetupTime-' + datenumber + '"]').val();
-        var Detail = $('[id="setupDetails-' + datenumber + '"]').val();
-        var table = $('#table_setuup').val();
-
-        $('#setupDate').prop('disabled', true);
-        $('#setupDate').val(date);
-        $('#table_setuup').val(datenumber);
-        $('#setupDetails').val(Detail);
-        $('#setupRoom').val(room);
-        $('#startsetupTime').val(start);
-        $('#endsetupTime').val(end);
-    }
-    function removesetupRow(datenumber) {
-        datenumber = String(datenumber);
-        if (datenumber.includes('_')) {
-            $('#tr-setup' + datenumber).remove();
-        }else{
-            let rowNumber = parseInt(datenumber);
-            if ($('[id^="tr-setup' + rowNumber + '_"]').length > 0) {
-                console.log(1);
-
-                $('#tr-setup' + datenumber).remove();
-            }else {
-                $('#tr-setup' + rowNumber).remove();
-                $('#tr-setupdetail' + rowNumber).remove();
-            }
-        }
-    }
-    function selectrow(datenumber) {
-        let rowNumber = Math.floor(Number(datenumber)); // แปลงเป็นตัวเลขและปัดเศษลง
-        var date = $(`#date-setup-${rowNumber}`).val() || '';
-        var start = $(`#startsetupTime-${rowNumber}`).val() || '';
-        var end = $(`#endsetupTime-${rowNumber}`).val() || '';
-        var room = $(`#setupRoom-${rowNumber}`).val() || '';
-        var Detail = $(`#setupDetails-${rowNumber}`).val() || '';
-        var setup = $(`#setup-id-${rowNumber}`).val() || '';
-
-        let selectdetail = {
-            date: date,
-            startdate: start,
-            enddate: end,
-            room: room,
-            Detail: Detail,
-            setup:setup
+    function EditeAsset(){
+        var assetItem = $('#assetItem').val();
+        var quantity = $('#quantity').val();
+        var remarks = $('#remarks').val();
+        var price = parseFloat($('#price').val()) || 0; // ตรวจสอบค่าก่อน
+        var row = $('#rowAsset').val();
+        var priceamount = price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let dataToSend = {
+            row: row,
+            BEOID: $('#BEOID').val(),
+            assetItem: assetItem,
+            quantity: quantity,
+            remarks: remarks,
+            price: price
         };
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "selectsteup";
-        input.value = JSON.stringify(selectdetail); // แปลง object เป็น string ก่อนใส่ใน value
-
-        // เพิ่ม input ลงในฟอร์ม
-        var form = document.getElementById("myForm");
-        form.appendChild(input);
-        form.removeAttribute('target');
-        form.submit();
-        return selectdetail;
-
+        $.ajax({
+            url: '/Banquet/Event/Order/save/Asset/details',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { data: dataToSend }, // ส่งแบบเป็น object
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    rowNumbemain = row;
+                    console.log(rowNumbemain);
+                    $('#tr-Assets' + rowNumbemain).html(
+                        '<input type="hidden" id="table_Asset" value="">'+
+                        '<td style="text-align:center;">' + rowNumbemain + '</td>' +
+                        '<td style="text-align:center;" id="td_assetItem_' + rowNumbemain + '"><input type="hidden" id="assetItem-' + rowNumbemain + '" name="assetItem_' + rowNumbemain + '" value="' + assetItem + '">' + assetItem +'</td>' +
+                        '<td style="text-align:center;"id="td_quantity_' + rowNumbemain + '"><input type="hidden" id="quantity-' + rowNumbemain + '" name="quantity_' + rowNumbemain + '" value="' + quantity + '">' + quantity +'</td>' +
+                        '<td style="text-align:center;"id="td_remarks_' + rowNumbemain + '"><input type="hidden" id="remarks-' + rowNumbemain + '" name="remarks_' + rowNumbemain + '" value="' + remarks + '">' + remarks +'</td>' +
+                        '<td style="text-align:center;"id="td_price_' + rowNumbemain + '"><input type="hidden" id="price-' + rowNumbemain + '" name="price_' + rowNumbemain + '" value="' + price + '">' + priceamount +'</td>' +
+                        '<td style="text-align:center;" class="bt-ed-dl">' +
+                            '<button type="button" class="ed" onclick="editAssetRow(' + rowNumbemain + ')" style="margin-right: 5px;"data-bs-toggle="modal" data-bs-target="#addAssetsModal">' +
+                                '<img class="" src="{{ asset('image/meetingRoom/edit.png') }}" alt="" width="20" />' +
+                            '</button>' +
+                            '<button type="button" class="dl" onclick="removeAssetRow(' + rowNumbemain + ')">' +
+                                '<img src="{{ asset('image/meetingRoom/delete.png') }}" alt="" width="20" />' +
+                            '</button>' +
+                        '</td>'
+                    );
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.message,
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "เกิดข้อผิดพลาดในการบันทึก",
+                });
+            }
+        });
+        $('#assetItem, #quantity, #remarks, #price').val('');
+        // ปิด modal (ต้องใช้ id หรือ class ของ modal ที่ต้องการปิด)
+        $('#addAssetsModal').modal('hide'); // ใช้กับ Bootstrap Modal
     }
+    function removeAssetRow(rowNumber){
+        let dataToSend = {
+            row: rowNumber,
+            BEOID: $('#BEOID').val(),
+        };
+        $.ajax({
+            url: '/Banquet/Event/Order/delete/Asset/details',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { data: dataToSend  }, // ส่งแบบเป็น object
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    $('#tr-Assets' + rowNumber).remove();
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.message,
+                    });
 
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "เกิดข้อผิดพลาดในการบันทึก",
+                });
+
+            }
+        });
+    }
 </script>
 @endsection

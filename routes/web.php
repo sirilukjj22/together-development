@@ -811,7 +811,6 @@ Route::controller(Deposit_Revenue::class)->middleware(['role:document', 'togethe
     Route::post('/Document/Deposit/quotation', 'Quotation')->name('Deposit.Quotation');
     Route::get('/Document/deposit_revenue/Data/createnew/{id}', 'deposit_pd');
     // Route::get('/Deposit/edit/revenue/deposit/{id}', 'depositedit')->name('Deposit.depositedit');
-
     // Route::post('/Deposit/generate/Revenue/edit/save/{id}', 'edit_generate_dr')->name('Deposit.edit_generate_dr');
     // Route::post('/Deposit/generate/Revenue/save/{id}', 'generate_dr')->name('Deposit.generate_dr');
 });
@@ -1009,7 +1008,10 @@ Route::controller(Banquet_Event_OrderController::class)->middleware(['role:docum
 
     Route::get('/Banquet/Event/Order/edit/view/{id}', 'edit')->name('Banquet.edit');
     Route::post('/Banquet/Event/Order/save/event/details', 'save_event')->name('Banquet.save_event');
-
+    Route::post('/Banquet/Event/Order/save/schedule/details', 'save_schedule')->name('Banquet.save_schedule');
+    Route::post('/Banquet/Event/Order/delete/schedule/details', 'delete_schedule')->name('Banquet.delete_schedule');
+    Route::post('/Banquet/Event/Order/save/Asset/details', 'save_asset')->name('Banquet.save_asset');
+    Route::post('/Banquet/Event/Order/delete/Asset/details', 'delete_asset')->name('Banquet.delete_asset');
 });
 Route::controller(ReceiveChequeController::class)->middleware(['role:document', 'together:1'])->group(function () {
     Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
